@@ -305,7 +305,7 @@ module Mongoid
       #
       # @since 3.0.23
       def persistence_options(criteria)
-        (criteria.klass.persistence_options || {}).merge!(consistency: :strong)
+        (criteria.klass.persistence_options || {}).merge!(read: :primary)
       end
 
       # Is the attribute localized?
