@@ -30,7 +30,7 @@ describe Mongoid::Relations::Builders::Referenced::In do
       context "when the object is an object id" do
 
         let(:object_id) do
-          Moped::BSON::ObjectId.new
+          BSON::ObjectId.new
         end
 
         let(:object) do
@@ -63,9 +63,9 @@ describe Mongoid::Relations::Builders::Referenced::In do
         after do
           Person.field(
             :_id,
-            type: Moped::BSON::ObjectId,
+            type: BSON::ObjectId,
             pre_processed: true,
-            default: ->{ Moped::BSON::ObjectId.new }
+            default: ->{ BSON::ObjectId.new }
           )
         end
 
@@ -133,7 +133,7 @@ describe Mongoid::Relations::Builders::Referenced::In do
       context "when the id is incorrect" do
 
         before do
-          game.person_id = Moped::BSON::ObjectId.new
+          game.person_id = BSON::ObjectId.new
         end
 
         it "returns nil" do

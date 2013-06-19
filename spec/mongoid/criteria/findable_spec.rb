@@ -128,7 +128,7 @@ describe Mongoid::Criteria::Findable do
             end
 
             let(:found) do
-              Band.find(Moped::BSON::ObjectId.new)
+              Band.find(BSON::ObjectId.new)
             end
 
             it "raises an error" do
@@ -149,7 +149,7 @@ describe Mongoid::Criteria::Findable do
             end
 
             let(:found) do
-              Band.find(Moped::BSON::ObjectId.new)
+              Band.find(BSON::ObjectId.new)
             end
 
             it "returns nil" do
@@ -199,7 +199,7 @@ describe Mongoid::Criteria::Findable do
             end
 
             let(:found) do
-              Band.find(band.id, Moped::BSON::ObjectId.new)
+              Band.find(band.id, BSON::ObjectId.new)
             end
 
             it "raises an error" do
@@ -220,7 +220,7 @@ describe Mongoid::Criteria::Findable do
             end
 
             let(:found) do
-              Band.find(band.id, Moped::BSON::ObjectId.new)
+              Band.find(band.id, BSON::ObjectId.new)
             end
 
             it "returns only the matching documents" do
@@ -270,7 +270,7 @@ describe Mongoid::Criteria::Findable do
             end
 
             let(:found) do
-              Band.find([ band.id, Moped::BSON::ObjectId.new ])
+              Band.find([ band.id, BSON::ObjectId.new ])
             end
 
             it "raises an error" do
@@ -291,7 +291,7 @@ describe Mongoid::Criteria::Findable do
             end
 
             let(:found) do
-              Band.find([ band.id, Moped::BSON::ObjectId.new ])
+              Band.find([ band.id, BSON::ObjectId.new ])
             end
 
             it "returns only the matching documents" do
@@ -309,7 +309,7 @@ describe Mongoid::Criteria::Findable do
       end
 
       after(:all) do
-        Band.field :_id, type: Moped::BSON::ObjectId, default: ->{ Moped::BSON::ObjectId.new }
+        Band.field :_id, type: BSON::ObjectId, default: ->{ BSON::ObjectId.new }
       end
 
       let!(:band) do
@@ -505,7 +505,7 @@ describe Mongoid::Criteria::Findable do
       end
 
       after(:all) do
-        Band.field :_id, type: Moped::BSON::ObjectId, default: ->{ Moped::BSON::ObjectId.new }
+        Band.field :_id, type: BSON::ObjectId, default: ->{ BSON::ObjectId.new }
       end
 
       let!(:band) do
@@ -701,7 +701,7 @@ describe Mongoid::Criteria::Findable do
       end
 
       after(:all) do
-        Band.field :_id, type: Moped::BSON::ObjectId, default: ->{ Moped::BSON::ObjectId.new }
+        Band.field :_id, type: BSON::ObjectId, default: ->{ BSON::ObjectId.new }
       end
 
       let!(:band) do
@@ -988,7 +988,7 @@ describe Mongoid::Criteria::Findable do
     context "when only 1 id exists" do
 
       let(:id) do
-        Moped::BSON::ObjectId.new
+        BSON::ObjectId.new
       end
 
       let(:criteria) do
