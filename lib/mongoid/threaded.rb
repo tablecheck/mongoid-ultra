@@ -248,7 +248,7 @@ module Mongoid
     # Set the persistence options on the current thread.
     #
     # @example Set the persistence options.
-    #   Threaded.set_persistence_options(Band, { safe: { fsync: true }})
+    #   Threaded.set_persistence_options(Band, { w: { fsync: true }})
     #
     # @param [ Class ] klass The model class.
     # @param [ Hash ] options The persistence options.

@@ -11,7 +11,7 @@ describe Mongoid::Sessions do
     context "when options exist on the current thread" do
 
       before do
-        Band.with(safe: true)
+        Band
       end
 
       let!(:cleared) do
@@ -865,7 +865,7 @@ describe Mongoid::Sessions do
       describe ".create" do
 
         before do
-          Person.with(safe: true).create(ssn: "432-97-1111")
+          Person.create(ssn: "432-97-1111")
         end
 
         context "when no error occurs" do
@@ -883,7 +883,7 @@ describe Mongoid::Sessions do
 
           it "bubbles up to the caller" do
             expect {
-              Person.with(safe: true).create(ssn: "432-97-1111")
+              Person.create(ssn: "432-97-1111")
             }.to raise_error(Moped::Errors::OperationFailure)
           end
         end
@@ -899,7 +899,7 @@ describe Mongoid::Sessions do
       describe ".create!" do
 
         before do
-          Person.with(safe: true).create!(ssn: "432-97-1112")
+          Person.create!(ssn: "432-97-1112")
         end
 
         context "when no error occurs" do
@@ -917,7 +917,7 @@ describe Mongoid::Sessions do
 
           it "bubbles up to the caller" do
             expect {
-              Person.with(safe: true).create!(ssn: "432-97-1112")
+              Person.create!(ssn: "432-97-1112")
             }.to raise_error(Moped::Errors::OperationFailure)
           end
         end
@@ -926,7 +926,7 @@ describe Mongoid::Sessions do
 
           it "raises the validation error" do
             expect {
-              Account.with(safe: true).create!(name: "this name is way too long")
+              Account.create!(name: "this name is way too long")
             }.to raise_error(Mongoid::Errors::Validations)
           end
         end
@@ -935,7 +935,7 @@ describe Mongoid::Sessions do
       describe ".save" do
 
         before do
-          Person.with(safe: true).create(ssn: "432-97-1113")
+          Person.create(ssn: "432-97-1113")
         end
 
         context "when a mongodb error occurs" do
@@ -950,7 +950,7 @@ describe Mongoid::Sessions do
 
           it "bubbles up to the caller" do
             expect {
-              person.with(safe: true).save
+              person.save
             }.to raise_error(Moped::Errors::OperationFailure)
           end
         end
@@ -959,7 +959,7 @@ describe Mongoid::Sessions do
       describe ".save!" do
 
         before do
-          Person.with(safe: true).create!(ssn: "432-97-1114")
+          Person.create!(ssn: "432-97-1114")
         end
 
         context "when a mongodb error occurs" do
@@ -974,7 +974,7 @@ describe Mongoid::Sessions do
 
           it "bubbles up to the caller" do
             expect {
-              person.with(safe: true).save!
+              person.save!
             }.to raise_error(Moped::Errors::OperationFailure)
           end
         end
@@ -987,7 +987,7 @@ describe Mongoid::Sessions do
 
           it "raises the validation error" do
             expect {
-              account.with(safe: true).save!
+              account.save!
             }.to raise_error(Mongoid::Errors::Validations)
           end
         end

@@ -157,7 +157,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                 context "when single localization" do
 
                   before do
-                    Dictionary.with(safe: true).create(description: "english")
+                    Dictionary.create(description: "english")
                   end
 
                   let(:dictionary) do
@@ -172,7 +172,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                 context "when multiple localizations" do
 
                   before do
-                    Dictionary.with(safe: true).
+                    Dictionary.
                         create(description_translations: { "en" => "english", "de" => "german" })
                   end
 
@@ -193,7 +193,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                   context "when single localization" do
 
                     before do
-                      Dictionary.with(safe: true).create(description: "english")
+                      Dictionary.create(description: "english")
                     end
 
                     let(:dictionary) do
@@ -213,7 +213,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                   context "when multiple localizations" do
 
                     before do
-                      Dictionary.with(safe: true).
+                      Dictionary.
                           create(description_translations: { "en" => "english", "de" => "german" })
                     end
 
@@ -249,7 +249,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                 context "when there are no special characters" do
 
                   before do
-                    Dictionary.with(safe: true).create(description: "english")
+                    Dictionary.create(description: "english")
                   end
 
                   let(:dictionary) do
@@ -264,7 +264,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                 context "when special characters exist" do
 
                   before do
-                    Dictionary.with(safe: true).create(description: "english")
+                    Dictionary.create(description: "english")
                   end
 
                   let(:dictionary) do
@@ -284,7 +284,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                   context "when signle localization" do
 
                     before do
-                      Dictionary.with(safe: true).create(description: "english")
+                      Dictionary.create(description: "english")
                     end
 
                     let(:dictionary) do
@@ -304,7 +304,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                   context "when multiple localizations" do
 
                     before do
-                      Dictionary.with(safe: true).
+                      Dictionary.
                           create(description_translations: { "en" => "english", "de" => "german" })
                     end
 
@@ -326,7 +326,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                 context "when the document is the match in the database" do
 
                   let!(:dictionary) do
-                    Dictionary.with(safe: true).create(description: "english")
+                    Dictionary.create(description: "english")
                   end
 
                   it "returns true" do
@@ -352,7 +352,7 @@ describe Mongoid::Validatable::UniquenessValidator do
               context "when the document is not the match" do
 
                 before do
-                  Dictionary.with(safe: true).
+                  Dictionary.
                     create(description: "english", name: "test")
                 end
 
@@ -488,7 +488,7 @@ describe Mongoid::Validatable::UniquenessValidator do
             context "when the attribute is not unique" do
 
               before do
-                Dictionary.with(safe: true).create(name: "Oxford")
+                Dictionary.create(name: "Oxford")
               end
 
               let(:dictionary) do
@@ -2303,7 +2303,7 @@ describe Mongoid::Validatable::UniquenessValidator do
 
     it "transfers the options to the cloned session" do
       expect {
-        Person.with(safe: true).create!(ssn: "132-11-1111", username: "asdfsdfA")
+        Person.create!(ssn: "132-11-1111", username: "asdfsdfA")
       }.to raise_error
     end
   end
