@@ -144,4 +144,11 @@ describe Mongoid::Extensions::Float do
       expect(number.mongoize).to eq(number)
     end
   end
+
+  describe "#numeric?" do
+
+    it "returns true" do
+      expect(number.numeric?).to eq(true)
+    end
+  end
 end
