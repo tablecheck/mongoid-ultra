@@ -5,6 +5,7 @@ MODELS = File.join(File.dirname(__FILE__), "app/models")
 $LOAD_PATH.unshift(MODELS)
 
 require "mongoid"
+require "mongoid_monkey"
 require "rspec"
 
 # These environment variables can be set if wanting to test against a database
@@ -91,3 +92,5 @@ end
 ActiveSupport::Inflector.inflections do |inflect|
   inflect.singular("address_components", "address_component")
 end
+
+I18n.enforce_available_locales = false

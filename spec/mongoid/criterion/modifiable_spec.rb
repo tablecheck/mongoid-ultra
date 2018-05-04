@@ -314,7 +314,7 @@ describe Mongoid::Criterion::Modifiable do
     context "when the document is found" do
 
       let!(:band) do
-        Band.with(safe: true).create!(name: "Depeche Mode")
+        Band.create!(name: "Depeche Mode")
       end
 
       let(:found) do
@@ -329,7 +329,7 @@ describe Mongoid::Criterion::Modifiable do
     context "when the document is not found" do
 
       let!(:band) do
-        Band.with(safe: true).create!(name: "Depeche Mode")
+        Band.create!(name: "Depeche Mode")
       end
 
       context "when attributes are provided" do

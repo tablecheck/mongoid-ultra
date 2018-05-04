@@ -284,7 +284,7 @@ describe Mongoid::Persistence do
 
         it "raises an error" do
           expect {
-            4.times { Person.with(safe: true).create!(ssn: "555-55-1029") }
+            4.times { Person.create!(ssn: "555-55-1029") }
           }.to raise_error
         end
       end
@@ -773,7 +773,7 @@ describe Mongoid::Persistence do
         end
 
         it "raises an error" do
-          expect { person.with(safe: true).save! }.to raise_error
+          expect { person.save! }.to raise_error
         end
       end
     end
@@ -1391,7 +1391,7 @@ describe Mongoid::Persistence do
 
       it "raises an error" do
         expect {
-          person.with(safe: true).update_attributes(map: { "bad.key" => "value" })
+          person.update_attributes(map: { "bad.key" => "value" })
         }.to raise_error(Moped::Errors::OperationFailure)
       end
     end
@@ -1690,7 +1690,7 @@ describe Mongoid::Persistence do
         end
 
         before do
-          updated.with(safe: true).upsert
+          updated.upsert
         end
 
         it "updates the existing document" do
@@ -1705,7 +1705,7 @@ describe Mongoid::Persistence do
         end
 
         before do
-          insert.with(safe: true).upsert
+          insert.upsert
         end
 
         it "inserts a new document" do

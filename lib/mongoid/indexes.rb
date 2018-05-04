@@ -24,10 +24,10 @@ module Mongoid
         return unless index_options
         index_options.each_pair do |spec, options|
           if database = options[:database]
-            with(consistency: :strong, database: database).
+            with(read: :primary, database: database).
               collection.indexes.create(spec, options.except(:database))
           else
-            with(consistency: :strong).collection.indexes.create(spec, options)
+            with(read: :primary).collection.indexes.create(spec, options)
           end
         end and true
       end
@@ -43,7 +43,7 @@ module Mongoid
       # @since 3.0.0
       def remove_indexes
         indexed_database_names.each do |database|
-          collection = with(consistency: :strong, database: database).collection
+          collection = with(read: :primary, database: database).collection
           collection.indexes.each do |spec|
             unless spec["name"] == "_id_"
               collection.indexes.drop(spec["key"])

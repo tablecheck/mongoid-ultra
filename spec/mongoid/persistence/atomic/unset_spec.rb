@@ -28,7 +28,7 @@ describe Mongoid::Persistence::Atomic::Unset do
     end
 
 
-    [[ :age, :score, { safe: true }], [ :age, :score ], [ [:age, :score ]]].each do |args|
+    [[ :age, :score ], [ :age, :score ], [ [ :age, :score ]]].each do |args|
 
       context "when unsetting multiple fields using #{args}" do
 

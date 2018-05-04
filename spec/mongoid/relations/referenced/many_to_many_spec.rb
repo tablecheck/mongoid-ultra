@@ -2410,7 +2410,7 @@ describe Mongoid::Relations::Referenced::ManyToMany do
 
             it "raises an error" do
               expect {
-                person.preferences.find(Moped::BSON::ObjectId.new)
+                person.preferences.find(BSON::ObjectId.new)
               }.to raise_error(Mongoid::Errors::DocumentNotFound)
             end
           end
@@ -2418,7 +2418,7 @@ describe Mongoid::Relations::Referenced::ManyToMany do
           context "when config set not to raise error" do
 
             let(:preference) do
-              person.preferences.find(Moped::BSON::ObjectId.new)
+              person.preferences.find(BSON::ObjectId.new)
             end
 
             before do
@@ -2474,7 +2474,7 @@ describe Mongoid::Relations::Referenced::ManyToMany do
 
             it "raises an error" do
               expect {
-                person.preferences.find([ Moped::BSON::ObjectId.new ])
+                person.preferences.find([ BSON::ObjectId.new ])
               }.to raise_error(Mongoid::Errors::DocumentNotFound)
             end
           end
@@ -2482,7 +2482,7 @@ describe Mongoid::Relations::Referenced::ManyToMany do
           context "when config set not to raise error" do
 
             let(:preferences) do
-              person.preferences.find([ Moped::BSON::ObjectId.new ])
+              person.preferences.find([ BSON::ObjectId.new ])
             end
 
             before do

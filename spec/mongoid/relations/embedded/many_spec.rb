@@ -1958,7 +1958,7 @@ describe Mongoid::Relations::Embedded::Many do
 
           it "raises an error" do
             expect {
-              person.addresses.find(Moped::BSON::ObjectId.new)
+              person.addresses.find(BSON::ObjectId.new)
             }.to raise_error(Mongoid::Errors::DocumentNotFound)
           end
         end
@@ -1966,7 +1966,7 @@ describe Mongoid::Relations::Embedded::Many do
         context "when config set not to raise error" do
 
           let(:address) do
-            person.addresses.find(Moped::BSON::ObjectId.new)
+            person.addresses.find(BSON::ObjectId.new)
           end
 
           before do
@@ -2007,7 +2007,7 @@ describe Mongoid::Relations::Embedded::Many do
 
           it "raises an error" do
             expect {
-              person.addresses.find([ Moped::BSON::ObjectId.new ])
+              person.addresses.find([ BSON::ObjectId.new ])
             }.to raise_error(Mongoid::Errors::DocumentNotFound)
           end
         end
@@ -2015,7 +2015,7 @@ describe Mongoid::Relations::Embedded::Many do
         context "when config set not to raise error" do
 
           let(:addresses) do
-            person.addresses.find([ Moped::BSON::ObjectId.new ])
+            person.addresses.find([ BSON::ObjectId.new ])
           end
 
           before do
