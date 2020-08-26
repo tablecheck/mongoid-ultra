@@ -33,12 +33,12 @@ end
 
 require 'mongoid'
 
-if SpecConfig.instance.mri?
-  require 'timeout_interrupt'
-else
-  require 'timeout'
-  TimeoutInterrupt = Timeout
-end
+# if SpecConfig.instance.mri?
+#   require 'timeout_interrupt'
+# else
+#   require 'timeout'
+#   TimeoutInterrupt = Timeout
+# end
 
 RSpec.configure do |config|
   config.expect_with(:rspec) do |c|

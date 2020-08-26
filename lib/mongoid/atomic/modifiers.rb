@@ -69,11 +69,14 @@ module Mongoid
       def push(modifications)
         modifications.each_pair do |field, value|
           push_fields[field] = field
-          if push_conflict?(field)
-            conflicts.push({ field => value })
+          name, residual = field.split(".", 2)
+          mods = push_conflict?(name) ? conflicting_pushes : pushes
+          if residual
+            value = { '$each' => [{ residual => value }] }
           else
-            add_operation(pushes, field, { '$each' => Array.wrap(value) })
+            value = { '$each' => Array.wrap(value) }
           end
+          add_operation(mods, name, value)
         end
       end
 
@@ -88,12 +91,9 @@ module Mongoid
       def set(modifications)
         modifications.each_pair do |field, value|
           next if field == "_id"
-          if set_conflict?(field)
-            conflicts.set({ field => value })
-          else
-            add_operation(sets, field, value)
-            set_fields[field.split(".", 2)[0]] = field
-          end
+          mods = set_conflict?(field) ? conflicting_sets : sets
+          add_operation(mods, field, value)
+          set_fields[field.split(".", 2)[0]] = field
         end
       end
 
@@ -197,9 +197,58 @@ module Mongoid
       #
       # @since 2.2.0
       def push_conflict?(field)
+        return false
         name = field.split(".", 2)[0]
-        set_fields.has_key?(name) || pull_fields.has_key?(name) ||
-          (push_fields.keys.count { |item| item =~ /#{name}/ } > 1)
+        set_fields.has_key?(name) || pull_fields.has_key?(name) || push_fields.has_key?(field)
+      end
+
+      # def nested_push_conflict?(field)
+      #   segments = field.split(".")
+      #   return false unless segments.size > 1
+      #   (0...(segments.length - 1)).each do |i|
+      #     name = segments[0..i].join('.')
+      #
+      #     puts [name, segments[(i + 1)..-1]].inspect if push_fields.has_key?(name)
+      #
+      #     return [name, segments[(i + 1)..-1]] if push_fields.has_key?(name)
+      #   end
+      #   false
+      # end
+
+      # Get the conflicting pull modifications.
+      #
+      # @example Get the conflicting pulls.
+      #   modifiers.conflicting_pulls
+      #
+      # @return [ Hash ] The conflicting pull operations.
+      #
+      # @since 2.2.0
+      def conflicting_pulls
+        conflicts["$pullAll"] ||= {}
+      end
+
+      # Get the conflicting push modifications.
+      #
+      # @example Get the conflicting pushs.
+      #   modifiers.conflicting_pushs
+      #
+      # @return [ Hash ] The conflicting push operations.
+      #
+      # @since 2.2.0
+      def conflicting_pushes
+        conflicts["$push"] ||= {}
+      end
+
+      # Get the conflicting set modifications.
+      #
+      # @example Get the conflicting sets.
+      #   modifiers.conflicting_sets
+      #
+      # @return [ Hash ] The conflicting set operations.
+      #
+      # @since 2.2.0
+      def conflicting_sets
+        conflicts["$set"] ||= {}
       end
 
       # Get the push operations that would have conflicted with the sets.
@@ -207,11 +256,11 @@ module Mongoid
       # @example Get the conflicts.
       #   modifiers.conflicts
       #
-      # @return [ Modifiers ] The conflicting modifications.
+      # @return [ Hash ] The conflicting modifications.
       #
       # @since 2.1.0
       def conflicts
-        self[:conflicts] ||= Modifiers.new
+        self[:conflicts] ||= {}
       end
 
       # Get the names of the fields that need to be pulled.

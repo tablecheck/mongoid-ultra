@@ -168,10 +168,10 @@ describe Mongoid::Persistable::Savable do
 
         it 'push multiple' do
           truck.crates_attributes = {
-            "0" => {
+            '0' => {
               "toys_attributes" => {
                 "0" => {
-                  "type" => "Soft toy"
+                  "type" => "Teddy bear"
                 }
               },
               "id" => crate.id.to_s
@@ -181,16 +181,37 @@ describe Mongoid::Persistable::Savable do
             }
           }
 
+          expect(truck.crates.size).to eq 2
+          expect(truck.crates[0].volume).to eq 0.4
+          expect(truck.crates[0].toys.size).to eq 1
+          expect(truck.crates[0].toys[0].type).to eq "Teddy bear"
+          expect(truck.crates[1].volume).to eq 0.8
+          expect(truck.crates[1].toys.size).to eq 0
+
+
+          puts truck.crates.size
+
+          puts truck.atomic_array_pushes.inspect
+          puts truck.atomic_updates.inspect
+
           expect(truck.atomic_updates).to eq({
-            "$push" => {"crates.0.toys"=>{"$each"=>[{"_id"=>crate.toys.first.id, "type"=>"Soft toy"}]}},
-            :conflicts => {"$push"=>{"crates"=>{"$each"=>[{"_id"=>truck.crates.last.id, "volume"=> 0.8}]}}}
+            "$push" => {
+              "crates" => { "$each" => [
+                { "0.toys" => { "_id" => crate.toys.first.id, "type" => "Teddy bear" } },
+                { "_id" => truck.crates.last.id, "volume"=> 0.8 }
+              ] }
+            }
           })
 
           expect { truck.save }.not_to raise_error
 
           truck.reload
-          expect(truck.crates.map(&:volume)).to match_array([0.8, 0.4])
-          expect(truck.crates.flat_map(&:toys).map(&:type)).to match_array(["Soft toy"])
+          expect(truck.crates.size).to eq 2
+          expect(truck.crates[0].volume).to eq 0.4
+          expect(truck.crates[0].toys.size).to eq 1
+          expect(truck.crates[0].toys[0].type).to eq "Teddy bear"
+          expect(truck.crates[1].volume).to eq 0.8
+          expect(truck.crates[1].toys.size).to eq 0
         end
       end
 

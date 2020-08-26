@@ -359,13 +359,10 @@ describe Mongoid::Atomic::Modifiers do
                 conflicts: { "$push" =>
                   { "addresses" => { '$each' => [
                       { "street" => "Oxford St" }
+                    ] },
+                    "addresses.0.locations" => { "$each" => [
+                      { "number" => "164" }
                     ] }
-                  },
-                  conflicts: { "$push" =>
-                    { "addresses.0.locations" => { "$each" => [
-                        { "number" => "164" }
-                      ] }
-                    }
                   }
                 }
               }
