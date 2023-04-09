@@ -16,7 +16,7 @@ Replace `gem 'mongoid'` in your application's Gemfile with:
 gem 'mongoid-ce'
 ```
 
-(Do not install `mongoid` and `mongoid-ce` at the same time.)
+(Do **not** install `mongoid` and `mongoid-ce` at the same time.)
 
 ## Compatibility
 
@@ -49,7 +49,7 @@ For the time being, version numbers will shadow those of `mongodb/mongoid` with 
 `X.Y.Z.P`
 
 Where `X.Y.Z` is the latest upstream release version, and `P` is the patch version of this repo.
-We will also use `-beta1`, `-rc1`, etc. suffixes which will not necessarily be aligned with upstream.
+We will also use `-beta1`, `-rc1`, etc. suffixes to denote pre-releases, which may be unstable.
 
 **Semver**: For the time being will follow the major version component of semver, i.e. not breaking or
 removing functionality *except* in major (`X`) releases. We may introduce new features in new patch (`P`) releases,
@@ -59,6 +59,7 @@ All new versions will undergo battle-testing in production at TableCheck prior t
 
 ## Roadmap
 
+- [ ] Establish maintainers and governance board.
 - [x] Use a publicly visible CI (Github Actions) as the primary CI.
 - [ ] Remove Evergreen CI, MRSS submodule, and other MongoDB corporate baloney.
 - [ ] Publish documentation.
@@ -73,13 +74,13 @@ All new versions will undergo battle-testing in production at TableCheck prior t
 - [ ] Allow symbol instead of classes in `field :type` declarations.
 - [ ] Refactor relations (`belongs_to_one`, `belongs_to_many`)
 
-## Documentation
-
-The documentation of this fork will be hosted at: https://tablecheck.github.io/mongoid-ce/ (not online yet!)
-
 ## Notable Differences from MongoDB Mongoid
 
 - At the moment, none. We are working on it!
+
+## Documentation
+
+The documentation of this fork will be hosted at: https://tablecheck.github.io/mongoid-ce/ (not online yet!)
 
 ## Support
 
@@ -88,6 +89,26 @@ For beginners, please use MongoDB's existing Mongoid support resources:
 * [Stack Overflow](http://stackoverflow.com/questions/tagged/mongoid)
 * [MongoDB Community Forum](https://developer.mongodb.com/community/forums/tags/c/drivers-odms-connectors/7/mongoid-odm)
 * [#mongoid](http://webchat.freenode.net/?channels=mongoid) on Freenode IRC
+
+## Issues & Contributing
+
+Feature requests and bugs affecting both upstream and Mongoid CE should be reported in the [MongoDB MONGOID Jira](https://jira.mongodb.org/browse/MONGOID/).
+Please also raise a [Mongoid CE Github issue](https://github.com/tablecheck/mongoid-ce/issues) in this project to track the fix. We prefer if upstream can make the fix first then we merge it.
+
+Issues specific to Mongoid CE should be raised in the [Mongoid CE Github issue tracker](https://github.com/tablecheck/mongoid-ce/issues)
+
+## Security Issues
+
+Security issues affecting both upstream and Mongoid CE should be
+[reported to MongoDB](https://www.mongodb.com/docs/manual/tutorial/create-a-vulnerability-report/).
+
+Security issues affecting only Mongoid CE should be reported to [security@tablecheck.com](mailto:security@tablecheck.com).
+The email should be encrypted with the following PGP public key:
+
+* Key ID: `0xDF7D22A0E8772326`
+* Fingerprint: `466C 56B9 E110 3CBA 2129 DBAD DF7D 22A0 E877 2326`
+
+We appreciate your help to disclose security issues responsibly.
 
 ## Maintainership
 
@@ -109,30 +130,16 @@ Since the transition, the hallmarks of user-disconnect and corporate fumbling ha
 - Lack of bandwidth and resources to review simple PR contributions.
 
 **None of this is intended to disparage the hard-working and talented individuals at MongoDB Inc.**, but rather,
-to illustrate that the corporate rules, philosophy, and priorities of MongoDB Inc. are simply not aligned with the needs
+to illustrate that the corporate rules, philosophy, and priorities of MongoDB Inc. are not aligned with the needs
 of its Ruby users.
 
-It's time to do better!
+It's time to do better! 💪 We hope this project encourages MongoDB Inc. to improve its own offering.
 
-## Issues & Contributing
+## Disclaimer
 
-Feature requests and bugs affecting both upstream and Mongoid CE should be reported in the [MongoDB MONGOID Jira](https://jira.mongodb.org/browse/MONGOID/).
-Please also raise a [Mongoid CE Github issue](https://github.com/tablecheck/mongoid-ce/issues) in this project to track the fix. We prefer if upstream can make the fix first then we merge it.
-
-Issues specific to Mongoid CE should be raised in the [Mongoid CE Github issue tracker](https://github.com/tablecheck/mongoid-ce/issues)
-
-## Security Issues
-
-Security issues affecting both upstream and Mongoid CE should be
-[reported to MongoDB](https://www.mongodb.com/docs/manual/tutorial/create-a-vulnerability-report/).
-
-Security issues affecting only Mongoid CE should be reported to [security@tablecheck.com](mailto:security@tablecheck.com).
-The email should be encrypted with our PGP public key as follows:
-
-* Key ID: `0xDF7D22A0E8772326`
-* Fingerprint: `466C 56B9 E110 3CBA 2129 DBAD DF7D 22A0 E877 2326`
-
-We appreciate your help to disclose security issues responsibly.
+MongoDB, Mongo, and the leaf logo are registered trademarks of MongoDB, Inc. and are used in compliance with
+[MongoDB Inc.'s Trademark Usage Guidelines](https://www.mongodb.com/legal/trademark-usage-guidelines).
+Any usage herein should not be construed as an endorsement or affiliation with this project.
 
 [rubygems-img]: https://badge.fury.io/rb/mongoid-ce.svg
 [rubygems-url]: http://badge.fury.io/rb/mongoid-ce
