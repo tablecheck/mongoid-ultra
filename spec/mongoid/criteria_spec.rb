@@ -817,10 +817,10 @@ describe Mongoid::Criteria do
 
     context "when given a Proc without a block" do
       it "raises an error" do
-        lambda do
+        expect do
           criteria.find(-> {"default"})
         # Proc is not serializable to a BSON type
-        end.should raise_error(BSON::Error::UnserializableClass)
+        end.to raise_error(BSON::Error::UnserializableClass)
       end
     end
 
@@ -1956,7 +1956,7 @@ describe Mongoid::Criteria do
           I18n.locale = :en
           d = Dictionary.create!(description: 'english-text')
           I18n.locale = :he
-          plucked.should == "english-text"
+          expect(plucked).to eq("english-text")
         end
       end
 
@@ -2405,13 +2405,13 @@ describe Mongoid::Criteria do
     context 'when provided no arguments' do
       context 'on a model class' do
         it 'returns an empty criteria' do
-          Band.where.selector.should == {}
+          expect(Band.where.selector).to eq({})
         end
       end
 
       context 'on an association' do
         it 'returns an empty criteria' do
-          match.records.where.selector.should == {}
+          expect(match.records.where.selector).to eq({})
         end
       end
     end
@@ -2419,17 +2419,17 @@ describe Mongoid::Criteria do
     context 'when provided multiple arguments' do
       context 'on a model class' do
         it 'raises ArgumentError' do
-          lambda do
+          expect do
             Band.where({foo: 1}, {bar: 2})
-          end.should raise_error(ArgumentError, /where requires zero or one arguments/)
+          end.to raise_error(ArgumentError, /where requires zero or one arguments/)
         end
       end
 
       context 'on an association' do
         it 'raises ArgumentError' do
-          lambda do
+          expect do
             match.records.where({foo: 1}, {bar: 2})
-          end.should raise_error(ArgumentError, /where requires zero or one arguments/)
+          end.to raise_error(ArgumentError, /where requires zero or one arguments/)
         end
       end
     end

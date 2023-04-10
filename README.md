@@ -34,6 +34,7 @@ Version support may differ from MongoDB's Mongoid release.
 
 This is a *community-driven fork of Mongoid*, intend to improve the following over MongoDB's Mongoid:
 
+- Performance
 - Feature robustness
 - Code quality
 - Behavior rationality
@@ -83,6 +84,7 @@ All new versions will undergo battle-testing in production at TableCheck prior t
 
 #### Additions
 
+- ✅ [MONGOID-5572](https://jira.mongodb.org/browse/MONGOID-5572) - RSpec: Use expectation syntax, enforced with RSpec config setting.
 - ✅ [MONGOID-5570](https://jira.mongodb.org/browse/MONGOID-5570) - Code Docs: Ensure 100% documentation coverage, enforced with Rubocop.
 - ✅ [MONGOID-5564](https://jira.mongodb.org/browse/MONGOID-5564) - Code Docs: Use full namespaces in docs.
 - More to come soon!
