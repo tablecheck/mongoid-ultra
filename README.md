@@ -23,9 +23,10 @@ gem 'mongoid-ultra'
 
 ## Compatibility
 
-- Ruby (MRI) 2.7 - 3.2
-- JRuby 9.4
-- MongoDB server 4.4 - 6.0
+- Rails 6.0+
+- Ruby (MRI) 2.7+
+- JRuby 9.4+
+- MongoDB server 4.4+
 
 Version support may differ from MongoDB's Mongoid release.
 
@@ -78,13 +79,19 @@ All new versions will undergo battle-testing in production at TableCheck prior t
 - [ ] Allow symbol instead of classes in `field :type` declarations.
 - [ ] Refactor relations (`belongs_to_one`, `belongs_to_many`)
 
-## Notable Differences from MongoDB Mongoid
+## Differences versus MongoDB Mongoid
 
-- ✅ Use a publicly visible CI (Github Actions) as the primary CI. Remove Evergreen CI.
-- ✅ Remove MRSS submodules and other MongoDB corporate baloney.
+#### Additions
+
 - ✅ [MONGOID-5570](https://jira.mongodb.org/browse/MONGOID-5570) - Code Docs: Ensure 100% documentation coverage, enforced with Rubocop.
 - ✅ [MONGOID-5564](https://jira.mongodb.org/browse/MONGOID-5564) - Code Docs: Use full namespaces in docs.
 - More to come soon!
+
+#### Removals
+
+- ✅ Remove Evergreen CI and replace with Github Actions (publicly visible).
+- ✅ Remove MRSS submodules and other MongoDB Inc. corporate baloney.
+- ✅ [MONGOID-5579](https://jira.mongodb.org/browse/MONGOID-5579) - Drop support for versions earlier than Ruby 2.7, Rails 6.0, JRuby 9.4 and remove deprecated cruft.
 
 ## Documentation
 
