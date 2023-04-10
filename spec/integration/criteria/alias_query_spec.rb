@@ -44,7 +44,7 @@ describe 'distinct on aliased fields' do
     it 'expands the alias' do
       query
 
-      expect(command['key']).to eq('phone_numbers.extension')
+      expect(command['key']).to eq('phone_numbers.ext')
     end
   end
 end
@@ -91,7 +91,7 @@ describe 'pluck on aliased fields' do
     it 'expands the alias' do
       query
 
-      expect(command['projection']).to eq({'phone_numbers.extension' => true})
+      expect(command['projection']).to eq({'phone_numbers.ext' => true})
     end
   end
 end

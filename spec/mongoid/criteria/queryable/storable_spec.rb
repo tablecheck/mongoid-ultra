@@ -77,7 +77,7 @@ describe Mongoid::Criteria::Queryable::Storable do
         end
 
         it 'adds to existing $and' do
-          expect(modified.selector).to eq({'$and' => [{'foo' => 'bar'}], 'foo' => 'baz'})
+          expect(modified.selector).to eq({'$and' => [{'zoom' => 'zoom'}, {'foo' => 'bar'}], 'foo' => 'baz'})
         end
       end
     end
