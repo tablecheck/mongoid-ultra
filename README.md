@@ -42,14 +42,17 @@ This fork will merge in changes at least once-per-month from [mongodb/mongoid](h
 as its "upstream" repo. We may backport PRs to upstream where it makes sense to do so, but cannot guarantee that
 the upstream will merge them.
 
-## Versioning
+## Releases & Versioning
+
+**Important:** Mongoid Ultra is currently in `alpha` state. The first full release will be `9.0.0.0`.
 
 For the time being, version numbers will shadow those of `mongodb/mongoid` with an additional "patch" number added:
 
 `X.Y.Z.P`
 
 Where `X.Y.Z` is the latest upstream release version, and `P` is the patch version of this repo.
-We will also use `-beta1`, `-rc1`, etc. suffixes to denote pre-releases, which may be unstable.
+`P` will be reset to zero anytime the major version `X` changes, but will not be reset when the minor or tiny `Y`/`Z` version changes.
+We will also use `-alpha`, `-beta`, `-rc`, etc. suffixes to denote pre-releases.
 
 **Semver**: For the time being will follow the major version component of semver, i.e. not breaking or
 removing functionality *except* in major (`X`) releases. We may introduce new features in new patch (`P`) releases,
@@ -61,7 +64,7 @@ All new versions will undergo battle-testing in production at TableCheck prior t
 
 - [ ] Establish maintainers and governance board.
 - [x] Use a publicly visible CI (Github Actions) as the primary CI.
-- [ ] Remove Evergreen CI, MRSS submodule, and other MongoDB corporate baloney.
+- [x] Remove Evergreen CI, MRSS submodule, and other MongoDB corporate baloney.
 - [ ] Publish documentation.
 - [ ] Drop support for old Ruby, Rails, and MongoDB server versions.
 - [ ] Full documentation coverage.
