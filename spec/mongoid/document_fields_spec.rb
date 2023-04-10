@@ -242,7 +242,7 @@ describe Mongoid::Document do
           "_id" => mop.id,
           "regexp_field" => { "$type" => 'regex' }
         ).count
-      ).to be == 1
+      ).to eq 1
     end
   end
 
@@ -256,7 +256,7 @@ describe Mongoid::Document do
           "_id" => mop.id,
           "bson_regexp_field" => { "$type" => 'regex' }
         ).count
-      ).to be == 1
+      ).to eq 1
     end
   end
 end

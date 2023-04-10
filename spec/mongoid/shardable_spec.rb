@@ -27,12 +27,12 @@ describe Mongoid::Shardable do
     context 'when full syntax is used' do
       context 'with symbol value' do
         it 'sets shard key fields to symbol value' do
-          expect(SmProducer.shard_key_fields).to be == %i(age gender)
+          expect(SmProducer.shard_key_fields).to eq %i(age gender)
         end
 
         it 'sets shard config' do
-          expect(SmProducer.shard_config).to be == {
-            key: {age: 1, gender: 'hashed'},
+          expect(SmProducer.shard_config).to eq({
+            key: { age: 1, gender: 'hashed' },
             options: {
               unique: true,
               numInitialChunks: 2,

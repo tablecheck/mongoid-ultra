@@ -85,7 +85,7 @@ describe Mongoid::Timestamps do
 
     it "does not set updated at" do
       document.save!
-      expect(document.reload.updated_at).to be == expected_updated_at
+      expect(document.reload.updated_at).to eq expected_updated_at
     end
   end
 

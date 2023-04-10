@@ -174,7 +174,7 @@ describe Mongoid::Persistable::Upsertable do
           it 'applies set_on_insert' do
             new_document.name = "Brendon Urie"
             new_document.upsert(set_on_insert: { member_count: 1 })
-            expect(new_document.reload.member_count).to be == 1
+            expect(new_document.reload.member_count).to eq 1
           end
         end
       end
