@@ -1,4 +1,4 @@
-# Mongoid Community Edition
+# Mongoid: Ultra Edition
 [![Gem Version][rubygems-img]][rubygems-url]
 [![Inline Docs][inch-img]][inch-url]
 [![License][license-img]][license-url]
@@ -13,10 +13,10 @@ This fork of Mongoid is **not** endorsed by or affiliated with MongoDB Inc. 👍
 Replace `gem 'mongoid'` in your application's Gemfile with:
 
 ```ruby
-gem 'mongoid-ce'
+gem 'mongoid-ultra'
 ```
 
-(Do **not** install `mongoid` and `mongoid-ce` at the same time.)
+(Do **not** install `mongoid` and `mongoid-ultra` at the same time.)
 
 ## Compatibility
 
@@ -24,15 +24,15 @@ gem 'mongoid-ce'
 - JRuby 9.4
 - MongoDB server 4.4 - 6.0
 
-Version support may differ from MongoDB's official Mongoid release.
+Version support may differ from MongoDB's Mongoid release.
 
 ## Purpose & Principles
 
-This is a *community-driven fork of Mongoid*, intend to improve the following over MongoDB's official Mongoid:
+This is a *community-driven fork of Mongoid*, intend to improve the following over MongoDB's Mongoid:
 
 - Feature robustness
 - Code quality
-- Behavioral rationality
+- Behavior rationality
 - Developer experience
 - Stability
 - Transparency
@@ -53,7 +53,7 @@ We will also use `-beta1`, `-rc1`, etc. suffixes to denote pre-releases, which m
 
 **Semver**: For the time being will follow the major version component of semver, i.e. not breaking or
 removing functionality *except* in major (`X`) releases. We may introduce new features in new patch (`P`) releases,
-and will use feature flags prefixed with `ce_` to allow users to opt-in.
+and will use feature flags prefixed with `ultra_` to allow users to opt-in.
 
 All new versions will undergo battle-testing in production at TableCheck prior to being released.
 
@@ -80,7 +80,7 @@ All new versions will undergo battle-testing in production at TableCheck prior t
 
 ## Documentation
 
-The documentation of this fork will be hosted at: https://tablecheck.github.io/mongoid-ce/ (not online yet!)
+The documentation of this fork will be hosted at: https://tablecheck.github.io/mongoid-ultra/ (not online yet!)
 
 ## Support
 
@@ -92,17 +92,17 @@ For beginners, please use MongoDB's existing Mongoid support resources:
 
 ## Issues & Contributing
 
-Feature requests and bugs affecting both upstream and Mongoid CE should be reported in the [MongoDB MONGOID Jira](https://jira.mongodb.org/browse/MONGOID/).
-Please also raise a [Mongoid CE Github issue](https://github.com/tablecheck/mongoid-ce/issues) in this project to track the fix. We prefer if upstream can make the fix first then we merge it.
+Feature requests and bugs affecting both upstream and Mongoid Ultra should be reported in the [MongoDB MONGOID Jira](https://jira.mongodb.org/browse/MONGOID/).
+Please also raise a [Mongoid Ultra Github issue](https://github.com/tablecheck/mongoid-ultra/issues) in this project to track the fix. We prefer if upstream can make the fix first then we merge it.
 
-Issues specific to Mongoid CE should be raised in the [Mongoid CE Github issue tracker](https://github.com/tablecheck/mongoid-ce/issues)
+Issues specific to Mongoid Ultra should be raised in the [Mongoid Ultra Github issue tracker](https://github.com/tablecheck/mongoid-ultra/issues)
 
 ## Security Issues
 
-Security issues affecting both upstream and Mongoid CE should be
+Security issues affecting both upstream and Mongoid Ultra should be
 [reported to MongoDB](https://www.mongodb.com/docs/manual/tutorial/create-a-vulnerability-report/).
 
-Security issues affecting only Mongoid CE should be reported to [security@tablecheck.com](mailto:security@tablecheck.com).
+Security issues affecting only Mongoid Ultra should be reported to [security@tablecheck.com](mailto:security@tablecheck.com).
 The email should be encrypted with the following PGP public key:
 
 * Key ID: `0xDF7D22A0E8772326`
@@ -112,7 +112,7 @@ We appreciate your help to disclose security issues responsibly.
 
 ## Maintainership
 
-Mongoid CE is shepherded by the team at TableCheck. TableCheck have been avid Mongoid users since 2013,
+Mongoid Ultra is shepherded by the team at TableCheck. TableCheck have been avid Mongoid users since 2013,
 contributing over 150 PRs to Mongoid and MongoDB Ruby projects. TableCheck uses Mongoid to power millions of
 restaurant reservations each month, and are *personally invested* in the making the best user experience possible.
 
@@ -141,9 +141,9 @@ MongoDB, Mongo, and the leaf logo are registered trademarks of MongoDB, Inc. and
 [MongoDB Inc.'s Trademark Usage Guidelines](https://www.mongodb.com/legal/trademark-usage-guidelines).
 Any usage herein should not be construed as an endorsement or affiliation with this project.
 
-[rubygems-img]: https://badge.fury.io/rb/mongoid-ce.svg
-[rubygems-url]: http://badge.fury.io/rb/mongoid-ce
-[inch-img]: http://inch-ci.org/github/tablecheck/mongoid-ce.svg?branch=master
-[inch-url]: http://inch-ci.org/github/tablecheck/mongoid-ce
+[rubygems-img]: https://badge.fury.io/rb/mongoid-ultra.svg
+[rubygems-url]: http://badge.fury.io/rb/mongoid-ultra
+[inch-img]: http://inch-ci.org/github/tablecheck/mongoid-ultra.svg?branch=master
+[inch-url]: http://inch-ci.org/github/tablecheck/mongoid-ultra
 [license-img]: https://img.shields.io/badge/license-MIT-green.svg
 [license-url]: https://www.opensource.org/licenses/MIT
