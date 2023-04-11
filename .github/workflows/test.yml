@@ -7,20 +7,22 @@ name: Tests
 - pull_request
 jobs:
   build:
-    name: "${{matrix.ruby}} ${{matrix.gemfile || 'latest'}}
-      mongodb-${{matrix.mongodb}} ${{matrix.topology}}
-      ${{matrix.os}}"
+    name: "${{matrix.ruby}}
+      ${{matrix.gemfile || 'latest'}}
+      mongodb-${{matrix.mongodb || 'latest'}}
+      ${{matrix.topology || 'server'}}
+      ${{matrix.os || 'ubuntu-latest'}}"
     env:
       CI: true
       TESTOPTS: "-v"
-    runs-on: ${{matrix.os || 'ubuntu-20.04'}}
+    runs-on: ${{matrix.os || 'ubuntu-latest'}}
     continue-on-error: "${{matrix.experimental || false}}"
     strategy:
       fail-fast: false
-      ruby: [ruby-2.7, ruby-3.0, ruby-3.1, ruby-3.2]
-      os: [ubuntu-latest]
-      topology: [server, replica_set, sharded_cluster]
       matrix:
+        ruby: [ruby-2.7, ruby-3.0, ruby-3.1, ruby-3.2]
+        os: [ubuntu-latest]
+        topology: [server, replica_set, sharded_cluster]
         include:
           # OS versions
           - os: macos-latest
