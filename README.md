@@ -26,7 +26,7 @@ gem 'mongoid-ultra'
 - Rails 6.0+
 - Ruby (MRI) 2.7+
 - JRuby 9.4+
-- MongoDB server 4.2+
+- MongoDB server 4.4+
 
 Version support may differ from MongoDB Mongoid. As a general policy, Mongoid Ultra will drop support
 for end-of-life (EOL) versions fairly soon after EOL. We will target to have support for new Ruby and Rails
