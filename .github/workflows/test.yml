@@ -5,23 +5,22 @@ name: Tests
   - push
   - pull_request
 
-variables:
-  # TODO: https://github.com/mongodb-labs/drivers-evergreen-tools/issues/283
-  DEFAULT_OS: 'ubuntu-20.04'
-  DEFAULT_GEMFILE: 'Gemfile'
-  DEFAULT_MONGODB: '6.0'
-  DEFAULT_TOPOLOGY: 'server'
-
 jobs:
-  build:
+  test:
     name: "${{matrix.ruby}}
       ${{matrix.gemfile || $DEFAULT_GEMFILE}}
       mongodb-${{matrix.mongodb || $DEFAULT_MONGODB}}
       ${{matrix.topology || $DEFAULT_TOPOLOGY}}
       ${{matrix.os || $DEFAULT_OS}}"
+    variables:
+      # TODO: https://github.com/mongodb-labs/drivers-evergreen-tools/issues/283
+      DEFAULT_OS: 'ubuntu-20.04'
+      DEFAULT_GEMFILE: 'Gemfile'
+      DEFAULT_MONGODB: '6.0'
+      DEFAULT_TOPOLOGY: 'server'
     env:
       CI: true
-      TESTOPTS: "-v"
+      TESTOPTS: '-v'
     runs-on: ${{matrix.os || $DEFAULT_OS}}
     continue-on-error: "${{matrix.experimental || false}}"
     strategy:
