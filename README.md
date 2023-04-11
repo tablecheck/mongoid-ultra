@@ -84,7 +84,7 @@ Refer to the [Roadmap issue](https://github.com/tablecheck/mongoid-ultra/issues/
 
 - ✅ Remove Evergreen CI and replace with Github Actions (publicly visible).
 - ✅ Remove MRSS submodules and other MongoDB Inc. corporate baloney.
-- ✅ [MONGOID-5579](https://jira.mongodb.org/browse/MONGOID-5579) - Drop support for versions earlier than Ruby 2.7, Rails 6.0, JRuby 9.4 and remove deprecated cruft.
+- ✅ [MONGOID-5579](https://jira.mongodb.org/browse/MONGOID-5579) - Drop support for versions earlier than MongoDB 4.4, Ruby 2.7, Rails 6.0, JRuby 9.4 and remove deprecated cruft.
 
 ## Documentation
 
