@@ -17,10 +17,10 @@ env:
 jobs:
   test:
     name: "${{matrix.ruby}}
-      ${{matrix.gemfile || env.CI_DEFAULT_GEMFILE}}
-      mongodb-${{matrix.mongodb || env.CI_DEFAULT_MONGODB}}
-      ${{matrix.topology || env.CI_DEFAULT_TOPOLOGY}}
-      ${{matrix.os || env.CI_DEFAULT_OS}}"
+      ${{matrix.gemfile}}
+      mongodb-${{matrix.mongodb}}
+      ${{matrix.topology}}
+      ${{matrix.os}}"
     runs-on: ${{matrix.os || env.CI_DEFAULT_OS}}
     continue-on-error: "${{matrix.experimental || false}}"
     strategy:
