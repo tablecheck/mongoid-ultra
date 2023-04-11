@@ -509,7 +509,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       context 'when fallbacks are enabled with a locale list' do
-        require_fallbacks
+        with_i18n_fallbacks
         with_default_i18n_configs
 
         before do
@@ -1689,7 +1689,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       context 'when fallbacks are enabled with a locale list' do
-        require_fallbacks
+        with_i18n_fallbacks
         with_default_i18n_configs
 
         before do
