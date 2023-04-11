@@ -20,14 +20,6 @@ else
 end
 
 RSpec.configure do |config|
-  config.expect_with(:rspec) do |c|
-    c.syntax = [:should, :expect]
-  end
-
-  if SpecConfig.instance.ci?
-    config.add_formatter(RSpec::Core::Formatters::JsonFormatter, File.join(File.dirname(__FILE__), '../tmp/rspec.json'))
-  end
-
   if SpecConfig.instance.ci? && !%w(1 true yes).include?(ENV['INTERACTIVE']&.downcase)
     config.around(:each) do |example|
       TimeoutInterrupt.timeout(30) do
