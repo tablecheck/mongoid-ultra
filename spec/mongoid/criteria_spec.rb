@@ -2340,7 +2340,7 @@ describe Mongoid::Criteria do
       end
 
       context 'when fallbacks are enabled with a locale list' do
-        require_fallbacks
+        with_i18n_fallbacks
 
         around(:all) do |example|
           prev_fallbacks = I18n.fallbacks.dup
@@ -2355,9 +2355,9 @@ describe Mongoid::Criteria do
 
         it "correctly uses the fallback" do
           I18n.locale = :en
-          d = Dictionary.create!(description: 'english-text')
+          Dictionary.create!(description: 'english-text')
           I18n.locale = :he
-          plucked.should == "english-text"
+          expect(plucked).to eq "english-text"
         end
       end
 
