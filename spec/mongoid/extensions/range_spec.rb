@@ -74,14 +74,6 @@ describe Mongoid::Extensions::Range do
           is_expected.to eq(eval('1..'))
         end
       end
-
-      context 'kernel cannot support endless range' do
-        ruby_version_lt '2.6'
-
-        it "returns nil" do
-          is_expected.to be nil
-        end
-      end
     end
 
     context "when the range is endless with exclude end" do
@@ -90,14 +82,6 @@ describe Mongoid::Extensions::Range do
       context 'kernel can support endless range' do
         it "returns an alphabetic range" do
           is_expected.to eq(eval('1...'))
-        end
-      end
-
-      context 'kernel cannot support endless range' do
-        ruby_version_lt '2.6'
-
-        it "returns nil" do
-          is_expected.to be nil
         end
       end
     end
@@ -110,14 +94,6 @@ describe Mongoid::Extensions::Range do
           is_expected.to eq(nil..3)
         end
       end
-
-      context 'kernel cannot support beginning-less range' do
-        ruby_version_lt '2.7'
-
-        it "returns nil" do
-          is_expected.to be nil
-        end
-      end
     end
 
     context "when the range is beginning-less with exclude end" do
@@ -126,14 +102,6 @@ describe Mongoid::Extensions::Range do
       context 'kernel can support endless range' do
         it "returns an alphabetic beginning-less" do
           is_expected.to eq(eval('...3'))
-        end
-      end
-
-      context 'kernel cannot support beginning-less range' do
-        ruby_version_lt '2.7'
-
-        it "returns nil" do
-          is_expected.to be nil
         end
       end
     end

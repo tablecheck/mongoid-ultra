@@ -37,6 +37,16 @@ module Constraints
     end
   end
 
+  def without_i18n_fallbacks
+    around do |example|
+      old_backend = ::I18n.backend
+      ::I18n.backend = ::I18n::Backend::Simple.new
+      example.run
+    ensure
+      ::I18n.backend = old_backend
+    end
+  end
+
   def require_mri
     before(:all) do
       unless SpecConfig.instance.mri?
