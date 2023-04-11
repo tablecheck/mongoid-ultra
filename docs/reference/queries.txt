@@ -1525,6 +1525,41 @@ Mongoid also has some helpful methods on criteria.
           Band.all.pluck(:name, :likes)
             #=> [ ["Daft Punk", 342], ["Aphex Twin", 98], ["Ween", 227] ]
 
+   * - ``Criteria#pluck_each``
+
+       *This method returns an Enumerator for the results of ``pluck``.
+       A block may optionally be given, which will be called once for
+       each result.*
+
+       *Similar to the ``each`` method, this method will use the
+       `MongoDB getMore command
+       <https://mongodb.com/docs/manual/reference/command/getMore/>`_
+       to load results in batches. This is useful for working with
+       large query results.*
+
+       *The method arguments and field normalization behavior are
+       otherwise identical to ``pluck``.*
+
+     -
+       .. code-block:: ruby
+
+         Band.all.pluck_each(:name)
+           #=> #<Enumerator: ... >
+
+         Band.all.pluck_each(:name, 'address.city', :founded) do |name, city, founded|
+           puts "#{name} from #{city} started in #{founded}"
+         end
+           # =>
+           # The Rolling Stones from London started in 1962
+           # The Beatles from Liverpool started in 1960
+           # The Monkees from Los Angeles started in 1966
+            #=> [ ["Berry Gordy", "Tommy Mottola"], [], ["Quincy Jones"] ]
+
+          # Accepts multiple field arguments, in which case
+          # the result will be returned as an Array of Arrays.
+          Band.all.pluck(:name, :likes)
+            #=> [ ["Daft Punk", 342], ["Aphex Twin", 98], ["Ween", 227] ]
+
    * - ``Criteria#read``
 
        *Sets the read preference for the criteria.*
@@ -2367,19 +2402,17 @@ The query cache may be enabled by using the driver's namespace or Mongoid's
 namespace.
 
 
-.. _enabling-query-cache-via-middleware:
+.. _enabling-query-cache-automatically:
 
-Enabling Query Cache Via Middleware
------------------------------------
+Enabling Query Cache Automatically
+----------------------------------
 
-Applications that utilize a Rack-based web framework (Rails, etc.) can
-take advantage of the Rack middleware provided by Mongoid to automatically
-enable the query cache for each web request, and clear the query cache after
-each request completes. Please see the :ref:`Query Cache Rack Middleware
+The MongoDB Ruby Driver provides middleware to automatically enable the query cache for
+Rack web requests and ActiveJob job runs. Please see the :ref:`Query Cache Rack Middleware
 <query-cache-middleware>` section on the configuration page for instructions.
 
-Note that the Query Cache Middleware does not apply to code executed
-outside web requests.
+Note that the Query Cache Middleware does not apply to code executed outside web requests
+and/or jobs.
 
 
 .. _enabling-query-cache-manually:
@@ -2391,7 +2424,7 @@ To enable the Query Cache manually for a code segment, use:
 
 .. code-block:: ruby
 
-  Mongoid::QueryCache.cache do
+  Mongo::QueryCache.cache do
     # ...
   end
 
@@ -2400,50 +2433,11 @@ recommend to use the block form described above:
 
 .. code-block:: ruby
 
-  Mongoid::QueryCache.enabled = true
-
-  # ...
-
-  Mongoid::QueryCache.enabled = false
-
-Alternatively, you can reference the driver's query cache module directly:
-
-.. code-block:: ruby
-
-  Mongo::QueryCache.cache do
+  begin
+    Mongo::QueryCache.enabled = true
     # ...
-  end
-
-  Mongo::QueryCache.enabled = true
-
-  Mongo::QueryCache.enabled = true
-
-
-Query Cache Shared With Driver
-------------------------------
-
-When Mongoid delegates to the driver's query cache, the same cache is used
-by both Mongoid and the driver. For example, the following two queries
-are implemented via the same server query and only the first of them
-would be sent to the server:
-
-.. code-block:: ruby
-
-  Mongoid::QueryCache.cache do
-    Band.first
-    Band.collection.find.sort(_id: 1).first
-  end
-
-Similarly, write operations that clear the cache would do so when the read
-is performed by the driver and write by Mongoid, or vice versa:
-
-.. code-block:: ruby
-
-  Mongoid::QueryCache.cache do
-    Band.first
-    Band.collection.insert_one({})
-    # Queries again
-    Band.first
+  ensure
+    Mongo::QueryCache.enabled = false
   end
 
 

@@ -75,8 +75,13 @@ Refer to the [Roadmap issue](https://github.com/tablecheck/mongoid-ultra/issues/
 
 #### Additions
 
-- ✅ [MONGOID-5556](https://jira.mongodb.org/browse/MONGOID-5556) - `Criteria#tally` `:unwind` arg to splat array results.
+- ✅ [MONGOID-5391](https://jira.mongodb.org/browse/MONGOID-5391) - Add `Criteria#pluck_each` high-performance iterator method.
+- ✅ [MONGOID-5556](https://jira.mongodb.org/browse/MONGOID-5556) - Add `Criteria#tally` `:unwind` arg to splat array results.
 - More to come soon!
+
+#### Bug Fixes
+
+- 🐞 [MONGOID-5559](https://jira.mongodb.org/browse/MONGOID-5559) - `BigDecimal` should correctly type-cast to `Time`.
 
 #### Best Practices
 
@@ -89,6 +94,7 @@ Refer to the [Roadmap issue](https://github.com/tablecheck/mongoid-ultra/issues/
 - 🙅🏾‍♀️ Remove Evergreen CI and replace with Github Actions which is publicly visible and auto-runs on all contributor patches.
 - 🙅🏼 Remove MRSS submodules and other MongoDB Inc. corporate baloney.
 - 🙅🏻‍♂️️ [MONGOID-5579](https://jira.mongodb.org/browse/MONGOID-5579) - Drop support for versions earlier than MongoDB 4.4, Ruby 2.7, Rails 6.0, JRuby 9.4 and remove deprecated cruft.
+- 🙅🏾‍♀️ [MONGOID-5597](https://jira.mongodb.org/browse/MONGOID-5597) - Remove `Mongoid::QueryCache` in favor of `Mongo::QueryCache`.
 
 ## Documentation
 
