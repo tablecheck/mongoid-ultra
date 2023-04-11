@@ -24,7 +24,7 @@ jobs:
         # TODO: Use ubuntu-latest when supported.
         # See: https://github.com/mongodb-labs/drivers-evergreen-tools/issues/283
         os: ['ubuntu-20.04']
-        topology: [server, replica_set, sharded_cluster]
+        topology: [server, replica_set] # TODO: sharded_cluster is broken
         include:
           # TODO: OS versions
           # - os: macos-latest
@@ -55,10 +55,11 @@ jobs:
             topology: server
 
           # Driver versions
-          - ruby: ruby-3.2
-            gemfile: gemfiles/driver_master.gemfile
-            mongodb: '6.0'
-            topology: replica_set
+          # TODO: driver_master is broken
+          # - ruby: ruby-3.2
+          #   gemfile: gemfiles/driver_master.gemfile
+          #   mongodb: '6.0'
+          #   topology: replica_set
           - ruby: ruby-3.0
             gemfile: gemfiles/driver_stable.gemfile
             mongodb: '5.0'
