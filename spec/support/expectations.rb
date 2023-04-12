@@ -13,9 +13,15 @@ module Mongoid
     end
 
     def expect_query(number, relax_if_sharded: false)
+      puts '111'
+      puts ClusterConfig.instance.topology.inspect
       relax_if_sharded &&= ClusterConfig.instance.topology == :sharded
+      puts relax_if_sharded.inspect
       rv = nil
       RSpec::Mocks.with_temporary_scope do
+        puts '222'
+        puts ClusterConfig.instance.topology.inspect
+        puts relax_if_sharded.inspect
         if number > 0
           matcher = receive(:command_started)
           matcher = relax_if_sharded ? matcher.at_least(number) : matcher.exactly(number)
