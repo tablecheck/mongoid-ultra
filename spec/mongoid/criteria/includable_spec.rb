@@ -1421,7 +1421,7 @@ describe Mongoid::Criteria::Includable do
     end
 
     it "executes a query for the non-retrieved elements" do
-      expect_query(3, relax_if_sharded: true) do
+      expect_query(3, skip_if_sharded: true) do
         result.posts.each do |post|
           post.author
         end
@@ -1455,7 +1455,7 @@ describe Mongoid::Criteria::Includable do
     end
 
     it "executes a query for the non-retrieved elements" do
-      expect_query(3, relax_if_sharded: true) do
+      expect_query(3, skip_if_sharded: true) do
         result.posts.each do |post|
           post.author
         end
