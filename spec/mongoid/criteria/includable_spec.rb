@@ -1470,7 +1470,7 @@ describe Mongoid::Criteria::Includable do
         p = IncPerson.create!(name: "name")
         4.times { IncPost.create!(person: p)}
         criteria
-        expect_query(2) do
+        expect_query(2, skip_if_sharded: true) do
           criteria.each(&:person)
         end
       end
