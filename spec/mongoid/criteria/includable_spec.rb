@@ -1483,7 +1483,7 @@ describe Mongoid::Criteria::Includable do
       # MONGOID-3942 reported that after iterating the criteria a second time,
       # the posts would not get the eager loaded person.
       it "eager loads the criteria" do
-        expect_query(2) do
+        expect_query(2, skip_if_sharded: true) do
           criteria.each(&:person)
         end
       end
