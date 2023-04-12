@@ -49,7 +49,7 @@ class SpecConfig
   end
 
   def app_tests?
-    %w(1 true yes).include?(ENV['APP_TESTS']&.downcase)
+    !%w(0 false no).include?(ENV['APP_TESTS']&.downcase)
   end
 
   def ci?

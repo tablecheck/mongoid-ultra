@@ -21,10 +21,6 @@ end
 
 describe 'Mongoid application tests' do
   before(:all) do
-    unless SpecConfig.instance.app_tests?
-      skip 'Set APP_TESTS=1 in environment to run application tests'
-    end
-
     require 'fileutils'
     require 'mrss/child_process_helper'
     require 'open-uri'
