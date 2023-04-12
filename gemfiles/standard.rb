@@ -27,7 +27,7 @@ def standard_dependencies
     end
   end
 
-  platform :windows do
+  platform :x64_mingw do
     gem 'tzinfo-data'
     gem 'wdm'
   end
