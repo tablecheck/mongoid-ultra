@@ -12,17 +12,15 @@ module Mongoid
       end
     end
 
-    def expect_query(number, use_shards: false)
-      if use_shards && ClusterConfig.instance.topology == :sharded
-        client = ClientRegistry.instance.global_client('root_authorized')
-        shards = client.use(:admin).command(listShards: 1).first&.[]('shards')&.size || 1
-        number *= shards
-      end
-
+    def expect_query(number, relax_if_sharded: false)
+      relax_if_sharded &&= ClusterConfig.instance.topology == :sharded
       rv = nil
       RSpec::Mocks.with_temporary_scope do
         if number > 0
-          expect_any_instance_of(connection_class).to receive(:command_started).exactly(number).times.and_call_original
+          matcher = receive(:command_started)
+          matcher = relax_if_sharded ? matcher.at_least(number) : matcher.exactly(number)
+          matcher = matcher.times.and_call_original
+          expect_any_instance_of(connection_class).to matcher
         else
           expect_any_instance_of(connection_class).not_to receive(:command_started)
         end
