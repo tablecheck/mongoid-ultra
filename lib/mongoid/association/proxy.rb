@@ -11,10 +11,40 @@ module Mongoid
 
       alias :extend_proxy :extend
 
+      IMPORTANT_METHODS = %w[
+        send object_id equal? respond_to? respond_to_missing?
+        tap public_send extend_proxy extend_proxies
+      ].freeze
+
+      # Determines if a method should be preserved (not undefined).
+      #
+      # @param method_name [String] the name of the method
+      # @return [Boolean] true if the method should be preserved, false otherwise
+      def preserved_method?(method_name)
+        starts_with_double_underscore?(method_name) || important_method?(method_name)
+      end
+
+      # Checks if a method name starts with a double underscore.
+      #
+      # @param method_name [String] the name of the method
+      # @return [Boolean] true if the method name starts with a double underscore, false otherwise
+      def starts_with_double_underscore?(method_name)
+        method_name.start_with?('__')
+      end
+
+      # Determines if a method is part of a predefined list of important methods.
+      #
+      # @param method_name [String] the name of the method
+      # @return [Boolean] true if the method is part of the list, false otherwise
+      def important_method?(method_name)
+        IMPORTANT_METHODS.include?(method_name)
+      end
+
       # We undefine most methods to get them sent through to the target.
       instance_methods.each do |method|
-        undef_method(method) unless
-          method =~ /\A(?:__.*|send|object_id|equal\?|respond_to\?|respond_to_missing\?|tap|public_send|extend_proxy|extend_proxies)\z/
+        next if preserved_method?(method)
+
+        undef_method(method)
       end
 
       include Threaded::Lifecycle

@@ -213,7 +213,8 @@ module Mongoid
       @klass = klass
       @embedded = nil
       @none = nil
-      klass ? super(klass.aliased_fields, klass.fields, klass.relations, klass.aliased_associations) : super({}, {}, {}, {})
+
+      super(*criteria_params(klass))
     end
 
     # Merges another object with this +Criteria+ and returns a new criteria.
@@ -451,6 +452,12 @@ module Mongoid
     end
 
     private
+
+    def criteria_params(klass)
+      return [klass.aliased_fields, klass.fields, klass.relations, klass.aliased_associations] if klass
+
+      [{}, {}, {}, {}]
+    end
 
     # Are documents in the query missing, and are we configured to raise an
     # error?
