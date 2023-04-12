@@ -14,6 +14,7 @@ module Mongoid
 
     def expect_query(number, use_shards: false)
       if use_shards && ClusterConfig.instance.topology == :sharded
+        client = ClientRegistry.instance.global_client('root_authorized')
         shards = client.use(:admin).command(listShards: 1).first&.[]('shards')&.size || 1
         number *= shards
       end
