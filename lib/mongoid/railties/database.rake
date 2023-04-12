@@ -4,7 +4,6 @@ load 'mongoid/tasks/database.rake'
 load "mongoid/tasks/encryption.rake"
 
 namespace :db do
-
   unless Rake::Task.task_defined?("db:drop")
     desc "Drops all the collections for the database for the current Rails.env"
     task :drop => "mongoid:drop"
@@ -26,12 +25,12 @@ namespace :db do
 
   unless Rake::Task.task_defined?("db:setup")
     desc "Create the database, and initialize with the seed data"
-    task :setup => [ "db:create", "mongoid:create_collections", "mongoid:create_indexes", "db:seed" ]
+    task :setup => ["db:create", "mongoid:create_collections", "mongoid:create_indexes", "db:seed"]
   end
 
   unless Rake::Task.task_defined?("db:reset")
     desc "Delete data and loads the seeds"
-    task :reset => [ "db:drop", "db:seed" ]
+    task :reset => ["db:drop", "db:seed"]
   end
 
   unless Rake::Task.task_defined?("db:create")
@@ -82,7 +81,7 @@ namespace :db do
 
   namespace :encryption do
     desc "Create encryption key"
-    task :create_data_key =>  "mongoid:encryption:create_data_key"
+    task :create_data_key => "mongoid:encryption:create_data_key"
   end
 
   namespace :mongoid do

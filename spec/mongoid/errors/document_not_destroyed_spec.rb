@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Errors::DocumentNotDestroyed do
-
   describe "#message" do
-
     let(:post) do
       Post.new
     end

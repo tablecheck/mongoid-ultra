@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::CollectionConfigurable do
-
   before(:all) do
     class CollectionConfigurableValidOptions
       include Mongoid::Document

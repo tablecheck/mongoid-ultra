@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Persistable::Destroyable do
-
   describe "#destroy" do
-
     let!(:person) do
       Person.create!
     end
@@ -38,7 +36,6 @@ describe Mongoid::Persistable::Destroyable do
     end
 
     context "when destroying a root document" do
-
       let!(:destroyed) do
         person.destroy
       end
@@ -58,7 +55,6 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       context 'when :persist option false' do
-
         let!(:destroyed) do
           person.destroy(persist: false)
         end
@@ -78,13 +74,11 @@ describe Mongoid::Persistable::Destroyable do
     end
 
     context "when destroying an embedded document" do
-
       let(:address) do
         person.addresses.build(street: "Bond Street")
       end
 
       context "when the document is not yet saved" do
-
         before do
           address.destroy
         end
@@ -103,7 +97,6 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       context "when the document has been saved" do
-
         before do
           address.save!
           address.destroy
@@ -123,7 +116,6 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       context 'when :persist option false' do
-
         before do
           address.save!
           address.destroy(persist: false)
@@ -145,7 +137,6 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       context 'when :suppress option true' do
-
         before do
           address.save!
           address.destroy(suppress: true)
@@ -166,9 +157,7 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       context 'when destroying from a list of embedded documents' do
-
         context 'when the embedded documents list is reversed in memory' do
-
           let(:word) do
             Word.create!(name: 'driver')
           end
@@ -196,9 +185,7 @@ describe Mongoid::Persistable::Destroyable do
     end
 
     context "when destroying deeply embedded documents" do
-
       context "when the document has been saved" do
-
         let(:address) do
           person.addresses.create!(street: "Bond Street")
         end
@@ -227,7 +214,6 @@ describe Mongoid::Persistable::Destroyable do
 
     context 'when there are dependent documents' do
       context 'has_one' do
-
         context 'dependent: :destroy' do
           let!(:parent) do
             Hole.create!(bolt: Bolt.create!)
@@ -266,7 +252,6 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       context 'has_many' do
-
         context 'dependent: :destroy' do
           let!(:parent) do
             Hole.create!(nuts: [Nut.create!])
@@ -307,20 +292,17 @@ describe Mongoid::Persistable::Destroyable do
   end
 
   describe "#destroy!" do
-
     let(:person) do
       Person.create!
     end
 
     context "when no validation callback returns false" do
-
       it "returns true" do
         expect(person.destroy!).to eq(true)
       end
     end
 
     context "when a validation callback returns false" do
-
       let(:album) do
         Album.create!
       end
@@ -353,7 +335,6 @@ describe Mongoid::Persistable::Destroyable do
     end
 
     context "when destroying a root document" do
-
       let!(:destroyed) do
         person.destroy!
       end
@@ -373,7 +354,6 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       context 'when :persist option false' do
-
         let!(:destroyed) do
           person.destroy!(persist: false)
         end
@@ -393,13 +373,11 @@ describe Mongoid::Persistable::Destroyable do
     end
 
     context "when destroying an embedded document" do
-
       let(:address) do
         person.addresses.build(street: "Bond Street")
       end
 
       context "when the document is not yet saved" do
-
         before do
           address.destroy!
         end
@@ -418,7 +396,6 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       context "when the document has been saved" do
-
         before do
           address.save!
           address.destroy!
@@ -438,7 +415,6 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       context 'when :persist option false' do
-
         before do
           address.save!
           address.destroy!(persist: false)
@@ -460,7 +436,6 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       context 'when :suppress option true' do
-
         before do
           address.save!
           address.destroy!(suppress: true)
@@ -483,13 +458,11 @@ describe Mongoid::Persistable::Destroyable do
   end
 
   describe "#destroy_all" do
-
     let!(:person) do
       Person.create!(title: "sir")
     end
 
     context "when no conditions are provided" do
-
       let!(:removed) do
         Person.destroy_all
       end
@@ -504,13 +477,11 @@ describe Mongoid::Persistable::Destroyable do
     end
 
     context "when conditions are provided" do
-
       let!(:person_two) do
         Person.create!
       end
 
       context "when no conditions attribute provided" do
-
         let!(:removed) do
           Person.destroy_all(title: "sir")
         end
@@ -526,7 +497,6 @@ describe Mongoid::Persistable::Destroyable do
     end
 
     context 'when the write concern is unacknowledged' do
-
       before do
         Person.create!(title: 'miss')
       end
@@ -545,9 +515,7 @@ describe Mongoid::Persistable::Destroyable do
     end
 
     context 'when destroying a list of embedded documents' do
-
       context 'when the embedded documents list is reversed in memory' do
-
         let(:word) do
           Word.create!(name: 'driver')
         end
@@ -567,7 +535,6 @@ describe Mongoid::Persistable::Destroyable do
 
     context 'when there are dependent documents' do
       context 'has_one' do
-
         context 'dependent: :destroy' do
           let!(:parent) do
             Hole.create!.tap do |hole|
@@ -612,7 +579,6 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       context 'has_many' do
-
         context 'dependent: :destroy' do
           let!(:parent) do
             Hole.create!(nuts: [Nut.create!])

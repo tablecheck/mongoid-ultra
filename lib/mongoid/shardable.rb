@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Mongoid
-
   # This module contains behavior for adding shard key fields to updates.
   module Shardable
     extend ActiveSupport::Concern
@@ -104,7 +103,6 @@ module Mongoid
     end
 
     module ClassMethods
-
       # Specifies a shard key with the field(s) specified.
       #
       # @example Specify the shard key.

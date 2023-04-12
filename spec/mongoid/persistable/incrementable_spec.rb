@@ -3,13 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Persistable::Incrementable do
-
   describe "#inc" do
-
     context "when the document is a root document" do
-
       shared_examples_for "an incrementable root document" do
-
         it "increments a positive value" do
           expect(person.age).to eq(15)
         end
@@ -48,7 +44,6 @@ describe Mongoid::Persistable::Incrementable do
       end
 
       context "when providing string fields" do
-
         let!(:inc) do
           person.inc("age" => 5, "score" => -10, "inte" => 30)
         end
@@ -57,7 +52,6 @@ describe Mongoid::Persistable::Incrementable do
       end
 
       context "when providing symbol fields" do
-
         let!(:inc) do
           person.inc(age: 5, score: -10, inte: 30)
         end
@@ -66,7 +60,6 @@ describe Mongoid::Persistable::Incrementable do
       end
 
       context "when providing big decimal values" do
-
         let(:five) do
           BigDecimal("5.0")
         end
@@ -88,9 +81,7 @@ describe Mongoid::Persistable::Incrementable do
     end
 
     context "when the document is embedded" do
-
       shared_examples_for "an incrementable embedded document" do
-
         it "increments a positive value" do
           expect(address.number).to eq(15)
         end
@@ -133,7 +124,6 @@ describe Mongoid::Persistable::Incrementable do
       end
 
       context "when providing string fields" do
-
         let!(:inc) do
           address.inc("number" => 5, "no" => -10, "house" => 30)
         end
@@ -142,7 +132,6 @@ describe Mongoid::Persistable::Incrementable do
       end
 
       context "when providing symbol fields" do
-
         let!(:inc) do
           address.inc(number: 5, no: -10, house: 30)
         end
@@ -151,7 +140,6 @@ describe Mongoid::Persistable::Incrementable do
       end
 
       context "when providing big decimal values" do
-
         let(:five) do
           BigDecimal("5.0")
         end
@@ -174,7 +162,6 @@ describe Mongoid::Persistable::Incrementable do
 
     context "when the document is embedded in another embedded document" do
       shared_examples_for "an incrementable embedded document in another embedded document" do
-
         it "increments a positive value" do
           expect(second_answer.position).to eq(2)
         end
@@ -205,17 +192,14 @@ describe Mongoid::Persistable::Incrementable do
       end
 
       context "when providing string fields" do
-
         let!(:inc) do
           second_answer.inc("position" => 1)
         end
 
         it_behaves_like "an incrementable embedded document in another embedded document"
-
       end
 
       context "when providing symbol fields" do
-
         let!(:inc) do
           second_answer.inc(position: 1)
         end
@@ -225,7 +209,6 @@ describe Mongoid::Persistable::Incrementable do
     end
 
     context "when executing atomically" do
-
       let(:person) do
         Person.create!(age: 10, score: 100)
       end
@@ -233,13 +216,12 @@ describe Mongoid::Persistable::Incrementable do
       it "marks a dirty change for the incremented fields" do
         person.atomically do
           person.inc age: 15, score: 2
-          expect(person.changes).to eq({"age" => [10, 25], "score" => [100, 102]})
+          expect(person.changes).to eq({ "age" => [10, 25], "score" => [100, 102] })
         end
       end
     end
 
     context "when executing on a readonly document" do
-
       let(:person) do
         Person.create!(age: 10, score: 100)
       end

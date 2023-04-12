@@ -3,22 +3,18 @@
 require "spec_helper"
 
 describe Mongoid::Config::Options do
-
   let(:config) do
     Mongoid::Config
   end
 
   describe "#defaults" do
-
     it "returns the default options" do
       expect(config.defaults).to_not be_empty
     end
   end
 
   describe "#option" do
-
     context "when a default is provided" do
-
       after do
         config.reset
       end
@@ -55,7 +51,6 @@ describe Mongoid::Config::Options do
   end
 
   describe "#reset" do
-
     before do
       config.preload_models = true
       config.reset
@@ -67,7 +62,6 @@ describe Mongoid::Config::Options do
   end
 
   describe "#settings" do
-
     it "returns the settings" do
       expect(config.settings).to_not be_empty
     end

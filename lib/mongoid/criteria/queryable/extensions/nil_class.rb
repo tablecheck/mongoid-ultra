@@ -4,10 +4,8 @@ module Mongoid
   class Criteria
     module Queryable
       module Extensions
-
         # Adds query type-casting behavior to NilClass.
         module NilClass
-
           # Add this object to nil.
           #
           # @example Add the object to a nil value.

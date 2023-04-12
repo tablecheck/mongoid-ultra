@@ -2,12 +2,10 @@
 
 module Mongoid
   module Fields
-
     # Represents a BSON document field definition which stores
     # a foreign key that references the ID of another document.
     # Used for association behavior.
     class ForeignKey < Standard
-
       # Adds the atomic changes for this type of resizable field.
       #
       # @example Add the atomic changes.
@@ -108,7 +106,7 @@ module Mongoid
       # @return [ true | false ] If the field is a BSON::ObjectId.
       def object_id_field?
         @object_id_field ||=
-            association.polymorphic? ? true : association.klass.using_object_ids?
+          association.polymorphic? ? true : association.klass.using_object_ids?
       end
 
       # Returns true if an array, false if not.

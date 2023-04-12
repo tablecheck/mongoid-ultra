@@ -9,7 +9,6 @@ require 'mongoid/association/referenced/has_many/eager'
 module Mongoid
   module Association
     module Referenced
-
       # The has_many association.
       class HasMany
         include Relatable
@@ -20,17 +19,17 @@ module Mongoid
         #
         # @return [ Array<Symbol> ] The extra valid options.
         ASSOCIATION_OPTIONS = [
-            :after_add,
-            :after_remove,
-            :as,
-            :autosave,
-            :before_add,
-            :before_remove,
-            :dependent,
-            :foreign_key,
-            :order,
-            :primary_key,
-            :scope,
+          :after_add,
+          :after_remove,
+          :as,
+          :autosave,
+          :before_add,
+          :before_remove,
+          :dependent,
+          :foreign_key,
+          :order,
+          :primary_key,
+          :scope,
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -48,7 +47,7 @@ module Mongoid
         #
         # @return [ Array<Mongoid::Association::Relatable> ] The association complements.
         def relation_complements
-          @relation_complements ||= [ Referenced::BelongsTo ].freeze
+          @relation_complements ||= [Referenced::BelongsTo].freeze
         end
 
         # Setup the instance methods, fields, etc. on the association owning class.
@@ -74,7 +73,6 @@ module Mongoid
           @owner_class.validates_associated(name) if validate?
           self
         end
-
 
         # Get the foreign key field on the inverse for saving the association reference.
         #
@@ -191,17 +189,17 @@ module Mongoid
         end
 
         def polymorphic_inverses(other)
-          [ as ]
+          [as]
         end
 
         def determine_inverses(other)
           matches = (other || relation_class).relations.values.select do |rel|
             relation_complements.include?(rel.class) &&
-                rel.relation_class_name == inverse_class_name
-
+              rel.relation_class_name == inverse_class_name
           end
           if matches.size > 1
-            return [ default_inverse.name ] if default_inverse
+            return [default_inverse.name] if default_inverse
+
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
           matches.collect { |m| m.name } unless matches.blank?

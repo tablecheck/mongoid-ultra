@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Errors::DeleteRestriction do
-
   describe "#message" do
-
     let(:error) do
       described_class.new(Person.new, :drugs)
     end

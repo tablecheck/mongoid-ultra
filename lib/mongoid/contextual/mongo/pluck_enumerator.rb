@@ -3,7 +3,6 @@
 module Mongoid
   module Contextual
     class Mongo
-
       # Utility class to add enumerable behavior for Criteria#pluck_each.
       #
       # @api private
@@ -55,15 +54,15 @@ module Mongoid
         private
 
         def database_field_names
-          @database_field_names ||= @fields.map {|f| @klass.database_field_name(f) }
+          @database_field_names ||= @fields.map { |f| @klass.database_field_name(f) }
         end
 
         def normalized_field_names
-          @normalized_field_names ||= @fields.map {|f| @klass.cleanse_localized_field_names(f) }
+          @normalized_field_names ||= @fields.map { |f| @klass.cleanse_localized_field_names(f) }
         end
 
         def yield_result(doc)
-          values = database_field_names.map {|n| extract_value(doc, n) }
+          values = database_field_names.map { |n| extract_value(doc, n) }
           yield(values.size == 1 ? values.first : values)
         end
 
@@ -122,19 +121,19 @@ module Mongoid
             #    value so the full hash is returned.
             # 4. Otherwise, fetch and demongoize the value for the key meth.
             curr = if curr.is_a? Array
-              res = fetch_and_demongoize(curr, meth, field)
-              res.empty? ? nil : res
-            elsif !is_translation && field&.localized?
-              if i < num_meths
-                curr.try(:fetch, meth, nil)
-              else
-                fetch_and_demongoize(curr, meth, field)
-              end
-            elsif is_translation
-              curr.try(:fetch, meth, nil)
-            else
-              fetch_and_demongoize(curr, meth, field)
-            end
+                     res = fetch_and_demongoize(curr, meth, field)
+                     res.empty? ? nil : res
+                   elsif !is_translation && field&.localized?
+                     if i < num_meths
+                       curr.try(:fetch, meth, nil)
+                     else
+                       fetch_and_demongoize(curr, meth, field)
+                     end
+                   elsif is_translation
+                     curr.try(:fetch, meth, nil)
+                   else
+                     fetch_and_demongoize(curr, meth, field)
+                   end
 
             i += 1
           end

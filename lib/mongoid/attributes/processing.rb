@@ -2,10 +2,8 @@
 
 module Mongoid
   module Attributes
-
     # This module contains the behavior for processing attributes.
     module Processing
-
       # Process the provided attributes casting them to their proper values if a
       # field exists for them on the document. This will be limited to only the
       # attributes provided in the supplied +Hash+ so that no extra nil values get
@@ -21,6 +19,7 @@ module Mongoid
           attrs = sanitize_for_mass_assignment(attrs)
           attrs.each_pair do |key, value|
             next if pending_attribute?(key, value)
+
             process_attribute(key, value)
           end
         end
@@ -45,10 +44,10 @@ module Mongoid
         name = key.to_s
 
         aliased = if aliased_associations.key?(name)
-          aliased_associations[name]
-        else
-          name
-        end
+                    aliased_associations[name]
+                  else
+                    name
+                  end
 
         if relations.has_key?(aliased)
           pending_relations[name] = value
@@ -95,6 +94,7 @@ module Mongoid
         end
         responds = respond_to?("#{name}=", true)
         raise Errors::UnknownAttribute.new(self.class, name) unless responds
+
         send("#{name}=", value)
       end
 

@@ -25,7 +25,6 @@ shared_context "rake task" do
   end
 
   shared_examples_for "create_indexes" do
-
     it "receives create_indexes" do
       expect(Mongoid::Tasks::Database).to receive(:create_indexes)
       task.invoke
@@ -33,7 +32,6 @@ shared_context "rake task" do
   end
 
   shared_examples_for "create_collections" do
-
     it "receives create_collections" do
       expect(Mongoid::Tasks::Database).to receive(:create_collections)
       task.invoke
@@ -41,7 +39,6 @@ shared_context "rake task" do
   end
 
   shared_examples_for "force create_collections" do
-
     it "receives create_collections" do
       expect(Mongoid::Tasks::Database).to receive(:create_collections).with(force: true)
       task.invoke

@@ -2,12 +2,10 @@
 
 module Mongoid
   module Errors
-
     # Raised when querying the database for a document by a specific id or by
     # set of attributes which does not exist. If multiple ids were passed then
     # it will display all of those.
     class DocumentNotFound < MongoidError
-
       attr_reader :klass, :params
 
       # Create the new error.
@@ -117,7 +115,7 @@ module Mongoid
           h = unmatched.dup
           h.delete("_id")
           h.delete(:_id)
-          h.map{|k,v| "#{k}: #{v}" }.join(", ")
+          h.map { |k, v| "#{k}: #{v}" }.join(", ")
         end
       end
     end

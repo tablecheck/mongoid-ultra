@@ -2,7 +2,6 @@
 
 module Mongoid
   module Association
-
     # This module contains the core macros for defining associations between
     # documents. They can be either embedded or referenced.
     module Macros
@@ -52,7 +51,6 @@ module Mongoid
       end
 
       module ClassMethods
-
         # Adds the association back to the parent document. This macro is
         # necessary to set the references from the child back to the parent
         # document. If a child does not define this association calling

@@ -4,9 +4,7 @@ require "spec_helper"
 require_relative './shardable_models'
 
 describe Mongoid::Shardable do
-
   describe ".included" do
-
     let(:klass) do
       Class.new do
         include Mongoid::Shardable
@@ -23,7 +21,6 @@ describe Mongoid::Shardable do
   end
 
   describe ".shard_key" do
-
     context 'when full syntax is used' do
       context 'with symbol value' do
         it 'sets shard key fields to symbol value' do
@@ -32,12 +29,12 @@ describe Mongoid::Shardable do
 
         it 'sets shard config' do
           expect(SmProducer.shard_config).to eq({
-            key: { age: 1, gender: 'hashed' },
-            options: {
-              unique: true,
-              numInitialChunks: 2,
-            },
-          })
+                                                  key: { age: 1, gender: 'hashed' },
+                                                  options: {
+                                                    unique: true,
+                                                    numInitialChunks: 2,
+                                                  },
+                                                })
         end
 
         it 'keeps hashed as string' do
@@ -52,9 +49,9 @@ describe Mongoid::Shardable do
 
         it 'sets shard config' do
           expect(SmActor.shard_config).to eq({
-            key: {age: 1, gender: 'hashed', hello: 'hashed'},
-            options: {},
-          })
+                                               key: { age: 1, gender: 'hashed', hello: 'hashed' },
+                                               options: {},
+                                             })
         end
 
         it 'sets hashed to string' do
@@ -65,9 +62,9 @@ describe Mongoid::Shardable do
       context 'when passed association name' do
         it 'uses foreign key as shard key in shard config' do
           expect(SmDriver.shard_config).to eq({
-            key: {age: 1, agency_id: 'hashed'},
-            options: {},
-          })
+                                                key: { age: 1, agency_id: 'hashed' },
+                                                options: {},
+                                              })
         end
 
         it 'uses foreign key as shard key in shard key fields' do
@@ -92,9 +89,9 @@ describe Mongoid::Shardable do
       context 'when passed association name' do
         it 'uses foreign key as shard key in shard config' do
           expect(SmDirector.shard_config).to eq({
-            key: {agency_id: 1},
-            options: {},
-          })
+                                                  key: { agency_id: 1 },
+                                                  options: {},
+                                                })
         end
 
         it 'uses foreign key as shard key in shard key fields' do
@@ -106,7 +103,7 @@ describe Mongoid::Shardable do
 
   describe '#shard_key_selector' do
     subject { instance.shard_key_selector }
-    
+
     context 'when key is an immediate attribute' do
       let(:klass) { Band }
       let(:value) { 'a-brand-name' }
@@ -279,11 +276,11 @@ describe Mongoid::Shardable do
 
         context "when record is not found" do
           let!(:instance) { klass.create!(author: { name: value }) }
-  
+
           before do
             instance.destroy
           end
-  
+
           it "raises a DocumentNotFound error with the shard key in the description on reload" do
             expect do
               instance.reload

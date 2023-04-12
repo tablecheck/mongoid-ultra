@@ -3,11 +3,8 @@
 require "spec_helper"
 
 describe Mongoid::Warnings do
-
   describe ".warn_*" do
-
     context "when calling a warn_* method" do
-
       let(:id) { :geo_haystack_deprecated }
       let(:message) do
         'The geoHaystack type is deprecated.'

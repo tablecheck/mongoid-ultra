@@ -3,16 +3,14 @@
 require "spec_helper"
 
 describe Mongoid::Criteria::Modifiable do
-
   describe "#create" do
-
     let(:criteria) do
       Band.where(name: "Depeche Mode")
     end
 
     context "when provided valid attributes" do
       let(:band) do
-        criteria.create!(genres: [ "electro" ])
+        criteria.create!(genres: ["electro"])
       end
 
       it "returns the created document" do
@@ -24,17 +22,15 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       it "sets the attributes passed to build" do
-        expect(band.genres).to eq([ "electro" ])
+        expect(band.genres).to eq(["electro"])
       end
     end
 
     context "when provided a block" do
-
       context "when provided valid attributes & using block" do
-
         let(:band) do
           criteria.create! do |c|
-            c.genres = [ "electro" ]
+            c.genres = ["electro"]
           end
         end
 
@@ -47,13 +43,12 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         it "sets the attributes passed to build" do
-          expect(band.genres).to eq([ "electro" ])
+          expect(band.genres).to eq(["electro"])
         end
       end
     end
 
     context 'when the object is polymorphic' do
-
       let(:movie) do
         Movie.new
       end
@@ -77,13 +72,11 @@ describe Mongoid::Criteria::Modifiable do
   end
 
   describe "#create!" do
-
     let(:criteria) do
       Account.where(number: "11123213")
     end
 
     context "when provided invalid attributes" do
-
       it "raises an error" do
         expect {
           criteria.create!
@@ -92,7 +85,6 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context 'when the object is polymorphic' do
-
       let(:movie) do
         Movie.new
       end
@@ -115,10 +107,8 @@ describe Mongoid::Criteria::Modifiable do
     end
   end
 
-  [ :delete, :delete_all, :destroy, :destroy_all ].each do |method|
-
+  [:delete, :delete_all, :destroy, :destroy_all].each do |method|
     describe "##{method}" do
-
       let(:name) do
         Name.new(first_name: "Durran")
       end
@@ -137,13 +127,12 @@ describe Mongoid::Criteria::Modifiable do
           Person.create!(
             title: "Sir",
             name: name,
-            addresses: [ address_one, address_two ]
+            addresses: [address_one, address_two]
           )
         end
       end
 
       context "when removing root documents" do
-
         let(:criteria) do
           Person.where(title: "Sir", :age.gt => 5)
         end
@@ -162,9 +151,7 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when removing embedded documents" do
-
         context "when removing a single document" do
-
           let(:person) do
             Person.where(title: "Sir").first
           end
@@ -187,7 +174,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context "when removing multiple documents" do
-
           let(:person) do
             Person.where(title: "Sir").first
           end
@@ -213,11 +199,8 @@ describe Mongoid::Criteria::Modifiable do
   end
 
   describe ".find_or_create_by" do
-
     context "when the document is found" do
-
       context "when providing an attribute" do
-
         let!(:person) do
           Person.create!(title: "Senior")
         end
@@ -228,9 +211,7 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when providing a document" do
-
         context "with an owner with a BSON identity type" do
-
           let!(:person) do
             Person.create!
           end
@@ -240,7 +221,6 @@ describe Mongoid::Criteria::Modifiable do
           end
 
           context "when providing the object directly" do
-
             let(:from_db) do
               Game.find_or_create_by(person: person)
             end
@@ -251,7 +231,6 @@ describe Mongoid::Criteria::Modifiable do
           end
 
           context "when providing the proxy relation" do
-
             let(:from_db) do
               Game.find_or_create_by(person: game.person)
             end
@@ -263,7 +242,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context "with an owner with an Integer identity type" do
-
           let!(:jar) do
             Jar.create!
           end
@@ -284,9 +262,7 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context "when the document is not found" do
-
       context "when providing a document" do
-
         let!(:person) do
           Person.create!
         end
@@ -309,7 +285,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when not providing a block" do
-
         let!(:person) do
           Person.find_or_create_by(title: "Senorita")
         end
@@ -324,7 +299,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when providing a block" do
-
         let!(:person) do
           Person.find_or_create_by(title: "Senorita") do |person|
             person.pets = true
@@ -345,7 +319,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context 'when the object is polymorphic' do
-
         let(:movie) do
           Movie.new
         end
@@ -366,11 +339,8 @@ describe Mongoid::Criteria::Modifiable do
   end
 
   describe ".find_or_create_by!" do
-
     context "when the document is found" do
-
       context "when providing an attribute" do
-
         let!(:person) do
           Person.create!(title: "Senior")
         end
@@ -381,9 +351,7 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when providing a document" do
-
         context "with an owner with a BSON identity type" do
-
           let!(:person) do
             Person.create!
           end
@@ -393,7 +361,6 @@ describe Mongoid::Criteria::Modifiable do
           end
 
           context "when providing the object directly" do
-
             let(:from_db) do
               Game.find_or_create_by!(person: person)
             end
@@ -404,7 +371,6 @@ describe Mongoid::Criteria::Modifiable do
           end
 
           context "when providing the proxy relation" do
-
             let(:from_db) do
               Game.find_or_create_by!(person: game.person)
             end
@@ -416,7 +382,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context "with an owner with an Integer identity type" do
-
           let!(:jar) do
             Jar.create!
           end
@@ -437,9 +402,7 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context "when the document is not found" do
-
       context "when providing a document" do
-
         let!(:person) do
           Person.create!
         end
@@ -462,7 +425,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when not providing a block" do
-
         let!(:person) do
           Person.find_or_create_by!(title: "Senorita")
         end
@@ -477,7 +439,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when validation fails" do
-
         before do
           Person.validates_presence_of(:title)
         end
@@ -494,7 +455,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when providing a block" do
-
         let!(:person) do
           Person.find_or_create_by!(title: "Senorita") do |person|
             person.pets = true
@@ -516,7 +476,6 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context 'when the object is polymorphic' do
-
       let(:movie) do
         Movie.new
       end
@@ -536,9 +495,7 @@ describe Mongoid::Criteria::Modifiable do
   end
 
   describe ".find_or_initialize_by" do
-
     context "when the document is found" do
-
       let!(:person) do
         Person.create!(title: "Senior")
       end
@@ -549,9 +506,7 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context "when the document is not found" do
-
       context "when not providing a block" do
-
         let!(:person) do
           Person.find_or_initialize_by(title: "Senorita")
         end
@@ -566,7 +521,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when providing a block" do
-
         let!(:person) do
           Person.find_or_initialize_by(title: "Senorita") do |person|
             person.pets = true
@@ -588,7 +542,6 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context 'when the object is polymorphic' do
-
       let(:movie) do
         Movie.new
       end
@@ -608,13 +561,11 @@ describe Mongoid::Criteria::Modifiable do
   end
 
   describe "first_or_create" do
-
     let!(:band) do
       Band.create!(name: "Depeche Mode")
     end
 
     context "when the document is found" do
-
       let(:found) do
         Band.where(name: "Depeche Mode").first_or_create
       end
@@ -625,9 +576,7 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context "when the document is not found" do
-
       context "when attributes are provided" do
-
         let(:document) do
           Band.where(name: "Tool").first_or_create(origin: "Essex")
         end
@@ -645,11 +594,8 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context 'when attributes contain keys also in the criteria selector' do
-
           context 'when the selector has symbol keys' do
-
             context 'when the attributes use symbol keys' do
-
               let(:document) do
                 Band.where(name: 'Tool').first_or_create(name: 'Essex')
               end
@@ -660,7 +606,6 @@ describe Mongoid::Criteria::Modifiable do
             end
 
             context 'when the attributes use string keys' do
-
               let(:document) do
                 Band.where(name: 'Tool').first_or_create('name' => 'Essex')
               end
@@ -672,9 +617,7 @@ describe Mongoid::Criteria::Modifiable do
           end
 
           context 'when the selector has string keys' do
-
             context 'when the attributes use symbol keys' do
-
               let(:document) do
                 Band.where('name' => 'Tool').first_or_create(name: 'Essex')
               end
@@ -685,7 +628,6 @@ describe Mongoid::Criteria::Modifiable do
             end
 
             context 'when the attributes use string keys' do
-
               let(:document) do
                 Band.where('name' => 'Tool').first_or_create('name' => 'Essex')
               end
@@ -698,18 +640,16 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context 'when the query criteria is on a hash attribute' do
-
           let(:document) do
             Person.where(map: { foo: :bar }).first_or_create
           end
 
           it 'uses the values from the attributes' do
-            expect(document.map).to eq('foo' => :bar )
+            expect(document.map).to eq('foo' => :bar)
           end
         end
 
         context 'when the criteria has a selector with query operators' do
-
           let(:document) do
             Band.in(genres: ['Hiphop', 'Soul']).first_or_create(name: 'Smooth')
           end
@@ -720,7 +660,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context 'when the criteria has a nested selector with query operators' do
-
           let(:band) do
             record = Record.new(producers: ['testing'])
             band = Band.create!(records: [record])
@@ -749,14 +688,13 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context 'when the criteria has a deeply-nested selector with query operators' do
-
           let(:criteria) do
             band = Band.create!
             Mongoid::Criteria.new(Record) do |criteria|
               criteria.embedded = true
               criteria.association = Band.reflect_on_association(:records)
               criteria.parent_document = band
-              criteria.selector = { "records" => { "producers"=>{"$in"=>["nonexistent"] } } }
+              criteria.selector = { "records" => { "producers" => { "$in" => ["nonexistent"] } } }
             end
           end
 
@@ -775,7 +713,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when attributes are not provided" do
-
         let(:document) do
           Band.where(name: "Tool").first_or_create
         end
@@ -790,7 +727,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when the criteria is on an embedded relation" do
-
         let!(:band) do
           Band.create!(name: "Placebo")
         end
@@ -809,7 +745,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context 'when the object is polymorphic' do
-
         let(:movie) do
           Movie.new
         end
@@ -832,7 +767,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when a block is provided" do
-
         let(:document) do
           Band.where(name: "Tool").first_or_create do |doc|
             doc.active = false
@@ -853,11 +787,9 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when the criteria is complex" do
-
         context "when the document is not found" do
-
           let(:document) do
-            Band.in(name: [ "New Order" ]).first_or_create(active: false)
+            Band.in(name: ["New Order"]).first_or_create(active: false)
           end
 
           it "returns a new document" do
@@ -873,9 +805,7 @@ describe Mongoid::Criteria::Modifiable do
   end
 
   describe "first_or_create!" do
-
     context "when validation fails on the new document" do
-
       it "raises an error" do
         expect {
           Account.where(number: "12345").first_or_create!
@@ -884,7 +814,6 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context "when passing a block" do
-
       let(:account) do
         Account.where(number: "12345").first_or_create! do |account|
           account.name = "testing"
@@ -901,7 +830,6 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context "when the document is found" do
-
       let!(:band) do
         Band.create!(name: "Depeche Mode")
       end
@@ -916,13 +844,11 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context "when the document is not found" do
-
       let!(:band) do
         Band.create!(name: "Depeche Mode")
       end
 
       context "when attributes are provided" do
-
         let(:document) do
           Band.where(name: "Tool").first_or_create!(origin: "Essex")
         end
@@ -941,7 +867,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when attributes are not provided" do
-
         let(:document) do
           Band.where(name: "Tool").first_or_create!
         end
@@ -956,7 +881,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when a block is provided" do
-
         let(:document) do
           Band.where(name: "Tool").first_or_create! do |doc|
             doc.active = false
@@ -977,11 +901,9 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when the criteria is complex" do
-
         context "when the document is not found" do
-
           let(:document) do
-            Band.in(name: [ "New Order" ]).first_or_create!(active: false)
+            Band.in(name: ["New Order"]).first_or_create!(active: false)
           end
 
           it "returns a new document" do
@@ -995,11 +917,8 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context 'when attributes contain keys also in the criteria selector' do
-
         context 'when the selector has symbol keys' do
-
           context 'when the attributes use symbol keys' do
-
             let(:document) do
               Band.where(name: 'Tool').first_or_create!(name: 'Essex')
             end
@@ -1010,7 +929,6 @@ describe Mongoid::Criteria::Modifiable do
           end
 
           context 'when the attributes use string keys' do
-
             let(:document) do
               Band.where(name: 'Tool').first_or_create!('name' => 'Essex')
             end
@@ -1022,9 +940,7 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context 'when the selector has string keys' do
-
           context 'when the attributes use symbol keys' do
-
             let(:document) do
               Band.where('name' => 'Tool').first_or_create!(name: 'Essex')
             end
@@ -1035,7 +951,6 @@ describe Mongoid::Criteria::Modifiable do
           end
 
           context 'when the attributes use string keys' do
-
             let(:document) do
               Band.where('name' => 'Tool').first_or_create!('name' => 'Essex')
             end
@@ -1049,7 +964,6 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context 'when the object is polymorphic' do
-
       let(:movie) do
         Movie.new
       end
@@ -1073,13 +987,11 @@ describe Mongoid::Criteria::Modifiable do
   end
 
   describe "first_or_initialize" do
-
     let!(:band) do
       Band.create!(name: "Depeche Mode")
     end
 
     context "when the document is found" do
-
       let(:found) do
         Band.where(name: "Depeche Mode").first_or_initialize
       end
@@ -1090,7 +1002,6 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context 'when the object is polymorphic' do
-
       let(:movie) do
         Movie.new
       end
@@ -1113,9 +1024,7 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context "when the document is not found" do
-
       context "when attributes are provided" do
-
         let(:document) do
           Band.where(name: "Tool").first_or_initialize(origin: "Essex")
         end
@@ -1134,7 +1043,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when attributes are not provided" do
-
         let(:document) do
           Band.where(name: "Tool").first_or_initialize
         end
@@ -1149,7 +1057,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when a block is provided" do
-
         let(:document) do
           Band.where(name: "Tool").first_or_initialize do |doc|
             doc.active = false
@@ -1170,11 +1077,9 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when the criteria is complex" do
-
         context "when the document is not found" do
-
           let(:document) do
-            Band.in(name: [ "New Order" ]).first_or_initialize(active: false)
+            Band.in(name: ["New Order"]).first_or_initialize(active: false)
           end
 
           it "returns a new document" do
@@ -1188,11 +1093,8 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context 'when attributes contain keys also in the criteria selector' do
-
         context 'when the selector has symbol keys' do
-
           context 'when the attributes use symbol keys' do
-
             let(:document) do
               Band.where(name: 'Tool').first_or_initialize(name: 'Essex')
             end
@@ -1203,7 +1105,6 @@ describe Mongoid::Criteria::Modifiable do
           end
 
           context 'when the attributes use string keys' do
-
             let(:document) do
               Band.where(name: 'Tool').first_or_initialize('name' => 'Essex')
             end
@@ -1215,9 +1116,7 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context 'when the selector has string keys' do
-
           context 'when the attributes use symbol keys' do
-
             let(:document) do
               Band.where('name' => 'Tool').first_or_initialize(name: 'Essex')
             end
@@ -1228,7 +1127,6 @@ describe Mongoid::Criteria::Modifiable do
           end
 
           context 'when the attributes use string keys' do
-
             let(:document) do
               Band.where('name' => 'Tool').first_or_initialize('name' => 'Essex')
             end
@@ -1243,7 +1141,6 @@ describe Mongoid::Criteria::Modifiable do
   end
 
   describe "#update" do
-
     let!(:person) do
       Person.create!(title: "Sir")
     end
@@ -1257,9 +1154,7 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context "when updating the root document" do
-
       context "when updating with a criteria" do
-
         before do
           Person.where(title: "Sir").update(title: "Madam")
         end
@@ -1270,7 +1165,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when updating all directly" do
-
         before do
           Person.update(title: "Madam")
         end
@@ -1282,7 +1176,6 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context "when updating an embedded document" do
-
       before do
         Person.where(title: "Sir").update(
           "addresses.0.city" => "Berlin"
@@ -1303,15 +1196,12 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context "when updating a relation" do
-
       context "when the relation is an embeds many" do
-
         let(:from_db) do
           Person.first
         end
 
         context "when updating the relation directly" do
-
           before do
             person.addresses.update(city: "London")
           end
@@ -1326,7 +1216,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context "when updating the relation through a criteria" do
-
           before do
             person.addresses.where(street: "Oranienstr").update(city: "Berlin")
           end
@@ -1342,14 +1231,12 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when the relation is a references many" do
-
         before do
           person.posts.create!(title: "First")
           person.posts.create!(title: "Second")
         end
 
         context "when updating the relation directly" do
-
           before do
             person.posts.update(title: "London")
           end
@@ -1368,7 +1255,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context "when updating the relation through a criteria" do
-
           before do
             person.posts.where(title: "First").update(title: "Berlin")
           end
@@ -1388,7 +1274,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when the relation is a references many to many" do
-
         let(:from_db) do
           Person.first
         end
@@ -1402,7 +1287,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context "when updating the relation directly" do
-
           before do
             person.preferences.update(name: "London")
           end
@@ -1417,7 +1301,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context "when updating the relation through a criteria" do
-
           before do
             person.preferences.where(name: "First").update(name: "Berlin")
           end
@@ -1435,7 +1318,6 @@ describe Mongoid::Criteria::Modifiable do
   end
 
   describe "#update_all" do
-
     let!(:person) do
       Person.create!(title: "Sir")
     end
@@ -1449,9 +1331,7 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context "when updating the root document" do
-
       context "when updating with a criteria" do
-
         let(:from_db) do
           Person.first
         end
@@ -1466,7 +1346,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when updating all directly" do
-
         let(:from_db) do
           Person.first
         end
@@ -1482,7 +1361,6 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context "when updating an embedded document" do
-
       before do
         Person.where(title: "Sir").update_all(
           "addresses.0.city" => "Berlin"
@@ -1503,15 +1381,12 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context "when updating a relation" do
-
       context "when the relation is an embeds many" do
-
         let(:from_db) do
           Person.first
         end
 
         context "when updating the relation directly" do
-
           before do
             person.addresses.update_all(city: "London")
           end
@@ -1526,7 +1401,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context "when updating the relation through a criteria" do
-
           before do
             person.addresses.where(street: "Oranienstr").update_all(city: "Berlin")
           end
@@ -1542,7 +1416,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when the relation is a references many" do
-
         let!(:post_one) do
           person.posts.create!(title: "First")
         end
@@ -1552,7 +1425,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context "when updating the relation directly" do
-
           before do
             person.posts.update_all(title: "London")
           end
@@ -1571,7 +1443,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context "when updating the relation through a criteria" do
-
           before do
             person.posts.where(title: "First").update_all(title: "Berlin")
           end
@@ -1591,7 +1462,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context "when the relation is a references many to many" do
-
         let(:from_db) do
           Person.first
         end
@@ -1605,7 +1475,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context "when updating the relation directly" do
-
           before do
             person.preferences.update_all(name: "London")
           end
@@ -1620,7 +1489,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context "when updating the relation through a criteria" do
-
           before do
             person.preferences.where(name: "First").update_all(name: "Berlin")
           end
@@ -1638,9 +1506,7 @@ describe Mongoid::Criteria::Modifiable do
   end
 
   describe '#create_with' do
-
     context 'when called on the class' do
-
       let(:attrs) do
         { 'username' => 'Turnip' }
       end
@@ -1654,16 +1520,13 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context 'when a create is chained' do
-
         context 'when a write method is chained' do
-
           it 'executes the method' do
             expect(Person.create_with(attrs).new.username).to eq('Turnip')
           end
         end
 
         context 'when a write method is chained' do
-
           let(:query) do
             { 'age' => 50 }
           end
@@ -1697,7 +1560,6 @@ describe Mongoid::Criteria::Modifiable do
           end
 
           context 'when the attributes are shared with the write method args' do
-
             let(:query) do
               { 'username' => 'Beet', 'age' => 50 }
             end
@@ -1716,7 +1578,6 @@ describe Mongoid::Criteria::Modifiable do
     end
 
     context 'when called on a criteria' do
-
       let(:criteria_selector) do
         { 'username' => 'Artichoke', 'age' => 25 }
       end
@@ -1726,9 +1587,7 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context 'when the original criteria shares attributes with the attribute args' do
-
         context 'when all the original attributes are shared with the new attributes' do
-
           let(:attrs) do
             { 'username' => 'Beet', 'age' => 50 }
           end
@@ -1744,7 +1603,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context 'when only some of the original attributes are shared with the attribute args' do
-
         let(:attrs) do
           { 'username' => 'Beet' }
         end
@@ -1759,7 +1617,6 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       context 'when a method is chained' do
-
         let(:attrs) do
           { 'username' => 'Turnip' }
         end
@@ -1768,7 +1625,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context 'when a create method is chained' do
-
           it 'executes the method' do
             expect(criteria.create_with(attrs).new.username).to eq('Turnip')
             expect(criteria.create_with(attrs).new.age).to eq(25)
@@ -1776,7 +1632,6 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         context 'when a write method is chained producing conflicting criteria' do
-
           let(:new_person) do
             criteria.create_with(attrs).find_or_create_by(query)
           end

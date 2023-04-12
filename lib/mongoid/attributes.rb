@@ -8,7 +8,6 @@ require "mongoid/attributes/projector"
 require "mongoid/attributes/readonly"
 
 module Mongoid
-
   # This module contains the logic for handling the internal attributes hash,
   # and how to get and set values.
   module Attributes
@@ -89,7 +88,6 @@ module Mongoid
       process_raw_attribute(name.to_s, raw, field)
     end
     alias :[] :read_attribute
-
 
     # Process the raw attribute values just read from the documents attributes.
     #
@@ -306,7 +304,6 @@ module Mongoid
     end
 
     module ClassMethods
-
       # Alias the provided name to the original field. This will provide an
       # aliased getter, setter, existence check, and all dirty attribute
       # methods.

@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::Association::Referenced::BelongsTo::Binding do
-
   let(:person) do
     Person.new
   end
@@ -25,15 +24,12 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
   end
 
   describe "#bind_one" do
-
     context "when the child of an references one" do
-
       let(:binding) do
         described_class.new(game, person, game_association)
       end
 
       context "when the document is bindable with default pk" do
-
         before do
           expect(person).to receive(:save).never
           expect(game).to receive(:save).never
@@ -50,7 +46,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
       end
 
       context "when the document is bindable with username as pk" do
-
         before do
           Game.belongs_to :person, index: true, validate: true, primary_key: :username
 
@@ -77,7 +72,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
       end
 
       context "when the document is not bindable" do
-
         before do
           person.game = game
         end
@@ -91,13 +85,11 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
     end
 
     context "when the child of an references many" do
-
       let(:binding) do
         described_class.new(post, person, post_association)
       end
 
       context "when the document is bindable" do
-
         before do
           expect(person).to receive(:save).never
           expect(post).to receive(:save).never
@@ -114,9 +106,8 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
       end
 
       context "when the document is not bindable" do
-
         before do
-          person.posts = [ post ]
+          person.posts = [post]
         end
 
         it "does nothing" do
@@ -128,15 +119,12 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
   end
 
   describe "#unbind_one" do
-
     context "when the child of an references one" do
-
       let(:binding) do
         described_class.new(game, person, game_association)
       end
 
       context "when the document is unbindable" do
-
         before do
           binding.bind_one
           expect(person).to receive(:delete).never
@@ -154,7 +142,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
       end
 
       context "when the document is not unbindable" do
-
         it "does nothing" do
           expect(game).to receive(:person=).never
           binding.unbind_one
@@ -163,13 +150,11 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
     end
 
     context "when the child of an references many" do
-
       let(:binding) do
         described_class.new(post, person, post_association)
       end
 
       context "when the document is unbindable" do
-
         before do
           binding.bind_one
           expect(person).to receive(:delete).never
@@ -187,7 +172,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
       end
 
       context "when the document is not unbindable" do
-
         it "does nothing" do
           expect(post).to receive(:person=).never
           binding.unbind_one
@@ -197,13 +181,11 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
   end
 
   context "when binding frozen documents" do
-
     let(:person) do
       Person.new
     end
 
     context "when the child is frozen" do
-
       let(:game) do
         Game.new.freeze
       end
@@ -219,13 +201,11 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
   end
 
   context "when unbinding frozen documents" do
-
     let(:person) do
       Person.new
     end
 
     context "when the child is frozen" do
-
       let(:game) do
         Game.new
       end

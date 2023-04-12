@@ -4,7 +4,6 @@ module Mongoid
   module Association
     module Referenced
       class BelongsTo
-
         # Binding class for belongs_to associations.
         class Binding
           include Bindable
@@ -72,7 +71,7 @@ module Mongoid
             inverses = _association.inverses(doc)
             if inverses.length > 1 && _base.send(_association.foreign_key).nil?
               raise Errors::InvalidSetPolymorphicRelation.new(
-                  _association.name, _base.class.name, _target.class.name
+                _association.name, _base.class.name, _target.class.name
               )
             end
           end

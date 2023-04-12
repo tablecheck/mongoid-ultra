@@ -3,13 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Persistable::Logical do
-
   describe "#bit" do
-
     context "when the document is a root document" do
-
       shared_examples_for "a logical root document" do
-
         it "applies and operations" do
           expect(person.age).to eq(12)
         end
@@ -48,7 +44,6 @@ describe Mongoid::Persistable::Logical do
       end
 
       context "when provided string fields" do
-
         let!(:bit) do
           person.bit(
             "age" => { "and" => 13 },
@@ -61,7 +56,6 @@ describe Mongoid::Persistable::Logical do
       end
 
       context "when provided symbol fields" do
-
         let!(:bit) do
           person.bit(
             age: { and: 13 }, score: { or: 13 }, inte: { and: 13, or: 10 }
@@ -73,9 +67,7 @@ describe Mongoid::Persistable::Logical do
     end
 
     context "when the document is embedded" do
-
       shared_examples_for "a logical embedded document" do
-
         it "applies and operations" do
           expect(address.number).to eq(12)
         end
@@ -118,7 +110,6 @@ describe Mongoid::Persistable::Logical do
       end
 
       context "when provided string fields" do
-
         let!(:bit) do
           address.bit(
             "number" => { "and" => 13 },
@@ -131,7 +122,6 @@ describe Mongoid::Persistable::Logical do
       end
 
       context "when provided symbol fields" do
-
         let!(:bit) do
           address.bit(
             number: { and: 13 }, no: { or: 13 }, house: { and: 13, or: 10 }
@@ -143,7 +133,6 @@ describe Mongoid::Persistable::Logical do
     end
 
     context "when executing atomically" do
-
       let(:person) do
         Person.create!(age: 10, score: 100)
       end
@@ -151,13 +140,12 @@ describe Mongoid::Persistable::Logical do
       it "marks a dirty change for the modified fields" do
         person.atomically do
           person.bit age: { and: 6 }, score: { or: 122 }
-          expect(person.changes).to eq({"age" => [10, 2], "score" => [100, 126]})
+          expect(person.changes).to eq({ "age" => [10, 2], "score" => [100, 126] })
         end
       end
     end
 
     context "when executing on a readonly document" do
-
       let(:person) do
         Person.create!(age: 10, score: 100)
       end

@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe "when initialize a model with an embedded model" do
-
   let(:person) do
     Person.new(pet: Pet.new)
   end
@@ -18,7 +17,6 @@ describe "when initialize a model with an embedded model" do
 end
 
 describe "when creating a model with an embedded model" do
-
   let(:person) do
     Person.create!(pet: Pet.new)
   end
@@ -33,7 +31,6 @@ describe "when creating a model with an embedded model" do
 end
 
 describe "when embedding a model on an already saved model" do
-
   let(:person) do
     Person.create!
   end
@@ -51,7 +48,6 @@ describe "when embedding a model on an already saved model" do
   end
 
   describe "and saving the model" do
-
     before do
       person.save!
     end

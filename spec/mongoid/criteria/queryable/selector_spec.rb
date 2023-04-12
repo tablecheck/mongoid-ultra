@@ -3,15 +3,12 @@
 require "spec_helper"
 
 describe Mongoid::Criteria::Queryable::Selector do
-
   describe "merge!" do
-
     let(:selector) do
       described_class.new
     end
 
     context "when selector is nested" do
-
       before do
         selector[:field] = selection
         selector.merge!(other)
@@ -22,18 +19,16 @@ describe Mongoid::Criteria::Queryable::Selector do
       end
 
       context "when other contains same key with a hash" do
-
         let(:other) do
           { "field" => { "$gt" => 20 } }
         end
 
         it "deep merges" do
-          expect(selector['field']).to eq({"$lt"=>50, "$gt" => 20})
+          expect(selector['field']).to eq({ "$lt" => 50, "$gt" => 20 })
         end
       end
 
       context "when other contains same key without hash" do
-
         let(:other) do
           { "field" => 10 }
         end
@@ -45,7 +40,6 @@ describe Mongoid::Criteria::Queryable::Selector do
     end
 
     context "when selector contains a $nin" do
-
       let(:initial) do
         { "$nin" => ["foo"] }
       end
@@ -55,7 +49,6 @@ describe Mongoid::Criteria::Queryable::Selector do
       end
 
       context "when merging in a new $nin" do
-
         let(:other) do
           { "field" => { "$nin" => ["bar"] } }
         end
@@ -66,14 +59,13 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         it "combines the two $nin queries into one" do
           expect(selector).to eq({
-            "field" => { "$nin" => ["foo", "bar"] }
-          })
+                                   "field" => { "$nin" => ["foo", "bar"] }
+                                 })
         end
       end
     end
 
     context "when selector contains a $in" do
-
       let(:initial) do
         { "$in" => [1, 2] }
       end
@@ -83,7 +75,6 @@ describe Mongoid::Criteria::Queryable::Selector do
       end
 
       context "when merging in a new $in with an intersecting value" do
-
         let(:other) do
           { "field" => { "$in" => [1] } }
         end
@@ -94,13 +85,12 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         it "intersects the $in values" do
           expect(selector).to eq({
-                                     "field" => { "$in" => [1] }
+                                   "field" => { "$in" => [1] }
                                  })
         end
       end
 
       context "when merging in a new $in with no intersecting values" do
-
         let(:other) do
           { "field" => { "$in" => [3] } }
         end
@@ -111,14 +101,13 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         it "intersects the $in values" do
           expect(selector).to eq({
-                                     "field" => { "$in" => [] }
+                                   "field" => { "$in" => [] }
                                  })
         end
       end
     end
 
     context "when selector is not nested" do
-
       before do
         selector[:field] = selection
         selector.merge!(other)
@@ -138,7 +127,6 @@ describe Mongoid::Criteria::Queryable::Selector do
     end
 
     context 'when an object does not support the | operator' do
-
       before do
         selector['start'] = selection
         selector.merge!(other)
@@ -149,7 +137,7 @@ describe Mongoid::Criteria::Queryable::Selector do
       end
 
       let(:other) do
-        { 'start' => selection, 'name' => 'test',  }
+        { 'start' => selection, 'name' => 'test', }
       end
 
       it "merges" do
@@ -159,7 +147,6 @@ describe Mongoid::Criteria::Queryable::Selector do
     end
 
     context "when the selector contains an $or" do
-
       let(:initial) do
         [{ "value" => 1 }]
       end
@@ -169,7 +156,6 @@ describe Mongoid::Criteria::Queryable::Selector do
       end
 
       context "when merging in a new $or" do
-
         let(:other) do
           [{ "value" => 2 }]
         end
@@ -180,14 +166,13 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         it "combines the two $or queries into one" do
           expect(selector).to eq({
-            "$or" => [{ "value" => 1 }, { "value" => 2 }]
-          })
+                                   "$or" => [{ "value" => 1 }, { "value" => 2 }]
+                                 })
         end
       end
     end
 
     context "when the selector contains an $and" do
-
       let(:initial) do
         [{ "value" => 1 }]
       end
@@ -197,7 +182,6 @@ describe Mongoid::Criteria::Queryable::Selector do
       end
 
       context "when merging in a new $and" do
-
         let(:other) do
           [{ "value" => 2 }]
         end
@@ -208,14 +192,13 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         it "combines the two $and queries into one" do
           expect(selector).to eq({
-            "$and" => [{ "value" => 1 }, { "value" => 2 }]
-          })
+                                   "$and" => [{ "value" => 1 }, { "value" => 2 }]
+                                 })
         end
       end
     end
 
     context "when the selector contains a $nor" do
-
       let(:initial) do
         [{ "value" => 1 }]
       end
@@ -225,7 +208,6 @@ describe Mongoid::Criteria::Queryable::Selector do
       end
 
       context "when merging in a new $nor" do
-
         let(:other) do
           [{ "value" => 2 }]
         end
@@ -236,17 +218,16 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         it "combines the two $nor queries into one" do
           expect(selector).to eq({
-            "$nor" => initial + other
-          })
+                                   "$nor" => initial + other
+                                 })
         end
       end
     end
   end
 
   describe "#__deep_copy__" do
-
     let(:value) do
-      [ 1, 2, 3 ]
+      [1, 2, 3]
     end
 
     let(:selection) do
@@ -278,14 +259,10 @@ describe Mongoid::Criteria::Queryable::Selector do
     end
   end
 
-  [ :store, :[]= ].each do |method|
-
+  [:store, :[]=].each do |method|
     describe "##{method}" do
-
       context "when aliases are provided" do
-
         context "when the alias has no serializer" do
-
           let(:selector) do
             described_class.new({ "id" => "_id" })
           end
@@ -300,7 +277,6 @@ describe Mongoid::Criteria::Queryable::Selector do
         end
 
         context "when the alias has a serializer" do
-
           before(:all) do
             class Field
               def evolve(object)
@@ -329,29 +305,25 @@ describe Mongoid::Criteria::Queryable::Selector do
           end
 
           it "stores the serialized field when selector is deeply nested" do
-            selector.send(method, "$or", [{'$and' => [{'_id' => '5'}]}])
+            selector.send(method, "$or", [{ '$and' => [{ '_id' => '5' }] }])
             expect(selector['$or'][0]['$and'][0]['_id']).to eq(5)
           end
         end
       end
 
       context "when no serializers are provided" do
-
         let(:selector) do
           described_class.new
         end
 
         context "when provided a standard object" do
-
           context "when the keys are strings" do
-
             it "does not serialize values" do
               expect(selector.send(method, "key", "5")).to eq("5")
             end
           end
 
           context "when the keys are symbols" do
-
             it "does not serialize values" do
               expect(selector.send(method, :key, "5")).to eq("5")
             end
@@ -359,7 +331,6 @@ describe Mongoid::Criteria::Queryable::Selector do
         end
 
         context "when provided a range" do
-
           before do
             selector.send(method, "key", 1..3)
           end
@@ -370,7 +341,6 @@ describe Mongoid::Criteria::Queryable::Selector do
         end
 
         context "when providing an array" do
-
           let(:big_one) do
             BigDecimal("1.2321")
           end
@@ -380,7 +350,7 @@ describe Mongoid::Criteria::Queryable::Selector do
           end
 
           let(:array) do
-            [ big_one, big_two ]
+            [big_one, big_two]
           end
 
           before do
@@ -391,7 +361,7 @@ describe Mongoid::Criteria::Queryable::Selector do
             config_override :map_big_decimal_to_decimal128, false
 
             it "serializes each element in the array" do
-              expect(selector["key"]).to eq([ big_one.to_s, big_two.to_s ])
+              expect(selector["key"]).to eq([big_one.to_s, big_two.to_s])
             end
           end
 
@@ -399,15 +369,13 @@ describe Mongoid::Criteria::Queryable::Selector do
             config_override :map_big_decimal_to_decimal128, true
 
             it "serializes each element in the array" do
-              expect(selector["key"]).to eq([ BSON::Decimal128.new(big_one), BSON::Decimal128.new(big_two)])
+              expect(selector["key"]).to eq([BSON::Decimal128.new(big_one), BSON::Decimal128.new(big_two)])
             end
           end
         end
 
         context "when providing a Mongoid::RawValue" do
-
           context "and raw_value is a string" do
-
             before do
               selector.send(method, "key", Mongoid::RawValue("Foo"))
             end
@@ -418,7 +386,6 @@ describe Mongoid::Criteria::Queryable::Selector do
           end
 
           context "and raw_value cannot be converted by bson-ruby" do
-
             before do
               selector.send(method, "key", Mongoid::RawValue(4..5))
             end
@@ -443,9 +410,7 @@ describe Mongoid::Criteria::Queryable::Selector do
       end
 
       context "when serializers are provided" do
-
         context "when the serializer is not localized" do
-
           before(:all) do
             class Field
               def evolve(object)
@@ -467,9 +432,7 @@ describe Mongoid::Criteria::Queryable::Selector do
           end
 
           context "when the criterion is simple" do
-
             context "when the key is a string" do
-
               before do
                 selector.send(method, "key", "5")
               end
@@ -480,7 +443,6 @@ describe Mongoid::Criteria::Queryable::Selector do
             end
 
             context "when the key is a symbol" do
-
               before do
                 selector.send(method, :key, "5")
               end
@@ -492,40 +454,32 @@ describe Mongoid::Criteria::Queryable::Selector do
           end
 
           context "when the criterion is complex" do
-
             context "when the field name is the key" do
-
               context "when the criterion is an array" do
-
                 context "when the key is a string" do
-
                   before do
-                    selector.send(method, "key", [ "1", "2" ])
+                    selector.send(method, "key", ["1", "2"])
                   end
 
                   it "serializes the value" do
-                    expect(selector["key"]).to eq([ 1, 2 ])
+                    expect(selector["key"]).to eq([1, 2])
                   end
                 end
 
                 context "when the key is a symbol" do
-
                   before do
-                    selector.send(method, :key, [ "1", "2" ])
+                    selector.send(method, :key, ["1", "2"])
                   end
 
                   it "serializes the value" do
-                    expect(selector["key"]).to eq([ 1, 2 ])
+                    expect(selector["key"]).to eq([1, 2])
                   end
                 end
               end
 
               context "when the criterion is a hash" do
-
                 context "when the value is non enumerable" do
-
                   context "when the key is a string" do
-
                     before do
                       selector.send(method, "key", { "$gt" => "5" })
                     end
@@ -536,7 +490,6 @@ describe Mongoid::Criteria::Queryable::Selector do
                   end
 
                   context "when the key is a symbol" do
-
                     before do
                       selector.send(method, :key, { "$gt" => "5" })
                     end
@@ -548,38 +501,31 @@ describe Mongoid::Criteria::Queryable::Selector do
                 end
 
                 context "when the value is enumerable" do
-
                   context "when the key is a string" do
-
                     before do
-                      selector.send(method, "key", { "$in" => [ "1", "2" ] })
+                      selector.send(method, "key", { "$in" => ["1", "2"] })
                     end
 
                     it "serializes the value" do
-                      expect(selector["key"]).to eq({ "$in" => [ 1, 2 ] })
+                      expect(selector["key"]).to eq({ "$in" => [1, 2] })
                     end
                   end
 
                   context "when the key is a symbol" do
-
                     before do
-                      selector.send(method, :key, { "$in" => [ "1", "2" ] })
+                      selector.send(method, :key, { "$in" => ["1", "2"] })
                     end
 
                     it "serializes the value" do
-                      expect(selector["key"]).to eq({ "$in" => [ 1, 2 ] })
+                      expect(selector["key"]).to eq({ "$in" => [1, 2] })
                     end
                   end
                 end
 
-                [ "$and", "$or" ].each do |operator|
-
+                ["$and", "$or"].each do |operator|
                   context "when the criterion is a #{operator}" do
-
                     context "when the individual criteria are simple" do
-
                       context "when the keys are strings" do
-
                         before do
                           selector.send(method, operator, [{ "key" => "1" }])
                         end
@@ -590,7 +536,6 @@ describe Mongoid::Criteria::Queryable::Selector do
                       end
 
                       context "when the keys are symbols" do
-
                         before do
                           selector.send(method, operator, [{ key: "1" }])
                         end
@@ -602,37 +547,34 @@ describe Mongoid::Criteria::Queryable::Selector do
                     end
 
                     context "when the individual criteria are complex" do
-
                       context "when the keys are strings" do
-
                         before do
                           selector.send(
                             method,
                             operator,
-                            [{ "field" => "1" }, { "key" => { "$gt" => "2" }}]
+                            [{ "field" => "1" }, { "key" => { "$gt" => "2" } }]
                           )
                         end
 
                         it "serializes the values" do
                           expect(selector[operator]).to eq(
-                            [{ "field" => "1" }, { "key" => { "$gt" => 2 }}]
+                            [{ "field" => "1" }, { "key" => { "$gt" => 2 } }]
                           )
                         end
                       end
 
                       context "when the keys are symbols" do
-
                         before do
                           selector.send(
                             method,
                             operator,
-                            [{ field: "1" }, { key: { "$gt" => "2" }}]
+                            [{ field: "1" }, { key: { "$gt" => "2" } }]
                           )
                         end
 
                         it "serializes the values" do
                           expect(selector[operator]).to eq(
-                            [{ "field" => "1" }, { "key" => { "$gt" => 2 }}]
+                            [{ "field" => "1" }, { "key" => { "$gt" => 2 } }]
                           )
                         end
                       end
@@ -642,9 +584,7 @@ describe Mongoid::Criteria::Queryable::Selector do
               end
 
               context "when the criterion is a Mongoid::RawValue" do
-
                 context "and raw_value is a serializable string" do
-
                   before do
                     selector.send(method, "key", Mongoid::RawValue("1"))
                   end
@@ -655,7 +595,6 @@ describe Mongoid::Criteria::Queryable::Selector do
                 end
 
                 context "and raw_value is a serializable type" do
-
                   before do
                     selector.send(method, "key", Mongoid::RawValue(BigDecimal('2')))
                   end
@@ -666,7 +605,6 @@ describe Mongoid::Criteria::Queryable::Selector do
                 end
 
                 context "and raw_value is a non-serializable string" do
-
                   before do
                     selector.send(method, "key", Mongoid::RawValue("Foo"))
                   end
@@ -677,7 +615,6 @@ describe Mongoid::Criteria::Queryable::Selector do
                 end
 
                 context "and raw_value cannot be converted by bson-ruby" do
-
                   before do
                     selector.send(method, "key", Mongoid::RawValue(4..5))
                   end
@@ -688,7 +625,6 @@ describe Mongoid::Criteria::Queryable::Selector do
                 end
 
                 context "and raw_value is a complex type" do
-
                   before do
                     selector.send(method, "key", Mongoid::RawValue([{ foo: "1", "Bar" => [/baz/, BigDecimal('2'), 4..5] }, 3]))
                   end
@@ -730,9 +666,7 @@ describe Mongoid::Criteria::Queryable::Selector do
           end
 
           context "when the criterion is simple" do
-
             context "when the key is a string" do
-
               before do
                 selector.send(method, "key", "5")
               end
@@ -743,7 +677,6 @@ describe Mongoid::Criteria::Queryable::Selector do
             end
 
             context "when the key is a symbol" do
-
               before do
                 selector.send(method, :key, "5")
               end
@@ -755,40 +688,32 @@ describe Mongoid::Criteria::Queryable::Selector do
           end
 
           context "when the criterion is complex" do
-
             context "when the field name is the key" do
-
               context "when the criterion is an array" do
-
                 context "when the key is a string" do
-
                   before do
-                    selector.send(method, "key", [ "1", "2" ])
+                    selector.send(method, "key", ["1", "2"])
                   end
 
                   it "serializes the value" do
-                    expect(selector["key.de"]).to eq([ 1, 2 ])
+                    expect(selector["key.de"]).to eq([1, 2])
                   end
                 end
 
                 context "when the key is a symbol" do
-
                   before do
-                    selector.send(method, :key, [ "1", "2" ])
+                    selector.send(method, :key, ["1", "2"])
                   end
 
                   it "serializes the value" do
-                    expect(selector["key.de"]).to eq([ 1, 2 ])
+                    expect(selector["key.de"]).to eq([1, 2])
                   end
                 end
               end
 
               context "when the criterion is a hash" do
-
                 context "when the value is non enumerable" do
-
                   context "when the key is a string" do
-
                     let(:hash) do
                       { "$gt" => "5" }
                     end
@@ -807,7 +732,6 @@ describe Mongoid::Criteria::Queryable::Selector do
                   end
 
                   context "when the key is a symbol" do
-
                     before do
                       selector.send(method, :key, { "$gt" => "5" })
                     end
@@ -819,38 +743,31 @@ describe Mongoid::Criteria::Queryable::Selector do
                 end
 
                 context "when the value is enumerable" do
-
                   context "when the key is a string" do
-
                     before do
-                      selector.send(method, "key", { "$in" => [ "1", "2" ] })
+                      selector.send(method, "key", { "$in" => ["1", "2"] })
                     end
 
                     it "serializes the value" do
-                      expect(selector["key.de"]).to eq({ "$in" => [ 1, 2 ] })
+                      expect(selector["key.de"]).to eq({ "$in" => [1, 2] })
                     end
                   end
 
                   context "when the key is a symbol" do
-
                     before do
-                      selector.send(method, :key, { "$in" => [ "1", "2" ] })
+                      selector.send(method, :key, { "$in" => ["1", "2"] })
                     end
 
                     it "serializes the value" do
-                      expect(selector["key.de"]).to eq({ "$in" => [ 1, 2 ] })
+                      expect(selector["key.de"]).to eq({ "$in" => [1, 2] })
                     end
                   end
                 end
 
-                [ "$and", "$or" ].each do |operator|
-
+                ["$and", "$or"].each do |operator|
                   context "when the criterion is a #{operator}" do
-
                     context "when the individual criteria are simple" do
-
                       context "when the keys are strings" do
-
                         before do
                           selector.send(method, operator, [{ "key" => "1" }])
                         end
@@ -861,7 +778,6 @@ describe Mongoid::Criteria::Queryable::Selector do
                       end
 
                       context "when the keys are symbols" do
-
                         before do
                           selector.send(method, operator, [{ key: "1" }])
                         end
@@ -873,37 +789,34 @@ describe Mongoid::Criteria::Queryable::Selector do
                     end
 
                     context "when the individual criteria are complex" do
-
                       context "when the keys are strings" do
-
                         before do
                           selector.send(
                             method,
                             operator,
-                            [{ "field" => "1" }, { "key" => { "$gt" => "2" }}]
+                            [{ "field" => "1" }, { "key" => { "$gt" => "2" } }]
                           )
                         end
 
                         it "serializes the values" do
                           expect(selector[operator]).to eq(
-                            [{ "field" => "1" }, { "key.de" => { "$gt" => 2 }}]
+                            [{ "field" => "1" }, { "key.de" => { "$gt" => 2 } }]
                           )
                         end
                       end
 
                       context "when the keys are symbols" do
-
                         before do
                           selector.send(
                             method,
                             operator,
-                            [{ field: "1" }, { key: { "$gt" => "2" }}]
+                            [{ field: "1" }, { key: { "$gt" => "2" } }]
                           )
                         end
 
                         it "serializes the values" do
                           expect(selector[operator]).to eq(
-                            [{ "field" => "1" }, { "key.de" => { "$gt" => 2 }}]
+                            [{ "field" => "1" }, { "key.de" => { "$gt" => 2 } }]
                           )
                         end
                       end
@@ -919,13 +832,11 @@ describe Mongoid::Criteria::Queryable::Selector do
   end
 
   describe "#to_pipeline" do
-
     let(:selector) do
       described_class.new
     end
 
     context "when the selector is empty" do
-
       let(:pipeline) do
         selector.to_pipeline
       end
@@ -936,7 +847,6 @@ describe Mongoid::Criteria::Queryable::Selector do
     end
 
     context "when the selector is not empty" do
-
       before do
         selector["name"] = "test"
       end
@@ -946,13 +856,12 @@ describe Mongoid::Criteria::Queryable::Selector do
       end
 
       it "returns the selector in a $match entry" do
-        expect(pipeline).to eq([{ "$match" => { "name" => "test" }}])
+        expect(pipeline).to eq([{ "$match" => { "name" => "test" } }])
       end
     end
   end
 
   describe '#multi_selection?' do
-
     let(:selector) do
       described_class.new
     end

@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Fields::ForeignKey do
-
   describe "#add_atomic_changes" do
-
     let(:field) do
       described_class.new(
         :vals,
@@ -37,34 +35,32 @@ describe Mongoid::Fields::ForeignKey do
     end
 
     before do
-      person.preferences.concat([ preference_one, preference_three ])
+      person.preferences.concat([preference_one, preference_three])
     end
 
     context "when adding and removing" do
-
       before do
         field.add_atomic_changes(
           person,
           "preference_ids",
           "preference_ids",
           mods,
-          [ preference_three.id ],
-          [ preference_two.id ]
+          [preference_three.id],
+          [preference_two.id]
         )
       end
 
       it "adds the current to the modifications" do
         expect(mods["preference_ids"]).to eq(
-          [ preference_one.id, preference_three.id ]
+          [preference_one.id, preference_three.id]
         )
       end
     end
   end
 
   describe "#eval_default" do
-
     let(:default) do
-      [ BSON::ObjectId.new ]
+      [BSON::ObjectId.new]
     end
 
     let(:field) do
@@ -87,7 +83,6 @@ describe Mongoid::Fields::ForeignKey do
   end
 
   describe "#foreign_key?" do
-
     let(:field) do
       described_class.new(
         :vals,
@@ -104,13 +99,11 @@ describe Mongoid::Fields::ForeignKey do
   end
 
   describe "#evolve" do
-
     let(:association) do
       Person.reflect_on_association(:preferences)
     end
 
     context "when provided a document" do
-
       let(:field) do
         described_class.new(:person_id, type: Object, association: association)
       end
@@ -129,15 +122,12 @@ describe Mongoid::Fields::ForeignKey do
     end
 
     context "when the type is an array" do
-
       let(:field) do
         described_class.new(:preference_ids, type: Array, default: [], association: association)
       end
 
       context "when providing a single value" do
-
         context "when the value is an id string" do
-
           let(:id) do
             BSON::ObjectId.new
           end
@@ -152,7 +142,6 @@ describe Mongoid::Fields::ForeignKey do
         end
 
         context "when the value is a normal string" do
-
           let(:evolved) do
             field.evolve("testing")
           end
@@ -163,7 +152,6 @@ describe Mongoid::Fields::ForeignKey do
         end
 
         context "when the value is an empty string" do
-
           let(:evolved) do
             field.evolve("")
           end
@@ -175,11 +163,8 @@ describe Mongoid::Fields::ForeignKey do
       end
 
       context "when providing an array" do
-
         context "when the values are id strings" do
-
           context "when the relation stores ids as object ids" do
-
             let(:id_one) do
               BSON::ObjectId.new
             end
@@ -189,16 +174,15 @@ describe Mongoid::Fields::ForeignKey do
             end
 
             let(:evolved) do
-              field.evolve([ id_one.to_s, id_two.to_s ])
+              field.evolve([id_one.to_s, id_two.to_s])
             end
 
             it "converts the value to an object id" do
-              expect(evolved).to eq([ id_one, id_two ])
+              expect(evolved).to eq([id_one, id_two])
             end
           end
 
           context "when the relation stores ids as strings" do
-
             let!(:association) do
               Agent.reflect_on_association(:accounts)
             end
@@ -216,52 +200,48 @@ describe Mongoid::Fields::ForeignKey do
             end
 
             let(:evolved) do
-              field.evolve([ id_one, id_two ])
+              field.evolve([id_one, id_two])
             end
 
             it "does not convert the values to object ids" do
-              expect(evolved).to eq([ id_one, id_two ])
+              expect(evolved).to eq([id_one, id_two])
             end
           end
         end
 
         context "when the values are normal strings" do
-
           let(:evolved) do
-            field.evolve([ "testing" ])
+            field.evolve(["testing"])
           end
 
           it "does not convert the value" do
-            expect(evolved).to eq([ "testing" ])
+            expect(evolved).to eq(["testing"])
           end
         end
 
         context "when the values are empty strings" do
-
           let(:evolved) do
-            field.evolve([ "" ])
+            field.evolve([""])
           end
 
           it "does not convert the value" do
-            expect(evolved).to eq([ "" ])
+            expect(evolved).to eq([""])
           end
         end
 
         context "when the values are nils" do
-
           let(:evolved) do
-            field.evolve([ nil ])
+            field.evolve([nil])
           end
 
           it "does not convert the value" do
-            expect(evolved).to eq([ nil ])
+            expect(evolved).to eq([nil])
           end
         end
       end
     end
 
     context "when the type is an object" do
-
       let(:association) do
         Game.reflect_on_association(:person)
       end
@@ -271,11 +251,8 @@ describe Mongoid::Fields::ForeignKey do
       end
 
       context "when providing a single value" do
-
         context "when the relation stores object ids" do
-
           context "when the value is an id string" do
-
             let(:id) do
               BSON::ObjectId.new
             end
@@ -290,7 +267,6 @@ describe Mongoid::Fields::ForeignKey do
           end
 
           context "when the value is a normal string" do
-
             let(:evolved) do
               field.evolve("testing")
             end
@@ -301,7 +277,6 @@ describe Mongoid::Fields::ForeignKey do
           end
 
           context "when the value is an empty string" do
-
             let(:evolved) do
               field.evolve("")
             end
@@ -313,7 +288,6 @@ describe Mongoid::Fields::ForeignKey do
         end
 
         context "when the relation stores string ids" do
-
           let(:association) do
             Comment.reflect_on_association(:account)
           end
@@ -323,7 +297,6 @@ describe Mongoid::Fields::ForeignKey do
           end
 
           context "when the value is an id string" do
-
             let(:id) do
               BSON::ObjectId.new
             end
@@ -338,7 +311,6 @@ describe Mongoid::Fields::ForeignKey do
           end
 
           context "when the value is a normal string" do
-
             let(:evolved) do
               field.evolve("testing")
             end
@@ -349,7 +321,6 @@ describe Mongoid::Fields::ForeignKey do
           end
 
           context "when the value is an empty string" do
-
             let(:evolved) do
               field.evolve("")
             end
@@ -362,11 +333,8 @@ describe Mongoid::Fields::ForeignKey do
       end
 
       context "when providing an array" do
-
         context "when the values are id strings" do
-
           context "when the relation stores ids as object ids" do
-
             let(:id_one) do
               BSON::ObjectId.new
             end
@@ -376,16 +344,15 @@ describe Mongoid::Fields::ForeignKey do
             end
 
             let(:evolved) do
-              field.evolve([ id_one.to_s, id_two.to_s ])
+              field.evolve([id_one.to_s, id_two.to_s])
             end
 
             it "converts the value to an object id" do
-              expect(evolved).to eq([ id_one, id_two ])
+              expect(evolved).to eq([id_one, id_two])
             end
           end
 
           context "when the relation stores ids as strings" do
-
             let(:association) do
               Comment.reflect_on_association(:account)
             end
@@ -403,52 +370,48 @@ describe Mongoid::Fields::ForeignKey do
             end
 
             let(:evolved) do
-              field.evolve([ id_one, id_two ])
+              field.evolve([id_one, id_two])
             end
 
             it "does not convert the values to object ids" do
-              expect(evolved).to eq([ id_one, id_two ])
+              expect(evolved).to eq([id_one, id_two])
             end
           end
         end
 
         context "when the values are normal strings" do
-
           let(:evolved) do
-            field.evolve([ "testing" ])
+            field.evolve(["testing"])
           end
 
           it "does not convert the value" do
-            expect(evolved).to eq([ "testing" ])
+            expect(evolved).to eq(["testing"])
           end
         end
 
         context "when the values are empty strings" do
-
           let(:evolved) do
-            field.evolve([ "" ])
+            field.evolve([""])
           end
 
           it "does not convert the value" do
-            expect(evolved).to eq([ "" ])
+            expect(evolved).to eq([""])
           end
         end
 
         context "when the values are nils" do
-
           let(:evolved) do
-            field.evolve([ nil ])
+            field.evolve([nil])
           end
 
           it "does not convert the value" do
-            expect(evolved).to eq([ nil ])
+            expect(evolved).to eq([nil])
           end
         end
       end
     end
 
     context "when the association is polymoprhic" do
-
       let(:association) do
         Agent.reflect_on_association(:names)
       end
@@ -472,9 +435,7 @@ describe Mongoid::Fields::ForeignKey do
   end
 
   describe "#lazy?" do
-
     context "when the key is resizable" do
-
       let(:field) do
         described_class.new(:test, type: Array, overwrite: true)
       end
@@ -485,7 +446,6 @@ describe Mongoid::Fields::ForeignKey do
     end
 
     context "when the key is not resizable" do
-
       let(:field) do
         described_class.new(:test, type: BSON::ObjectId, overwrite: true)
       end
@@ -497,11 +457,8 @@ describe Mongoid::Fields::ForeignKey do
   end
 
   describe "#mongoize" do
-
     context "when the type is array" do
-
       context "when the array is object ids" do
-
         let(:association) do
           Game.relations["person"]
         end
@@ -518,14 +475,12 @@ describe Mongoid::Fields::ForeignKey do
         end
 
         context "when provided nil" do
-
           it "returns an empty array" do
             expect(field.mongoize(nil)).to be_empty
           end
         end
 
         context "when provided an empty array" do
-
           let(:array) do
             []
           end
@@ -540,7 +495,6 @@ describe Mongoid::Fields::ForeignKey do
         end
 
         context "when using object ids" do
-
           let(:object_id) do
             BSON::ObjectId.new
           end
@@ -551,7 +505,6 @@ describe Mongoid::Fields::ForeignKey do
         end
 
         context "when not using object ids" do
-
           let(:object_id) do
             BSON::ObjectId.new
           end
@@ -561,7 +514,7 @@ describe Mongoid::Fields::ForeignKey do
               :_id,
               type: String,
               pre_processed: true,
-              default: ->{ BSON::ObjectId.new.to_s },
+              default: -> { BSON::ObjectId.new.to_s },
               overwrite: true
             )
           end
@@ -571,7 +524,7 @@ describe Mongoid::Fields::ForeignKey do
               :_id,
               type: BSON::ObjectId,
               pre_processed: true,
-              default: ->{ BSON::ObjectId.new },
+              default: -> { BSON::ObjectId.new },
               overwrite: true
             )
           end
@@ -584,9 +537,7 @@ describe Mongoid::Fields::ForeignKey do
     end
 
     context "when the type is object" do
-
       context "when the array is object ids" do
-
         let(:association) do
           Game.relations['person']
         end
@@ -603,7 +554,6 @@ describe Mongoid::Fields::ForeignKey do
         end
 
         context "when using object ids" do
-
           let(:object_id) do
             BSON::ObjectId.new
           end
@@ -614,11 +564,8 @@ describe Mongoid::Fields::ForeignKey do
         end
 
         context "when not using object ids" do
-
           context "when using strings" do
-
             context "when provided a string" do
-
               let(:object_id) do
                 BSON::ObjectId.new
               end
@@ -628,7 +575,7 @@ describe Mongoid::Fields::ForeignKey do
                   :_id,
                   type: String,
                   pre_processed: true,
-                  default: ->{ BSON::ObjectId.new.to_s },
+                  default: -> { BSON::ObjectId.new.to_s },
                   overwrite: true
                 )
               end
@@ -638,7 +585,7 @@ describe Mongoid::Fields::ForeignKey do
                   :_id,
                   type: BSON::ObjectId,
                   pre_processed: true,
-                  default: ->{ BSON::ObjectId.new },
+                  default: -> { BSON::ObjectId.new },
                   overwrite: true
                 )
               end
@@ -650,9 +597,7 @@ describe Mongoid::Fields::ForeignKey do
           end
 
           context "when using integers" do
-
             context "when provided a string" do
-
               before do
                 Person.field(:_id, type: Integer, overwrite: true)
               end
@@ -662,7 +607,7 @@ describe Mongoid::Fields::ForeignKey do
                   :_id,
                   type: BSON::ObjectId,
                   pre_processed: true,
-                  default: ->{ BSON::ObjectId.new },
+                  default: -> { BSON::ObjectId.new },
                   overwrite: true
                 )
               end
@@ -678,9 +623,7 @@ describe Mongoid::Fields::ForeignKey do
   end
 
   describe "#resizable" do
-
     context "when the type is an array" do
-
       let(:field) do
         described_class.new(:vals, type: Array, default: [])
       end
@@ -691,7 +634,6 @@ describe Mongoid::Fields::ForeignKey do
     end
 
     context "when the type is an object" do
-
       let(:field) do
         described_class.new(:vals, type: Object, default: [])
       end
@@ -703,15 +645,13 @@ describe Mongoid::Fields::ForeignKey do
   end
 
   context "when the foreign key points is a many to many" do
-
     context "when the related document stores non object ids" do
-
       let(:agent) do
-        Agent.new(account_ids: [ true, false, 1, 2 ])
+        Agent.new(account_ids: [true, false, 1, 2])
       end
 
       it "casts the ids on the initial set" do
-        expect(agent.account_ids).to eq([ "true", "false", "1", "2" ])
+        expect(agent.account_ids).to eq(["true", "false", "1", "2"])
       end
     end
   end

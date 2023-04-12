@@ -11,7 +11,6 @@ require "mongoid/criteria/options"
 require "mongoid/criteria/translator"
 
 module Mongoid
-
   # The +Criteria+ class is the core object needed in Mongoid to retrieve
   # objects from the database. It is a DSL that essentially sets up the
   # selector and options arguments that get passed on to a Mongo::Collection
@@ -56,6 +55,7 @@ module Mongoid
     # @return [ true | false ] If the objects are equal.
     def ==(other)
       return super if other.respond_to?(:selector)
+
       entries == other
     end
 
@@ -185,7 +185,7 @@ module Mongoid
     # @return [ Array<String> ] The fields.
     def field_list
       if options[:fields]
-        options[:fields].keys.reject{ |key| key == klass.discriminator_key }
+        options[:fields].keys.reject { |key| key == klass.discriminator_key }
       else
         []
       end
@@ -292,6 +292,7 @@ module Mongoid
     def only(*args)
       args = args.flatten
       return clone if args.empty?
+
       if (args & Fields::IDS).empty?
         args.unshift(:_id)
       end
@@ -360,7 +361,7 @@ module Mongoid
     #
     # @return [ Proc ] The wrapped criteria.
     def to_proc
-      ->{ self }
+      -> { self }
     end
 
     # Adds a criterion to the +Criteria+ that specifies a type or an Array of
@@ -405,6 +406,7 @@ module Mongoid
       if args.length > 1
         raise ArgumentError, "Criteria#where requires zero or one arguments (given #{args.length})"
       end
+
       if args.length == 1
         expression = args.first
         if expression.is_a?(::String) && embedded?
@@ -440,11 +442,11 @@ module Mongoid
     # @return [ Mongoid::Criteria ] The criteria.
     def for_js(javascript, scope = {})
       code = if scope.empty?
-        # CodeWithScope is not supported for $where as of MongoDB 4.4
-        BSON::Code.new(javascript)
-      else
-        BSON::CodeWithScope.new(javascript, scope)
-      end
+               # CodeWithScope is not supported for $where as of MongoDB 4.4
+               BSON::Code.new(javascript)
+             else
+               BSON::CodeWithScope.new(javascript, scope)
+             end
       js_query(code)
     end
 
@@ -549,7 +551,7 @@ module Mongoid
     def type_selection
       klasses = klass._types
       if klasses.size > 1
-        { klass.discriminator_key.to_sym => { "$in" => klass._types }}
+        { klass.discriminator_key.to_sym => { "$in" => klass._types } }
       else
         { klass.discriminator_key.to_sym => klass._types[0] }
       end

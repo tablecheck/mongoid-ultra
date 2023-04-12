@@ -4,9 +4,7 @@ require "spec_helper"
 require_relative '../has_and_belongs_to_many_models'
 
 describe Mongoid::Association::Referenced::HasAndBelongsToMany::Eager do
-
   describe ".keys_from_docs" do
-
     let(:docs) do
       Person.all.to_a
     end
@@ -35,7 +33,6 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Eager do
   end
 
   describe ".includes" do
-
     let(:person) do
       Person.create!
     end
@@ -76,7 +73,6 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Eager do
       end
 
       context "when the eager load has returned documents" do
-
         let!(:preference) do
           person.preferences.create!(name: "testing")
         end
@@ -84,12 +80,12 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Eager do
         before { eager }
 
         it "puts the documents in the parent document" do
-          expect(eager.ivar(:preferences)).to eq([ preference ])
+          expect(eager.ivar(:preferences)).to eq([preference])
         end
 
         it "does not query when touching the association" do
           expect_query(0) do
-            expect(eager.preferences).to eq([ preference ])
+            expect(eager.preferences).to eq([preference])
           end
         end
 
@@ -102,7 +98,6 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Eager do
       end
 
       context "when the eager load has not returned documents" do
-
         before { eager }
 
         it "has an empty proxy" do

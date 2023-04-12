@@ -3,7 +3,6 @@
 module Mongoid
   module Association
     module Nested
-
       # Builder class used to perform #accepts_nested_attributes_for
       # attribute assignment on one-to-n associations.
       class One
@@ -26,6 +25,7 @@ module Mongoid
         # @return [ Mongoid::Document ] The built document.
         def build(parent)
           return if reject?(parent, attributes)
+
           @existing = parent.send(association.name)
           if update?
             attributes.delete_id

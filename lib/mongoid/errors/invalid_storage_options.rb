@@ -2,10 +2,8 @@
 
 module Mongoid
   module Errors
-
     # Raised when options provided to :store_in are invalid.
     class InvalidStorageOptions < MongoidError
-
       # Create the new error.
       #
       # @example Create the new error.

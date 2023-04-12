@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Errors::InvalidField do
-
   describe "#message" do
-
     module MyModule
       def crazy_method; self; end
     end

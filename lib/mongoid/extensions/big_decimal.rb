@@ -2,10 +2,8 @@
 
 module Mongoid
   module Extensions
-
     # Adds type-casting behavior to BigDecimal class.
     module BigDecimal
-
       # Convert the big decimal to an $inc-able value.
       #
       # @example Convert the big decimal.
@@ -38,7 +36,6 @@ module Mongoid
       end
 
       module ClassMethods
-
         # Convert the object from its mongo friendly ruby type to this type.
         #
         # @param [ Object ] object The object to demongoize.
@@ -46,6 +43,7 @@ module Mongoid
         # @return [ BigDecimal | nil ] A BigDecimal derived from the object or nil.
         def demongoize(object)
           return if object.blank?
+
           if object.is_a?(BSON::Decimal128)
             object.to_big_decimal
           elsif object.numeric?
@@ -65,6 +63,7 @@ module Mongoid
         #   is false, BSON::Decimal128 otherwise.
         def mongoize(object)
           return if object.blank?
+
           if Mongoid.map_big_decimal_to_decimal128
             if object.is_a?(BSON::Decimal128)
               object

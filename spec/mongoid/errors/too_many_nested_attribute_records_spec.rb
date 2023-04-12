@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Errors::TooManyNestedAttributeRecords do
-
   describe "#message" do
-
     let(:error) do
       described_class.new("favorites", 5)
     end

@@ -2,11 +2,9 @@
 
 module Mongoid
   module Errors
-
     # This error is raised when a client configuration contains both a uri and
     # other standard options.
     class MixedClientConfiguration < MongoidError
-
       # Initialize the error.
       #
       # @example Initialize the error.

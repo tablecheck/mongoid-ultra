@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Persistable::Deletable do
-
   describe "#delete" do
-
     let!(:person) do
       Person.create!
     end
@@ -38,7 +36,6 @@ describe Mongoid::Persistable::Deletable do
     end
 
     context "when deleting a root document" do
-
       let!(:deleted) do
         person.delete
       end
@@ -58,7 +55,6 @@ describe Mongoid::Persistable::Deletable do
       end
 
       context 'when :persist option false' do
-
         let!(:deleted) do
           person.delete(persist: false)
         end
@@ -78,13 +74,11 @@ describe Mongoid::Persistable::Deletable do
     end
 
     context "when deleting an embedded document" do
-
       let(:address) do
         person.addresses.build(street: "Bond Street")
       end
 
       context "when the document is not yet saved" do
-
         before do
           address.delete
         end
@@ -103,7 +97,6 @@ describe Mongoid::Persistable::Deletable do
       end
 
       context "when the document has been saved" do
-
         before do
           address.save!
           address.delete
@@ -123,7 +116,6 @@ describe Mongoid::Persistable::Deletable do
       end
 
       context 'when :persist option false' do
-
         before do
           address.save!
           address.delete(persist: false)
@@ -145,7 +137,6 @@ describe Mongoid::Persistable::Deletable do
       end
 
       context 'when :suppress option true' do
-
         before do
           address.save!
           address.delete(suppress: true)
@@ -167,9 +158,7 @@ describe Mongoid::Persistable::Deletable do
     end
 
     context "when deleting deeply embedded documents" do
-
       context "when the document has been saved" do
-
         let(:address) do
           person.addresses.create!(street: "Bond Street")
         end
@@ -197,7 +186,6 @@ describe Mongoid::Persistable::Deletable do
     end
 
     context "when deleting subclasses" do
-
       let!(:firefox) do
         Firefox.create!(name: "firefox")
       end
@@ -215,7 +203,6 @@ describe Mongoid::Persistable::Deletable do
       end
 
       context "when deleting a single document" do
-
         before do
           firefox.delete
         end
@@ -234,7 +221,6 @@ describe Mongoid::Persistable::Deletable do
       end
 
       context "when deleting all documents" do
-
         before do
           Firefox.delete_all
         end
@@ -341,7 +327,6 @@ describe Mongoid::Persistable::Deletable do
 
     context 'when there are dependent documents' do
       context 'has_one' do
-
         context 'dependent: :destroy' do
           let!(:parent) do
             Hole.create!(bolt: Bolt.create!)
@@ -380,7 +365,6 @@ describe Mongoid::Persistable::Deletable do
       end
 
       context 'has_many' do
-
         context 'dependent: :destroy' do
           let!(:parent) do
             Hole.create!(nuts: [Nut.create!])
@@ -421,13 +405,11 @@ describe Mongoid::Persistable::Deletable do
   end
 
   describe "#delete_all" do
-
     let!(:person) do
       Person.create!(title: "sir")
     end
 
     context "when no conditions are provided" do
-
       let!(:removed) do
         Person.delete_all
       end
@@ -442,13 +424,11 @@ describe Mongoid::Persistable::Deletable do
     end
 
     context "when conditions are provided" do
-
       let!(:person_two) do
         Person.create!
       end
 
       context "when no conditions attribute provided" do
-
         let!(:removed) do
           Person.delete_all(title: "sir")
         end
@@ -463,7 +443,6 @@ describe Mongoid::Persistable::Deletable do
       end
 
       context "when the conditions need to be mongoized" do
-
         let!(:removed) do
           Person.delete_all(id: person.id)
         end
@@ -478,7 +457,6 @@ describe Mongoid::Persistable::Deletable do
       end
 
       context 'when the write concern is unacknowledged' do
-
         before do
           Person.create!(title: 'miss')
         end
@@ -499,7 +477,6 @@ describe Mongoid::Persistable::Deletable do
 
     context 'when there are dependent documents' do
       context 'has_one' do
-
         context 'dependent: :destroy' do
           let!(:parent) do
             Hole.create!(bolt: Bolt.create!)
@@ -538,7 +515,6 @@ describe Mongoid::Persistable::Deletable do
       end
 
       context 'has_many' do
-
         context 'dependent: :destroy' do
           let!(:parent) do
             Hole.create!(nuts: [Nut.create!])

@@ -3,17 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Contextual::Mongo do
-
-  [ :blank?, :empty? ].each do |method|
-
+  [:blank?, :empty?].each do |method|
     describe "##{method}" do
-
       before do
         Band.create!(name: "Depeche Mode")
       end
 
       context "when the count is zero" do
-
         let(:criteria) do
           Band.where(name: "New Order")
         end
@@ -28,7 +24,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when the count is greater than zero" do
-
         let(:criteria) do
           Band.where(name: "Depeche Mode")
         end
@@ -45,7 +40,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#count" do
-
     let!(:depeche) do
       Band.create!(name: "Depeche Mode")
     end
@@ -59,7 +53,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when no arguments are provided" do
-
       let(:context) do
         described_class.new(criteria)
       end
@@ -84,7 +77,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when provided a block" do
-
       let(:context) do
         described_class.new(criteria)
       end
@@ -100,7 +92,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "and a limit true" do
-
         before do
           2.times { Band.create!(name: "Depeche Mode", likes: 1) }
         end
@@ -118,7 +109,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when provided limit" do
-
       before do
         2.times { Band.create!(name: "Depeche Mode") }
       end
@@ -137,13 +127,11 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context 'when a collation is specified' do
-
       let(:context) do
         described_class.new(criteria)
       end
 
       context 'when the collation is specified on the criteria' do
-
         let(:criteria) do
           Band.where(name: "DEPECHE MODE").collation(locale: 'en_US', strength: 2)
         end
@@ -160,7 +148,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#estimated_count" do
-
     let!(:depeche) do
       Band.create!(name: "Depeche Mode")
     end
@@ -224,14 +211,13 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when including a default scope" do
-
       let(:criteria) do
         Band.where(name: "New Order")
       end
 
       before do
         5.times { Band.create! }
-        Band.default_scope ->{ criteria }
+        Band.default_scope -> { criteria }
       end
 
       after do
@@ -252,12 +238,8 @@ describe Mongoid::Contextual::Mongo do
     end
   end
 
-
-
-  [ :delete, :delete_all ].each do |method|
-
+  [:delete, :delete_all].each do |method|
     describe "##{method}" do
-
       let!(:depeche_mode) do
         Band.create!(name: "Depeche Mode")
       end
@@ -267,7 +249,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when the selector is contraining" do
-
         let(:criteria) do
           Band.where(name: "Depeche Mode")
         end
@@ -293,7 +274,6 @@ describe Mongoid::Contextual::Mongo do
         end
 
         context 'when the criteria has a collation' do
-
           let(:criteria) do
             Band.where(name: "DEPECHE MODE").collation(locale: 'en_US', strength: 2)
           end
@@ -321,7 +301,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when the selector is not contraining" do
-
         let(:criteria) do
           Band.all
         end
@@ -340,7 +319,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context 'when the write concern is unacknowledged' do
-
         let(:criteria) do
           Band.all
         end
@@ -358,10 +336,8 @@ describe Mongoid::Contextual::Mongo do
     end
   end
 
-  [ :destroy, :destroy_all ].each do |method|
-
+  [:destroy, :destroy_all].each do |method|
     describe "##{method}" do
-
       let!(:depeche_mode) do
         Band.create!(name: "Depeche Mode")
       end
@@ -371,7 +347,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when the selector is contraining" do
-
         let(:criteria) do
           Band.where(name: "Depeche Mode")
         end
@@ -397,7 +372,6 @@ describe Mongoid::Contextual::Mongo do
         end
 
         context 'when the criteria has a collation' do
-
           let(:criteria) do
             Band.where(name: "DEPECHE MODE").collation(locale: 'en_US', strength: 2)
           end
@@ -425,7 +399,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when the selector is not contraining" do
-
         let(:criteria) do
           Band.all
         end
@@ -445,7 +418,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context 'when the write concern is unacknowledged' do
-
       before do
         2.times { Band.create! }
       end
@@ -467,7 +439,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#distinct" do
-
     before do
       Band.create!(name: "Depeche Mode", years: 30, sales: "1E2")
       Band.create!(name: "New Order", years: 25, sales: "2E3")
@@ -475,7 +446,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when limiting the result set" do
-
       let(:criteria) do
         Band.where(name: "Depeche Mode")
       end
@@ -485,12 +455,11 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "returns the distinct matching fields" do
-        expect(context.distinct(:name)).to eq([ "Depeche Mode" ])
+        expect(context.distinct(:name)).to eq(["Depeche Mode"])
       end
     end
 
     context "when not limiting the result set" do
-
       let(:criteria) do
         Band.criteria
       end
@@ -500,12 +469,11 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "returns the distinct field values" do
-        expect(context.distinct(:name).sort).to eq([ "10,000 Maniacs", "Depeche Mode", "New Order" ].sort)
+        expect(context.distinct(:name).sort).to eq(["10,000 Maniacs", "Depeche Mode", "New Order"].sort)
       end
     end
 
     context "when providing an aliased field" do
-
       let(:criteria) do
         Band.criteria
       end
@@ -515,7 +483,7 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "returns the distinct field values" do
-        expect(context.distinct(:years).sort).to eq([ 20, 25, 30 ])
+        expect(context.distinct(:years).sort).to eq([20, 25, 30])
       end
     end
 
@@ -551,7 +519,7 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "returns the non-demongoized distinct field values" do
-        expect(context.distinct(:sales).sort).to eq([ BigDecimal("1E2"), BigDecimal("2E3") ])
+        expect(context.distinct(:sales).sort).to eq([BigDecimal("1E2"), BigDecimal("2E3")])
       end
     end
 
@@ -576,29 +544,27 @@ describe Mongoid::Contextual::Mongo do
 
       context "when getting the field without _translations" do
         it "gets the demongoized localized field" do
-          expect(context.distinct(:description)).to eq([ 'deutsch-text' ])
+          expect(context.distinct(:description)).to eq(['deutsch-text'])
         end
       end
 
       context "when getting the field with _translations" do
         it "gets the full hash" do
-          expect(context.distinct(:description_translations)).to eq([ { "de" => "deutsch-text", "en" => "english-text" } ])
+          expect(context.distinct(:description_translations)).to eq([{ "de" => "deutsch-text", "en" => "english-text" }])
         end
       end
 
       context 'when plucking a specific locale' do
-
         let(:distinct) do
           context.distinct(:'description.de')
         end
 
         it 'returns the specific translation' do
-          expect(distinct).to eq([ "deutsch-text" ])
+          expect(distinct).to eq(["deutsch-text"])
         end
       end
 
       context 'when plucking a specific locale from _translations field' do
-
         let(:distinct) do
           context.distinct(:'description_translations.de')
         end
@@ -613,7 +579,7 @@ describe Mongoid::Contextual::Mongo do
         with_default_i18n_configs
 
         before do
-          I18n.fallbacks[:he] = [ :en ]
+          I18n.fallbacks[:he] = [:en]
         end
 
         let(:distinct) do
@@ -676,26 +642,25 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when getting an embedded field" do
-
       let(:label) { Label.new(sales: "1E2") }
       let!(:band) { Band.create!(label: label) }
       let(:criteria) { Band.where(_id: band.id) }
       let(:context) { described_class.new(criteria) }
 
       it "returns the distinct matching fields" do
-        expect(context.distinct("label.sales")).to eq([ BigDecimal("1E2") ])
+        expect(context.distinct("label.sales")).to eq([BigDecimal("1E2")])
       end
     end
   end
 
   describe "#tally" do
-    let(:fans1) { [ Fanatic.new(age:1), Fanatic.new(age:2) ] }
-    let(:fans2) { [ Fanatic.new(age:1), Fanatic.new(age:2) ] }
-    let(:fans3) { [ Fanatic.new(age:1), Fanatic.new(age:3) ] }
+    let(:fans1) { [Fanatic.new(age: 1), Fanatic.new(age: 2)] }
+    let(:fans2) { [Fanatic.new(age: 1), Fanatic.new(age: 2)] }
+    let(:fans3) { [Fanatic.new(age: 1), Fanatic.new(age: 3)] }
 
-    let(:genres1) { [ { x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 3 } ]}
-    let(:genres2) { [ { x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 4 } ]}
-    let(:genres3) { [ { x: 1, y: { z: 1 } }, { x: 3, y: { z: 3 } }, { y: 5 } ]}
+    let(:genres1) { [{ x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 3 }] }
+    let(:genres2) { [{ x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 4 }] }
+    let(:genres3) { [{ x: 1, y: { z: 1 } }, { x: 3, y: { z: 3 } }, { y: 5 }] }
 
     let(:label1) {  Label.new(name: "Atlantic") }
     let(:label2) {  Label.new(name: "Atlantic") }
@@ -714,7 +679,6 @@ describe Mongoid::Contextual::Mongo do
     let(:unwind) { false }
 
     shared_examples_for "scalar value examples" do
-
       context "when tallying a string" do
         let(:tally) do
           criteria.tally(:name, unwind: unwind)
@@ -793,9 +757,9 @@ describe Mongoid::Contextual::Mongo do
 
           it "returns the correct hash" do
             expect(tallied).to eq(
-              {"de" => "de1", "en" => "en1" } => 2,
-              {"de" => "de2", "en" => "en1" } => 1,
-              {"de" => "de3", "en" => "en2" } => 1
+              { "de" => "de1", "en" => "en1" } => 2,
+              { "de" => "de2", "en" => "en1" } => 1,
+              { "de" => "de3", "en" => "en2" } => 1
             )
           end
         end
@@ -842,7 +806,7 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it "tallies the correct type" do
-            expect(tally.keys.map(&:class).sort do |a,b|
+            expect(tally.keys.map(&:class).sort do |a, b|
               a.to_s <=> b.to_s
             end).to eq([BSON::Decimal128, BSON::Regexp::Raw])
           end
@@ -857,7 +821,7 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it "tallies the correct type" do
-            expect(tally.keys.map(&:class).sort do |a,b|
+            expect(tally.keys.map(&:class).sort do |a, b|
               a.to_s <=> b.to_s
             end).to eq([BigDecimal, BSON::Regexp::Raw])
           end
@@ -887,8 +851,8 @@ describe Mongoid::Contextual::Mongo do
         address1b.name = "de2"
         address2a.name = "de1"
         address2b.name = "de3"
-        Person.create!(addresses: [ address1a, address1b ])
-        Person.create!(addresses: [ address2a, address2b ])
+        Person.create!(addresses: [address1a, address1b])
+        Person.create!(addresses: [address2a, address2b])
         I18n.locale = :en
       end
 
@@ -899,8 +863,8 @@ describe Mongoid::Contextual::Mongo do
 
         it "returns the translation for the current locale" do
           expect(tallied).to eq(
-            [ "en1", "en2" ] => 1,
-            [ "en1", "en3" ] => 1,
+            ["en1", "en2"] => 1,
+            ["en1", "en3"] => 1,
           )
         end
 
@@ -922,8 +886,8 @@ describe Mongoid::Contextual::Mongo do
 
         it "returns the translation for the the specific locale" do
           expect(tallied).to eq(
-            [ "de1", "de2" ] => 1,
-            [ "de1", "de3" ] => 1,
+            ["de1", "de2"] => 1,
+            ["de1", "de3"] => 1,
           )
         end
 
@@ -1060,9 +1024,8 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when tallying an element from an array of hashes; with duplicate" do
-
       before do
-        Band.create!(origin: "tally", genres: [ { x: 1 }, {x: 1} ] )
+        Band.create!(origin: "tally", genres: [{ x: 1 }, { x: 1 }])
       end
 
       let(:criteria) { Band.where(origin: "tally") }
@@ -1091,10 +1054,9 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when tallying an aliased field of type array" do
-
       before do
-        Person.create!(array: [ 1, 2 ])
-        Person.create!(array: [ 1, 3 ])
+        Person.create!(array: [1, 2])
+        Person.create!(array: [1, 3])
       end
 
       let(:tally) do
@@ -1146,9 +1108,9 @@ describe Mongoid::Contextual::Mongo do
 
     context "when tallying deeply nested arrays/embedded associations" do
       before do
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 3 } } ]))) ])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 3 } }])))])
       end
 
       let(:tally) do
@@ -1156,29 +1118,28 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "returns the correct hash" do
-        expect(tally).to eq([ [ 1, 2 ] ] => 2,
-                            [ [ 1, 3 ] ] => 1)
+        expect(tally).to eq([[1, 2]] => 2,
+                            [[1, 3]] => 1)
       end
 
       context "when :unwind true" do
         let(:unwind) { true }
 
         it "returns the correct hash without the nil keys" do
-          expect(tally).to eq([ 1, 2 ] => 2,
-                              [ 1, 3 ] => 1)
+          expect(tally).to eq([1, 2] => 2,
+                              [1, 3] => 1)
         end
       end
     end
 
     context "when tallying deeply nested arrays/embedded associations" do
-
       before do
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))),
-                                    Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))),
-                                    Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 3 } } ]))),
-                                    Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 3 } } ]))) ])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }]))),
+                                   Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }]))),
+                                   Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 3 } }]))),
+                                   Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 3 } }])))])
       end
 
       let(:tally) do
@@ -1187,8 +1148,8 @@ describe Mongoid::Contextual::Mongo do
 
       it "returns the correct hash" do
         expect(tally).to eq(
-          [ [ 1, 2 ], [ 1, 2 ] ] => 2,
-          [ [ 1, 3 ], [ 1, 3 ] ] => 1
+          [[1, 2], [1, 2]] => 2,
+          [[1, 3], [1, 3]] => 1
         )
       end
 
@@ -1196,17 +1157,17 @@ describe Mongoid::Contextual::Mongo do
         let(:unwind) { true }
 
         it "returns the correct hash without the nil keys" do
-          expect(tally).to eq([ 1, 2 ] => 4,
-                              [ 1, 3 ] => 2)
+          expect(tally).to eq([1, 2] => 4,
+                              [1, 3] => 2)
         end
       end
     end
 
     context "when the first element is an embeds_one" do
       before do
-        Person.create!(name: Name.new(translations: [ Translation.new(language: 1), Translation.new(language: 2) ]))
-        Person.create!(name: Name.new(translations: [ Translation.new(language: 1), Translation.new(language: 2) ]))
-        Person.create!(name: Name.new(translations: [ Translation.new(language: 1), Translation.new(language: 3) ]))
+        Person.create!(name: Name.new(translations: [Translation.new(language: 1), Translation.new(language: 2)]))
+        Person.create!(name: Name.new(translations: [Translation.new(language: 1), Translation.new(language: 2)]))
+        Person.create!(name: Name.new(translations: [Translation.new(language: 1), Translation.new(language: 3)]))
       end
 
       let(:tally) do
@@ -1233,7 +1194,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#each" do
-
     before do
       Band.create!(name: "Depeche Mode")
     end
@@ -1247,7 +1207,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context 'when the criteria has a collation' do
-
       let(:criteria) do
         Band.where(name: "DEPECHE MODE").collation(locale: 'en_US', strength: 2)
       end
@@ -1265,12 +1224,11 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "returns self" do
-        expect(context.each{}).to be(context)
+        expect(context.each {}).to be(context)
       end
     end
 
     context "when providing a block" do
-
       it "yields mongoid documents to the block" do
         context.each do |doc|
           expect(doc).to be_a(Mongoid::Document)
@@ -1284,12 +1242,11 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "returns self" do
-        expect(context.each{}).to be(context)
+        expect(context.each {}).to be(context)
       end
     end
 
     context "when no block is provided" do
-
       let(:enum) do
         context.each
       end
@@ -1299,9 +1256,7 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when iterating over the enumerator" do
-
         context "when iterating with each" do
-
           it "yields mongoid documents to the block" do
             enum.each do |doc|
               expect(doc).to be_a(Mongoid::Document)
@@ -1310,7 +1265,6 @@ describe Mongoid::Contextual::Mongo do
         end
 
         context "when iterating with next" do
-
           before do
             10.times { |i| Band.create!(name: "Test #{i}") }
           end
@@ -1345,7 +1299,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context 'when the criteria has a parent document' do
-
       before do
         Post.create!(person: person)
         Post.create!(person: person)
@@ -1371,7 +1324,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#eager_load" do
-
     let(:criteria) do
       Person.includes(:game)
     end
@@ -1381,7 +1333,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when no documents are returned" do
-
       let(:game_association) do
         Person.reflect_on_association(:game)
       end
@@ -1394,15 +1345,12 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#exists?" do
-
     let!(:band) do
       Band.create!(name: "Depeche Mode", active: true)
     end
 
     context "when not passing options" do
-
       context "when the count is zero" do
-
         let(:criteria) do
           Band.where(name: "New Order")
         end
@@ -1417,7 +1365,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when the count is greater than zero" do
-
         let(:criteria) do
           Band.where(name: "Depeche Mode")
         end
@@ -1432,7 +1379,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when caching is not enabled" do
-
         let(:criteria) do
           Band.where(name: "Depeche Mode")
         end
@@ -1458,32 +1404,26 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when passing an _id" do
-
       context "when its of type BSON::ObjectId" do
-
         context "when calling it on the class" do
-
           it "returns true" do
             expect(Band.exists?(band._id)).to be true
           end
         end
 
         context "when calling it on a criteria that includes the object" do
-
           it "returns true" do
             expect(Band.where(name: band.name).exists?(band._id)).to be true
           end
         end
 
         context "when calling it on a criteria that does not include the object" do
-
           it "returns false" do
             expect(Band.where(name: "bogus").exists?(band._id)).to be false
           end
         end
 
         context "when the id does not exist" do
-
           it "returns false" do
             expect(Band.exists?(BSON::ObjectId.new)).to be false
           end
@@ -1491,16 +1431,13 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when its of type String" do
-
         context "when the id exists" do
-
           it "returns true" do
             expect(Band.exists?(band._id.to_s)).to be true
           end
         end
 
         context "when the id does not exist" do
-
           it "returns false" do
             expect(Band.exists?(BSON::ObjectId.new.to_s)).to be false
           end
@@ -1509,30 +1446,25 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when passing a hash" do
-
       context "when calling it on the class" do
-
         it "returns true" do
           expect(Band.exists?(name: band.name)).to be true
         end
       end
 
       context "when calling it on a criteria that includes the object" do
-
         it "returns true" do
           expect(Band.where(active: true).exists?(name: band.name)).to be true
         end
       end
 
       context "when calling it on a criteria that does not include the object" do
-
         it "returns false" do
           expect(Band.where(active: false).exists?(name: band.name)).to be false
         end
       end
 
       context "when the conditions don't match" do
-
         it "returns false" do
           expect(Band.exists?(name: "bogus")).to be false
         end
@@ -1540,28 +1472,24 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when passing false" do
-
       it "returns false" do
         expect(Band.exists?(false)).to be false
       end
     end
 
     context "when passing nil" do
-
       it "returns false" do
         expect(Band.exists?(nil)).to be false
       end
     end
 
     context "when the limit is 0" do
-
       it "returns false" do
         expect(Band.limit(0).exists?).to be false
       end
     end
 
     context "when the criteria limit is 0" do
-
       it "returns false" do
         expect(Band.criteria.limit(0).exists?).to be false
       end
@@ -1569,7 +1497,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#explain" do
-
     let(:criteria) do
       Band.where(name: "Depeche Mode")
     end
@@ -1584,7 +1511,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#find_one_and_replace" do
-
     let!(:depeche) do
       Band.create!(name: "Depeche Mode")
     end
@@ -1594,9 +1520,7 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when the selector matches" do
-
       context "when not providing options" do
-
         let(:criteria) do
           Band.where(name: "Depeche Mode")
         end
@@ -1619,7 +1543,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when sorting" do
-
         let(:criteria) do
           Band.desc(:name)
         end
@@ -1643,7 +1566,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when limiting fields" do
-
         let(:criteria) do
           Band.only(:_id)
         end
@@ -1670,7 +1592,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when returning new" do
-
         let(:criteria) do
           Band.where(name: "Depeche Mode")
         end
@@ -1694,7 +1615,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context 'when a collation is specified on the criteria' do
-
         let(:criteria) do
           Band.where(name: "DEPECHE MODE").collation(locale: 'en_US', strength: 2)
         end
@@ -1719,7 +1639,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when the selector does not match" do
-
       let(:criteria) do
         Band.where(name: "DEPECHE MODE")
       end
@@ -1739,7 +1658,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#find_one_and_update" do
-
     let!(:depeche) do
       Band.create!(name: "Depeche Mode")
     end
@@ -1749,9 +1667,7 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when the selector matches" do
-
       context "when not providing options" do
-
         let(:criteria) do
           Band.where(name: "Depeche Mode")
         end
@@ -1774,7 +1690,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when sorting" do
-
         let(:criteria) do
           Band.desc(:name)
         end
@@ -1797,7 +1712,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when limiting fields" do
-
         let(:criteria) do
           Band.only(:_id)
         end
@@ -1824,7 +1738,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when returning new" do
-
         let(:criteria) do
           Band.where(name: "Depeche Mode")
         end
@@ -1834,7 +1747,7 @@ describe Mongoid::Contextual::Mongo do
         end
 
         let!(:result) do
-          context.find_one_and_update({ "$inc" => { likes: 1 }}, return_document: :after)
+          context.find_one_and_update({ "$inc" => { likes: 1 } }, return_document: :after)
         end
 
         it "returns the first matching document" do
@@ -1847,7 +1760,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context 'when a collation is specified on the criteria' do
-
         let(:criteria) do
           Band.where(name: "DEPECHE MODE").collation(locale: 'en_US', strength: 2)
         end
@@ -1857,7 +1769,7 @@ describe Mongoid::Contextual::Mongo do
         end
 
         let!(:result) do
-          context.find_one_and_update({ "$inc" => { likes: 1 }}, return_document: :after)
+          context.find_one_and_update({ "$inc" => { likes: 1 } }, return_document: :after)
         end
 
         it "returns the first matching document" do
@@ -1871,7 +1783,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when the selector does not match" do
-
       let(:criteria) do
         Band.where(name: "Placebo")
       end
@@ -1891,7 +1802,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#find_one_and_delete" do
-
     let!(:depeche) do
       Band.create!(name: "Depeche Mode")
     end
@@ -1909,7 +1819,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context 'when the selector matches a document' do
-
       it "returns the first matching document" do
         expect(result).to eq(depeche)
       end
@@ -1921,7 +1830,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context 'when a collation is specified on the criteria' do
-
         let(:criteria) do
           Band.where(name: "DEPECHE MODE").collation(locale: 'en_US', strength: 2)
         end
@@ -1947,7 +1855,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context 'when the selector does not match a document' do
-
       let(:criteria) do
         Band.where(name: "Placebo")
       end
@@ -1966,10 +1873,8 @@ describe Mongoid::Contextual::Mongo do
     end
   end
 
-  [ :first, :one ].each do |method|
-
+  [:first, :one].each do |method|
     describe "##{method}" do
-
       let!(:depeche_mode) do
         Band.create!(name: "Depeche Mode")
       end
@@ -1983,7 +1888,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when the context is not cached" do
-
         let(:criteria) do
           Band.where(name: "Depeche Mode")
         end
@@ -1997,7 +1901,6 @@ describe Mongoid::Contextual::Mongo do
         end
 
         context 'when the criteria has a collation' do
-
           let(:criteria) do
             Band.where(name: "DEPECHE MODE").collation(locale: 'en_US', strength: 2)
           end
@@ -2009,7 +1912,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when using .desc" do
-
         let(:criteria) do
           Band.desc(:name)
         end
@@ -2019,14 +1921,12 @@ describe Mongoid::Contextual::Mongo do
         end
 
         context "when there is sort on the context" do
-
           it "follows the main sort" do
             expect(context.send(method)).to eq(rolling_stones)
           end
         end
 
         context "when subsequently calling #last" do
-
           it "returns the correct document" do
             expect(context.send(method)).to eq(rolling_stones)
             expect(context.last).to eq(depeche_mode)
@@ -2035,7 +1935,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context 'when the criteria has no sort' do
-
         let(:criteria) do
           Band.all
         end
@@ -2044,13 +1943,11 @@ describe Mongoid::Contextual::Mongo do
           described_class.new(criteria)
         end
 
-
         it 'applies a sort on _id' do
           expect(context.send(method)).to eq(depeche_mode)
         end
 
         context 'when calling #last' do
-
           it 'returns the last document, sorted by _id' do
             expect(context.send(method)).to eq(depeche_mode)
             expect(context.last).to eq(rolling_stones)
@@ -2059,7 +1956,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context 'when the criteria has a sort' do
-
         let(:criteria) do
           Band.desc(:name)
         end
@@ -2073,7 +1969,6 @@ describe Mongoid::Contextual::Mongo do
         end
 
         context 'when calling #last' do
-
           it 'applies the criteria sort' do
             expect(context.send(method)).to eq(rolling_stones)
             expect(context.last).to eq(depeche_mode)
@@ -2082,7 +1977,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when using .sort" do
-
         let(:criteria) do
           Band.all.sort(:name => -1).criteria
         end
@@ -2092,14 +1986,12 @@ describe Mongoid::Contextual::Mongo do
         end
 
         context "when there is sort on the context" do
-
           it "follows the main sort" do
             expect(context.send(method)).to eq(rolling_stones)
           end
         end
 
         context "when subsequently calling #last" do
-
           it "returns the correct document" do
             expect(context.send(method)).to eq(rolling_stones)
             expect(context.last).to eq(depeche_mode)
@@ -2119,7 +2011,6 @@ describe Mongoid::Contextual::Mongo do
         end
 
         context "when first method was called before" do
-
           before do
             context.first
           end
@@ -2133,9 +2024,7 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when including a limit" do
-
         context "when the context is not cached" do
-
           let(:context) do
             described_class.new(criteria)
           end
@@ -2150,7 +2039,7 @@ describe Mongoid::Contextual::Mongo do
             end
 
             it "returns an array of documents" do
-              expect(docs).to eq([ depeche_mode ])
+              expect(docs).to eq([depeche_mode])
             end
           end
 
@@ -2164,24 +2053,22 @@ describe Mongoid::Contextual::Mongo do
             end
 
             it "returns the number of documents in order" do
-              expect(docs).to eq([ depeche_mode, new_order ])
+              expect(docs).to eq([depeche_mode, new_order])
             end
           end
 
           context 'when the criteria has a collation' do
-
             let(:criteria) do
               Band.where(name: "DEPECHE MODE").collation(locale: 'en_US', strength: 2)
             end
 
             it "returns the first matching document" do
-              expect(context.send(method, 1)).to eq([ depeche_mode ])
+              expect(context.send(method, 1)).to eq([depeche_mode])
             end
           end
         end
 
         context "when the query cache is enabled" do
-
           let(:context) do
             described_class.new(criteria)
           end
@@ -2213,7 +2100,7 @@ describe Mongoid::Contextual::Mongo do
 
                 it "returns all documents without touching the database" do
                   expect_no_queries do
-                    expect(docs).to eq([ depeche_mode, new_order, rolling_stones ])
+                    expect(docs).to eq([depeche_mode, new_order, rolling_stones])
                   end
                 end
               end
@@ -2223,7 +2110,7 @@ describe Mongoid::Contextual::Mongo do
 
                 it "returns the correct documents without touching the database" do
                   expect_no_queries do
-                    expect(docs).to eq([ depeche_mode, new_order ])
+                    expect(docs).to eq([depeche_mode, new_order])
                   end
                 end
               end
@@ -2237,7 +2124,7 @@ describe Mongoid::Contextual::Mongo do
 
                 it "returns the correct documents without touching the database" do
                   expect_no_queries do
-                    expect(docs).to eq([ depeche_mode, new_order ])
+                    expect(docs).to eq([depeche_mode, new_order])
                   end
                 end
               end
@@ -2247,7 +2134,7 @@ describe Mongoid::Contextual::Mongo do
 
                 it "returns the correct documents and touches the database" do
                   expect_query(1) do
-                    expect(docs).to eq([ depeche_mode, new_order, rolling_stones ])
+                    expect(docs).to eq([depeche_mode, new_order, rolling_stones])
                   end
                 end
               end
@@ -2261,7 +2148,7 @@ describe Mongoid::Contextual::Mongo do
 
                 it "returns the correct documents without touching the database" do
                   expect_no_queries do
-                    expect(docs).to eq([ depeche_mode ])
+                    expect(docs).to eq([depeche_mode])
                   end
                 end
               end
@@ -2271,7 +2158,7 @@ describe Mongoid::Contextual::Mongo do
 
                 it "returns the correct documents and touches the database" do
                   expect_query(1) do
-                    expect(docs).to eq([ depeche_mode, new_order, rolling_stones ])
+                    expect(docs).to eq([depeche_mode, new_order, rolling_stones])
                   end
                 end
               end
@@ -2327,7 +2214,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when the context is not cached" do
-
       let(:criteria) do
         Band.where(name: "Depeche Mode")
       end
@@ -2341,7 +2227,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context 'when the criteria has a collation' do
-
         let(:criteria) do
           Band.where(name: "DEPECHE MODE").collation(locale: 'en_US', strength: 2)
         end
@@ -2353,7 +2238,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when using .desc" do
-
       let(:criteria) do
         Band.desc(:name)
       end
@@ -2363,14 +2247,12 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when there is sort on the context" do
-
         it "follows the main sort" do
           expect(context.last).to eq(depeche_mode)
         end
       end
 
       context "when subsequently calling #first" do
-
         it "returns the correct document" do
           expect(context.last).to eq(depeche_mode)
           expect(context.first).to eq(rolling_stones)
@@ -2379,7 +2261,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context 'when the criteria has no sort' do
-
       let(:criteria) do
         Band.all
       end
@@ -2393,7 +2274,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context 'when calling #first' do
-
         it 'returns the first document, sorted by _id' do
           expect(context.last).to eq(rolling_stones)
           expect(context.first).to eq(depeche_mode)
@@ -2402,7 +2282,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context 'when the criteria has a sort' do
-
       let(:criteria) do
         Band.desc(:name)
       end
@@ -2411,13 +2290,11 @@ describe Mongoid::Contextual::Mongo do
         described_class.new(criteria)
       end
 
-
       it 'applies the criteria sort' do
         expect(context.last).to eq(depeche_mode)
       end
 
       context 'when calling #first' do
-
         it 'applies the criteria sort' do
           expect(context.last).to eq(depeche_mode)
           expect(context.first).to eq(rolling_stones)
@@ -2426,7 +2303,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when using .sort" do
-
       let(:criteria) do
         Band.all.sort(:name => -1).criteria
       end
@@ -2436,14 +2312,12 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when there is sort on the context" do
-
         it "follows the main sort" do
           expect(context.last).to eq(depeche_mode)
         end
       end
 
       context "when subsequently calling #first" do
-
         it "returns the correct document" do
           expect(context.last).to eq(depeche_mode)
           expect(context.first).to eq(rolling_stones)
@@ -2463,7 +2337,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when last method was called before" do
-
         before do
           context.last
         end
@@ -2477,9 +2350,7 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when including a limit" do
-
       context "when the context is not cached" do
-
         let(:context) do
           described_class.new(criteria)
         end
@@ -2494,7 +2365,7 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it "returns an array of documents" do
-            expect(docs).to eq([ rolling_stones ])
+            expect(docs).to eq([rolling_stones])
           end
         end
 
@@ -2508,24 +2379,22 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it "returns the number of documents in order" do
-            expect(docs).to eq([ new_order, rolling_stones ])
+            expect(docs).to eq([new_order, rolling_stones])
           end
         end
 
         context 'when the criteria has a collation' do
-
           let(:criteria) do
             Band.where(name: "DEPECHE MODE").collation(locale: 'en_US', strength: 2)
           end
 
           it "returns the first matching document" do
-            expect(context.last(1)).to eq([ depeche_mode ])
+            expect(context.last(1)).to eq([depeche_mode])
           end
         end
       end
 
       context "when the context is cached" do
-
         let(:context) do
           described_class.new(criteria)
         end
@@ -2557,7 +2426,7 @@ describe Mongoid::Contextual::Mongo do
 
               it "returns all documents without touching the db" do
                 expect_no_queries do
-                  expect(docs).to eq([ depeche_mode, new_order, rolling_stones ])
+                  expect(docs).to eq([depeche_mode, new_order, rolling_stones])
                 end
               end
             end
@@ -2567,7 +2436,7 @@ describe Mongoid::Contextual::Mongo do
 
               it "returns the correct documents without touching the db" do
                 expect_no_queries do
-                  expect(docs).to eq([ new_order, rolling_stones ])
+                  expect(docs).to eq([new_order, rolling_stones])
                 end
               end
             end
@@ -2581,7 +2450,7 @@ describe Mongoid::Contextual::Mongo do
 
               it "returns the correct documents without touching the db" do
                 expect_no_queries do
-                  expect(docs).to eq([ new_order, rolling_stones ])
+                  expect(docs).to eq([new_order, rolling_stones])
                 end
               end
             end
@@ -2591,7 +2460,7 @@ describe Mongoid::Contextual::Mongo do
 
               it "returns the correct documents and touches the database" do
                 expect_query(1) do
-                  expect(docs).to eq([ depeche_mode, new_order, rolling_stones ])
+                  expect(docs).to eq([depeche_mode, new_order, rolling_stones])
                 end
               end
             end
@@ -2605,7 +2474,7 @@ describe Mongoid::Contextual::Mongo do
 
               it "returns the correct documents without touching the database" do
                 expect_no_queries do
-                  expect(docs).to eq([ rolling_stones ])
+                  expect(docs).to eq([rolling_stones])
                 end
               end
             end
@@ -2615,7 +2484,7 @@ describe Mongoid::Contextual::Mongo do
 
               it "returns the correct documents and touches the database" do
                 expect_query(1) do
-                  expect(docs).to eq([ depeche_mode, new_order, rolling_stones ])
+                  expect(docs).to eq([depeche_mode, new_order, rolling_stones])
                 end
               end
             end
@@ -2654,14 +2523,13 @@ describe Mongoid::Contextual::Mongo do
         end
 
         it "gets the correct document" do
-          expect(docs).to eq([ depeche_mode ])
+          expect(docs).to eq([depeche_mode])
         end
       end
     end
   end
 
   describe "#initialize" do
-
     let(:criteria) do
       Band.where(name: "Depeche Mode").no_timeout
     end
@@ -2687,17 +2555,14 @@ describe Mongoid::Contextual::Mongo do
     end
   end
 
-  [ :length, :size ].each do |method|
-
+  [:length, :size].each do |method|
     describe "##{method}" do
-
       before do
         Band.create!(name: "Depeche Mode")
         Band.create!(name: "New Order")
       end
 
       context "when the criteria has a limit" do
-
         let(:criteria) do
           Band.limit(1)
         end
@@ -2733,7 +2598,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when the criteria has no limit" do
-
         let(:criteria) do
           Band.where(name: "Depeche Mode")
         end
@@ -2756,7 +2620,6 @@ describe Mongoid::Contextual::Mongo do
         end
 
         context "when the results have been iterated over" do
-
           before do
             context.entries
           end
@@ -2767,7 +2630,6 @@ describe Mongoid::Contextual::Mongo do
           end
 
           context "when the results have been iterated over multiple times" do
-
             before do
               context.entries
             end
@@ -2782,7 +2644,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#limit" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -2800,12 +2661,11 @@ describe Mongoid::Contextual::Mongo do
     end
 
     it "limits the results" do
-      expect(context.limit(1).entries).to eq([ depeche_mode ])
+      expect(context.limit(1).entries).to eq([depeche_mode])
     end
   end
 
   describe "#take" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -2827,11 +2687,11 @@ describe Mongoid::Contextual::Mongo do
     end
 
     it "takes the correct number results" do
-      expect(context.take(2)).to eq([ depeche_mode, new_order ])
+      expect(context.take(2)).to eq([depeche_mode, new_order])
     end
 
     it "returns an array when passing 1" do
-      expect(context.take(1)).to eq([ depeche_mode ])
+      expect(context.take(1)).to eq([depeche_mode])
     end
 
     it "does not return an array when not passing an argument" do
@@ -2839,12 +2699,11 @@ describe Mongoid::Contextual::Mongo do
     end
 
     it "returns all the documents taking more than whats in the db" do
-      expect(context.take(5)).to eq([ depeche_mode, new_order, rolling_stones ])
+      expect(context.take(5)).to eq([depeche_mode, new_order, rolling_stones])
     end
   end
 
   describe "#take!" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -2879,7 +2738,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#map" do
-
     before do
       Band.create!(name: "Depeche Mode")
       Band.create!(name: "New Order")
@@ -2894,7 +2752,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when passed the symbol field name" do
-
       it "raises an error" do
         expect do
           context.map(:name)
@@ -2903,7 +2760,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when passed a block" do
-
       it "performs mapping" do
         expect(context.map(&:name)).to eq ["Depeche Mode", "New Order"]
       end
@@ -2911,7 +2767,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#map_reduce" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode", likes: 200)
     end
@@ -2943,7 +2798,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when no selection is provided" do
-
       let(:criteria) do
         Band.all
       end
@@ -2958,13 +2812,13 @@ describe Mongoid::Contextual::Mongo do
 
       it "returns the first aggregate result" do
         expect(results).to include(
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         )
       end
 
       it "returns the second aggregate result" do
         expect(results).to include(
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
+          { "_id" => "Tool", "value" => { "likes" => 100 } }
         )
       end
 
@@ -2974,9 +2828,9 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire raw results" do
         expect(ordered_results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }},
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
-        ])
+                                        { "_id" => "Depeche Mode", "value" => { "likes" => 200 } },
+                                        { "_id" => "Tool", "value" => { "likes" => 100 } }
+                                      ])
       end
 
       context 'when statistics are available' do
@@ -2988,8 +2842,8 @@ describe Mongoid::Contextual::Mongo do
 
         it "contains the count statistics" do
           expect(results["counts"]).to eq({
-            "input" => 2, "emit" => 2, "reduce" => 0, "output" => 2
-          })
+                                            "input" => 2, "emit" => 2, "reduce" => 0, "output" => 2
+                                          })
         end
 
         it "contains the input count" do
@@ -3011,7 +2865,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when selection is provided" do
-
       let(:criteria) do
         Band.where(name: "Depeche Mode")
       end
@@ -3026,7 +2879,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "includes the aggregate result" do
         expect(results).to include(
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         )
       end
 
@@ -3036,8 +2889,8 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire raw results" do
         expect(ordered_results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
-        ])
+                                        { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
+                                      ])
       end
 
       context 'when statistics are available' do
@@ -3049,8 +2902,8 @@ describe Mongoid::Contextual::Mongo do
 
         it "contains the count statistics" do
           expect(results["counts"]).to eq({
-            "input" => 1, "emit" => 1, "reduce" => 0, "output" => 1
-          })
+                                            "input" => 1, "emit" => 1, "reduce" => 0, "output" => 1
+                                          })
         end
 
         it "contains the input count" do
@@ -3072,7 +2925,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when sorting is provided" do
-
       before do
         Band.index(name: -1)
         Band.create_indexes
@@ -3092,13 +2944,13 @@ describe Mongoid::Contextual::Mongo do
 
       it "returns the first aggregate result" do
         expect(results).to include(
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
+          { "_id" => "Tool", "value" => { "likes" => 100 } }
         )
       end
 
       it "returns the second aggregate result" do
         expect(results).to include(
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         )
       end
 
@@ -3108,9 +2960,9 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire raw results" do
         expect(ordered_results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }},
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
-        ])
+                                        { "_id" => "Depeche Mode", "value" => { "likes" => 200 } },
+                                        { "_id" => "Tool", "value" => { "likes" => 100 } }
+                                      ])
       end
     end
 
@@ -3133,7 +2985,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "returns the first aggregate result" do
         expect(results).to include(
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         )
       end
 
@@ -3143,13 +2995,12 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire raw results" do
         expect(results["results"]).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
-        ])
+                                           { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
+                                         ])
       end
     end
 
     context "when the output is replace" do
-
       let(:criteria) do
         Band.limit(1)
       end
@@ -3168,13 +3019,12 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire results" do
         expect(results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
-        ])
+                                { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
+                              ])
       end
     end
 
     context "when the output is reduce" do
-
       let(:criteria) do
         Band.limit(1)
       end
@@ -3193,13 +3043,12 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire results" do
         expect(results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
-        ])
+                                { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
+                              ])
       end
     end
 
     context "when the output is merge" do
-
       let(:criteria) do
         Band.limit(1)
       end
@@ -3218,8 +3067,8 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire results" do
         expect(results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
-        ])
+                                { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
+                              ])
       end
     end
 
@@ -3242,7 +3091,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context 'when db is a string' do
-
         let(:results) do
           context.map_reduce(map, reduce).out(merge: :mr_output, db: 'another-db')
         end
@@ -3253,7 +3101,7 @@ describe Mongoid::Contextual::Mongo do
 
         it "contains the entire results" do
           expect(results).to eq([
-                                    { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+                                  { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
                                 ])
         end
 
@@ -3263,7 +3111,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context 'when db is a symbol' do
-
         let(:results) do
           context.map_reduce(map, reduce).out(merge: :mr_output, 'db' => 'another-db')
         end
@@ -3274,7 +3121,7 @@ describe Mongoid::Contextual::Mongo do
 
         it "contains the entire results" do
           expect(results).to eq([
-                                    { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+                                  { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
                                 ])
         end
 
@@ -3285,7 +3132,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when providing no output" do
-
       let(:criteria) do
         Band.limit(1)
       end
@@ -3306,7 +3152,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when providing a finalize" do
-
       let(:criteria) do
         Band.limit(1)
       end
@@ -3333,14 +3178,13 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire results" do
         expect(results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200, "extra" => true }}
-        ])
+                                { "_id" => "Depeche Mode", "value" => { "likes" => 200, "extra" => true } }
+                              ])
       end
     end
   end
 
   describe "#skip" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -3358,12 +3202,11 @@ describe Mongoid::Contextual::Mongo do
     end
 
     it "limits the results" do
-      expect(context.skip(1).entries).to eq([ new_order ])
+      expect(context.skip(1).entries).to eq([new_order])
     end
   end
 
   describe "#sort" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -3381,9 +3224,8 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when providing a spec" do
-
       it "sorts the results" do
-        expect(context.sort(name: -1).entries).to eq([ new_order, depeche_mode ])
+        expect(context.sort(name: -1).entries).to eq([new_order, depeche_mode])
       end
 
       it "returns the context" do
@@ -3392,7 +3234,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when providing a block" do
-
       let(:sorted) do
         context.sort do |a, b|
           b.name <=> a.name
@@ -3400,13 +3241,12 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "sorts the results in memory" do
-        expect(sorted).to eq([ new_order, depeche_mode ])
+        expect(sorted).to eq([new_order, depeche_mode])
       end
     end
   end
 
   describe "#update" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -3424,7 +3264,6 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when adding an element to a HABTM set" do
-
       let(:person) do
         Person.create!
       end
@@ -3434,19 +3273,17 @@ describe Mongoid::Contextual::Mongo do
       end
 
       before do
-        Person.where(id: person.id).
-          update("$addToSet" => { preference_ids: preference.id })
+        Person.where(id: person.id)
+              .update("$addToSet" => { preference_ids: preference.id })
       end
 
       it "adds a single element to the array" do
-        expect(person.reload.preference_ids).to eq([ preference.id ])
+        expect(person.reload.preference_ids).to eq([preference.id])
       end
     end
 
     context "when providing attributes" do
-
       context "when the attributes are of the correct type" do
-
         before do
           context.update(name: "Smiths")
         end
@@ -3461,9 +3298,7 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when the attributes must be mongoized" do
-
         context "when coercing a string to integer" do
-
           before do
             context.update(member_count: "1")
           end
@@ -3478,7 +3313,6 @@ describe Mongoid::Contextual::Mongo do
         end
 
         context "when coercing a string to date" do
-
           before do
             context.update(founded: "1979/1/1")
           end
@@ -3495,11 +3329,8 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when providing atomic operations" do
-
       context "when only atomic operations are provided" do
-
         context "when the attributes are in the correct type" do
-
           before do
             context.update("$set" => { name: "Smiths" })
           end
@@ -3514,7 +3345,6 @@ describe Mongoid::Contextual::Mongo do
         end
 
         context "when the attributes must be mongoized" do
-
           before do
             context.update("$set" => { member_count: "1" })
           end
@@ -3530,7 +3360,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when a mix are provided" do
-
         before do
           context.update("$set" => { name: "Smiths" }, likes: 100)
         end
@@ -3554,14 +3383,12 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when providing no attributes" do
-
       it "returns false" do
         expect(context.update).to be false
       end
     end
 
     context 'when provided array filters' do
-
       before do
         Band.delete_all
         b = Band.new(name: 'Depeche Mode')
@@ -3575,7 +3402,6 @@ describe Mongoid::Contextual::Mongo do
         b.labels << Label.new(name: 'Cbs')
         b.save!
       end
-
 
       let(:criteria) do
         Band.where(name: 'Depeche Mode')
@@ -3597,7 +3423,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#update_all" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode", origin: "Essex")
     end
@@ -3615,9 +3440,7 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when providing attributes" do
-
       context "when the attributes are of the correct type" do
-
         before do
           context.update_all(name: "Smiths")
         end
@@ -3636,7 +3459,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when the attributes must be mongoized" do
-
         before do
           context.update_all(member_count: "1")
         end
@@ -3651,7 +3473,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when using aliased field names" do
-
         before do
           context.update_all(years: 100)
         end
@@ -3667,11 +3488,8 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when providing atomic operations" do
-
       context "when only atomic operations are provided" do
-
         context "when the attributes are in the correct type" do
-
           before do
             context.update_all("$set" => { name: "Smiths" })
           end
@@ -3686,7 +3504,6 @@ describe Mongoid::Contextual::Mongo do
         end
 
         context "when the attributes must be mongoized" do
-
           before do
             context.update_all("$set" => { member_count: "1" })
           end
@@ -3702,7 +3519,6 @@ describe Mongoid::Contextual::Mongo do
       end
 
       context "when a mix are provided" do
-
         before do
           context.update_all("$set" => { name: "Smiths" }, likes: 100)
         end
@@ -3726,14 +3542,12 @@ describe Mongoid::Contextual::Mongo do
     end
 
     context "when providing no attributes" do
-
       it "returns false" do
         expect(context.update_all).to be false
       end
     end
 
     context 'when provided array filters' do
-
       before do
         Band.delete_all
         b = Band.new(name: 'Depeche Mode')
@@ -3748,14 +3562,13 @@ describe Mongoid::Contextual::Mongo do
         b.save!
       end
 
-
       let(:criteria) do
         Band.all
       end
 
       let!(:update) do
         context.update_all({ '$set' => { 'labels.$[i].name' => 'Sony' } },
-                       array_filters: [{ 'i.name' => 'Cbs' }])
+                           array_filters: [{ 'i.name' => 'Cbs' }])
       end
 
       it 'applies the array filters' do
@@ -3769,9 +3582,7 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe '#pipeline' do
-
     context 'when the criteria has a selector' do
-
       before do
         Artist.index(name: "text")
         Artist.create_indexes
@@ -3800,7 +3611,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#first!" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -3855,7 +3665,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#last!" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -3910,7 +3719,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#second" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -3963,7 +3771,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#second!" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -4018,7 +3825,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#third" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -4071,7 +3877,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#third!" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -4126,7 +3931,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#fourth" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -4179,7 +3983,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#fourth!" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -4234,7 +4037,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#fifth" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -4291,7 +4093,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#fifth!" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -4350,7 +4151,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#second_to_last" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -4403,7 +4203,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#second_to_last!" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -4458,7 +4257,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#third_to_last" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -4511,7 +4309,6 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#third_to_last!" do
-
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end

@@ -2,7 +2,6 @@
 
 module Mongoid
   module Timestamps
-
     # This module adds behavior for turning off timestamping in single or
     # multiple calls.
     module Timeless
@@ -61,7 +60,6 @@ module Mongoid
       private
 
       module ClassMethods
-
         # Begin an execution that should skip timestamping.
         #
         # @example Create a document but don't timestamp.

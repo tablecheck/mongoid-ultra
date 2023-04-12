@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Extensions::DateTime do
-
   describe "__mongoize_time__" do
-
     let(:date_time) do
       # DateTime has time zone information, even if a time zone is not provided
       # when parsing a string
@@ -27,7 +25,6 @@ describe Mongoid::Extensions::DateTime do
   end
 
   describe ".demongoize" do
-
     let!(:time) do
       Time.now.utc
     end
@@ -48,7 +45,6 @@ describe Mongoid::Extensions::DateTime do
       config_override :use_utc, true
 
       context "when setting a utc time" do
-
         let(:user) do
           User.new
         end
@@ -68,7 +64,6 @@ describe Mongoid::Extensions::DateTime do
     end
 
     context "when demongoizing a string" do
-
       let(:date) { "2022-07-11 14:03:42 -0400" }
 
       it "returns a date" do
@@ -78,9 +73,7 @@ describe Mongoid::Extensions::DateTime do
   end
 
   describe ".mongoize" do
-
     context "when the string is an invalid time" do
-
       let(:mongoized) do
         DateTime.mongoize("time")
       end
@@ -92,13 +85,11 @@ describe Mongoid::Extensions::DateTime do
   end
 
   describe "#mongoize" do
-
     let!(:date_time) do
       Time.now.utc.to_datetime
     end
 
     context "when the string is an invalid time" do
-
       it "returns the date time as a time" do
         expect(date_time.mongoize).to be_a(Time)
       end

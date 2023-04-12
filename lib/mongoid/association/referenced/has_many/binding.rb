@@ -4,7 +4,6 @@ module Mongoid
   module Association
     module Referenced
       class HasMany
-
         # Binding class for has_many associations.
         class Binding
           include Bindable

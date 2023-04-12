@@ -4,7 +4,6 @@ require "mongoid/association/marshalable"
 
 module Mongoid
   module Association
-
     # This class is the superclass for all association proxy objects, and contains
     # common behavior for all of them.
     class Proxy
@@ -58,7 +57,7 @@ module Mongoid
 
       # Allow extension to be an array and extend each module
       def extend_proxies(*extension)
-        extension.flatten.each {|ext| extend_proxy(ext) }
+        extension.flatten.each { |ext| extend_proxy(ext) }
       end
 
       # Get the class from the association, or return nil if no association present.
@@ -187,7 +186,6 @@ module Mongoid
       end
 
       class << self
-
         # Apply ordering to the criteria if it was defined on the association.
         #
         # @example Apply the ordering.

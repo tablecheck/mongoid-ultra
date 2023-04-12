@@ -3,7 +3,6 @@
 module Mongoid
   module Fields
     module Validators
-
       # Validates the params passed to the field macro.
       module Macro
         extend self

@@ -2,7 +2,6 @@
 
 module Mongoid
   module Expectations
-
     def connection_class
       if defined?(Mongo::Server::ConnectionBase)
         Mongo::Server::ConnectionBase

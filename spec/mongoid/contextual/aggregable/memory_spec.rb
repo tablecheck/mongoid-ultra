@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::Contextual::Aggregable::Memory do
-
   let(:context) do
     Mongoid::Contextual::Memory.new(criteria)
   end
@@ -26,7 +25,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
     context 'when documents found' do
       let(:criteria) do
         Band.all.tap do |crit|
-          crit.documents = [ depeche, tool ]
+          crit.documents = [depeche, tool]
         end
       end
 
@@ -45,9 +44,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
   end
 
   describe "#avg" do
-
     context "when the types are Integers" do
-
       let!(:depeche) do
         Band.create!(name: "Depeche Mode", likes: 1000)
       end
@@ -58,7 +55,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
 
       let(:criteria) do
         Band.all.tap do |criteria|
-          criteria.documents = [ depeche, tool ]
+          criteria.documents = [depeche, tool]
         end
       end
 
@@ -75,7 +72,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
       end
 
       context 'when integers are negative' do
-
         let!(:depeche) do
           Band.create!(name: "Depeche Mode", likes: -1000)
         end
@@ -91,7 +87,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
     end
 
     context "when the types are Floats" do
-
       let!(:depeche) do
         Band.create!(name: "Depeche Mode", rating: 10)
       end
@@ -102,7 +97,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
 
       let(:criteria) do
         Band.all.tap do |criteria|
-          criteria.documents = [ depeche, tool ]
+          criteria.documents = [depeche, tool]
         end
       end
 
@@ -116,7 +111,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
     end
 
     context "when no documents match" do
-
       let!(:depeche) do
         Band.create!(name: "Depeche Mode", likes: 1000)
       end
@@ -135,11 +129,10 @@ describe Mongoid::Contextual::Aggregable::Memory do
     end
 
     context "when there are a mix of types" do
-
       let!(:bands) do
-        [ Band.create!(name: "The Flaming Lips", mojo: 7.7),
-          Band.create!(name: "Spirit of the Beehive", mojo: 10),
-          Band.create!(name: "Justin Bieber", mojo: nil) ]
+        [Band.create!(name: "The Flaming Lips", mojo: 7.7),
+         Band.create!(name: "Spirit of the Beehive", mojo: 10),
+         Band.create!(name: "Justin Bieber", mojo: nil)]
       end
 
       let(:criteria) do
@@ -162,9 +155,8 @@ describe Mongoid::Contextual::Aggregable::Memory do
     end
 
     context "when there no numeric values" do
-
       let!(:bands) do
-        [ Band.create!(name: "Justin Bieber", mojo: nil) ]
+        [Band.create!(name: "Justin Bieber", mojo: nil)]
       end
 
       let(:criteria) do
@@ -188,7 +180,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
   end
 
   describe "#max" do
-
     let!(:depeche) do
       Band.create!(name: "Depeche Mode", likes: 1000)
     end
@@ -199,12 +190,11 @@ describe Mongoid::Contextual::Aggregable::Memory do
 
     let(:criteria) do
       Band.all.tap do |crit|
-        crit.documents = [ depeche, tool ]
+        crit.documents = [depeche, tool]
       end
     end
 
     context "when provided a Symbol" do
-
       let(:max) do
         context.max(:likes)
       end
@@ -214,7 +204,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
       end
 
       context "when no documents match" do
-
         let(:criteria) do
           Band.where(name: "New Order")
         end
@@ -229,11 +218,10 @@ describe Mongoid::Contextual::Aggregable::Memory do
       end
 
       context "when there are a mix of types" do
-
         let!(:bands) do
-          [ Band.create!(name: "The Flaming Lips", mojo: 7.7),
-            Band.create!(name: "Spirit of the Beehive", mojo: 10),
-            Band.create!(name: "Justin Bieber", mojo: nil) ]
+          [Band.create!(name: "The Flaming Lips", mojo: 7.7),
+           Band.create!(name: "Spirit of the Beehive", mojo: 10),
+           Band.create!(name: "Justin Bieber", mojo: nil)]
         end
 
         let(:criteria) do
@@ -253,9 +241,8 @@ describe Mongoid::Contextual::Aggregable::Memory do
       end
 
       context "when there no numeric values" do
-
         let!(:bands) do
-          [ Band.create!(name: "Justin Bieber", mojo: nil) ]
+          [Band.create!(name: "Justin Bieber", mojo: nil)]
         end
 
         let(:criteria) do
@@ -275,7 +262,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
     end
 
     context "when provided a block" do
-
       let(:max) do
         context.max do |a, b|
           a.likes <=> b.likes
@@ -289,7 +275,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
   end
 
   describe "#min" do
-
     let!(:depeche) do
       Band.create!(name: "Depeche Mode", likes: 1000)
     end
@@ -300,12 +285,11 @@ describe Mongoid::Contextual::Aggregable::Memory do
 
     let(:criteria) do
       Band.all.tap do |crit|
-        crit.documents = [ depeche, tool ]
+        crit.documents = [depeche, tool]
       end
     end
 
     context "when provided a Symbol" do
-
       let(:min) do
         context.min(:likes)
       end
@@ -315,7 +299,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
       end
 
       context "when no documents match" do
-
         let(:criteria) do
           Band.where(name: "New Order")
         end
@@ -330,11 +313,10 @@ describe Mongoid::Contextual::Aggregable::Memory do
       end
 
       context "when there are a mix of types" do
-
         let!(:bands) do
-          [ Band.create!(name: "The Flaming Lips", mojo: 7.7),
-            Band.create!(name: "Spirit of the Beehive", mojo: 10),
-            Band.create!(name: "Justin Bieber", mojo: nil) ]
+          [Band.create!(name: "The Flaming Lips", mojo: 7.7),
+           Band.create!(name: "Spirit of the Beehive", mojo: 10),
+           Band.create!(name: "Justin Bieber", mojo: nil)]
         end
 
         let(:criteria) do
@@ -354,9 +336,8 @@ describe Mongoid::Contextual::Aggregable::Memory do
       end
 
       context "when there no numeric values" do
-
         let!(:bands) do
-          [ Band.create!(name: "Justin Bieber", mojo: nil) ]
+          [Band.create!(name: "Justin Bieber", mojo: nil)]
         end
 
         let(:criteria) do
@@ -376,7 +357,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
     end
 
     context "when provided a block" do
-
       let(:min) do
         context.min do |a, b|
           a.likes <=> b.likes
@@ -390,7 +370,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
   end
 
   describe "#sum" do
-
     let!(:depeche) do
       Band.create!(name: "Depeche Mode", likes: 1000)
     end
@@ -401,12 +380,11 @@ describe Mongoid::Contextual::Aggregable::Memory do
 
     let(:criteria) do
       Band.all.tap do |crit|
-        crit.documents = [ depeche, tool ]
+        crit.documents = [depeche, tool]
       end
     end
 
     context 'when values are integers' do
-
       let(:sum) do
         context.sum(:likes)
       end
@@ -424,7 +402,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
       include_examples 'sums and returns an integer'
 
       context 'when values are numeric strings' do
-
         let!(:depeche) do
           Band.create!(name: "Depeche Mode", likes: '1000')
         end
@@ -433,7 +410,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
       end
 
       context 'when values are negative integers' do
-
         let!(:depeche) do
           Band.create!(name: "Depeche Mode", likes: -1000)
         end
@@ -451,7 +427,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
         include_examples 'sums and returns an integer'
 
         context 'when values are negative numeric strings' do
-
           let!(:depeche) do
             Band.create!(name: "Depeche Mode", likes: '-1000')
           end
@@ -462,7 +437,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
     end
 
     context 'when values are floats' do
-
       let!(:depeche) do
         Band.create!(name: "Depeche Mode", likes: 1000.0)
       end
@@ -481,7 +455,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
     end
 
     context "when provided a Symbol" do
-
       let(:sum) do
         context.sum(:likes)
       end
@@ -491,7 +464,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
       end
 
       context "when no documents match" do
-
         let(:criteria) do
           Band.where(name: "New Order")
         end
@@ -506,11 +478,10 @@ describe Mongoid::Contextual::Aggregable::Memory do
       end
 
       context "when there are a mix of types" do
-
         let!(:bands) do
-          [ Band.create!(name: "The Flaming Lips", mojo: 7.7),
-            Band.create!(name: "Spirit of the Beehive", mojo: 10),
-            Band.create!(name: "Justin Bieber", mojo: nil) ]
+          [Band.create!(name: "The Flaming Lips", mojo: 7.7),
+           Band.create!(name: "Spirit of the Beehive", mojo: 10),
+           Band.create!(name: "Justin Bieber", mojo: nil)]
         end
 
         let(:criteria) do
@@ -534,9 +505,8 @@ describe Mongoid::Contextual::Aggregable::Memory do
       end
 
       context "when there no numeric values" do
-
         let!(:bands) do
-          [ Band.create!(name: "Justin Bieber", mojo: nil) ]
+          [Band.create!(name: "Justin Bieber", mojo: nil)]
         end
 
         let(:criteria) do
@@ -560,7 +530,6 @@ describe Mongoid::Contextual::Aggregable::Memory do
     end
 
     context "when provided a block" do
-
       let(:sum) do
         context.sum(&:likes)
       end

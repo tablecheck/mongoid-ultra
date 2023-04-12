@@ -2,10 +2,8 @@
 
 module Mongoid
   module Errors
-
     # This error is raised when defining a scope of an invalid type.
     class InvalidScope < MongoidError
-
       # Create the error.
       #
       # @example Create the error.

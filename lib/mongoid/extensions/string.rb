@@ -2,10 +2,8 @@
 
 module Mongoid
   module Extensions
-
     # Adds type-casting behavior to String class.
     module String
-
       # @attribute [rw] unconvertable_to_bson If the document is unconvertable.
       attr_accessor :unconvertable_to_bson
 
@@ -150,7 +148,6 @@ module Mongoid
       end
 
       module ClassMethods
-
         # Turn the object from the ruby type we deal with to a Mongo friendly
         # type.
         #

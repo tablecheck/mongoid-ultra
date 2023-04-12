@@ -3,13 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Config::Defaults do
-
   let(:config) do
     Mongoid::Config
   end
 
   describe ".load_defaults" do
-
     shared_examples "uses settings for 8.0" do
       it "uses settings for 8.0" do
         expect(Mongoid.legacy_readonly).to be true
@@ -35,7 +33,6 @@ describe Mongoid::Config::Defaults do
     end
 
     context "when giving a valid version" do
-
       before do
         config.load_defaults(version)
       end
@@ -45,7 +42,6 @@ describe Mongoid::Config::Defaults do
       end
 
       context "when the given version is 8.0" do
-
         let(:version) { 8.0 }
 
         it_behaves_like "uses settings for 8.0"
@@ -53,7 +49,6 @@ describe Mongoid::Config::Defaults do
       end
 
       context "when the given version is 8.1" do
-
         let(:version) { 8.1 }
 
         it_behaves_like "does not use settings for 8.0"
@@ -61,7 +56,6 @@ describe Mongoid::Config::Defaults do
       end
 
       context "when the given version is 9.0" do
-
         let(:version) { 9.0 }
 
         it_behaves_like "does not use settings for 8.0"

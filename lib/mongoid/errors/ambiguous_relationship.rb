@@ -2,7 +2,6 @@
 
 module Mongoid
   module Errors
-
     # This error is raised in case of an ambiguous association.
     #
     # @example An ambiguous association.
@@ -20,7 +19,6 @@ module Mongoid
     #     belongs_to :referred_by, class_name: "Person"
     #   end
     class AmbiguousRelationship < MongoidError
-
       # Create the new error.
       #
       # @example Create the error.

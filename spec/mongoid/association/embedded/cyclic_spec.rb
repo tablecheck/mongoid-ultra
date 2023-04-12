@@ -3,11 +3,8 @@
 require "spec_helper"
 
 describe Mongoid::Association::Embedded::Cyclic do
-
   describe ".recursively_embeds_many" do
-
     context "when the name is inflected easily" do
-
       let(:document) do
         Role.new
       end
@@ -25,7 +22,6 @@ describe Mongoid::Association::Embedded::Cyclic do
       end
 
       context "when a query is executed" do
-
         before do
           document.save!
         end
@@ -37,7 +33,6 @@ describe Mongoid::Association::Embedded::Cyclic do
     end
 
     context "when the name is not inflected easily" do
-
       let(:document) do
         Entry.new
       end
@@ -56,7 +51,6 @@ describe Mongoid::Association::Embedded::Cyclic do
     end
 
     context "when the document is namespaced" do
-
       module Trees
         class Node
           include Mongoid::Document
@@ -88,7 +82,6 @@ describe Mongoid::Association::Embedded::Cyclic do
     end
 
     context "when the classes are namespaced" do
-
       let(:document) do
         Fruits::Apple.new
       end
@@ -107,7 +100,6 @@ describe Mongoid::Association::Embedded::Cyclic do
     end
 
     context "when cascading callbacks are enabled" do
-
       let(:document) do
         Fruits::Pineapple.new
       end
@@ -119,7 +111,6 @@ describe Mongoid::Association::Embedded::Cyclic do
   end
 
   describe ".recursively_embeds_one" do
-
     let(:document) do
       Shelf.new
     end
@@ -137,7 +128,6 @@ describe Mongoid::Association::Embedded::Cyclic do
     end
 
     context "when cascading callbacks are enabled" do
-
       let(:document) do
         Fruits::Mango.new
       end
@@ -148,7 +138,6 @@ describe Mongoid::Association::Embedded::Cyclic do
     end
 
     context "when a query is executed" do
-
       before do
         document.save!
       end
@@ -160,7 +149,6 @@ describe Mongoid::Association::Embedded::Cyclic do
   end
 
   context "when building a namespaced hierarchy" do
-
     let(:root) do
       Trees::Node.new(name: "root")
     end

@@ -2,11 +2,9 @@
 
 module Mongoid
   module Atomic
-
     # This class contains the logic for supporting atomic operations against the
     # database.
     class Modifiers < Hash
-
       # Add the atomic $addToSet modifiers to the hash.
       #
       # @example Add the $addToSet modifiers.
@@ -74,6 +72,7 @@ module Mongoid
       def set(modifications)
         modifications.each_pair do |field, value|
           next if field == "_id"
+
           mods = set_conflict?(field) ? conflicting_sets : sets
           add_operation(mods, field, value)
           set_fields[field.split(".", 2)[0]] = field

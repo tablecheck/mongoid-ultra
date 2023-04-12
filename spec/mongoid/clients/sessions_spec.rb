@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::Clients::Sessions do
-
   before(:all) do
     CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
     CONFIG[:clients][:other][:database] = 'other'
@@ -36,9 +35,7 @@ describe Mongoid::Clients::Sessions do
   end
 
   context 'when a session is used on a model class' do
-
     context 'when sessions are supported' do
-
       around do |example|
         Mongoid::Clients.with_name(:other).database.collections.each(&:drop)
         subscriber.clear_events!
@@ -49,7 +46,6 @@ describe Mongoid::Clients::Sessions do
       end
 
       context 'when another thread is started' do
-
         let!(:last_use_diff) do
           Person.with_session do |session|
             Person.create!
@@ -71,7 +67,6 @@ describe Mongoid::Clients::Sessions do
       end
 
       context 'when the operations in the session block are all on the class' do
-
         before do
           Person.with_session do
             Person.create!
@@ -88,9 +83,7 @@ describe Mongoid::Clients::Sessions do
       end
 
       context 'when the operations in the session block are also on another class' do
-
         context 'when the other class uses the same client' do
-
           before do
             Post.with(client: :other) do
               Person.with_session do
@@ -110,7 +103,6 @@ describe Mongoid::Clients::Sessions do
         end
 
         context 'when the other class uses a different client' do
-
           let!(:error) do
             e = nil
             begin
@@ -120,7 +112,7 @@ describe Mongoid::Clients::Sessions do
                 Post.create!
               end
             rescue => ex
-                e = ex
+              e = ex
             end
             e
           end
@@ -138,7 +130,6 @@ describe Mongoid::Clients::Sessions do
         end
 
         context 'when sessions are nested' do
-
           let!(:error) do
             e = nil
             begin
@@ -168,7 +159,6 @@ describe Mongoid::Clients::Sessions do
   end
 
   context 'when a session is used on a model instance' do
-
     let!(:person) do
       Person.with(client: :other) do |klass|
         klass.create!
@@ -176,7 +166,6 @@ describe Mongoid::Clients::Sessions do
     end
 
     context 'when sessions are supported' do
-
       around do |example|
         Mongoid::Clients.with_name(:other).database.collections.each(&:drop)
         subscriber.clear_events!
@@ -187,7 +176,6 @@ describe Mongoid::Clients::Sessions do
       end
 
       context 'when the operations in the session block are all on the instance' do
-
         before do
           person.with_session do
             person.username = 'Emily'
@@ -207,9 +195,7 @@ describe Mongoid::Clients::Sessions do
       end
 
       context 'when the operations in the session block are also on another class' do
-
         context 'when the other class uses the same client' do
-
           before do
             Post.with(client: :other) do
               person.with_session do
@@ -234,7 +220,6 @@ describe Mongoid::Clients::Sessions do
         end
 
         context 'when the other class uses a different client' do
-
           let!(:error) do
             e = nil
             begin
@@ -262,7 +247,6 @@ describe Mongoid::Clients::Sessions do
         end
 
         context 'when sessions are nested' do
-
           let!(:error) do
             e = nil
             begin

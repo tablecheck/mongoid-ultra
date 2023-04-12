@@ -2,10 +2,8 @@
 
 module Mongoid
   module Errors
-
     # This error is raised when a client is configured without a database.
     class NoClientDatabase < MongoidError
-
       # Create the new error.
       #
       # @example Create the new error.

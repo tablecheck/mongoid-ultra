@@ -3,13 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Validatable do
-
   let(:account) do
     Account.new(name: "Testing a really long name.")
   end
 
   describe "#read_attribute_for_validation" do
-
     let(:person) do
       Person.new(title: "Mr")
     end
@@ -19,7 +17,6 @@ describe Mongoid::Validatable do
     end
 
     context "when reading a field" do
-
       let(:value) do
         person.read_attribute_for_validation(:title)
       end
@@ -30,13 +27,12 @@ describe Mongoid::Validatable do
     end
 
     context "when reading a relation" do
-
       let(:value) do
         person.read_attribute_for_validation(:addresses)
       end
 
       let(:documents) do
-        Mongoid::Association::Referenced::HasMany::Enumerable.new([ address ])
+        Mongoid::Association::Referenced::HasMany::Enumerable.new([address])
       end
 
       before do
@@ -44,12 +40,11 @@ describe Mongoid::Validatable do
       end
 
       it "returns the value" do
-        expect(value).to eq([ address ])
+        expect(value).to eq([address])
       end
     end
 
     context "when validating a non field" do
-
       let(:princess) do
         Princess.new
       end
@@ -65,15 +60,12 @@ describe Mongoid::Validatable do
   end
 
   describe "#valid?" do
-
     context "when provided a context" do
-
       it "uses the provided context" do
         expect(account).to be_valid(:update)
       end
 
       context 'when multiple contexts are provided' do
-
         let(:princess) do
           Princess.new
         end
@@ -90,16 +82,13 @@ describe Mongoid::Validatable do
     end
 
     context "when not provided a context" do
-
       context "when the document is new" do
-
         it "defaults the context to :create" do
           expect(account).to_not be_valid
         end
       end
 
       context "when the document is persisted" do
-
         before do
           account.name = "Testing"
           account.save!
@@ -113,7 +102,6 @@ describe Mongoid::Validatable do
     end
 
     context "when the document is fresh from the database" do
-
       let!(:pizza) do
         Pizza.new(name: "chicago")
       end
@@ -133,15 +121,12 @@ describe Mongoid::Validatable do
     end
 
     context "when validating associated" do
-
       context "when the child validates the parent" do
-
         let(:movie) do
           Movie.new
         end
 
         context "when the child is invalid" do
-
           let(:rating) do
             Rating.new(value: 1000)
           end
@@ -151,19 +136,17 @@ describe Mongoid::Validatable do
           end
 
           context "when validating once" do
-
             it "returns false" do
               expect(movie).to_not be_valid
             end
 
             it "adds the errors to the document" do
               movie.valid?
-              expect(movie.errors[:ratings]).to eq([ "is invalid" ])
+              expect(movie.errors[:ratings]).to eq(["is invalid"])
             end
           end
 
           context "when validating multiple times" do
-
             it "returns false every time" do
               expect(movie).to_not be_valid
               expect(movie).to_not be_valid
@@ -173,7 +156,6 @@ describe Mongoid::Validatable do
       end
 
       context "when the child does not validate the parent" do
-
         before(:all) do
           Person.validates_associated(:services)
         end
@@ -187,7 +169,6 @@ describe Mongoid::Validatable do
         end
 
         context "when the child is invalid" do
-
           let(:service) do
             Service.new(sid: "invalid")
           end
@@ -197,19 +178,17 @@ describe Mongoid::Validatable do
           end
 
           context "when validating once" do
-
             it "returns false" do
               expect(person).to_not be_valid
             end
 
             it "adds the errors to the document" do
               person.valid?
-              expect(person.errors[:services]).to eq([ "is invalid" ])
+              expect(person.errors[:services]).to eq(["is invalid"])
             end
           end
 
           context "when validating multiple times" do
-
             it "returns false every time" do
               expect(person).to_not be_valid
               expect(person).to_not be_valid
@@ -221,7 +200,6 @@ describe Mongoid::Validatable do
   end
 
   describe ".validates_associated" do
-
     let(:klass) do
       Class.new do
         include Mongoid::Document
@@ -229,7 +207,6 @@ describe Mongoid::Validatable do
     end
 
     context "when adding via the traditional macro" do
-
       before do
         klass.validates_associated(:name)
       end
@@ -242,7 +219,6 @@ describe Mongoid::Validatable do
     end
 
     context "when adding via the new syntax" do
-
       before do
         klass.validates(:name, associated: true)
       end
@@ -256,7 +232,6 @@ describe Mongoid::Validatable do
   end
 
   describe ".validates_uniqueness_of" do
-
     let(:klass) do
       Class.new do
         include Mongoid::Document
@@ -264,7 +239,6 @@ describe Mongoid::Validatable do
     end
 
     context "when adding via the traditional macro" do
-
       before do
         klass.validates_uniqueness_of(:name)
       end
@@ -277,7 +251,6 @@ describe Mongoid::Validatable do
     end
 
     context "when adding via the new syntax" do
-
       before do
         klass.validates(:name, uniqueness: true)
       end
@@ -291,7 +264,6 @@ describe Mongoid::Validatable do
   end
 
   describe ".validates_presence_of" do
-
     let(:klass) do
       Class.new do
         include Mongoid::Document
@@ -299,7 +271,6 @@ describe Mongoid::Validatable do
     end
 
     context "when adding via the traditional macro" do
-
       before do
         klass.validates_presence_of(:name)
       end
@@ -312,7 +283,6 @@ describe Mongoid::Validatable do
     end
 
     context "when adding via the new syntax" do
-
       before do
         klass.validates(:name, presence: true)
       end

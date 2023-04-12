@@ -2,10 +2,8 @@
 
 module Mongoid
   module Extensions
-
     # Adds type-casting behavior to Range class.
     module Range
-
       # Get the range as arguments for a find.
       #
       # @example Get the range as find args.
@@ -38,7 +36,6 @@ module Mongoid
       end
 
       module ClassMethods
-
         # Convert the object from its mongo friendly ruby type to this type.
         #
         # @example Demongoize the object.
@@ -49,6 +46,7 @@ module Mongoid
         # @return [ Range | nil ] The range, or nil if object cannot be represented as range.
         def demongoize(object)
           return if object.nil?
+
           if object.is_a?(Hash)
             hash = object.slice('min', 'max', 'exclude_end', :min, :max, :exclude_end)
             unless hash.blank?
@@ -74,6 +72,7 @@ module Mongoid
         # @return [ Hash | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.nil?
+
           case object
           when Hash then __mongoize_hash__(object)
           when Range then __mongoize_range__(object)

@@ -3,17 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Association::Builders do
-
   describe "#build_#\{name}" do
-
     let(:person) do
       Person.new
     end
 
     context "when providing no attributes" do
-
       context "when the relation is an embeds one" do
-
         let(:name) do
           person.build_name
         end
@@ -24,7 +20,6 @@ describe Mongoid::Association::Builders do
       end
 
       context "when the relation is a references one" do
-
         let(:game) do
           person.build_game
         end
@@ -35,9 +30,7 @@ describe Mongoid::Association::Builders do
       end
 
       context "when the relation is a belongs to" do
-
         context "when the inverse is a has many" do
-
           let(:post) do
             Post.new
           end
@@ -51,7 +44,7 @@ describe Mongoid::Association::Builders do
           end
 
           it "sets the inverse" do
-            expect(person.posts).to eq([ post ])
+            expect(person.posts).to eq([post])
           end
 
           it "does not save the document" do
@@ -60,7 +53,6 @@ describe Mongoid::Association::Builders do
         end
 
         context "when the inverse is a has one" do
-
           let(:game) do
             Game.new
           end
@@ -86,15 +78,12 @@ describe Mongoid::Association::Builders do
   end
 
   describe "#create_#\{name}" do
-
     let(:person) do
       Person.new
     end
 
     context "when providing no attributes" do
-
       context "when the relation is an embeds one" do
-
         let(:name) do
           person.create_name
         end
@@ -105,7 +94,6 @@ describe Mongoid::Association::Builders do
       end
 
       context "when the relation is a references one" do
-
         let(:game) do
           person.create_game
         end
@@ -116,9 +104,7 @@ describe Mongoid::Association::Builders do
       end
 
       context "when the relation is a belongs to" do
-
         context "when the inverse is a has many" do
-
           let(:post) do
             Post.new
           end
@@ -132,7 +118,7 @@ describe Mongoid::Association::Builders do
           end
 
           it "sets the inverse" do
-            expect(person.posts).to eq([ post ])
+            expect(person.posts).to eq([post])
           end
 
           it "saves the document" do
@@ -145,7 +131,6 @@ describe Mongoid::Association::Builders do
         end
 
         context "when the inverse is a has one" do
-
           let(:game) do
             Game.new
           end
@@ -174,21 +159,17 @@ describe Mongoid::Association::Builders do
     end
 
     context "when the parent is persisted" do
-
       let(:person) do
         Person.create!
       end
 
       context "when the relation is a has one" do
-
         let!(:game_one) do
           person.create_game(name: "Starcraft")
         end
 
         context "when a document already exists" do
-
           context "when the relation belongs_to is already set" do
-
             let!(:game_one) do
               game = person.create_game(name: "Starcraft")
               game.person = person
@@ -212,7 +193,6 @@ describe Mongoid::Association::Builders do
           end
 
           context 'when the relation belongs_to is not already set' do
-
             let!(:game_two) do
               person.create_game(name: "Skyrim")
             end
@@ -235,9 +215,7 @@ describe Mongoid::Association::Builders do
   end
 
   describe "#build" do
-
     context "with criteria applied" do
-
       let(:person) do
         Person.new
       end

@@ -2,7 +2,6 @@
 
 module Mongoid
   module Config
-
     # This module provides a way to inspect not only the defined configuration
     # settings and their defaults (which are available via
     # `Mongoid::Config.settings`), but also the documentation about them. It
@@ -127,7 +126,8 @@ module Mongoid
 
       # The full path to the source file of the Mongoid::Config module.
       CONFIG_RB_PATH = File.absolute_path(File.join(
-        File.dirname(__FILE__), "../config.rb"))
+                                            File.dirname(__FILE__), "../config.rb"
+                                          ))
 
       # Extracts the available configuration options from the Mongoid::Config
       # source file, and returns them as an array of hashes.
@@ -140,11 +140,10 @@ module Mongoid
       def options(include_deprecated: false)
         src = File.read(CONFIG_RB_PATH)
         src.scan(OPTION_PATTERN)
-          .map { |opt| Option.from_captures(opt) }
-          .reject { |opt| !include_deprecated && opt.deprecated? }
-          .sort_by { |opt| opt.name }
+           .map { |opt| Option.from_captures(opt) }
+           .reject { |opt| !include_deprecated && opt.deprecated? }
+           .sort_by { |opt| opt.name }
       end
     end
-
   end
 end

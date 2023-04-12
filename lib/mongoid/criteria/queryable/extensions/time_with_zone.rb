@@ -4,11 +4,9 @@ module Mongoid
   class Criteria
     module Queryable
       module Extensions
-
         # Adds query type-casting behavior to
         # ActiveSupport::TimeWithZone class.
         module TimeWithZone
-
           # Evolve the time as a date, UTC midnight.
           #
           # @example Evolve the time to a date query format.
@@ -30,7 +28,6 @@ module Mongoid
           end
 
           module ClassMethods
-
             # Evolve the object to an date.
             #
             # @example Evolve dates.

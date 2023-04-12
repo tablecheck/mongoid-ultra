@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe "Mongoid::Tasks::Database" do
-
   before(:all) do
     module DatabaseSpec
       class Measurement
@@ -15,9 +14,9 @@ describe "Mongoid::Tasks::Database" do
         embeds_many :comments
 
         store_in collection: "measurement",
-          collection_options: {
-            capped: true, size: 10000
-          }
+                 collection_options: {
+                   capped: true, size: 10000
+                 }
       end
 
       class Comment
@@ -28,8 +27,8 @@ describe "Mongoid::Tasks::Database" do
         embedded_in :measurement
 
         store_in collection_options: {
-            capped: true, size: 10000
-          }
+          capped: true, size: 10000
+        }
       end
 
       class Note
@@ -56,7 +55,6 @@ describe "Mongoid::Tasks::Database" do
     Object.send(:remove_const, :DatabaseSpec)
   end
 
-
   let(:logger) do
     double("logger").tap do |log|
       allow(log).to receive(:info)
@@ -68,7 +66,7 @@ describe "Mongoid::Tasks::Database" do
   end
 
   let(:models) do
-    [ User, Account, Address, Draft ]
+    [User, Account, Address, Draft]
   end
 
   describe '.create_collections' do
@@ -106,7 +104,6 @@ describe "Mongoid::Tasks::Database" do
       end
 
       context "when collection options is defined on embedded model" do
-
         let(:models) do
           [DatabaseSpec::Comment]
         end
@@ -128,7 +125,6 @@ describe "Mongoid::Tasks::Database" do
       end
 
       context "when collection options is defined on cyclic model" do
-
         let(:models) do
           [DatabaseSpec::Note]
         end
@@ -146,7 +142,6 @@ describe "Mongoid::Tasks::Database" do
   end
 
   describe ".create_indexes" do
-
     let!(:klass) do
       User
     end
@@ -156,7 +151,6 @@ describe "Mongoid::Tasks::Database" do
     end
 
     context "with ordinary Rails models" do
-
       it "creates the indexes for the models" do
         expect(klass).to receive(:create_indexes).once
         indexes
@@ -164,7 +158,6 @@ describe "Mongoid::Tasks::Database" do
     end
 
     context "with a model without indexes" do
-
       let(:klass) do
         Account
       end
@@ -176,7 +169,6 @@ describe "Mongoid::Tasks::Database" do
     end
 
     context "when an exception is raised" do
-
       it "is not swallowed" do
         expect(klass).to receive(:create_indexes).and_raise(ArgumentError)
         expect { indexes }.to raise_error(ArgumentError)
@@ -184,7 +176,6 @@ describe "Mongoid::Tasks::Database" do
     end
 
     context "when index is defined on embedded model" do
-
       let!(:klass) do
         Address
       end
@@ -200,7 +191,6 @@ describe "Mongoid::Tasks::Database" do
     end
 
     context "when index is defined on self-embedded (cyclic) model" do
-
       let(:klass) do
         Draft
       end
@@ -213,7 +203,6 @@ describe "Mongoid::Tasks::Database" do
   end
 
   describe ".undefined_indexes" do
-
     before(:each) do
       Mongoid::Tasks::Database.create_indexes(models)
     end
@@ -227,13 +216,12 @@ describe "Mongoid::Tasks::Database" do
     end
 
     context "with extra index on model collection" do
-
       before(:each) do
         User.collection.indexes.create_one(account_expires: 1)
       end
 
       let(:names) do
-        indexes[User].map{ |index| index['name'] }
+        indexes[User].map { |index| index['name'] }
       end
 
       it "should have single index returned" do
@@ -243,7 +231,6 @@ describe "Mongoid::Tasks::Database" do
   end
 
   describe ".remove_undefined_indexes" do
-
     let(:indexes) do
       User.collection.indexes
     end
@@ -263,7 +250,6 @@ describe "Mongoid::Tasks::Database" do
     end
 
     context 'when the index is a text index' do
-
       before do
         class Band
           index origin: Mongo::Index::TEXT
@@ -283,7 +269,6 @@ describe "Mongoid::Tasks::Database" do
   end
 
   describe ".remove_indexes" do
-
     let!(:klass) do
       User
     end
@@ -298,11 +283,11 @@ describe "Mongoid::Tasks::Database" do
     end
 
     it "removes indexes from klass" do
-      expect(indexes.reject{ |doc| doc["name"] == "_id_" }).to be_empty
+      expect(indexes.reject { |doc| doc["name"] == "_id_" }).to be_empty
     end
 
     it "leaves _id index untouched" do
-      expect(indexes.select{ |doc| doc["name"] == "_id_" }).to_not be_empty
+      expect(indexes.select { |doc| doc["name"] == "_id_" }).to_not be_empty
     end
   end
 end

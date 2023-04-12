@@ -2,11 +2,9 @@
 
 module Mongoid
   module Errors
-
     # This error is raised when attempting to destroy a model which has
     # an association with dependency option set to restrict.
     class DeleteRestriction < MongoidError
-
       # Create the new callbacks error.
       #
       # @param [ Mongoid::Document ] document The document that was attempted to be

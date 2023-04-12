@@ -4,7 +4,6 @@ module Mongoid
   module Association
     module Embedded
       class EmbedsMany
-
         # Builder class for embeds_many associations.
         module Buildable
           include Threaded::Lifecycle
@@ -29,6 +28,7 @@ module Mongoid
           def build(base, object, type = nil, selected_fields = nil)
             return [] if object.blank?
             return object if object.first.is_a?(Document)
+
             docs = []
             object.each do |attrs|
               if _loading? && base.persisted?

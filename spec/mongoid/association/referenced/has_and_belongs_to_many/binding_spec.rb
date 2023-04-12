@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
-
   let(:person) do
     Person.new
   end
@@ -13,7 +12,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
   end
 
   let(:target) do
-    Mongoid::Association::Referenced::HasMany::Enumerable.new([ preference ])
+    Mongoid::Association::Referenced::HasMany::Enumerable.new([preference])
   end
 
   let(:association) do
@@ -21,13 +20,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
   end
 
   describe "#bind_one" do
-
     let(:binding) do
       described_class.new(person, target, association)
     end
 
     context "when the document is bindable" do
-
       let(:preference_two) do
         Preference.new
       end
@@ -37,7 +34,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
       end
 
       it "sets the inverse foreign key" do
-        expect(preference_two.person_ids).to eq([ person.id ])
+        expect(preference_two.person_ids).to eq([person.id])
       end
 
       it "passes the binding options through to the inverse" do
@@ -54,7 +51,6 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
     end
 
     context "when ensuring minimal saves" do
-
       let(:preference_two) do
         Preference.new.tap do |pref|
           pref.new_record = false
@@ -68,7 +64,6 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
     end
 
     context "when the document is not bindable" do
-
       it "does nothing" do
         expect(person.preferences).to receive(:<<).never
         binding.bind_one(preference)
@@ -77,13 +72,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
   end
 
   describe "#unbind_one" do
-
     let(:binding) do
       described_class.new(person, target, association)
     end
 
     context "when the documents are unbindable" do
-
       before do
         binding.bind_one(target.first)
         expect(person).to receive(:delete).never
@@ -109,7 +102,6 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
     end
 
     context "when preventing multiple db hits" do
-
       before do
         binding.bind_one(target.first)
       end
@@ -124,7 +116,6 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
     end
 
     context "when the documents are not unbindable" do
-
       it "does nothing" do
         expect(person).to receive(:preferences=).never
         binding.unbind_one(target.first)
@@ -133,13 +124,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
   end
 
   context "when binding frozen documents" do
-
     let(:person) do
       Person.new
     end
 
     context "when the child is frozen" do
-
       let(:preference) do
         Preference.new.freeze
       end
@@ -155,13 +144,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
   end
 
   context "when unbinding frozen documents" do
-
     let(:person) do
       Person.new
     end
 
     context "when the child is frozen" do
-
       let(:preference) do
         Preference.new
       end
@@ -173,7 +160,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
       end
 
       it "does not unset the foreign key" do
-        expect(preference.person_ids).to eq([ person.id ])
+        expect(preference.person_ids).to eq([person.id])
       end
     end
   end

@@ -16,7 +16,7 @@ end
 
 def insert_rails_gem_version(cmd)
   gem_version = gem_version_argument(SpecConfig.instance.installed_rails_version)
-  cmd.tap { cmd[1,0] = gem_version if gem_version }
+  cmd.tap { cmd[1, 0] = gem_version if gem_version }
 end
 
 describe 'Mongoid application tests' do
@@ -39,14 +39,12 @@ describe 'Mongoid application tests' do
           'https://github.com/mongoid/mongoid-demo',
           subdir: 'sinatra-minimal',
         ) do
-
           # JRuby needs a long timeout
           start_app(%w(bundle exec ruby app.rb), 4567, 40) do |port|
             uri = URI.parse('http://localhost:4567/posts')
             resp = JSON.parse(uri.open.read)
 
             expect(resp).to eq([])
-
           end
         end
       end
@@ -58,7 +56,6 @@ describe 'Mongoid application tests' do
           'https://github.com/mongoid/mongoid-demo',
           subdir: 'rails-api',
         ) do
-
           # JRuby needs a long timeout
           start_app(%w(bundle exec rails s), 3000, 50) do |port|
             uri = URI.parse('http://localhost:3000/posts')
@@ -147,8 +144,8 @@ describe 'Mongoid application tests' do
             # deprecated options should not be included
             expect(config_text).not_to include "# #{opt.name}:"
           else
-            block = "    #{opt.indented_comment(indent: 4)}\n" \
-                    "    # #{opt.name}: #{opt.default}\n"
+            block = "    #{opt.indented_comment(indent: 4)}\n    " \
+                    "# #{opt.name}: #{opt.default}\n"
             expect(config_text).to include block
           end
         end
@@ -179,15 +176,12 @@ describe 'Mongoid application tests' do
     let(:client) { Mongoid.default_client }
 
     describe 'create_indexes rake task' do
-
       APP_PATH = File.join(File.dirname(__FILE__), '../../test-apps/rails-api')
 
       %w(development production).each do |rails_env|
         context "in #{rails_env}" do
-
           %w(classic zeitwerk).each do |autoloader|
             context "with #{autoloader} autoloader" do
-
               let(:env) do
                 clean_env.merge(RAILS_ENV: rails_env, AUTOLOADER: autoloader)
               end
@@ -213,15 +207,15 @@ describe 'Mongoid application tests' do
 
               it 'creates an index' do
                 index = client['posts'].indexes.detect do |index|
-                  index['key'] == {'subject' => 1}
+                  index['key'] == { 'subject' => 1 }
                 end
                 expect(index).to be nil
 
                 check_call(%w(bundle exec rake db:mongoid:create_indexes -t),
-                  cwd: APP_PATH, env: env)
+                           cwd: APP_PATH, env: env)
 
                 index = client['posts'].indexes.detect do |index|
-                  index['key'] == {'subject' => 1}
+                  index['key'] == { 'subject' => 1 }
                 end
                 expect(index).to be_a(Hash)
               end
@@ -283,12 +277,12 @@ describe 'Mongoid application tests' do
     parts[:database] = 'mongoid_test'
     uri = build_mongodb_uri(parts)
     p uri
-    env_config = {'clients' => {'default' => {
+    env_config = { 'clients' => { 'default' => {
       # TODO massive hack, will fail if uri specifies a database name or
       # any uri options
       'uri' => uri,
-    }}}
-    config = {'development' => env_config, 'production' => env_config}
+    } } }
+    config = { 'development' => env_config, 'production' => env_config }
     File.open('config/mongoid.yml', 'w') do |f|
       f << YAML.dump(config)
     end
@@ -331,6 +325,7 @@ describe 'Mongoid application tests' do
 
   def remove_bundler_req
     return unless File.file?('Gemfile.lock')
+
     # TODO: Remove this method completely when we get rid of .lock files in
     # mongoid-demo apps.
     lock_lines = IO.readlines('Gemfile.lock')
@@ -354,7 +349,7 @@ describe 'Mongoid application tests' do
   end
 
   def clean_env
-    @clean_env ||= Hash[ENV.keys.grep(/BUNDLE|RUBYOPT/).map { |k| [k, nil ] }]
+    @clean_env ||= Hash[ENV.keys.grep(/BUNDLE|RUBYOPT/).map { |k| [k, nil] }]
   end
 
   def wait_for_port(port, timeout, process)

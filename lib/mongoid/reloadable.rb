@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 module Mongoid
-
   # This module handles reloading behavior of documents.
   module Reloadable
-
     # Reloads the +Document+ attributes from the database. If the document has
     # not been saved then an error will get raised if the configuration option
     # was set. This can reload root documents or embedded documents.
@@ -71,8 +69,9 @@ module Mongoid
     # @return [ Hash ] The reloaded attributes.
     def reload_embedded_document
       extract_embedded_attributes({}.merge(
-        collection(_root).find(_root.atomic_selector, session: _session).read(mode: :primary).first
-      ))
+                                    collection(_root).find(_root.atomic_selector,
+                                                           session: _session).read(mode: :primary).first
+                                  ))
     end
 
     # Extract only the desired embedded document from the attributes.
