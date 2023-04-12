@@ -12,7 +12,12 @@ module Mongoid
       end
     end
 
-    def expect_query(number)
+    def expect_query(number, use_shards: false)
+      if use_shards && ClusterConfig.instance.topology == :sharded
+        shards = client.use(:admin).command(listShards: 1).first&.[]('shards')&.size || 1
+        number *= shards
+      end
+
       rv = nil
       RSpec::Mocks.with_temporary_scope do
         if number > 0
