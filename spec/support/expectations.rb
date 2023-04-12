@@ -13,19 +13,13 @@ module Mongoid
     end
 
     def expect_query(number, relax_if_sharded: false)
-      puts '111'
-      puts ClusterConfig.instance.topology.inspect
       relax_if_sharded &&= ClusterConfig.instance.topology == :sharded
-      puts relax_if_sharded.inspect
       rv = nil
       RSpec::Mocks.with_temporary_scope do
-        puts '222'
-        puts ClusterConfig.instance.topology.inspect
-        puts relax_if_sharded.inspect
         if number > 0
           matcher = receive(:command_started)
-          matcher = relax_if_sharded ? matcher.at_least(number) : matcher.exactly(number)
-          matcher = matcher.times.and_call_original
+          matcher = matcher.exactly(number).times unless relax_if_sharded
+          matcher = matcher.and_call_original
           expect_any_instance_of(connection_class).to matcher
         else
           expect_any_instance_of(connection_class).not_to receive(:command_started)
