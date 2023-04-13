@@ -44,6 +44,9 @@ Gemspec/OrderedDependencies:
 Layout/EmptyLinesAroundBlockBody:
   Enabled: false
 
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+
 Layout/EmptyLinesAroundModuleBody:
   Enabled: false
 

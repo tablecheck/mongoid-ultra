@@ -99,7 +99,7 @@ module Mongoid
         raise Errors::ReadonlyDocument.new(self.class) if readonly? && !Mongoid.legacy_readonly
         enforce_immutability_of_id_field!
         return false if performing_validations?(options) &&
-          invalid?(options[:context] || :update)
+                        invalid?(options[:context] || :update)
         process_flagged_destroys
         update_children = cascadable_children(:update)
         process_touch_option(options, update_children) do
