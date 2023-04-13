@@ -33,7 +33,18 @@ Performance/StringInclude:
   Enabled: false
 
 # --------------------------------------------------
-# Cops below this line are intentionally disabled
+# Specific files skipped.
+
+Layout/LineContinuationLeadingSpace:
+  Exclude:
+    - 'spec/integration/app_spec.rb'
+
+RSpec/BeforeAfterAll:
+  Exclude:
+    - 'spec/support/constraints.rb'
+
+# --------------------------------------------------
+# Cops below this line are intentionally disabled.
 
 Bundler/OrderedGems:
   Enabled: false
