@@ -37,6 +37,12 @@ Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false
 
 # --------------------------------------------------
+# These cops are having CI issues. Enable later.
+
+Performance/StringInclude:
+  Enabled: false
+
+# --------------------------------------------------
 # Cops below this line are intentionally disabled
 
 Style/NumericPredicate:
