@@ -2,7 +2,6 @@
 
 # Wrapper class used when a value cannot be casted in evolve method.
 module Mongoid
-
   # Instantiates a new Mongoid::RawValue object. Used as a syntax shortcut.
   #
   # @example Create a Mongoid::RawValue object.
@@ -15,7 +14,6 @@ module Mongoid
 
   # Represents a value which cannot be type-casted between Ruby and MongoDB.
   class RawValue
-
     attr_reader :raw_value
 
     def initialize(raw_value)

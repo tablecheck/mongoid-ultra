@@ -3,11 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Criteria::Queryable::Pipeline do
-
   describe "#__deep_copy" do
-
     let(:project) do
-      { "$project" => { "name" => 1 }}
+      { "$project" => { "name" => 1 } }
     end
 
     let(:pipeline) do
@@ -32,45 +30,39 @@ describe Mongoid::Criteria::Queryable::Pipeline do
   end
 
   describe "#group" do
-
     context "when the expression fields are not aliased" do
-
       let(:pipeline) do
         described_class.new
       end
 
       context "when using full notation" do
-
         before do
           pipeline.group(count: { "$sum" => 1 }, max: { "$max" => "likes" })
         end
 
         it "adds the group operation to the pipeline" do
           expect(pipeline).to eq([
-            { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "likes" }}}
-          ])
+                                   { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "likes" } } }
+                                 ])
         end
       end
 
       context "when using symbol shortcuts" do
-
         before do
           pipeline.group(:count.sum => 1, :max.max => "likes")
         end
 
         it "adds the group operation to the pipeline" do
           expect(pipeline).to eq([
-            { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "likes" }}}
-          ])
+                                   { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "likes" } } }
+                                 ])
         end
       end
     end
   end
 
   describe "#initialize" do
-
     context "when provided aliases" do
-
       let(:aliases) do
         { "id" => "_id" }
       end
@@ -85,7 +77,6 @@ describe Mongoid::Criteria::Queryable::Pipeline do
     end
 
     context "when not provided aliases" do
-
       let(:pipeline) do
         described_class.new
       end
@@ -97,48 +88,42 @@ describe Mongoid::Criteria::Queryable::Pipeline do
   end
 
   describe "#project" do
-
     let(:pipeline) do
       described_class.new("id" => "_id")
     end
 
     context "when the field is not aliased" do
-
       before do
         pipeline.project(name: 1)
       end
 
       it "sets the aliased projection" do
         expect(pipeline).to eq([
-          { "$project" => { "name" => 1 }}
-        ])
+                                 { "$project" => { "name" => 1 } }
+                               ])
       end
     end
 
     context "when the field is aliased" do
-
       before do
         pipeline.project(id: 1)
       end
 
       it "sets the aliased projection" do
         expect(pipeline).to eq([
-          { "$project" => { "_id" => 1 }}
-        ])
+                                 { "$project" => { "_id" => 1 } }
+                               ])
       end
     end
   end
 
   describe "#unwind" do
-
     let(:pipeline) do
       described_class.new("alias" => "a")
     end
 
     context "when provided a symbol" do
-
       context "when the symbol begins with $" do
-
         before do
           pipeline.unwind(:$author)
         end
@@ -149,7 +134,6 @@ describe Mongoid::Criteria::Queryable::Pipeline do
       end
 
       context "when the symbol does not begin with $" do
-
         before do
           pipeline.unwind(:author)
         end
@@ -161,9 +145,7 @@ describe Mongoid::Criteria::Queryable::Pipeline do
     end
 
     context "when provided a string" do
-
       context "when the string begins with $" do
-
         before do
           pipeline.unwind("$author")
         end
@@ -174,7 +156,6 @@ describe Mongoid::Criteria::Queryable::Pipeline do
       end
 
       context "when the string does not begin with $" do
-
         before do
           pipeline.unwind(:author)
         end
@@ -186,9 +167,7 @@ describe Mongoid::Criteria::Queryable::Pipeline do
     end
 
     context "when provided a string alias" do
-
       context "when the string does not begin with $" do
-
         before do
           pipeline.unwind(:alias)
         end
@@ -206,8 +185,8 @@ describe Mongoid::Criteria::Queryable::Pipeline do
 
       it "sets the hash" do
         expect(pipeline).to eq([
-          { "$unwind" => { path: "$author", "includeArrayIndex" => "author_index", preserveNullAndEmptyArrays: true } }
-        ])
+                                 { "$unwind" => { path: "$author", "includeArrayIndex" => "author_index", preserveNullAndEmptyArrays: true } }
+                               ])
       end
     end
   end

@@ -4,7 +4,6 @@ module Mongoid
   module Association
     module Embedded
       class EmbeddedIn
-
         # The Binding object for embedded_in associations.
         class Binding
           include Bindable
@@ -62,7 +61,7 @@ module Mongoid
             if inverses = _association.inverses(doc)
               if inverses.length > 1
                 raise Errors::InvalidSetPolymorphicRelation.new(
-                    _association.name, _base.class.name, _target.class.name
+                  _association.name, _base.class.name, _target.class.name
                 )
               end
             end

@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::Association::Reflections do
-
   class TestClass
     include Mongoid::Document
   end
@@ -17,13 +16,11 @@ describe Mongoid::Association::Reflections do
   end
 
   describe ".reflect_on_association" do
-
     before do
       klass.embeds_many(:addresses)
     end
 
     context "when the name does not exist" do
-
       let(:relation) do
         klass.reflect_on_association(:nonexistent)
       end
@@ -35,9 +32,7 @@ describe Mongoid::Association::Reflections do
   end
 
   describe ".reflect_on_all_associations" do
-
     context "when relations exist for the macros" do
-
       before do
         klass.embeds_one(:name)
         klass.embeds_many(:addresses)
@@ -45,7 +40,6 @@ describe Mongoid::Association::Reflections do
       end
 
       context "when passing multiple arguments" do
-
         let(:relations) do
           klass.reflect_on_all_associations(:embeds_one, :has_one)
         end
@@ -56,7 +50,6 @@ describe Mongoid::Association::Reflections do
       end
 
       context "when passing a single argument" do
-
         let(:relations) do
           klass.reflect_on_all_associations(:embeds_one)
         end
@@ -67,7 +60,6 @@ describe Mongoid::Association::Reflections do
       end
 
       context "when no argument supplied" do
-
         let(:relations) do
           klass.reflect_on_all_associations
         end
@@ -79,7 +71,6 @@ describe Mongoid::Association::Reflections do
     end
 
     context "when no relations exist for the macros" do
-
       let(:relations) do
         klass.reflect_on_all_associations(:embeds_one)
       end

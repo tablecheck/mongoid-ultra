@@ -2,11 +2,9 @@
 
 module Mongoid
   module Persistable
-
     # Defines behavior for persistence operations that update existing
     # documents.
     module Updatable
-
       # Update a single attribute and persist the entire document.
       # This skips validation but fires the callbacks.
       #
@@ -77,7 +75,7 @@ module Mongoid
       def init_atomic_updates
         updates = atomic_updates
         conflicts = updates.delete(:conflicts) || {}
-        [ updates, conflicts ]
+        [updates, conflicts]
       end
 
       # Prepare the update for execution. Validates and runs callbacks, etc.
@@ -97,9 +95,11 @@ module Mongoid
       # @return [ true | false ] The result of the update.
       def prepare_update(options = {})
         raise Errors::ReadonlyDocument.new(self.class) if readonly? && !Mongoid.legacy_readonly
+
         enforce_immutability_of_id_field!
         return false if performing_validations?(options) &&
-          invalid?(options[:context] || :update)
+                        invalid?(options[:context] || :update)
+
         process_flagged_destroys
         update_children = cascadable_children(:update)
         process_touch_option(options, update_children) do
@@ -139,7 +139,6 @@ module Mongoid
             # more intelligently combining the writes such that there are
             # fewer conflicts.
             conflicts.each_pair do |modifier, changes|
-
               # Group the changes according to their root key which is
               # the top-level association name.
               # This handles at least the cases described in MONGOID-4982.
@@ -227,7 +226,6 @@ module Mongoid
           end # :save
         end # :commit
       end
-
     end
   end
 end

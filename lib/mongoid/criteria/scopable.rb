@@ -2,12 +2,10 @@
 
 module Mongoid
   class Criteria
-
     # Mixin module included in Mongoid::Criteria which adds
     # functionality related to default query scopes and named
     # scopes.
     module Scopable
-
       # Applies the default scope to the criteria.
       #
       # @example Apply the default scope.
@@ -124,7 +122,7 @@ module Mongoid
       #
       # @return [ Array ] Scoped, unscoped.
       def scoping_options
-        [ (defined?(@scoped) ? @scoped : nil), (defined?(@unscoped) ? @unscoped : nil) ]
+        [(defined?(@scoped) ? @scoped : nil), (defined?(@unscoped) ? @unscoped : nil)]
       end
 
       # Set the criteria scoping options, as a pair (scoped, unscoped).

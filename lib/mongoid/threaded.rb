@@ -3,11 +3,9 @@
 require "mongoid/threaded/lifecycle"
 
 module Mongoid
-
   # This module contains logic for easy access to objects that have a lifecycle
   # on the current thread.
   module Threaded
-
     DATABASE_OVERRIDE_KEY = "[mongoid]:db-override"
 
     # Constant for the key to store clients.
@@ -27,10 +25,10 @@ module Mongoid
     end
 
     # The key for the current thread's sessions.
-    SESSIONS_KEY="[mongoid]:sessions"
+    SESSIONS_KEY = "[mongoid]:sessions"
 
     # The key for storing documents modified inside transactions.
-    MODIFIED_DOCUMENTS_KEY="[mongoid]:modified-documents"
+    MODIFIED_DOCUMENTS_KEY = "[mongoid]:modified-documents"
 
     extend self
 
@@ -309,6 +307,7 @@ module Mongoid
     def autosaves_for(klass)
       autosaves[klass] ||= []
     end
+
     # Get all validations on the current thread for the class.
     #
     # @example Get all validations.

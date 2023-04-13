@@ -2,7 +2,6 @@
 
 module Mongoid
   module Persistable
-
     # Defines behavior for persistence operations that delete documents.
     module Deletable
       extend ActiveSupport::Concern
@@ -43,7 +42,7 @@ module Mongoid
       #
       # @return [ Hash ] The atomic deletes.
       def atomic_deletes
-        { atomic_delete_modifier => { atomic_path => _index ? { "_id" => _id } : true }}
+        { atomic_delete_modifier => { atomic_path => _index ? { "_id" => _id } : true } }
       end
 
       # Delete the embedded document.
@@ -61,8 +60,9 @@ module Mongoid
         if _parent.persisted?
           selector = _parent.atomic_selector
           _root.collection.find(selector).update_one(
-              positionally(selector, atomic_deletes),
-              session: _session)
+            positionally(selector, atomic_deletes),
+            session: _session
+          )
         end
         true
       end
@@ -106,13 +106,13 @@ module Mongoid
       # @return [ true ] If the object was deleted successfully.
       def prepare_delete
         raise Errors::ReadonlyDocument.new(self.class) if readonly?
+
         yield(self)
         freeze
         self.destroyed = true
       end
 
       module ClassMethods
-
         # Delete all documents given the supplied conditions. If no conditions
         # are passed, the entire collection will be dropped for performance
         # benefits. Does not fire any callbacks.

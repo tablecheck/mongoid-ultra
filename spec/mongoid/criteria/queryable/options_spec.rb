@@ -3,11 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Criteria::Queryable::Options do
-
   describe "#__deep_copy__" do
-
     let(:sort) do
-      [[ :name, :asc ]]
+      [[:name, :asc]]
     end
 
     let(:options) do
@@ -32,13 +30,11 @@ describe Mongoid::Criteria::Queryable::Options do
   end
 
   describe "#fields" do
-
     let(:options) do
       described_class.new
     end
 
     context "when field options exist" do
-
       before do
         options[:fields] = { name: 1 }
       end
@@ -49,7 +45,6 @@ describe Mongoid::Criteria::Queryable::Options do
     end
 
     context "when field options do not exist" do
-
       it "returns nil" do
         expect(options.fields).to be_nil
       end
@@ -57,13 +52,11 @@ describe Mongoid::Criteria::Queryable::Options do
   end
 
   describe "#limit" do
-
     let(:options) do
       described_class.new
     end
 
     context "when limit options exist" do
-
       before do
         options[:limit] = 20
       end
@@ -74,7 +67,6 @@ describe Mongoid::Criteria::Queryable::Options do
     end
 
     context "when limit options do not exist" do
-
       it "returns nil" do
         expect(options.limit).to be_nil
       end
@@ -82,13 +74,11 @@ describe Mongoid::Criteria::Queryable::Options do
   end
 
   describe "#skip" do
-
     let(:options) do
       described_class.new
     end
 
     context "when skip options exist" do
-
       before do
         options[:skip] = 100
       end
@@ -99,7 +89,6 @@ describe Mongoid::Criteria::Queryable::Options do
     end
 
     context "when skip options do not exist" do
-
       it "returns nil" do
         expect(options.skip).to be_nil
       end
@@ -107,13 +96,11 @@ describe Mongoid::Criteria::Queryable::Options do
   end
 
   describe "#sort" do
-
     let(:options) do
       described_class.new
     end
 
     context "when sort options exist" do
-
       before do
         options[:sort] = { name: 1 }
       end
@@ -124,21 +111,16 @@ describe Mongoid::Criteria::Queryable::Options do
     end
 
     context "when sort options do not exist" do
-
       it "returns nil" do
         expect(options.sort).to be_nil
       end
     end
   end
 
-  [ :store, :[]= ].each do |method|
-
+  [:store, :[]=].each do |method|
     describe "##{method}" do
-
       context "when aliases are provided" do
-
         context "when the alias has no serializer" do
-
           let(:options) do
             described_class.new({ "id" => "_id" })
           end
@@ -154,22 +136,18 @@ describe Mongoid::Criteria::Queryable::Options do
       end
 
       context "when no serializers are provided" do
-
         let(:options) do
           described_class.new
         end
 
         context "when provided a standard object" do
-
           context "when the keys are strings" do
-
             it "does not serialize values" do
               expect(options.send(method, "limit", "5")).to eq("5")
             end
           end
 
           context "when the keys are symbols" do
-
             it "does not serialize values" do
               expect(options.send(method, :limit, "5")).to eq("5")
             end
@@ -178,9 +156,7 @@ describe Mongoid::Criteria::Queryable::Options do
       end
 
       context "when serializers are provided" do
-
         context "when the serializer is not localized" do
-
           before(:all) do
             class Field
               def localized?
@@ -198,7 +174,6 @@ describe Mongoid::Criteria::Queryable::Options do
           end
 
           context "when the criterion is simple" do
-
             before do
               options.send(method, :limit, 1)
             end
@@ -209,7 +184,6 @@ describe Mongoid::Criteria::Queryable::Options do
           end
 
           context "when the criterion is complex" do
-
             before do
               options.send(method, :sort, { :key => 1 })
             end
@@ -244,7 +218,6 @@ describe Mongoid::Criteria::Queryable::Options do
           end
 
           context "when the criterion is simple" do
-
             before do
               options.send(method, :limit, 1)
             end
@@ -255,7 +228,6 @@ describe Mongoid::Criteria::Queryable::Options do
           end
 
           context "when the criterion is complex" do
-
             before do
               options.send(method, :sort, { :key => 1 })
             end
@@ -270,13 +242,11 @@ describe Mongoid::Criteria::Queryable::Options do
   end
 
   describe "#to_pipeline" do
-
     let(:options) do
       described_class.new
     end
 
     context "when no options exist" do
-
       let(:pipeline) do
         options.to_pipeline
       end
@@ -287,7 +257,6 @@ describe Mongoid::Criteria::Queryable::Options do
     end
 
     context "when multiple options exist" do
-
       before do
         options[:fields] = { "name" => 1 }
         options[:skip] = 10
@@ -301,15 +270,14 @@ describe Mongoid::Criteria::Queryable::Options do
 
       it "converts the option to a $sort" do
         expect(pipeline).to eq([
-          { "$skip" => 10 },
-          { "$limit" => 10 },
-          { "$sort" => { "name" => 1 }}
-        ])
+                                 { "$skip" => 10 },
+                                 { "$limit" => 10 },
+                                 { "$sort" => { "name" => 1 } }
+                               ])
       end
     end
 
     context "when a sort exists" do
-
       before do
         options[:sort] = { "name" => 1 }
       end
@@ -320,13 +288,12 @@ describe Mongoid::Criteria::Queryable::Options do
 
       it "converts the option to a $sort" do
         expect(pipeline).to eq([
-          { "$sort" => { "name" => 1 }}
-        ])
+                                 { "$sort" => { "name" => 1 } }
+                               ])
       end
     end
 
     context "when a limit exists" do
-
       before do
         options[:limit] = 10
       end
@@ -337,13 +304,12 @@ describe Mongoid::Criteria::Queryable::Options do
 
       it "converts the option to a $sort" do
         expect(pipeline).to eq([
-          { "$limit" => 10 }
-        ])
+                                 { "$limit" => 10 }
+                               ])
       end
     end
 
     context "when a skip exists" do
-
       before do
         options[:skip] = 10
       end
@@ -354,8 +320,8 @@ describe Mongoid::Criteria::Queryable::Options do
 
       it "converts the option to a $sort" do
         expect(pipeline).to eq([
-          { "$skip" => 10 }
-        ])
+                                 { "$skip" => 10 }
+                               ])
       end
     end
   end

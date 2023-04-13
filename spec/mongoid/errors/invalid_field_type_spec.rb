@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Errors::InvalidFieldType do
-
   describe "#message" do
-
     let(:error) do
       described_class.new(Person, :first_name, :stringgy)
     end

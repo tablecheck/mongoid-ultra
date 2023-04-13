@@ -3,15 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Extensions::Range do
-
   describe "#__find_args__" do
-
     let(:range) do
       1..3
     end
 
     it "returns the range as an array" do
-      expect(range.__find_args__).to eq([ 1, 2, 3 ])
+      expect(range.__find_args__).to eq([1, 2, 3])
     end
   end
 
@@ -124,7 +122,6 @@ describe Mongoid::Extensions::Range do
   end
 
   shared_examples_for 'mongoize range' do
-
     context 'given a normal range' do
       let(:range) { 1..3 }
 
@@ -286,7 +283,7 @@ describe Mongoid::Extensions::Range do
     end
 
     context "given a hash with wrong fields" do
-      let(:range) { { 'min' => 1, 'max' => 5, 'exclude_end^' => true} }
+      let(:range) { { 'min' => 1, 'max' => 5, 'exclude_end^' => true } }
 
       it "removes the bogus fields" do
         is_expected.to eq({ 'min' => 1, 'max' => 5 })
@@ -294,7 +291,7 @@ describe Mongoid::Extensions::Range do
     end
 
     context "given a hash with no correct fields" do
-      let(:range) { { 'min^' => 1, 'max^' => 5, 'exclude_end^' => true} }
+      let(:range) { { 'min^' => 1, 'max^' => 5, 'exclude_end^' => true } }
 
       it "returns nil" do
         is_expected.to be_nil

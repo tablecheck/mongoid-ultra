@@ -2,7 +2,6 @@
 
 module Mongoid
   module Persistable
-
     # Defines behavior for $push and $addToSet operations.
     module Pushable
       extend ActiveSupport::Concern
@@ -26,7 +25,7 @@ module Mongoid
               # https://jira.mongodb.org/browse/MONGOID-4874
               existing = attributes[field]
             end
-            values = [ value ].flatten(1)
+            values = [value].flatten(1)
             values.each do |val|
               existing.push(val) unless existing.include?(val)
             end
@@ -54,7 +53,7 @@ module Mongoid
               attributes[field] ||= []
               attributes[field]
             end
-            values = [ value ].flatten(1)
+            values = [value].flatten(1)
             values.each { |val| existing.push(val) }
             ops[atomic_attribute_name(field)] = { "$each" => values }
           end

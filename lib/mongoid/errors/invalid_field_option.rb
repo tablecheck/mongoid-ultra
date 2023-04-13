@@ -2,11 +2,9 @@
 
 module Mongoid
   module Errors
-
     # This error is raised when trying to create a field that has an invalid
     # option.
     class InvalidFieldOption < MongoidError
-
       # Create the new error.
       #
       # @example Create the error.

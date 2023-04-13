@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 module Mongoid
-
   # Utility class for logging deprecation warnings.
   class Deprecation < ::ActiveSupport::Deprecation
-
     @gem_name = 'Mongoid'
 
     # Per change policy, deprecations will be removed in the next major version.

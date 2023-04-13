@@ -2,7 +2,6 @@
 
 module Mongoid
   module Persistable
-
     # Defines behavior for persistence operations that destroy documents.
     module Destroyable
       extend ActiveSupport::Concern
@@ -21,6 +20,7 @@ module Mongoid
       # @return [ true | false ] True if successful, false if not.
       def destroy(options = nil)
         raise Errors::ReadonlyDocument.new(self.class) if readonly?
+
         self.flagged_for_destroy = true
         result = run_callbacks(:commit, skip_if: -> { in_transaction? }) do
           run_callbacks(:destroy) do
@@ -60,7 +60,6 @@ module Mongoid
       end
 
       module ClassMethods
-
         # Delete all documents given the supplied conditions. If no conditions
         # are passed, the entire collection will be dropped for performance
         # benefits. Fires the destroy callbacks if conditions were passed.

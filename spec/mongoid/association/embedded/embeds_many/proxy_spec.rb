@@ -4,13 +4,9 @@ require "spec_helper"
 require_relative '../embeds_many_models.rb'
 
 describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
-
-  [ :<<, :push ].each do |method|
-
+  [:<<, :push].each do |method|
     describe "##{method}" do
-
       context "when the parent is a new record" do
-
         let(:person) do
           Person.new
         end
@@ -24,7 +20,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         it "appends to the target" do
-          expect(person.addresses).to eq([ address ])
+          expect(person.addresses).to eq([address])
         end
 
         it "sets the base on the inverse relation" do
@@ -56,7 +52,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         context 'when the child is already related to the parent' do
-
           let(:message) do
             Message.new(person: person)
           end
@@ -66,14 +61,12 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
           end
 
           it "appends only once to the target" do
-            expect(person.messages).to eq([ message ])
+            expect(person.messages).to eq([message])
           end
         end
 
         context "with a limiting default scope" do
-
           context "when the document matches the scope" do
-
             let(:active) do
               Appointment.new
             end
@@ -83,16 +76,15 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
             end
 
             it "appends to the target" do
-              expect(person.appointments._target).to eq([ active ])
+              expect(person.appointments._target).to eq([active])
             end
 
             it "appends to the _unscoped" do
-              expect(person.appointments.send(:_unscoped)).to eq([ active ])
+              expect(person.appointments.send(:_unscoped)).to eq([active])
             end
           end
 
           context "when the document does not match the scope" do
-
             let(:inactive) do
               Appointment.new(active: false)
             end
@@ -102,18 +94,17 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
             end
 
             it "doesn't append to the target" do
-              expect(person.appointments._target).to_not eq([ inactive ])
+              expect(person.appointments._target).to_not eq([inactive])
             end
 
             it "appends to the _unscoped" do
-              expect(person.appointments.send(:_unscoped)).to eq([ inactive ])
+              expect(person.appointments.send(:_unscoped)).to eq([inactive])
             end
           end
         end
       end
 
       context "when the parent is not a new record" do
-
         let(:person) do
           Person.create!
         end
@@ -132,7 +123,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when appending more than one document at once" do
-
         let(:person) do
           Person.create!
         end
@@ -146,7 +136,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         let!(:added) do
-          person.addresses.send(method, [ address_one, address_two ])
+          person.addresses.send(method, [address_one, address_two])
         end
 
         it "saves the first document" do
@@ -163,9 +153,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the parent and child have a cyclic relation" do
-
         context "when the parent is a new record" do
-
           let(:parent_role) do
             Role.new
           end
@@ -179,7 +167,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
           end
 
           it "appends to the target" do
-            expect(parent_role.child_roles).to eq([ child_role ])
+            expect(parent_role.child_roles).to eq([child_role])
           end
 
           it "sets the base on the inverse relation" do
@@ -208,7 +196,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         context "when the parent is not a new record" do
-
           let(:parent_role) do
             Role.create!(name: "CEO")
           end
@@ -261,9 +248,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#=" do
-
     context "when the parent is a new record" do
-
       let(:person) do
         Person.new
       end
@@ -273,15 +258,15 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       before do
-        person.addresses = [ address ]
+        person.addresses = [address]
       end
 
       it "sets the target of the relation" do
-        expect(person.addresses).to eq([ address ])
+        expect(person.addresses).to eq([address])
       end
 
       it "sets the _unscoped of the relation" do
-        expect(person.addresses.send(:_unscoped)).to eq([ address ])
+        expect(person.addresses.send(:_unscoped)).to eq([address])
       end
 
       it "sets the base on the inverse relation" do
@@ -310,7 +295,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the parent is not a new record" do
-
       let(:person) do
         Person.create!
       end
@@ -320,9 +304,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when setting directly" do
-
         before do
-          person.addresses = [ address ]
+          person.addresses = [address]
         end
 
         it "saves the target" do
@@ -331,7 +314,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when setting via an overridden method from the parent" do
-
         let!(:person) do
           Person.create!
         end
@@ -345,22 +327,21 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          person.update_attributes!(set_addresses: [ new_address ])
+          person.update_attributes!(set_addresses: [new_address])
         end
 
         it "overwrites the existing addresses" do
-          expect(person.reload.addresses).to eq([ new_address ])
+          expect(person.reload.addresses).to eq([new_address])
         end
       end
 
       context "when setting via the parent attributes" do
-
         before do
-          person.attributes = { addresses: [ address ] }
+          person.attributes = { addresses: [address] }
         end
 
         it "sets the relation" do
-          expect(person.addresses).to eq([ address ])
+          expect(person.addresses).to eq([address])
         end
 
         it "does not save the target" do
@@ -368,37 +349,33 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         context "when setting the relation multiple times" do
-
           let(:address_two) do
             Address.new(street: "kudamm")
           end
 
           before do
-            person.addresses = [ address_two ]
+            person.addresses = [address_two]
             person.save!
           end
 
           it "sets the new documents" do
-            expect(person.addresses).to eq([ address_two ])
+            expect(person.addresses).to eq([address_two])
           end
 
           it "persits only the new documents" do
-            expect(person.reload.addresses).to eq([ address_two ])
+            expect(person.reload.addresses).to eq([address_two])
           end
         end
       end
     end
 
     context "when setting for inherited docs" do
-
       context "when the parent collection is already accessed" do
-
         before do
           Person.collection
         end
 
         context "when setting via the subclass" do
-
           let(:doctor) do
             Doctor.new
           end
@@ -408,35 +385,34 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
           end
 
           before do
-            doctor.addresses = [ address_one ]
+            doctor.addresses = [address_one]
             doctor.save!
           end
 
           it "sets the documents" do
-            expect(doctor.addresses).to eq([ address_one ])
+            expect(doctor.addresses).to eq([address_one])
           end
 
           it "persists the document" do
-            expect(doctor.reload.addresses).to eq([ address_one ])
+            expect(doctor.reload.addresses).to eq([address_one])
           end
 
           context "when setting the relation multiple times" do
-
             let(:address_two) do
               Address.new(street: "kudamm")
             end
 
             before do
-              doctor.addresses = [ address_two ]
+              doctor.addresses = [address_two]
               doctor.save!
             end
 
             it "sets the new documents" do
-              expect(doctor.addresses).to eq([ address_two ])
+              expect(doctor.addresses).to eq([address_two])
             end
 
             it "persits only the new documents" do
-              expect(doctor.reload.addresses).to eq([ address_two ])
+              expect(doctor.reload.addresses).to eq([address_two])
             end
           end
         end
@@ -444,15 +420,14 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when replacing an existing relation" do
-
       let(:person) do
         Person.create!(addresses: addresses)
       end
 
       let(:addresses) do
         [
-            Address.new(street: "1st St"),
-            Address.new(street: "2nd St")
+          Address.new(street: "1st St"),
+          Address.new(street: "2nd St")
         ]
       end
 
@@ -461,18 +436,16 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the replaced relation is different from the existing relation" do
-
         before do
-          person.addresses = [ address ]
+          person.addresses = [address]
         end
 
         it "deletes the old documents" do
-          expect(person.reload.addresses).to eq([ address ])
+          expect(person.reload.addresses).to eq([address])
         end
       end
 
       context "when the replaced relation is identical to the existing relation" do
-
         before do
           person.addresses = addresses
         end
@@ -484,7 +457,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the relation has an unusual name" do
-
       module MyCompany
         module Model
           class TrackingId
@@ -532,7 +504,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the relation has address in the name" do
-
       let(:slave) do
         Slave.new(first_name: "Test")
       end
@@ -551,7 +522,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when setting the entire tree via a hash" do
-
       let(:person) do
         Person.create!
       end
@@ -569,7 +539,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the attributes have changed" do
-
         before do
           attributes["addresses"][0]["city"] = "Berlin"
           person.update_attributes!(attributes)
@@ -586,7 +555,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when setting an embedded sub-document tree via a hash" do
-
       let(:person) do
         Person.create!
       end
@@ -604,7 +572,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the attributes have changed" do
-
         before do
           attributes["city"] = "Berlin"
           attributes["locations"][0]["name"] = "Home"
@@ -634,9 +601,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the parent and child have a cyclic relation" do
-
       context "when the parent is a new record" do
-
         let(:parent_role) do
           Role.new
         end
@@ -646,11 +611,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          parent_role.child_roles = [ child_role ]
+          parent_role.child_roles = [child_role]
         end
 
         it "sets the target of the relation" do
-          expect(parent_role.child_roles).to eq([ child_role ])
+          expect(parent_role.child_roles).to eq([child_role])
         end
 
         it "sets the base on the inverse relation" do
@@ -679,7 +644,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the parent is not a new record" do
-
         let(:parent_role) do
           Role.create!(name: "CTO")
         end
@@ -689,7 +653,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          parent_role.child_roles = [ child_role ]
+          parent_role.child_roles = [child_role]
         end
 
         it "saves the target" do
@@ -700,11 +664,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#= nil" do
-
     context "when the relationship is polymorphic" do
-
       context "when the parent is a new record" do
-
         let(:person) do
           Person.new
         end
@@ -714,7 +675,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          person.addresses = [ address ]
+          person.addresses = [address]
           person.addresses = nil
         end
 
@@ -732,7 +693,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the inverse is already nil" do
-
         let(:person) do
           Person.new
         end
@@ -747,7 +707,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the parent is persisted" do
-
         let(:person) do
           Person.create!
         end
@@ -757,9 +716,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         context "when setting directly" do
-
           before do
-            person.addresses = [ address ]
+            person.addresses = [address]
             person.addresses = nil
           end
 
@@ -781,9 +739,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         context "when setting via attributes" do
-
           before do
-            person.addresses = [ address ]
+            person.addresses = [address]
             person.attributes = { addresses: nil }
           end
 
@@ -796,7 +753,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
           end
 
           context "when saving the parent" do
-
             before do
               person.save!
               person.reload
@@ -810,7 +766,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when setting on a reload" do
-
         let(:person) do
           Person.create!
         end
@@ -824,7 +779,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          person.reload.addresses = [ address ]
+          person.reload.addresses = [address]
           person.reload.addresses = nil
         end
 
@@ -839,9 +794,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the relationship is cyclic" do
-
       context "when the parent is a new record" do
-
         let(:parent_role) do
           Role.new
         end
@@ -851,7 +804,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          parent_role.child_roles = [ child_role ]
+          parent_role.child_roles = [child_role]
           parent_role.child_roles = nil
         end
 
@@ -865,7 +818,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the inverse is already nil" do
-
         let(:parent_role) do
           Role.new
         end
@@ -880,7 +832,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the documents are not new records" do
-
         let(:parent_role) do
           Role.create!
         end
@@ -890,7 +841,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          parent_role.child_roles = [ child_role ]
+          parent_role.child_roles = [child_role]
           parent_role.child_roles = nil
         end
 
@@ -910,13 +861,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#as_document" do
-
     let!(:person) do
       Person.create!
     end
 
     context 'when a string is used to access an attribute' do
-
       let!(:address) do
         person.addresses.create!(street: "one")
       end
@@ -931,7 +880,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context 'when a symbol is used to access an attribute' do
-
       let!(:address) do
         person.addresses.create!(street: "one")
       end
@@ -946,7 +894,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the relation has no default scope" do
-
       let!(:address) do
         person.addresses.create!(street: "one")
       end
@@ -956,14 +903,12 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       it "returns the documents as an array of hashes" do
-        expect(document).to eq([ address.as_document ])
+        expect(document).to eq([address.as_document])
       end
     end
 
     context "when the relation has a default scope" do
-
       context "when the default scope sorts" do
-
         let(:cough) do
           Symptom.new(name: "cough")
         end
@@ -973,7 +918,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          person.symptoms.concat([ headache, cough ])
+          person.symptoms.concat([headache, cough])
         end
 
         let(:document) do
@@ -981,12 +926,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         it "returns the unscoped documents as an array of hashes" do
-          expect(document).to eq([ headache.as_document, cough.as_document ])
+          expect(document).to eq([headache.as_document, cough.as_document])
         end
       end
 
       context "when the default scope limits" do
-
         let(:active) do
           Appointment.new
         end
@@ -996,7 +940,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          person.appointments.concat([ active, inactive ])
+          person.appointments.concat([active, inactive])
         end
 
         let(:document) do
@@ -1004,18 +948,15 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         it "returns the unscoped documents as an array of hashes" do
-          expect(document).to eq([ active.as_document, inactive.as_document ])
+          expect(document).to eq([active.as_document, inactive.as_document])
         end
       end
     end
   end
 
-  [ :build, :new ].each do |method|
-
+  [:build, :new].each do |method|
     describe "#build" do
-
       context "when the relation is not cyclic" do
-
         let(:person) do
           Person.new
         end
@@ -1027,11 +968,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         it "appends to the target" do
-          expect(person.addresses).to eq([ address ])
+          expect(person.addresses).to eq([address])
         end
 
         it "appends to the unscoped" do
-          expect(person.addresses.send(:_unscoped)).to eq([ address ])
+          expect(person.addresses.send(:_unscoped)).to eq([address])
         end
 
         it "sets the base on the inverse relation" do
@@ -1064,7 +1005,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the relation is cyclic" do
-
         let(:parent_role) do
           Role.new
         end
@@ -1074,7 +1014,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         it "appends to the target" do
-          expect(parent_role.child_roles).to eq([ child_role ])
+          expect(parent_role.child_roles).to eq([child_role])
         end
 
         it "sets the base on the inverse relation" do
@@ -1103,21 +1043,19 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when providing nested attributes" do
-
         let(:person) do
           Person.create!
         end
 
         let(:address) do
           person.addresses.send(
-              method,
-              street: "Bond",
-              locations_attributes: { "1" => { "name" => "Home" } }
+            method,
+            street: "Bond",
+            locations_attributes: { "1" => { "name" => "Home" } }
           )
         end
 
         context "when followed by a save" do
-
           before do
             address.save!
           end
@@ -1135,15 +1073,12 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#clear" do
-
     context "when the parent has been persisted" do
-
       let(:person) do
         Person.create!
       end
 
       context "when the children are persisted" do
-
         let!(:address) do
           person.addresses.create!(street: "High St")
         end
@@ -1174,7 +1109,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the children are not persisted" do
-
         let!(:address) do
           person.addresses.build(street: "High St")
         end
@@ -1190,7 +1124,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the parent is not persisted" do
-
       let(:person) do
         Person.new
       end
@@ -1210,9 +1143,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#concat" do
-
     context "when the parent is a new record" do
-
       let(:person) do
         Person.new
       end
@@ -1222,15 +1153,15 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       before do
-        person.addresses.concat([ address ])
+        person.addresses.concat([address])
       end
 
       it "appends to the target" do
-        expect(person.addresses).to eq([ address ])
+        expect(person.addresses).to eq([address])
       end
 
       it "appends to the unscoped" do
-        expect(person.addresses.send(:_unscoped)).to eq([ address ])
+        expect(person.addresses.send(:_unscoped)).to eq([address])
       end
 
       it "sets the base on the inverse relation" do
@@ -1259,7 +1190,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the parent is not a new record" do
-
       let(:person) do
         Person.create!
       end
@@ -1269,7 +1199,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       before do
-        person.addresses.concat([ address ])
+        person.addresses.concat([address])
       end
 
       it "saves the new document" do
@@ -1278,7 +1208,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when concatenating an empty array" do
-
       let(:person) do
         Person.create!
       end
@@ -1294,7 +1223,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when appending more than one document at once" do
-
       let(:person) do
         Person.create!
       end
@@ -1308,7 +1236,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       before do
-        person.addresses.concat([ address_one, address_two ])
+        person.addresses.concat([address_one, address_two])
       end
 
       it "saves the first document" do
@@ -1321,9 +1249,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the parent and child have a cyclic relation" do
-
       context "when the parent is a new record" do
-
         let(:parent_role) do
           Role.new
         end
@@ -1333,11 +1259,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          parent_role.child_roles.concat([ child_role ])
+          parent_role.child_roles.concat([child_role])
         end
 
         it "appends to the target" do
-          expect(parent_role.child_roles).to eq([ child_role ])
+          expect(parent_role.child_roles).to eq([child_role])
         end
 
         it "sets the base on the inverse relation" do
@@ -1366,7 +1292,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the parent is not a new record" do
-
         let(:parent_role) do
           Role.create!(name: "CEO")
         end
@@ -1376,7 +1301,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          parent_role.child_roles.concat([ child_role ])
+          parent_role.child_roles.concat([child_role])
         end
 
         it "saves the new document" do
@@ -1387,7 +1312,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#count" do
-
     let(:person) do
       Person.create!
     end
@@ -1404,10 +1328,10 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     context 'block form' do
       it "iterates across all documents" do
-        expect(person.addresses.count {|a| a.persisted? }).to eq(1)
-        expect(person.addresses.count {|a| !a.persisted? }).to eq(2)
-        expect(person.addresses.count {|a| a.street.include?('on') }).to eq(1)
-        expect(person.addresses.count {|a| a.street.ends_with?('er') }).to eq(2)
+        expect(person.addresses.count { |a| a.persisted? }).to eq(1)
+        expect(person.addresses.count { |a| !a.persisted? }).to eq(2)
+        expect(person.addresses.count { |a| a.street.include?('on') }).to eq(1)
+        expect(person.addresses.count { |a| a.street.ends_with?('er') }).to eq(2)
       end
     end
 
@@ -1423,7 +1347,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#any?" do
-
     let(:person) do
       Person.create!
     end
@@ -1438,8 +1361,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       it "block form iterates across all documents" do
-        expect(person.addresses.any? {|a| a.street == "Upper" }).to be true
-        expect(person.addresses.any? {|a| a.street == "Bond" }).to be false
+        expect(person.addresses.any? { |a| a.street == "Upper" }).to be true
+        expect(person.addresses.any? { |a| a.street == "Bond" }).to be false
       end
 
       context 'argument form' do
@@ -1463,8 +1386,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       it "block form iterates across all documents" do
-        expect(person.addresses.any? {|a| a.street == "Upper" }).to be false
-        expect(person.addresses.any? {|a| a.street == "Bond" }).to be true
+        expect(person.addresses.any? { |a| a.street == "Upper" }).to be false
+        expect(person.addresses.any? { |a| a.street == "Bond" }).to be true
       end
 
       context 'argument form' do
@@ -1494,7 +1417,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#all?" do
-
     let(:person) do
       Person.create!
     end
@@ -1509,8 +1431,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       it "block form iterates across all documents" do
-        expect(person.addresses.all? {|a| a.street == "Upper" }).to be true
-        expect(person.addresses.all? {|a| a.street == "Bond" }).to be false
+        expect(person.addresses.all? { |a| a.street == "Upper" }).to be true
+        expect(person.addresses.all? { |a| a.street == "Bond" }).to be false
       end
 
       context 'argument form' do
@@ -1534,8 +1456,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       it "block form iterates across all documents" do
-        expect(person.addresses.all? {|a| a.street == "Upper" }).to be false
-        expect(person.addresses.all? {|a| a.street == "Bond" }).to be true
+        expect(person.addresses.all? { |a| a.street == "Upper" }).to be false
+        expect(person.addresses.all? { |a| a.street == "Bond" }).to be true
       end
 
       context 'argument form' do
@@ -1571,7 +1493,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#none?" do
-
     let(:person) do
       Person.create!
     end
@@ -1586,8 +1507,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       it "block form iterates across all documents" do
-        expect(person.addresses.none? {|a| a.street == "Upper" }).to be false
-        expect(person.addresses.none? {|a| a.street == "Bond" }).to be true
+        expect(person.addresses.none? { |a| a.street == "Upper" }).to be false
+        expect(person.addresses.none? { |a| a.street == "Bond" }).to be true
       end
 
       context 'argument form' do
@@ -1611,8 +1532,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       it "block form iterates across all documents" do
-        expect(person.addresses.none? {|a| a.street == "Upper" }).to be true
-        expect(person.addresses.none? {|a| a.street == "Bond" }).to be false
+        expect(person.addresses.none? { |a| a.street == "Upper" }).to be true
+        expect(person.addresses.none? { |a| a.street == "Bond" }).to be false
       end
 
       context 'argument form' do
@@ -1648,9 +1569,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#create" do
-
     context "when providing multiple attributes" do
-
       let(:person) do
         Person.create!
       end
@@ -1677,7 +1596,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the relation is not cyclic" do
-
       let(:person) do
         Person.create!
       end
@@ -1689,11 +1607,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       it "appends to the target" do
-        expect(person.reload.addresses).to eq([ address ])
+        expect(person.reload.addresses).to eq([address])
       end
 
       it "appends to the unscoped" do
-        expect(person.reload.addresses.send(:_unscoped)).to eq([ address ])
+        expect(person.reload.addresses.send(:_unscoped)).to eq([address])
       end
 
       it "sets the base on the inverse relation" do
@@ -1725,7 +1643,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when embedding a multi word named document" do
-
         let!(:component) do
           person.address_components.create!(street: "Test")
         end
@@ -1737,7 +1654,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the relation is cyclic" do
-
       let!(:entry) do
         Entry.create!(title: "hi")
       end
@@ -1753,13 +1669,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#create!" do
-
     let(:person) do
       Person.create!
     end
 
     context "when providing multiple attributes" do
-
       let!(:addresses) do
         person.addresses.create!([{ street: "Bond" }, { street: "Upper" }])
       end
@@ -1782,17 +1696,16 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when validation passes" do
-
       let(:address) do
         person.addresses.create!(street: "Bond")
       end
 
       it "appends to the target" do
-        expect(person.addresses).to eq([ address ])
+        expect(person.addresses).to eq([address])
       end
 
       it "appends to the unscoped" do
-        expect(person.addresses.send(:_unscoped)).to eq([ address ])
+        expect(person.addresses.send(:_unscoped)).to eq([address])
       end
 
       it "sets the base on the inverse relation" do
@@ -1821,7 +1734,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when validation fails" do
-
       it "raises an error" do
         expect {
           person.addresses.create!(street: "1")
@@ -1829,7 +1741,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context 'when the presence of the embedded relation is validated' do
-
         around do |example|
           Book.validates :pages, presence: true
           example.run
@@ -1852,7 +1763,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          begin; book.update_attributes!({"pages"=>nil}); rescue; end
+          begin; book.update_attributes!({ "pages" => nil }); rescue; end
         end
 
         it 'does not delete the embedded relation' do
@@ -1863,7 +1774,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#delete" do
-
     let(:person) do
       Person.new
     end
@@ -1877,21 +1787,20 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     before do
-      person.addresses << [ address_one, address_two ]
+      person.addresses << [address_one, address_two]
     end
 
     context "when the document exists in the relation" do
-
       let!(:deleted) do
         person.addresses.delete(address_one)
       end
 
       it "deletes the document" do
-        expect(person.addresses).to eq([ address_two ])
+        expect(person.addresses).to eq([address_two])
       end
 
       it "deletes the document from the unscoped" do
-        expect(person.addresses.send(:_unscoped)).to eq([ address_two ])
+        expect(person.addresses.send(:_unscoped)).to eq([address_two])
       end
 
       it "reindexes the relation" do
@@ -1904,7 +1813,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the document does not exist" do
-
       it "returns nil" do
         expect(person.addresses.delete(Address.new)).to be_nil
       end
@@ -1912,13 +1820,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#delete_if" do
-
     let(:person) do
       Person.create!
     end
 
     context "when the documents are new" do
-
       let!(:address_one) do
         person.addresses.build(street: "Bond")
       end
@@ -1928,7 +1834,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when a block is provided" do
-
         let!(:deleted) do
           person.addresses.delete_if do |doc|
             doc.street == "Bond"
@@ -1949,7 +1854,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when no block is provided" do
-
         let!(:deleted) do
           person.addresses.delete_if
         end
@@ -1961,7 +1865,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the documents persisted" do
-
       let!(:address_one) do
         person.addresses.create!(street: "Bond")
       end
@@ -1971,7 +1874,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when a block is provided" do
-
         let!(:deleted) do
           person.addresses.delete_if do |doc|
             doc.street == "Bond"
@@ -1993,9 +1895,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the documents are empty" do
-
       context "when a block is provided" do
-
         let!(:deleted) do
           person.addresses.delete_if do |doc|
             doc.street == "Bond"
@@ -2017,16 +1917,13 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
   end
 
-  [ :delete_all, :destroy_all ].each do |method|
-
+  [:delete_all, :destroy_all].each do |method|
     describe "##{method}" do
-
       let(:person) do
         Person.create!
       end
 
       context "when the documents are new" do
-
         let!(:address_one) do
           person.addresses.build(street: "Bond")
         end
@@ -2036,11 +1933,10 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         context "when conditions are provided" do
-
           let!(:deleted) do
             person.addresses.send(
-                method,
-                { street: "Bond" }
+              method,
+              { street: "Bond" }
             )
           end
 
@@ -2058,7 +1954,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         context "when conditions are not provided" do
-
           let!(:deleted) do
             person.addresses.send(method)
           end
@@ -2074,7 +1969,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the documents persisted" do
-
         let!(:address_one) do
           person.addresses.create!(street: "Bond")
         end
@@ -2084,11 +1978,10 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         context "when conditions are provided" do
-
           let!(:deleted) do
             person.addresses.send(
-                method,
-                { street: "Bond" }
+              method,
+              { street: "Bond" }
             )
           end
 
@@ -2106,7 +1999,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         context "when conditions are not provided" do
-
           let!(:deleted) do
             person.addresses.send(method)
           end
@@ -2125,7 +2017,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         context "when removing and resaving" do
-
           let(:owner) do
             PetOwner.create!(title: "AKC")
           end
@@ -2150,7 +2041,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the documents empty" do
-
         context "when scoped" do
           let!(:deleted) do
             person.addresses.without_postcode.send(method)
@@ -2170,11 +2060,10 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         context "when conditions are provided" do
-
           let!(:deleted) do
             person.addresses.send(
-                method,
-                conditions: { street: "Bond" }
+              method,
+              conditions: { street: "Bond" }
             )
           end
 
@@ -2192,7 +2081,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         context "when conditions are not provided" do
-
           let!(:deleted) do
             person.addresses.send(method)
           end
@@ -2215,7 +2103,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         let(:parent) { EmmParent.new }
 
         before do
-
           parent.blocks << EmmBlock.new(name: 'test', children: [size: 1, order: 1])
           parent.save!
 
@@ -2287,20 +2174,17 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe ".embedded?" do
-
     it "returns true" do
       expect(described_class).to be_embedded
     end
   end
 
   describe "#exists?" do
-
     let!(:person) do
       Person.create!
     end
 
     context "when documents exist in the database" do
-
       before do
         person.addresses.create!(street: "Bond St")
       end
@@ -2311,7 +2195,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when no documents exist in the database" do
-
       before do
         person.addresses.build(street: "Hyde Park Dr")
       end
@@ -2323,7 +2206,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#find" do
-
     let(:person) do
       Person.new
     end
@@ -2337,9 +2219,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when providing an id" do
-
       context "when the id matches" do
-
         let(:address) do
           person.addresses.find(address_one.id)
         end
@@ -2350,7 +2230,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the id does not match" do
-
         context "when config set to raise error" do
           config_override :raise_not_found_error, true
 
@@ -2376,26 +2255,23 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when providing an array of ids" do
-
       context "when the ids match" do
-
         let(:addresses) do
-          person.addresses.find([ address_one.id, address_two.id ])
+          person.addresses.find([address_one.id, address_two.id])
         end
 
         it "returns the matching documents" do
-          expect(addresses).to eq([ address_one, address_two ])
+          expect(addresses).to eq([address_one, address_two])
         end
       end
 
       context "when the ids do not match" do
-
         context "when config set to raise error" do
           config_override :raise_not_found_error, true
 
           it "raises an error" do
             expect {
-              person.addresses.find([ BSON::ObjectId.new ])
+              person.addresses.find([BSON::ObjectId.new])
             }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Address with id\(s\)/)
           end
         end
@@ -2404,7 +2280,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
           config_override :raise_not_found_error, false
 
           let(:addresses) do
-            person.addresses.find([ BSON::ObjectId.new ])
+            person.addresses.find([BSON::ObjectId.new])
           end
 
           it "returns an empty array" do
@@ -2454,7 +2330,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#find_or_create_by" do
-
     let(:person) do
       Person.create!
     end
@@ -2464,7 +2339,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the document exists" do
-
       let(:found) do
         person.addresses.find_or_create_by(street: "Bourke")
       end
@@ -2475,7 +2349,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the document does not exist" do
-
       let(:found) do
         person.addresses.find_or_create_by(street: "King") do |address|
           address.state = "CA"
@@ -2520,7 +2393,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#find_or_create_by!" do
-
     let(:person) do
       Person.create!
     end
@@ -2530,7 +2402,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the document exists" do
-
       let(:found) do
         person.addresses.find_or_create_by!(street: "Bourke")
       end
@@ -2541,7 +2412,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the document does not exist" do
-
       let(:found) do
         person.addresses.find_or_create_by!(street: "King") do |address|
           address.state = "CA"
@@ -2561,7 +2431,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when validation fails" do
-
         it "raises an error" do
           expect {
             person.addresses.find_or_create_by!(street: "1")
@@ -2595,7 +2464,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#find_or_initialize_by" do
-
     let(:person) do
       Person.new
     end
@@ -2605,7 +2473,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the document exists" do
-
       let(:found) do
         person.addresses.find_or_initialize_by(street: "Bourke")
       end
@@ -2616,7 +2483,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the document does not exist" do
-
       let(:found) do
         person.addresses.find_or_initialize_by(street: "King") do |address|
           address.state = "CA"
@@ -2638,7 +2504,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#max" do
-
     let(:person) do
       Person.new
     end
@@ -2656,7 +2521,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     let(:max) do
-      person.addresses.max do |a,b|
+      person.addresses.max do |a, b|
         a.number <=> b.number
       end
     end
@@ -2667,7 +2532,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#max_by" do
-
     let(:person) do
       Person.new
     end
@@ -2694,77 +2558,70 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#method_missing" do
-
     let!(:person) do
       Person.create!
     end
 
     let!(:address_one) do
       person.addresses.create!(
-          street: "Market",
-          state: "CA",
-          services: [ "1", "2" ]
+        street: "Market",
+        state: "CA",
+        services: ["1", "2"]
       )
     end
 
     let!(:address_two) do
       person.addresses.create!(
-          street: "Madison",
-          state: "NY",
-          services: [ "1", "2" ]
+        street: "Madison",
+        state: "NY",
+        services: ["1", "2"]
       )
     end
 
     context "when providing a single criteria" do
-
       context "when using a simple criteria" do
-
         let(:addresses) do
           person.addresses.where(state: "CA")
         end
 
         it "applies the criteria to the documents" do
-          expect(addresses).to eq([ address_one ])
+          expect(addresses).to eq([address_one])
         end
       end
 
       context "when using an $or criteria" do
-
         let(:addresses) do
           person.addresses.any_of({ state: "CA" }, { state: "NY" })
         end
 
         it "applies the criteria to the documents" do
-          expect(addresses).to eq([ address_one, address_two ])
+          expect(addresses).to eq([address_one, address_two])
         end
       end
 
       context "when using array comparison" do
-
         let(:addresses) do
-          person.addresses.where(services: [ "1", "2" ])
+          person.addresses.where(services: ["1", "2"])
         end
 
         it "applies the criteria to the documents" do
-          expect(addresses).to eq([ address_one, address_two ])
+          expect(addresses).to eq([address_one, address_two])
         end
       end
     end
 
     context "when providing a criteria class method" do
       context "without keyword arguments" do
-
         let(:addresses) do
           person.addresses.california
         end
 
         it "applies the criteria to the documents" do
-          expect(addresses).to eq([ address_one ])
+          expect(addresses).to eq([address_one])
         end
       end
 
       context "with keyword arguments" do
-
         let(:addresses) do
           person.addresses.city_and_state(city: "Sacramento", state: "CA")
         end
@@ -2776,29 +2633,25 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when chaining criteria" do
-
       let(:addresses) do
-        person.addresses.california.where(:street.in => [ "Market" ])
+        person.addresses.california.where(:street.in => ["Market"])
       end
 
       it "applies the criteria to the documents" do
-        expect(addresses).to eq([ address_one ])
+        expect(addresses).to eq([address_one])
       end
     end
 
     context "when delegating methods" do
-
       describe "#distinct" do
-
         it "returns the distinct values for the fields" do
-          expect(person.addresses.distinct(:street)).to eq([ "Market",  "Madison"])
+          expect(person.addresses.distinct(:street)).to eq(["Market", "Madison"])
         end
       end
     end
   end
 
   describe "#min" do
-
     let(:person) do
       Person.new
     end
@@ -2816,7 +2669,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     let(:min) do
-      person.addresses.min do |a,b|
+      person.addresses.min do |a, b|
         a.number <=> b.number
       end
     end
@@ -2827,7 +2680,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#min_by" do
-
     let(:person) do
       Person.new
     end
@@ -2854,13 +2706,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#pop" do
-
     let(:person) do
       Person.create!
     end
 
     context "when no argument is provided" do
-
       let!(:address_one) do
         person.addresses.create!(street: "sonnenallee")
       end
@@ -2878,16 +2728,15 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       it "removes the document from the relation" do
-        expect(person.addresses).to eq([ address_one ])
+        expect(person.addresses).to eq([address_one])
       end
 
       it "persists the pop" do
-        expect(person.reload.addresses).to eq([ address_one ])
+        expect(person.reload.addresses).to eq([address_one])
       end
     end
 
     context "when an integer is provided" do
-
       let!(:address_one) do
         person.addresses.create!(street: "sonnenallee")
       end
@@ -2897,7 +2746,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the number is zero" do
-
         let!(:popped) do
           person.addresses.pop(0)
         end
@@ -2907,22 +2755,21 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         it "does not remove the document from the relation" do
-          expect(person.addresses).to eq([ address_one, address_two ])
+          expect(person.addresses).to eq([address_one, address_two])
         end
 
         it "does not persist the pop" do
-          expect(person.reload.addresses).to eq([ address_one, address_two ])
+          expect(person.reload.addresses).to eq([address_one, address_two])
         end
       end
 
       context "when the number is not larger than the relation" do
-
         let!(:popped) do
           person.addresses.pop(2)
         end
 
         it "returns the popped documents" do
-          expect(popped).to eq([ address_one, address_two ])
+          expect(popped).to eq([address_one, address_two])
         end
 
         it "removes the document from the relation" do
@@ -2935,13 +2782,12 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the number is larger than the relation" do
-
         let!(:popped) do
           person.addresses.pop(4)
         end
 
         it "returns the popped documents" do
-          expect(popped).to eq([ address_one, address_two ])
+          expect(popped).to eq([address_one, address_two])
         end
 
         it "removes the document from the relation" do
@@ -2955,16 +2801,13 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the relation is empty" do
-
       context "when providing no number" do
-
         it "returns nil" do
           expect(person.addresses.pop).to be_nil
         end
       end
 
       context "when providing a number" do
-
         it "returns nil" do
           expect(person.addresses.pop(2)).to be_nil
         end
@@ -2973,13 +2816,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#shift" do
-
     let(:person) do
       Person.create!
     end
 
     context "when no argument is provided" do
-
       let!(:address_one) do
         person.addresses.create!(street: "sonnenallee")
       end
@@ -2997,16 +2838,15 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       it "removes the document from the relation" do
-        expect(person.addresses).to eq([ address_two ])
+        expect(person.addresses).to eq([address_two])
       end
 
       it "persists the shift" do
-        expect(person.reload.addresses).to eq([ address_two ])
+        expect(person.reload.addresses).to eq([address_two])
       end
     end
 
     context "when an integer is provided" do
-
       let!(:address_one) do
         person.addresses.create!(street: "sonnenallee")
       end
@@ -3016,7 +2856,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the number is zero" do
-
         let!(:shifted) do
           person.addresses.shift(0)
         end
@@ -3026,22 +2865,21 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         it "does not remove the document from the relation" do
-          expect(person.addresses).to eq([ address_one, address_two ])
+          expect(person.addresses).to eq([address_one, address_two])
         end
 
         it "does not persist the shift" do
-          expect(person.reload.addresses).to eq([ address_one, address_two ])
+          expect(person.reload.addresses).to eq([address_one, address_two])
         end
       end
 
       context "when the number is not larger than the relation" do
-
         let!(:shifted) do
           person.addresses.shift(2)
         end
 
         it "returns the shifted documents" do
-          expect(shifted).to eq([ address_one, address_two ])
+          expect(shifted).to eq([address_one, address_two])
         end
 
         it "removes the document from the relation" do
@@ -3054,13 +2892,12 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the number is larger than the relation" do
-
         let!(:shifted) do
           person.addresses.shift(4)
         end
 
         it "returns the shifted documents" do
-          expect(shifted).to eq([ address_one, address_two ])
+          expect(shifted).to eq([address_one, address_two])
         end
 
         it "removes the document from the relation" do
@@ -3074,16 +2911,13 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the relation is empty" do
-
       context "when providing no number" do
-
         it "returns nil" do
           expect(person.addresses.shift).to be_nil
         end
       end
 
       context "when providing a number" do
-
         it "returns nil" do
           expect(person.addresses.shift(2)).to be_nil
         end
@@ -3092,7 +2926,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#scoped" do
-
     let(:person) do
       Person.new
     end
@@ -3111,7 +2944,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#respond_to?" do
-
     let(:person) do
       Person.new
     end
@@ -3121,9 +2953,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     Array.public_instance_methods.each do |method|
-
       context "when checking #{method}" do
-
         it "returns true" do
           expect(addresses.respond_to?(method)).to be true
         end
@@ -3131,9 +2961,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     Mongoid::Association::Embedded::EmbedsMany::Proxy.public_instance_methods.each do |method|
-
       context "when checking #{method}" do
-
         it "returns true" do
           expect(addresses.respond_to?(method)).to be true
         end
@@ -3141,9 +2969,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     Address.scopes.keys.each do |method|
-
       context "when checking #{method}" do
-
         it "returns true" do
           expect(addresses.respond_to?(method)).to be true
         end
@@ -3155,10 +2981,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
   end
 
-  [ :size, :length ].each do |method|
-
+  [:size, :length].each do |method|
     describe "##{method}" do
-
       let(:person) do
         Person.create!
       end
@@ -3175,7 +2999,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#unscoped" do
-
     let(:person) do
       Person.new
     end
@@ -3198,9 +3021,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   describe "#update_all" do
-
     context "when there are no documents present" do
-
       let(:person) do
         Person.create!
       end
@@ -3211,7 +3032,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when documents are present" do
-
       let(:person) do
         Person.create!
       end
@@ -3221,11 +3041,10 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when updating with a where clause" do
-
         before do
-          person.addresses.
-              where(street: "Hobrecht").
-              update_all(number: 26, post_code: "12437")
+          person.addresses
+                .where(street: "Hobrecht")
+                .update_all(number: 26, post_code: "12437")
         end
 
         it "resets the matching dirty flags" do
@@ -3248,9 +3067,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when deeply embedding documents" do
-
     context "when updating the bottom level" do
-
       let!(:person) do
         Person.create!
       end
@@ -3265,9 +3082,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when updating with replacement of embedded array" do
-
         context "when updating with a hash" do
-
           before do
             address.update_attributes!(locations: [{ name: "home" }])
           end
@@ -3287,7 +3102,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when updating a field in a document of the embedded array" do
-
         before do
           location.number = 7
           location.save!
@@ -3308,12 +3122,10 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         it "the other field remains unaffected" do
           expect(updated_location_name).to eq("work")
         end
-
       end
     end
 
     context "when building the tree through hashes" do
-
       let(:circus) do
         Circus.new(hash)
       end
@@ -3331,7 +3143,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the hash uses stringified keys" do
-
         let(:hash) do
           { 'animals' => [{ 'name' => animal_name, 'tag_list' => tag_list }] }
         end
@@ -3350,7 +3161,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when the hash uses symbolized keys" do
-
         let(:hash) do
           { animals: [{ name: animal_name, tag_list: tag_list }] }
         end
@@ -3370,7 +3180,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when building the tree through pushes" do
-
       let(:quiz) do
         Quiz.new
       end
@@ -3398,7 +3207,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when building the tree through builds" do
-
       let!(:quiz) do
         Quiz.new
       end
@@ -3421,7 +3229,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when creating a persisted tree" do
-
       let(:quiz) do
         Quiz.create!
       end
@@ -3448,7 +3255,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when reloading" do
-
         let(:from_db) do
           quiz.reload
         end
@@ -3465,9 +3271,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when deeply nesting documents" do
-
     context "when all documents are new" do
-
       let(:person) do
         Person.new
       end
@@ -3486,7 +3290,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when saving the root" do
-
         before do
           person.save!
         end
@@ -3496,14 +3299,13 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         it "persists the second level document" do
-          expect(person.reload.addresses[0].locations).to eq([ location ])
+          expect(person.reload.addresses[0].locations).to eq([location])
         end
       end
     end
   end
 
   context "when attempting nil pushes and substitutes" do
-
     let(:home_phone) do
       Phone.new(number: "555-555-5555")
     end
@@ -3513,9 +3315,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     describe "replacing the entire embedded list" do
-
       context "when an embeds many relationship contains nil as the first item" do
-
         let(:person) do
           Person.create!
         end
@@ -3531,12 +3331,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
         it "ignores the nil and persist the remaining items" do
           reloaded = Person.find(person.id)
-          expect(reloaded.phone_numbers).to eq([ home_phone, office_phone ])
+          expect(reloaded.phone_numbers).to eq([home_phone, office_phone])
         end
       end
 
       context "when an embeds many relationship contains nil in the middle of the list" do
-
         let(:person) do
           Person.create!
         end
@@ -3552,12 +3351,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
         it "ignores the nil and persist the remaining items" do
           reloaded = Person.find(person.id)
-          expect(reloaded.phone_numbers).to eq([ home_phone, office_phone ])
+          expect(reloaded.phone_numbers).to eq([home_phone, office_phone])
         end
       end
 
       context "when an embeds many relationship contains nil at the end of the list" do
-
         let(:person) do
           Person.create!
         end
@@ -3573,15 +3371,13 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
         it "ignores the nil and persist the remaining items" do
           reloaded = Person.find(person.id)
-          expect(reloaded.phone_numbers).to eq([ home_phone, office_phone ])
+          expect(reloaded.phone_numbers).to eq([home_phone, office_phone])
         end
       end
     end
 
     describe "appending to the embedded list" do
-
       context "when appending nil to the first position in an embedded list" do
-
         let(:person) do
           Person.create! phone_numbers: []
         end
@@ -3600,7 +3396,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when appending nil into the middle of an embedded list" do
-
         let(:person) do
           Person.create! phone_numbers: []
         end
@@ -3619,7 +3414,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when appending nil to the end of an embedded list" do
-
         let(:person) do
           Person.create! phone_numbers: []
         end
@@ -3640,7 +3434,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when accessing the parent in a destroy callback" do
-
     let!(:league) do
       League.create!
     end
@@ -3659,7 +3452,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when updating the parent with all attributes" do
-
     let!(:person) do
       Person.create!
     end
@@ -3673,22 +3465,20 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     it "does not duplicate the embedded documents" do
-      expect(person.addresses).to eq([ address ])
+      expect(person.addresses).to eq([address])
     end
 
     it "does not persist duplicate embedded documents" do
-      expect(person.reload.addresses).to eq([ address ])
+      expect(person.reload.addresses).to eq([address])
     end
   end
 
   context "when embedding children named versions" do
-
     let(:acolyte) do
       Acolyte.create!(name: "test")
     end
 
     context "when creating a child" do
-
       let(:version) do
         acolyte.versions.create!(number: 1)
       end
@@ -3698,20 +3488,18 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when reloading the parent" do
-
         let(:from_db) do
           acolyte.reload
         end
 
         it "saves the child versions" do
-          expect(from_db.versions).to eq([ version ])
+          expect(from_db.versions).to eq([version])
         end
       end
     end
   end
 
   context "when validating the parent before accessing the child" do
-
     let!(:account) do
       Account.new(name: "Testing").tap do |acct|
         acct.memberships.build
@@ -3724,7 +3512,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when saving" do
-
       before do
         account.name = ""
       end
@@ -3736,7 +3523,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when updating attributes" do
-
       before do
         from_db.update_attributes(name: "")
       end
@@ -3748,7 +3534,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when moving an embedded document from one parent to another" do
-
     let!(:person_one) do
       Person.create!
     end
@@ -3766,7 +3551,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     it "adds the document to the new paarent" do
-      expect(person_two.addresses).to eq([ address ])
+      expect(person_two.addresses).to eq([address])
     end
 
     it "sets the new parent on the document" do
@@ -3774,30 +3559,27 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when reloading the documents" do
-
       before do
         person_one.reload
         person_two.reload
       end
 
       it "persists the change to the new parent" do
-        expect(person_two.addresses).to eq([ address ])
+        expect(person_two.addresses).to eq([address])
       end
 
       it "keeps the address on the previous document" do
-        expect(person_one.addresses).to eq([ address ])
+        expect(person_one.addresses).to eq([address])
       end
     end
   end
 
   context "when the relation has a default scope" do
-
     let!(:person) do
       Person.create!
     end
 
     context "when the default scope is a sort" do
-
       let(:cough) do
         Symptom.new(name: "cough")
       end
@@ -3811,22 +3593,20 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       before do
-        person.symptoms.concat([ nausea, cough, headache ])
+        person.symptoms.concat([nausea, cough, headache])
       end
 
       context "when accessing the relation" do
-
         let(:symptoms) do
           person.reload.symptoms
         end
 
         it "applies the default scope" do
-          expect(symptoms).to eq([ cough, headache, nausea ])
+          expect(symptoms).to eq([cough, headache, nausea])
         end
       end
 
       context "when modifying the relation" do
-
         let(:constipation) do
           Symptom.new(name: "constipation")
         end
@@ -3836,38 +3616,34 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         context "when reloading" do
-
           let(:symptoms) do
             person.reload.symptoms
           end
 
           it "applies the default scope" do
-            expect(symptoms).to eq([ constipation, cough, headache, nausea ])
+            expect(symptoms).to eq([constipation, cough, headache, nausea])
           end
         end
       end
 
       context "when unscoping the relation" do
-
         let(:unscoped) do
           person.reload.symptoms.unscoped
         end
 
         it "removes the default scope" do
-          expect(unscoped).to eq([ nausea, cough, headache ])
+          expect(unscoped).to eq([nausea, cough, headache])
         end
       end
     end
   end
 
   context "when indexing the documents" do
-
     let!(:person) do
       Person.create!
     end
 
     context "when the documents have a limiting default scope" do
-
       let(:active) do
         Appointment.new
       end
@@ -3877,7 +3653,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       before do
-        person.appointments.concat([ inactive, active ])
+        person.appointments.concat([inactive, active])
       end
 
       let(:relation) do
@@ -3893,7 +3669,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when a reindexing operation occurs" do
-
         before do
           relation.send(:reindex)
         end
@@ -3910,7 +3685,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when the embedded document has an array field" do
-
     let!(:person) do
       Person.create!
     end
@@ -3920,22 +3694,20 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when saving the array on a persisted document" do
-
       before do
-        video.genres = [ "horror", "scifi" ]
+        video.genres = ["horror", "scifi"]
         video.save!
       end
 
       it "sets the value" do
-        expect(video.genres).to eq([ "horror", "scifi" ])
+        expect(video.genres).to eq(["horror", "scifi"])
       end
 
       it "persists the value" do
-        expect(video.reload.genres).to eq([ "horror", "scifi" ])
+        expect(video.reload.genres).to eq(["horror", "scifi"])
       end
 
       context "when reloading the parent" do
-
         let!(:loaded_person) do
           Person.find(person.id)
         end
@@ -3945,18 +3717,17 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         context "when writing a new array value" do
-
           before do
-            loaded_video.genres = [ "comedy" ]
+            loaded_video.genres = ["comedy"]
             loaded_video.save!
           end
 
           it "sets the new value" do
-            expect(loaded_video.genres).to eq([ "comedy" ])
+            expect(loaded_video.genres).to eq(["comedy"])
           end
 
           it "persists the new value" do
-            expect(loaded_video.reload.genres).to eq([ "comedy" ])
+            expect(loaded_video.reload.genres).to eq(["comedy"])
           end
         end
       end
@@ -3964,7 +3735,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when destroying an embedded document" do
-
     let(:person) do
       Person.create!
     end
@@ -3994,7 +3764,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when subsequently updating the next document" do
-
       before do
         address_two.update_attribute(:number, 10)
       end
@@ -4036,7 +3805,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when adding a document" do
-
     let(:person) do
       Person.new
     end
@@ -4050,7 +3818,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when chaining a second add" do
-
       let(:address_two) do
         Address.new(street: "friedel")
       end
@@ -4060,13 +3827,12 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       it "adds both documents" do
-        expect(result).to eq([ address_one, address_two ])
+        expect(result).to eq([address_one, address_two])
       end
     end
   end
 
   context "when the association has an order defined" do
-
     let(:person) do
       Person.create!
     end
@@ -4096,14 +3862,13 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the field to order on is an array of documents" do
-
       before do
-        person.aliases = [ { name: "A", priority: 3 }, { name: "B", priority: 4 }]
+        person.aliases = [{ name: "A", priority: 3 }, { name: "B", priority: 4 }]
         person.save!
       end
 
       let!(:person2) do
-        Person.create!( aliases: [ { name: "C", priority: 1 }, { name: "D", priority: 2 }])
+        Person.create!(aliases: [{ name: "C", priority: 1 }, { name: "D", priority: 2 }])
       end
 
       it "allows ordering on a key of an embedded document" do
@@ -4113,7 +3878,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when using dot notation in a criteria" do
-
     let(:person) do
       Person.new
     end
@@ -4131,31 +3895,29 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     it "allows the dot notation criteria" do
-      expect(criteria).to eq([ address ])
+      expect(criteria).to eq([address])
     end
   end
 
   context "when updating multiple levels in one update" do
-
     let!(:person) do
       Person.create!(
-          addresses: [
-              { locations: [{ name: "home" }]}
-          ]
+        addresses: [
+          { locations: [{ name: "home" }] }
+        ]
       )
     end
 
     context "when updating with hashes" do
-
       let(:from_db) do
         Person.find(person.id)
       end
 
       before do
         from_db.update_attributes!(
-            addresses: [
-                { locations: [{ name: "work" }]}
-            ]
+          addresses: [
+            { locations: [{ name: "work" }] }
+          ]
         )
       end
 
@@ -4170,7 +3932,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when the embedded relation sorts on a boolean" do
-
     let(:circuit) do
       Circuit.create!
     end
@@ -4184,12 +3945,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     it "orders properly with the boolean" do
-      expect(circuit.reload.buses).to eq([ bus_two, bus_one ])
+      expect(circuit.reload.buses).to eq([bus_two, bus_one])
     end
   end
 
   context "when batch replacing multiple relations in a single update" do
-
     let(:document) do
       Person.create!
     end
@@ -4216,8 +3976,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     before do
       person.update_attributes!(
-          appointments: [ appointment_one.as_document, appointment_two.as_document ],
-          symptoms: [ symptom_one.as_document, symptom_two.as_document ]
+        appointments: [appointment_one.as_document, appointment_two.as_document],
+        symptoms: [symptom_one.as_document, symptom_two.as_document]
       )
     end
 
@@ -4231,7 +3991,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when pushing with a before_add callback" do
-
     let(:artist) do
       Artist.new
     end
@@ -4241,7 +4000,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when no errors are raised" do
-
       before do
         artist.songs << song
       end
@@ -4260,7 +4018,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "with errors" do
-
       before do
         expect(artist).to receive(:before_add_song).and_raise
         begin; artist.songs << song; rescue; end
@@ -4273,7 +4030,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when pushing with an after_add callback" do
-
     let(:artist) do
       Artist.new
     end
@@ -4288,20 +4044,18 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when errors are raised" do
-
       before do
         expect(artist).to receive(:after_add_label).and_raise
         begin; artist.labels << label; rescue; end
       end
 
       it "adds the document to the relation" do
-        expect(artist.labels).to eq([ label ])
+        expect(artist.labels).to eq([label])
       end
     end
   end
 
   context "#delete, or #clear, or #pop, or #shift with before_remove callback" do
-
     let(:artist) do
       Artist.new
     end
@@ -4315,9 +4069,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when no errors are raised" do
-
       describe "#delete" do
-
         before do
           artist.songs.delete(song)
         end
@@ -4332,7 +4084,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       describe "#clear" do
-
         before do
           artist.songs.clear
         end
@@ -4347,7 +4098,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       describe "#pop" do
-
         before do
           artist.songs.pop
         end
@@ -4359,7 +4109,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       describe "#shift" do
-
         before do
           artist.songs.shift
         end
@@ -4372,56 +4121,50 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when errors are raised" do
-
       before do
         expect(artist).to receive(:before_remove_song).and_raise
       end
 
       describe "#delete" do
-
         it "does not remove the document from the relation" do
           begin; artist.songs.delete(song); rescue; end
-          expect(artist.songs).to eq([ song ])
+          expect(artist.songs).to eq([song])
         end
       end
 
       describe "#clear" do
-
         before do
           begin; artist.songs.clear; rescue; end
         end
 
         it "removes the documents from the relation" do
-          expect(artist.songs).to eq([ song ])
+          expect(artist.songs).to eq([song])
         end
       end
 
       describe "#pop" do
-
         before do
           begin; artist.songs.pop; rescue; end
         end
 
         it "should remove from collection" do
-          expect(artist.songs).to eq([ song ])
+          expect(artist.songs).to eq([song])
         end
       end
 
       describe "#shift" do
-
         before do
           begin; artist.songs.shift; rescue; end
         end
 
         it "should remove from collection" do
-          expect(artist.songs).to eq([ song ])
+          expect(artist.songs).to eq([song])
         end
       end
     end
   end
 
   context "#delete, or #clear, or #pop, or #shift with after_remove callback" do
-
     let(:artist) do
       Artist.new
     end
@@ -4435,7 +4178,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when no errors are raised" do
-
       describe "#delete" do
         before do
           artist.labels.delete(label)
@@ -4447,7 +4189,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       describe "#clear" do
-
         before do
           artist.labels.clear
         end
@@ -4459,7 +4200,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       describe "#pop" do
-
         before do
           artist.labels.pop
         end
@@ -4471,7 +4211,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       describe "#shift" do
-
         before do
           artist.labels.shift
         end
@@ -4484,13 +4223,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when errors are raised" do
-
       before do
         expect(artist).to receive(:after_remove_label).and_raise
       end
 
       describe "#delete" do
-
         before do
           begin; artist.labels.delete(label); rescue; end
         end
@@ -4501,7 +4238,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       describe "#clear" do
-
         before do
           begin; artist.labels.clear; rescue; end
         end
@@ -4512,7 +4248,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       describe "#pop" do
-
         before do
           begin; artist.labels.pop; rescue; end
         end
@@ -4523,7 +4258,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       describe "#shift" do
-
         before do
           begin; artist.labels.shift; rescue; end
         end
@@ -4536,7 +4270,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when saving at the parent level" do
-
     let!(:server) do
       Server.new(name: "staging")
     end
@@ -4546,7 +4279,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the parent has an after create callback" do
-
       before do
         server.save!
       end
@@ -4558,19 +4290,17 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when embedded documents are stored without ids" do
-
     let!(:band) do
       Band.create!(name: "Moderat")
     end
 
     before do
-      band.collection.
-          find(_id: band.id).
-          update_one("$set" => { records: [{ _id: BSON::ObjectId.new, name: "Moderat" }]})
+      band.collection
+          .find(_id: band.id)
+          .update_one("$set" => { records: [{ _id: BSON::ObjectId.new, name: "Moderat" }] })
     end
 
     context "when loading the documents" do
-
       before do
         band.reload
       end
@@ -4588,7 +4318,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when subsequently updating the documents" do
-
         before do
           record.update_attribute(:name, "Apparat")
         end
@@ -4605,19 +4334,17 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "deleting embedded documents" do
-
     it "able to delete embedded documents upon condition" do
       company = Company.new
-      4.times { |i| company.staffs << Staff.new(age: 50 + i)}
-      2.times { |i| company.staffs << Staff.new(age: 40)}
+      4.times { |i| company.staffs << Staff.new(age: 50 + i) }
+      2.times { |i| company.staffs << Staff.new(age: 40) }
       company.save!
-      company.staffs.delete_if {|x| x.age >= 50}
+      company.staffs.delete_if { |x| x.age >= 50 }
       expect(company.staffs.count).to eq(2)
     end
   end
 
   context "when substituting polymorphic documents" do
-
     before(:all) do
       class DNS; end
 
@@ -4629,7 +4356,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
       class DNS::RRSet
         include Mongoid::Document
-        embedded_in :zone, class_name: 'DNS::Zone',   inverse_of: :rrsets
+        embedded_in :zone, class_name: 'DNS::Zone', inverse_of: :rrsets
         embeds_many :records, class_name: 'DNS::Record', as: :container
       end
 
@@ -4644,7 +4371,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the parent is new" do
-
       let(:zone) do
         DNS::Zone.new
       end
@@ -4654,7 +4380,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when replacing the set document" do
-
         let(:soa_2) do
           DNS::Record.new
         end
@@ -4669,7 +4394,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when deleting the set document" do
-
         let(:soa_2) do
           DNS::Record.new
         end
@@ -4685,7 +4409,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when the parent is persisted" do
-
       let(:zone) do
         DNS::Zone.create!
       end
@@ -4695,7 +4418,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when replacing the set document" do
-
         let(:soa_2) do
           DNS::Record.new
         end
@@ -4710,7 +4432,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       context "when deleting the set document" do
-
         let(:soa_2) do
           DNS::Record.new
         end
@@ -4727,9 +4448,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when trying to persist the empty list" do
-
     context "in an embeds_many relation" do
-
       let(:band) { Band.create! }
 
       before do
@@ -4746,7 +4465,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "in a nested embeds_many relation" do
-
       let(:survey) { Survey.create!(questions: [Question.new]) }
 
       before do
@@ -4764,7 +4482,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context "when not setting the embeds_many field" do
-
       let(:band) { Band.create! }
 
       let(:reloaded_band) { Band.collection.find(_id: band._id).first }
@@ -4779,12 +4496,12 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     let(:post) { EmmPost.create! }
 
     before do
-      post.assign_attributes(company_tags: [{id: BSON::ObjectId.new, title: 'a'}],
-        user_tags: [{id: BSON::ObjectId.new, title: 'b'}])
+      post.assign_attributes(company_tags: [{ id: BSON::ObjectId.new, title: 'a' }],
+                             user_tags: [{ id: BSON::ObjectId.new, title: 'b' }])
       post.save!
       post.reload
-      post.assign_attributes(company_tags: [{id: BSON::ObjectId.new, title: 'c'}],
-        user_tags: [])
+      post.assign_attributes(company_tags: [{ id: BSON::ObjectId.new, title: 'c' }],
+                             user_tags: [])
       post.save!
       post.reload
     end
@@ -4817,11 +4534,10 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   context "when doing assign_attributes then assignment" do
-
     let(:post) do
       EmmPost.create!(
-        company_tags: [ EmmCompanyTag.new(title: "1"), EmmCompanyTag.new(title: "1") ],
-        user_tags: [ EmmUserTag.new(title: "1"), EmmUserTag.new(title: "1") ]
+        company_tags: [EmmCompanyTag.new(title: "1"), EmmCompanyTag.new(title: "1")],
+        user_tags: [EmmUserTag.new(title: "1"), EmmUserTag.new(title: "1")]
       )
     end
 
@@ -4829,9 +4545,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     before do
       post.assign_attributes(
-        company_tags: [ EmmCompanyTag.new(title: '3'), EmmCompanyTag.new(title: '4') ]
+        company_tags: [EmmCompanyTag.new(title: '3'), EmmCompanyTag.new(title: '4')]
       )
-      post.user_tags = [ EmmUserTag.new(title: '3'), EmmUserTag.new(title: '4') ]
+      post.user_tags = [EmmUserTag.new(title: '3'), EmmUserTag.new(title: '4')]
       post.save!
     end
 
@@ -4845,14 +4561,14 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     let(:user) { EmmUser.create! }
 
     before do
-      user.orders = [ { sku: 1 }, { sku: 2 } ]
+      user.orders = [{ sku: 1 }, { sku: 2 }]
     end
 
     it "creates the objects correctly" do
       expect(user.orders.first).to be_a(EmmOrder)
       expect(user.orders.last).to be_a(EmmOrder)
 
-      expect(user.orders.map(&:sku).sort).to eq([ 1, 2 ])
+      expect(user.orders.map(&:sku).sort).to eq([1, 2])
     end
   end
 end

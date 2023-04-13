@@ -8,15 +8,12 @@ describe Mongoid::Persistable::Updatable do
   immutable_id_examples_as "persisted _ids are immutable"
 
   describe "#update_attribute" do
-
     context "when the field is aliased" do
-
       let(:person) do
         Person.create!
       end
 
       context "when the setter is overridden" do
-
         before do
           person.update_attribute(:overridden_setter, "value")
         end
@@ -39,7 +36,6 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context "when setting via the field name" do
-
         before do
           person.update_attribute(:t, "testing")
         end
@@ -54,7 +50,6 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context "when setting via the field alias" do
-
         before do
           person.update_attribute(:test, "testing")
         end
@@ -70,7 +65,6 @@ describe Mongoid::Persistable::Updatable do
     end
 
     context "when setting an array field" do
-
       let(:person) do
         Person.create!(aliases: [])
       end
@@ -80,24 +74,21 @@ describe Mongoid::Persistable::Updatable do
       end
 
       it "sets the new value in the document" do
-        expect(person.aliases).to eq([ "Bond" ])
+        expect(person.aliases).to eq(["Bond"])
       end
 
       it "persists the changes" do
-        expect(person.reload.aliases).to eq([ "Bond" ])
+        expect(person.reload.aliases).to eq(["Bond"])
       end
     end
 
     context "when setting a boolean field" do
-
       context "when the field is true" do
-
         let(:person) do
           Person.new(terms: true)
         end
 
         context "when setting to false" do
-
           before do
             person.update_attribute(:terms, false)
           end
@@ -118,7 +109,6 @@ describe Mongoid::Persistable::Updatable do
     end
 
     context "when dynamic attributes are not enabled" do
-
       it "raises exception for an unknown attribute " do
         account = Account.create!(name: 'Foobar')
 
@@ -136,13 +126,11 @@ describe Mongoid::Persistable::Updatable do
     end
 
     context "when provided a symbol attribute name" do
-
       let(:post) do
         Post.new
       end
 
       context "when the document is valid" do
-
         before do
           post.update_attribute(:title, "Testing")
         end
@@ -157,7 +145,6 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context "when updating to the same value" do
-
         before do
           post.update_attribute(:title, "Testing")
         end
@@ -168,7 +155,6 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context "when the document is invalid" do
-
         before do
           post.update_attribute(:title, "$invalid")
         end
@@ -183,7 +169,6 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context "when the document has been destroyed" do
-
         before do
           post.delete
         end
@@ -197,13 +182,11 @@ describe Mongoid::Persistable::Updatable do
     end
 
     context "when provided a string attribute name" do
-
       let(:post) do
         Post.new
       end
 
       context "when the document is valid" do
-
         before do
           post.update_attribute("title", "Testing")
         end
@@ -218,7 +201,6 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context "when the document is invalid" do
-
         before do
           post.update_attribute("title", "$invalid")
         end
@@ -259,7 +241,6 @@ describe Mongoid::Persistable::Updatable do
     end
 
     context "when updating a deeply embedded document" do
-
       let!(:person) do
         Person.create!
       end
@@ -290,7 +271,6 @@ describe Mongoid::Persistable::Updatable do
     end
 
     context 'when the field is read-only' do
-
       before do
         Person.attr_readonly :species
       end
@@ -310,7 +290,6 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context 'when referring to the attribute with a string' do
-
         it 'raises an error when trying to set the attribute' do
           expect {
             person.update_attribute('species', :reptile)
@@ -319,7 +298,6 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context 'when the field is aliased' do
-
         before do
           Person.attr_readonly :at
         end
@@ -343,13 +321,11 @@ describe Mongoid::Persistable::Updatable do
     end
 
     context 'when the field is loaded explicitly' do
-
       before do
         Person.create!(title: 'Captain')
       end
 
       context 'when the loaded attribute is updated' do
-
         let(:person) do
           Person.only(:title).first.tap do |_person|
             _person.update_attribute(:title, 'Esteemed')
@@ -366,7 +342,6 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context 'when the an attribute other than the loaded one is updated' do
-
         let(:person) do
           Person.only(:title).first
         end
@@ -382,7 +357,6 @@ describe Mongoid::Persistable::Updatable do
         end
 
         context 'when referring to the attribute with a string' do
-
           it 'does not allow the field to be updated' do
             expect {
               person.update_attribute('age', 20)
@@ -397,13 +371,11 @@ describe Mongoid::Persistable::Updatable do
     end
 
     context 'when fields are explicitly not loaded' do
-
       before do
         Person.create!(title: 'Captain')
       end
 
       context 'when the loaded attribute is updated' do
-
         let(:person) do
           Person.without(:age).first.tap do |_person|
             _person.update_attribute(:title, 'Esteemed')
@@ -420,7 +392,6 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context 'when the non-loaded attribute is updated' do
-
         let(:person) do
           Person.without(:title).first
         end
@@ -436,7 +407,6 @@ describe Mongoid::Persistable::Updatable do
         end
 
         context 'when referring to the attribute with a string' do
-
           it 'does not allow the field to be updated' do
             expect {
               person.update_attribute('title', 'Esteemed')
@@ -460,9 +430,7 @@ describe Mongoid::Persistable::Updatable do
   end
 
   [:update_attributes, :update].each do |method|
-
     describe "##{method}" do
-
       context "when saving with a hash field with invalid keys" do
         max_server_version '4.9'
 
@@ -492,7 +460,6 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context "when validation passes" do
-
         let(:person) do
           Person.create!
         end
@@ -515,7 +482,6 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context "when the document has been destroyed" do
-
         let!(:person) do
           Person.create!
         end
@@ -532,7 +498,6 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context "when updating through a one-to-one relation" do
-
         let(:person) do
           Person.create!
         end
@@ -556,7 +521,6 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context "on a new record" do
-
         let(:person) do
           Person.new
         end
@@ -571,9 +535,7 @@ describe Mongoid::Persistable::Updatable do
       end
 
       context "when passing in a relation" do
-
         context "when providing an embedded child" do
-
           let!(:person) do
             Person.create!
           end
@@ -600,7 +562,6 @@ describe Mongoid::Persistable::Updatable do
         end
 
         context "when providing a parent to a referenced in" do
-
           let!(:person) do
             Person.create!
           end
@@ -610,48 +571,45 @@ describe Mongoid::Persistable::Updatable do
           end
 
           context "when the relation has not yet been touched" do
-
             before do
               post.send(method, person: person)
             end
 
             it "sets the instance of the relation" do
-              expect(person.posts).to eq([ post ])
+              expect(person.posts).to eq([post])
             end
 
             it "sets properly through method_missing" do
-              expect(person.posts.to_a).to eq([ post ])
+              expect(person.posts.to_a).to eq([post])
             end
 
             it "persists the reference" do
-              expect(person.posts(true)).to eq([ post ])
+              expect(person.posts(true)).to eq([post])
             end
           end
 
           context "when the relation has been touched" do
-
             before do
               person.posts
               post.send(method, person: person)
             end
 
             it "sets the instance of the relation" do
-              expect(person.posts).to eq([ post ])
+              expect(person.posts).to eq([post])
             end
 
             it "sets properly through method_missing" do
-              expect(person.posts.to_a).to eq([ post ])
+              expect(person.posts.to_a).to eq([post])
             end
 
             it "persists the reference" do
-              expect(person.posts(true)).to eq([ post ])
+              expect(person.posts(true)).to eq([post])
             end
           end
         end
       end
 
       context "when in a deeply nested hierarchy" do
-
         let!(:person) do
           Person.new(title: "The Boss")
         end
@@ -679,7 +637,6 @@ describe Mongoid::Persistable::Updatable do
         end
 
         context "when updating the first level document" do
-
           let(:phone) do
             person.phone_numbers.first
           end
@@ -694,7 +651,6 @@ describe Mongoid::Persistable::Updatable do
           end
 
           context "when reloading the root" do
-
             let(:reloaded) do
               person.reload
             end
@@ -710,16 +666,14 @@ describe Mongoid::Persistable::Updatable do
         def invoke_operation!
           object.update_attributes _id: new_id_value
         end
-  
+
         it_behaves_like "persisted _ids are immutable"
       end
     end
   end
 
   describe "#update!" do
-
     context "when a callback aborts the callback chain" do
-
       let(:oscar) do
         Oscar.new
       end
@@ -733,7 +687,6 @@ describe Mongoid::Persistable::Updatable do
   end
 
   describe "#update_attributes!" do
-
     let(:person) do
       Person.create!
     end

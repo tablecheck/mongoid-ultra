@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe BSON::Binary do
-
   describe "#mongoize" do
-
     let(:binary) do
       BSON::Binary.new("testing", :md5)
     end
@@ -15,10 +13,8 @@ describe BSON::Binary do
     end
   end
 
-
-  [ :mongoize, :demongoize].each do |method|
+  [:mongoize, :demongoize].each do |method|
     describe ".#{method}" do
-
       let(:binary) do
         BSON::Binary.new("testing")
       end
@@ -28,7 +24,6 @@ describe BSON::Binary do
       end
 
       context "when mongoizing a BSON::Binary" do
-
         let(:value) { binary }
 
         it "returns the binary" do
@@ -37,7 +32,6 @@ describe BSON::Binary do
       end
 
       context "when mongoizing a String" do
-
         let(:value) { "testing" }
 
         it "returns it as binary" do
@@ -46,7 +40,6 @@ describe BSON::Binary do
       end
 
       context "when mongoizing nil" do
-
         let(:value) { nil }
 
         it "returns nil" do
@@ -55,7 +48,6 @@ describe BSON::Binary do
       end
 
       context "when mongoizing an invalid type" do
-
         let(:value) { true }
 
         it "returns nil" do
@@ -66,7 +58,6 @@ describe BSON::Binary do
   end
 
   describe ".evolve" do
-
     let(:binary) do
       BSON::Binary.new("testing", :md5)
     end
@@ -81,7 +72,6 @@ describe BSON::Binary do
   end
 
   describe ".mongoize" do
-
     let(:binary) do
       BSON::Binary.new("testing", :md5)
     end

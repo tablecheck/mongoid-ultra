@@ -4,9 +4,7 @@ require "spec_helper"
 require_relative './timestamps_spec_models'
 
 describe Mongoid::Timestamps do
-
   describe ".included" do
-
     let(:document) do
       Dokument.new
     end
@@ -54,7 +52,6 @@ describe Mongoid::Timestamps do
   end
 
   context "when the document has not changed" do
-
     let(:document) do
       Dokument.instantiate(Dokument.new.attributes)
     end
@@ -70,7 +67,6 @@ describe Mongoid::Timestamps do
   end
 
   context "when the document has changed with updated_at specified" do
-
     let(:document) do
       Dokument.create(created_at: Time.now.utc)
     end
@@ -90,7 +86,6 @@ describe Mongoid::Timestamps do
   end
 
   context "when the document is created" do
-
     let!(:document) do
       Dokument.create!
     end
@@ -101,7 +96,6 @@ describe Mongoid::Timestamps do
   end
 
   context "when only embedded documents have changed" do
-
     let!(:document) do
       Dokument.create!(updated_at: 2.days.ago)
     end
@@ -149,7 +143,6 @@ describe Mongoid::Timestamps do
       end
 
       context "when HABTM association" do
-
         context "when updating the association itself" do
           before do
             user.update(addresses: [address])
@@ -186,7 +179,6 @@ describe Mongoid::Timestamps do
       end
 
       context "when has_many association" do
-
         context "when updating the association itself" do
           before do
             user.update(accounts: [account])
@@ -225,7 +217,6 @@ describe Mongoid::Timestamps do
       end
 
       context "when belongs_to association; on has_many" do
-
         context "when updating the association itself" do
           before do
             account.update(user: user)
@@ -264,7 +255,6 @@ describe Mongoid::Timestamps do
       end
 
       context "when has_one association" do
-
         context "when updating the association itself" do
           before do
             user.update(pet: pet)
@@ -283,7 +273,6 @@ describe Mongoid::Timestamps do
       end
 
       context "when belongs_to association; on has_one" do
-
         context "when updating the association itself" do
           before do
             pet.update(user: user)
@@ -330,7 +319,6 @@ describe Mongoid::Timestamps do
       end
 
       context "when HABTM association" do
-
         context "when updating the association itself" do
           before do
             user.update(addresses: [address])
@@ -367,7 +355,6 @@ describe Mongoid::Timestamps do
       end
 
       context "when has_many association" do
-
         context "when updating the association itself" do
           before do
             user.update(accounts: [account])
@@ -406,7 +393,6 @@ describe Mongoid::Timestamps do
       end
 
       context "when belongs_to association; on has_many" do
-
         context "when updating the association itself" do
           before do
             account.update(user: user)
@@ -441,7 +427,6 @@ describe Mongoid::Timestamps do
       end
 
       context "when has_one association" do
-
         context "when updating the association itself" do
           before do
             user.update(pet: pet)
@@ -460,7 +445,6 @@ describe Mongoid::Timestamps do
       end
 
       context "when belongs_to association; on has_one" do
-
         context "when updating the association itself" do
           before do
             pet.update(user: user)

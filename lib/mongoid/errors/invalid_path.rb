@@ -2,10 +2,8 @@
 
 module Mongoid
   module Errors
-
     # Used when attempting to get embedded paths with incorrect root path set.
     class InvalidPath < MongoidError
-
       # Create the new error.
       #
       # @example Create the error.

@@ -2,7 +2,6 @@
 
 module Mongoid
   module Errors
-
     # Raised when attempting to read or write an attribute which has
     # not been loaded. This can occur when using `.only` or `.without`
     # query projection methods.
@@ -15,7 +14,6 @@ module Mongoid
     #   Band.without(:label).first.label = 'Sub Pop Records'
     #   #=> raises Mongoid::Errors::AttributeNotLoaded
     class AttributeNotLoaded < MongoidError
-
       # Create the new error.
       #
       # @example Instantiate the error.

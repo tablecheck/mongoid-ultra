@@ -2,12 +2,9 @@
 
 module Mongoid
   module Extensions
-
     # Adds type-casting behavior to Regexp class.
     module Regexp
-
       module ClassMethods
-
         # Turn the object from the ruby type we deal with to a Mongo friendly
         # type.
         #
@@ -19,6 +16,7 @@ module Mongoid
         # @return [ Regexp | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.nil?
+
           case object
           when String then ::Regexp.new(object)
           when ::Regexp then object

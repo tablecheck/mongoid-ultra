@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Association::EagerLoadable do
-
   describe ".preload" do
-
     let(:criteria) do
       Account.where(name: 'savings')
     end
@@ -23,7 +21,6 @@ describe Mongoid::Association::EagerLoadable do
     let(:doc) { criteria.first }
 
     context "when belongs_to" do
-
       let!(:account) do
         Account.create!(person: person, name: 'savings')
       end
@@ -47,7 +44,6 @@ describe Mongoid::Association::EagerLoadable do
     end
 
     context "when has_one" do
-
       let(:account) do
         Account.create!(name: 'savings')
       end
@@ -66,7 +62,6 @@ describe Mongoid::Association::EagerLoadable do
     end
 
     context "when has_many" do
-
       let(:account) do
         Account.create!(name: 'savings')
       end
@@ -85,7 +80,6 @@ describe Mongoid::Association::EagerLoadable do
     end
 
     context "when has_and_belongs_to_many" do
-
       let(:account) do
         Account.create!(name: 'savings')
       end
@@ -105,7 +99,6 @@ describe Mongoid::Association::EagerLoadable do
   end
 
   describe ".eager_load" do
-
     before do
       Person.create!
     end
@@ -115,7 +108,6 @@ describe Mongoid::Association::EagerLoadable do
     end
 
     context "when including one has_many relation" do
-
       let(:criteria) do
         Person.includes(:posts)
       end
@@ -135,7 +127,6 @@ describe Mongoid::Association::EagerLoadable do
       end
 
       context 'when combined with a #find_by' do
-
         let!(:person) do
           Person.create!(title: 'manager')
         end
@@ -147,7 +138,6 @@ describe Mongoid::Association::EagerLoadable do
     end
 
     context "when including multiple relations" do
-
       let(:criteria) do
         Person.includes(:posts, :houses, :cat)
       end
@@ -185,7 +175,6 @@ describe Mongoid::Association::EagerLoadable do
       end
 
       context 'when one of the eager loading definitions is nested' do
-
         before do
           class User
             include Mongoid::Document
@@ -226,7 +215,6 @@ describe Mongoid::Association::EagerLoadable do
     end
 
     context "when including two of the same relation type" do
-
       let(:criteria) do
         Person.includes(:book, :cat)
       end
@@ -244,15 +232,15 @@ describe Mongoid::Association::EagerLoadable do
       end
 
       it "runs the has_one preload" do
-        expect(Mongoid::Association::Referenced::HasOne::Eager).to receive(:new).with([ book_association ], docs).once.and_call_original
-        expect(Mongoid::Association::Referenced::HasOne::Eager).to receive(:new).with([ cat_association ], docs).once.and_call_original
+        expect(Mongoid::Association::Referenced::HasOne::Eager).to receive(:new).with([book_association], docs).once.and_call_original
+        expect(Mongoid::Association::Referenced::HasOne::Eager).to receive(:new).with([cat_association], docs).once.and_call_original
         context.eager_load(docs)
       end
     end
 
     context "when including an embedded_in relation" do
       let!(:account) { Account.create(name: "home", memberships: memberships) }
-      let(:memberships) { [ Membership.new(name: "his"), Membership.new(name: "hers") ] }
+      let(:memberships) { [Membership.new(name: "his"), Membership.new(name: "hers")] }
       let(:criteria) { Account.includes(memberships: :account) }
 
       it "loads the parent document" do
@@ -264,7 +252,7 @@ describe Mongoid::Association::EagerLoadable do
 
     context "when including an embeds_many relation" do
       let!(:account) { Account.create(name: "home", memberships: memberships) }
-      let(:memberships) { [ Membership.new(name: "his"), Membership.new(name: "hers") ] }
+      let(:memberships) { [Membership.new(name: "his"), Membership.new(name: "hers")] }
       let(:criteria) { Account.includes(:memberships) }
 
       it "loads the subdocuments" do
@@ -287,7 +275,7 @@ describe Mongoid::Association::EagerLoadable do
     end
 
     context "when chaining a referenced association from an embedded relation" do
-      let!(:person) { Person.create(username: "test", messages: [ message ]) }
+      let!(:person) { Person.create(username: "test", messages: [message]) }
       let!(:post) { Post.create(title: "notice", posteable: message) }
       let(:message) { Message.new(body: "hello") }
       let(:criteria) { Person.includes(messages: :post) }
@@ -301,13 +289,11 @@ describe Mongoid::Association::EagerLoadable do
   end
 
   describe ".eager_loadable?" do
-
     let(:context) do
       Mongoid::Contextual::Mongo.new(criteria)
     end
 
     context "when criteria has multiple includes" do
-
       let(:criteria) do
         Post.includes(:person, :roles)
       end
@@ -318,7 +304,6 @@ describe Mongoid::Association::EagerLoadable do
     end
 
     context "when criteria has no includes" do
-
       let(:criteria) do
         Post.all
       end

@@ -4,7 +4,6 @@ module Mongoid
   module Atomic
     module Paths
       module Embedded
-
         # This class encapsulates behavior for locating and updating
         # documents that are defined as an embedded 1-n.
         class Many
@@ -18,7 +17,7 @@ module Mongoid
           # @param [ Mongoid::Document ] document The document to generate the paths for.
           def initialize(document)
             @document, @parent = document, document._parent
-            @insert_modifier, @delete_modifier ="$push", "$pull"
+            @insert_modifier, @delete_modifier = "$push", "$pull"
           end
 
           # Get the position of the document in the hierarchy. This will
@@ -36,7 +35,6 @@ module Mongoid
           end
 
           class << self
-
             # Get the position of where the document would go for the given
             # association. The use case for this function is when trying to
             # persist an empty list for an embedded association. All of the

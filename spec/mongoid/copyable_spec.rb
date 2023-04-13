@@ -5,11 +5,8 @@ require "spec_helper"
 require_relative './copyable_spec_models'
 
 describe Mongoid::Copyable do
-
-  [ :clone, :dup ].each do |method|
-
+  [:clone, :dup].each do |method|
     describe "##{method}" do
-
       let(:person) do
         Person.new(
           title: "Sir",
@@ -43,7 +40,6 @@ describe Mongoid::Copyable do
       end
 
       context "when the document has an id field in the database" do
-
         let!(:band) do
           Band.create!(name: "Tool")
         end
@@ -62,7 +58,6 @@ describe Mongoid::Copyable do
       end
 
       context "when a document has fields from a legacy schema" do
-
         shared_examples 'behaves as expected' do
           let!(:instance) do
             cls.create!(name: "test")
@@ -114,15 +109,11 @@ describe Mongoid::Copyable do
 
           include_examples 'behaves as expected'
         end
-
       end
 
       context "when using store_as" do
-
         context "and dynamic attributes are not set" do
-
           context 'embeds_one' do
-
             it "clones" do
               t = StoreAsDupTest1.new(:name => "hi")
               t.build_store_as_dup_test2(:name => "there")
@@ -134,8 +125,6 @@ describe Mongoid::Copyable do
           end
 
           context 'embeds_many' do
-
-
             it "clones" do
               t = StoreAsDupTest3.new(:name => "hi")
               t.store_as_dup_test4s << StoreAsDupTest4.new
@@ -234,11 +223,9 @@ describe Mongoid::Copyable do
             expect(address.shipping_name).to eq("Título")
           end
         end
-
       end
 
       context "when cloning a loaded document" do
-
         before do
           person.save!
         end
@@ -252,7 +239,7 @@ describe Mongoid::Copyable do
         end
 
         it "marks the fields as dirty" do
-          expect(copy.changes["age"]).to eq([ nil, 100 ])
+          expect(copy.changes["age"]).to eq([nil, 100])
         end
 
         it "flags the document as changed" do
@@ -265,15 +252,13 @@ describe Mongoid::Copyable do
       end
 
       context "when the document is new" do
-
         context "when there are changes" do
-
           let(:copy) do
             person.send(method)
           end
 
           before do
-            person[:versions] = [ { number: 1 } ]
+            person[:versions] = [{ number: 1 }]
           end
 
           it "returns a new document" do
@@ -289,7 +274,7 @@ describe Mongoid::Copyable do
           end
 
           it "marks fields as dirty" do
-            expect(copy.changes["age"]).to eq([ nil, 100 ])
+            expect(copy.changes["age"]).to eq([nil, 100])
           end
 
           it "has a different id from the original" do
@@ -349,7 +334,6 @@ describe Mongoid::Copyable do
           end
 
           context "when saving the copy" do
-
             let(:reloaded) do
               copy.reload
             end
@@ -386,7 +370,7 @@ describe Mongoid::Copyable do
           end
 
           before do
-            person[:versions] = [ { number: 1 } ]
+            person[:versions] = [{ number: 1 }]
           end
 
           it "copys embeds many documents" do
@@ -426,7 +410,6 @@ describe Mongoid::Copyable do
           end
 
           context "when saving the copy" do
-
             let(:reloaded) do
               copy.reload
             end
@@ -451,19 +434,17 @@ describe Mongoid::Copyable do
       end
 
       context "when the document is not new" do
-
         before do
           person.new_record = false
         end
 
         context "when there are changes" do
-
           let(:copy) do
             person.send(method)
           end
 
           before do
-            person[:versions] = [ { number: 1 } ]
+            person[:versions] = [{ number: 1 }]
           end
 
           it "flags the document as changed" do
@@ -471,7 +452,7 @@ describe Mongoid::Copyable do
           end
 
           it "marks fields as dirty" do
-            expect(copy.changes["age"]).to eq([ nil, 100 ])
+            expect(copy.changes["age"]).to eq([nil, 100])
           end
 
           it "returns a new document" do
@@ -515,7 +496,6 @@ describe Mongoid::Copyable do
           end
 
           context "when saving the copy" do
-
             let(:reloaded) do
               copy.reload
             end
@@ -540,7 +520,6 @@ describe Mongoid::Copyable do
       end
 
       context "when the document is frozen" do
-
         let!(:copy) do
           person.freeze.send(method)
         end
@@ -590,7 +569,6 @@ describe Mongoid::Copyable do
         end
 
         context "when saving the copy" do
-
           let(:reloaded) do
             copy.reload
           end
@@ -614,7 +592,6 @@ describe Mongoid::Copyable do
       end
 
       context "when cloning a document with an embedded child class and a custom discriminator value" do
-
         before do
           ShipmentAddress.discriminator_value = "dvalue"
         end
@@ -690,9 +667,7 @@ describe Mongoid::Copyable do
     end
 
     context "when fields are removed before cloning" do
-
       context "when using embeds_one associations" do
-
         before do
           class CloneParent
             include Mongoid::Document
@@ -721,7 +696,6 @@ describe Mongoid::Copyable do
             field :e, type: :string
             field :f, type: :string
           end
-
         end
 
         after do
@@ -731,7 +705,6 @@ describe Mongoid::Copyable do
         end
 
         context "when removing from the parent" do
-
           before do
             CloneParent.create(a: "1", b: "2")
 
@@ -764,7 +737,6 @@ describe Mongoid::Copyable do
         end
 
         context "when removing from the child" do
-
           before do
             parent = CloneParent.new(a: "1", b: "2")
             parent.clone_child = CloneChild.new(c: "3", d: "4")
@@ -814,7 +786,6 @@ describe Mongoid::Copyable do
         end
 
         context "when removing from the grandchild" do
-
           before do
             parent = CloneParent.new(a: "1", b: "2")
             parent.clone_child = CloneChild.new(c: "3", d: "4")
@@ -881,7 +852,6 @@ describe Mongoid::Copyable do
       end
 
       context "when using embeds_many associations" do
-
         before do
           class CloneParent
             include Mongoid::Document
@@ -910,7 +880,6 @@ describe Mongoid::Copyable do
             field :e, type: :string
             field :f, type: :string
           end
-
         end
 
         after do
@@ -920,7 +889,6 @@ describe Mongoid::Copyable do
         end
 
         context "when removing from the parent" do
-
           before do
             CloneParent.create(a: "1", b: "2")
 
@@ -953,10 +921,9 @@ describe Mongoid::Copyable do
         end
 
         context "when removing from the child" do
-
           before do
             parent = CloneParent.new(a: "1", b: "2")
-            parent.clone_children = [ CloneChild.new(c: "3", d: "4"), CloneChild.new(c: "3", d: "4") ]
+            parent.clone_children = [CloneChild.new(c: "3", d: "4"), CloneChild.new(c: "3", d: "4")]
             parent.save
 
             Object.send(:remove_const, :CloneParent)
@@ -1009,12 +976,11 @@ describe Mongoid::Copyable do
         end
 
         context "when removing from the grandchild" do
-
           before do
             parent = CloneParent.new(a: "1", b: "2")
-            parent.clone_children = [ CloneChild.new(c: "3", d: "4"), CloneChild.new(c: "3", d: "4") ]
+            parent.clone_children = [CloneChild.new(c: "3", d: "4"), CloneChild.new(c: "3", d: "4")]
             parent.clone_children.each do |cc|
-              cc.clone_grandchildren = [ CloneGrandchild.new(e: "5", f: "6"), CloneGrandchild.new(e: "5", f: "6") ]
+              cc.clone_grandchildren = [CloneGrandchild.new(e: "5", f: "6"), CloneGrandchild.new(e: "5", f: "6")]
             end
             parent.save
 
@@ -1094,7 +1060,6 @@ describe Mongoid::Copyable do
       end
 
       context "when using embedded_in associations" do
-
         before do
           class CloneParent
             include Mongoid::Document
@@ -1120,9 +1085,7 @@ describe Mongoid::Copyable do
           Object.send(:remove_const, :CloneChild)
         end
 
-
         context "when accessing the parent" do
-
           before do
             parent = CloneParent.new(a: "1", b: "2")
             parent.clone_child = CloneChild.new(c: "3", d: "4")

@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::Document do
-
   let(:klass) do
     Person
   end
@@ -17,14 +16,12 @@ describe Mongoid::Document do
   end
 
   describe "#_destroy" do
-
     it "default to false" do
       expect(Person.new._destroy).to be false
     end
   end
 
   describe ".included" do
-
     let(:models) do
       Mongoid.models
     end
@@ -36,7 +33,7 @@ describe Mongoid::Document do
     let(:new_klass) do
       Class.new do
         class << self; attr_accessor :name; end
-      end.tap {|new_klass| new_klass.name = new_klass_name}
+      end.tap { |new_klass| new_klass.name = new_klass_name }
     end
 
     let(:new_model) do
@@ -77,9 +74,7 @@ describe Mongoid::Document do
   end
 
   describe "._types" do
-
     context "when the document is subclassed" do
-
       let(:types) do
         Person._types
       end
@@ -94,13 +89,12 @@ describe Mongoid::Document do
     end
 
     context "when the document is not subclassed" do
-
       let(:types) do
         Kangaroo._types
       end
 
       it "returns the document" do
-        expect(types).to eq([ "Kangaroo" ])
+        expect(types).to eq(["Kangaroo"])
       end
     end
 
@@ -121,9 +115,7 @@ describe Mongoid::Document do
   end
 
   describe "._mongoid_clear_types" do
-
     context "when changing the discriminator_value" do
-
       before do
         Kangaroo._types
         Kangaroo.discriminator_value = "dvalue"
@@ -139,7 +131,6 @@ describe Mongoid::Document do
     end
 
     context "when changing the discriminator_value in child" do
-
       before do
         Shape._types
         Circle.discriminator_value = "dvalue"
@@ -164,7 +155,6 @@ describe Mongoid::Document do
   end
 
   describe "#attributes" do
-
     let!(:person) do
       Person.create!(title: "Sir")
     end
@@ -180,7 +170,6 @@ describe Mongoid::Document do
     end
 
     context "when retrieving a document from the database" do
-
       let(:from_db) { Person.first }
 
       it "returns a Hash" do
@@ -190,7 +179,6 @@ describe Mongoid::Document do
   end
 
   describe "#identity" do
-
     let(:person) do
       Person.new
     end
@@ -201,7 +189,6 @@ describe Mongoid::Document do
   end
 
   describe "#hash" do
-
     let(:person) do
       Person.new
     end
@@ -212,7 +199,6 @@ describe Mongoid::Document do
   end
 
   describe "#initialize" do
-
     let(:person) do
       Person.new(title: "Sir")
     end
@@ -230,9 +216,7 @@ describe Mongoid::Document do
     end
 
     context "when the model has a default scope" do
-
       context "when the default scope is settable" do
-
         let(:sound) do
           Sound.new
         end
@@ -243,7 +227,6 @@ describe Mongoid::Document do
       end
 
       context "when the default scope is not settable" do
-
         let(:audio) do
           Audio.new
         end
@@ -255,7 +238,6 @@ describe Mongoid::Document do
     end
 
     context "when accessing a relation from an overridden setter" do
-
       let(:doctor) do
         Doctor.new(specialty: "surgery")
       end
@@ -270,9 +252,7 @@ describe Mongoid::Document do
     end
 
     context "when initialize callbacks are defined" do
-
       context "when accessing attributes" do
-
         before do
           Person.set_callback :initialize, :after do |doc|
             doc.title = "Madam"
@@ -289,7 +269,6 @@ describe Mongoid::Document do
       end
 
       context "when accessing relations" do
-
         let(:person) do
           Person.new(game: Game.new)
         end
@@ -311,14 +290,12 @@ describe Mongoid::Document do
     end
 
     context "when defaults are defined" do
-
       it "sets the default values" do
         expect(person.age).to eq(100)
       end
     end
 
     context "when a block is provided" do
-
       let(:person) do
         Person.new do |doc|
           doc.title = "King"
@@ -332,9 +309,7 @@ describe Mongoid::Document do
   end
 
   describe ".instantiate" do
-
     context "when passing a block" do
-
       let(:id) do
         BSON::ObjectId.new
       end
@@ -351,7 +326,6 @@ describe Mongoid::Document do
     end
 
     context "when an id exists" do
-
       let(:id) do
         BSON::ObjectId.new
       end
@@ -370,7 +344,6 @@ describe Mongoid::Document do
     end
 
     context "when attributes are nil" do
-
       let(:person) do
         Person.instantiate
       end
@@ -382,7 +355,6 @@ describe Mongoid::Document do
   end
 
   describe "#model_name" do
-
     let(:person) do
       Person.new
     end
@@ -393,7 +365,6 @@ describe Mongoid::Document do
   end
 
   describe "#raw_attributes" do
-
     let(:person) do
       Person.new(title: "Sir")
     end
@@ -404,20 +375,17 @@ describe Mongoid::Document do
   end
 
   describe "#as_json" do
-
     let!(:person) do
       Person.new(title: "Sir")
     end
 
     context "when no options are provided" do
-
       it "does not apply any options" do
         expect(person.as_json["title"]).to eq("Sir")
         expect(person.as_json["age"]).to eq(100)
       end
 
       context "when options for the super method are provided" do
-
         let(:options) do
           { only: :title }
         end
@@ -431,7 +399,6 @@ describe Mongoid::Document do
   end
 
   describe "#as_document" do
-
     let!(:person) do
       Person.new(title: "Sir")
     end
@@ -473,7 +440,6 @@ describe Mongoid::Document do
     end
 
     context "with relation define store_as option in embeded_many" do
-
       let!(:phone) do
         person.phones.build(number: '+33123456789')
       end
@@ -492,7 +458,6 @@ describe Mongoid::Document do
     end
 
     context "when removing an embedded document" do
-
       before do
         person.save!
         person.addresses.delete(address)
@@ -504,7 +469,6 @@ describe Mongoid::Document do
     end
 
     context "when an embedded relation has been set to nil" do
-
       before do
         # Save the doc, then set an embeds_one relation to nil
         person.save!
@@ -519,9 +483,7 @@ describe Mongoid::Document do
   end
 
   describe "#to_key" do
-
     context "when the document is new" do
-
       let(:person) do
         Person.new
       end
@@ -532,13 +494,12 @@ describe Mongoid::Document do
     end
 
     context "when the document is not new" do
-
       let(:person) do
         Person.create!
       end
 
       it "returns the id in an array" do
-        expect(person.to_key).to eq([ person.id.to_s ])
+        expect(person.to_key).to eq([person.id.to_s])
       end
 
       it "can query using the key" do
@@ -547,7 +508,6 @@ describe Mongoid::Document do
     end
 
     context "when the document is destroyed" do
-
       let(:person) do
         Person.instantiate("_id" => BSON::ObjectId.new).tap do |peep|
           peep.destroyed = true
@@ -555,15 +515,13 @@ describe Mongoid::Document do
       end
 
       it "returns the id in an array" do
-        expect(person.to_key).to eq([ person.id.to_s ])
+        expect(person.to_key).to eq([person.id.to_s])
       end
     end
   end
 
   describe "#to_param" do
-
     context "when the document is new" do
-
       let(:person) do
         Person.new
       end
@@ -574,7 +532,6 @@ describe Mongoid::Document do
     end
 
     context "when the document is not new" do
-
       let(:person) do
         Person.instantiate("_id" => BSON::ObjectId.new)
       end
@@ -586,13 +543,11 @@ describe Mongoid::Document do
   end
 
   describe "#frozen?" do
-
     let(:person) do
       Person.new
     end
 
     context "when attributes are not frozen" do
-
       it "return false" do
         expect(person).to_not be_frozen
         expect {
@@ -613,15 +568,12 @@ describe Mongoid::Document do
   end
 
   describe "#freeze" do
-
     let(:person) do
       Person.new
     end
 
     context "when freezing the model" do
-
       context "when not frozen" do
-
         it "freezes attributes" do
           expect(person.freeze).to eq(person)
           expect { person.title = "something" }.to raise_error(RuntimeError)
@@ -629,7 +581,6 @@ describe Mongoid::Document do
       end
 
       context "when frozen" do
-
         before do
           person.raw_attributes.freeze
         end
@@ -644,13 +595,10 @@ describe Mongoid::Document do
     end
 
     context "when freezing attributes of the model" do
-
       context "when assigning a frozen value" do
-
         context "when the frozen value is a hash" do
-
           let(:hash) do
-            {"foo" => {"bar" => {"baz" => [1,2,3]}}}
+            { "foo" => { "bar" => { "baz" => [1, 2, 3] } } }
           end
 
           let(:assign_hash) do
@@ -666,14 +614,12 @@ describe Mongoid::Document do
   end
 
   describe ".logger" do
-
     it "returns the mongoid logger" do
       expect(Person.logger).to eq(Mongoid.logger)
     end
   end
 
   describe "#logger" do
-
     let(:person) do
       Person.new
     end
@@ -684,7 +630,6 @@ describe Mongoid::Document do
   end
 
   context "after including the document module" do
-
     let(:movie) do
       Movie.new
     end
@@ -694,7 +639,6 @@ describe Mongoid::Document do
     end
   end
   context "when a model name conflicts with a mongoid internal" do
-
     let(:scheduler) do
       Scheduler.new
     end
@@ -705,9 +649,7 @@ describe Mongoid::Document do
   end
 
   describe "#initialize" do
-
     context "when providing a block" do
-
       it "sets the defaults before yielding" do
         Person.new do |person|
           expect(person.age).to eq(100)
@@ -717,7 +659,6 @@ describe Mongoid::Document do
   end
 
   context "defining a BSON::ObjectId as a field" do
-
     let(:bson_id) do
       BSON::ObjectId.new
     end
@@ -740,7 +681,6 @@ describe Mongoid::Document do
   end
 
   context "when setting bson id fields to empty strings" do
-
     let(:post) do
       Post.new
     end
@@ -755,9 +695,7 @@ describe Mongoid::Document do
   end
 
   context "creating anonymous documents" do
-
     context "when defining collection" do
-
       let(:model) do
         Class.new do
           include Mongoid::Document
@@ -773,7 +711,6 @@ describe Mongoid::Document do
   end
 
   describe "#becomes" do
-
     before(:all) do
       Person.validates_format_of(:ssn, without: /\$\$\$/)
 
@@ -788,7 +725,6 @@ describe Mongoid::Document do
     end
 
     context "when casting to a superclass" do
-
       let(:manager) do
         Manager.new(title: "Sir")
       end
@@ -850,9 +786,7 @@ describe Mongoid::Document do
       end
 
       context "when the document has embedded documents" do
-
         context "when the attribtues are protected" do
-
           let!(:appointment) do
             manager.appointments.build
           end
@@ -871,9 +805,7 @@ describe Mongoid::Document do
         end
 
         context "when the attributes are not protected" do
-
           context "when embedded doc is not persisted" do
-
             let!(:address) do
               manager.addresses.build(street: "hobrecht")
             end
@@ -892,7 +824,6 @@ describe Mongoid::Document do
           end
 
           context "when embedded doc is persisted" do
-
             let(:manager) do
               Manager.create!(title: "Sir")
             end
@@ -921,7 +852,6 @@ describe Mongoid::Document do
       end
 
       context "when the document has a localize field" do
-
         let(:manager) do
           Manager.new(title: "Sir", desc: "description")
         end
@@ -936,7 +866,6 @@ describe Mongoid::Document do
       end
 
       context "when the document is new" do
-
         let(:person) do
           manager.becomes(Person)
         end
@@ -947,7 +876,6 @@ describe Mongoid::Document do
       end
 
       context "when the document is persisted" do
-
         before do
           manager.save!
         end
@@ -962,7 +890,6 @@ describe Mongoid::Document do
       end
 
       context "when the document is destroyed" do
-
         before do
           manager.destroy
         end
@@ -977,7 +904,6 @@ describe Mongoid::Document do
       end
 
       context "when the document is dirty" do
-
         before do
           manager.save!
           manager.ssn = "123-22-1234"
@@ -988,16 +914,15 @@ describe Mongoid::Document do
         end
 
         it "copies over the dirty changes" do
-          expect(person.changes["ssn"]).to eq([ nil, "123-22-1234" ])
+          expect(person.changes["ssn"]).to eq([nil, "123-22-1234"])
         end
 
         it "adds the _type change" do
-          expect(person.changes["_type"]).to eq([ "Manager", "Person" ])
+          expect(person.changes["_type"]).to eq(["Manager", "Person"])
         end
       end
 
       context "when the document is invalid" do
-
         before do
           manager.ssn = "$$$"
           manager.valid?
@@ -1014,13 +939,11 @@ describe Mongoid::Document do
     end
 
     context "when casting to a subclass" do
-
       let(:person) do
         Person.new(title: "Sir")
       end
 
       context "when no embedded documents are present" do
-
         let(:manager) do
           person.becomes(Manager)
         end
@@ -1045,7 +968,6 @@ describe Mongoid::Document do
       end
 
       context "when the document has embedded documents" do
-
         let!(:address) do
           person.addresses.build(street: "hobrecht")
         end
@@ -1064,7 +986,6 @@ describe Mongoid::Document do
       end
 
       context "when the document is new" do
-
         let(:manager) do
           person.becomes(Manager)
         end
@@ -1075,7 +996,6 @@ describe Mongoid::Document do
       end
 
       context "when the document is persisted" do
-
         before do
           person.save!
         end
@@ -1089,7 +1009,6 @@ describe Mongoid::Document do
         end
 
         context "when downcasted document is saved" do
-
           before do
             manager.save!
           end
@@ -1113,7 +1032,6 @@ describe Mongoid::Document do
       end
 
       context "when the document is destroyed" do
-
         before do
           person.destroy
         end
@@ -1128,7 +1046,6 @@ describe Mongoid::Document do
       end
 
       context "when the document is dirty" do
-
         before do
           person.save!
           person.ssn = "123-22-1234"
@@ -1139,16 +1056,15 @@ describe Mongoid::Document do
         end
 
         it "copies over the dirty changes" do
-          expect(manager.changes["ssn"]).to eq([ nil, "123-22-1234" ])
+          expect(manager.changes["ssn"]).to eq([nil, "123-22-1234"])
         end
 
         it "adds the _type change" do
-          expect(manager.changes["_type"]).to eq([ "Person", "Manager" ])
+          expect(manager.changes["_type"]).to eq(["Person", "Manager"])
         end
       end
 
       context "when the document is invalid" do
-
         before do
           person.ssn = "$$$"
           person.valid?
@@ -1161,11 +1077,9 @@ describe Mongoid::Document do
         it "copies the errors" do
           expect(manager.errors).to include(:ssn)
         end
-
       end
 
       context "when the subclass validates attributes not present on the parent class" do
-
         before do
           Manager.validates_inclusion_of(:level, in: [1, 2])
         end
@@ -1181,7 +1095,6 @@ describe Mongoid::Document do
       end
 
       context "when the subclass has defaults" do
-
         let(:manager) do
           Person.new(title: 'Sir').becomes(Manager)
         end
@@ -1194,7 +1107,6 @@ describe Mongoid::Document do
   end
 
   context "when marshalling the document" do
-
     let(:agency) do
       Agency.new
     end
@@ -1204,7 +1116,6 @@ describe Mongoid::Document do
     end
 
     describe Marshal, ".dump" do
-
       it "successfully dumps the document" do
         expect {
           Marshal.dump(agency)
@@ -1214,7 +1125,6 @@ describe Mongoid::Document do
     end
 
     describe Marshal, ".load" do
-
       it "successfully loads the document" do
         expect(Marshal.load(Marshal.dump(agency))).to eq(agency)
       end
@@ -1222,15 +1132,12 @@ describe Mongoid::Document do
   end
 
   context "when putting a document in the cache" do
-
     describe ActiveSupport::Cache do
-
       let(:cache) do
         ActiveSupport::Cache::MemoryStore.new
       end
 
       describe "#fetch" do
-
         let(:agency) do
           Agency.new
         end

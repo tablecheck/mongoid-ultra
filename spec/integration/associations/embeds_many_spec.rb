@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe 'embeds_many associations' do
-
   context 're-associating the same object' do
     context 'with dependent: destroy' do
       let(:canvas) do
@@ -91,8 +90,8 @@ describe 'embeds_many associations' do
 
       context 'via attributes=' do
         before do
-          canvas.attributes = {shapes: [Shape.new, Shape.new]}
-          canvas.attributes = {shapes: []}
+          canvas.attributes = { shapes: [Shape.new, Shape.new] }
+          canvas.attributes = { shapes: [] }
           canvas.save!
         end
 
@@ -135,8 +134,8 @@ describe 'embeds_many associations' do
 
       context 'via attributes=' do
         before do
-          canvas.attributes = {shapes: []}
-          canvas.attributes = {shapes: [Shape.new, Shape.new]}
+          canvas.attributes = { shapes: [] }
+          canvas.attributes = { shapes: [Shape.new, Shape.new] }
           canvas.save!
         end
 
@@ -183,7 +182,7 @@ describe 'embeds_many associations' do
       context 'via attributes=' do
         before do
           canvas.shapes.first.x = 1
-          canvas.attributes = {shapes: []}
+          canvas.attributes = { shapes: [] }
           canvas.save!
         end
 

@@ -2,7 +2,6 @@
 
 module Mongoid
   module Errors
-
     # This error is raised when trying to create set nested documents above the
     # specified :limit
     #

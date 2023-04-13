@@ -16,7 +16,6 @@ describe "Mongoid::Railties::ControllerRuntime" do
   end
 
   describe "Collector" do
-
     it "stores the metric in thread-safe manner" do
       clear_metric!
       expect(collector.runtime).to eq(0)
@@ -44,7 +43,6 @@ describe "Mongoid::Railties::ControllerRuntime" do
       expect(collector.reset_runtime).to eq(42)
       expect(collector.runtime).to eq(0)
     end
-
   end
 
   reference_controller_class = Class.new do
@@ -108,5 +106,4 @@ describe "Mongoid::Railties::ControllerRuntime" do
     expect(controller_class.instance_variable_get "@log_process_action").to be(true)
     expect(messages).to eq(["MongoDB: 42.1ms"])
   end
-
 end

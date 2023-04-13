@@ -3,12 +3,10 @@
 require "mongoid/deprecation"
 
 module Mongoid
-
   # Adds ability to declare Mongoid-specific deprecations.
   #
   # @api private
   module Deprecable
-
     # Declares method(s) as deprecated.
     #
     # @example Deprecate a method.

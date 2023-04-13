@@ -4,9 +4,7 @@ require "spec_helper"
 require_relative '../association/referenced/has_one_models'
 
 describe Mongoid::Validatable::PresenceValidator do
-
   describe "#validate_each" do
-
     let(:product) do
       Product.new
     end
@@ -16,9 +14,7 @@ describe Mongoid::Validatable::PresenceValidator do
     end
 
     context "when the field is not localized" do
-
       context "when the value is valid" do
-
         before do
           validator.validate_each(product, :brand_name, "Apple")
         end
@@ -29,7 +25,6 @@ describe Mongoid::Validatable::PresenceValidator do
       end
 
       context "when the value is nil" do
-
         before do
           validator.validate_each(product, :brand_name, nil)
         end
@@ -40,7 +35,6 @@ describe Mongoid::Validatable::PresenceValidator do
       end
 
       context "when the value is empty" do
-
         before do
           validator.validate_each(product, :brand_name, "")
         end
@@ -52,9 +46,7 @@ describe Mongoid::Validatable::PresenceValidator do
     end
 
     context "when the field is localized" do
-
       context "when the value is valid" do
-
         before do
           validator.validate_each(product, :name, { "en" => "iPod Nano 8GB - Black" })
         end
@@ -65,7 +57,6 @@ describe Mongoid::Validatable::PresenceValidator do
       end
 
       context "when the value is nil" do
-
         before do
           validator.validate_each(product, :name, nil)
         end
@@ -76,7 +67,6 @@ describe Mongoid::Validatable::PresenceValidator do
       end
 
       context "when the localized value is nil" do
-
         before do
           validator.validate_each(product, :name, { "en" => nil })
         end
@@ -87,7 +77,6 @@ describe Mongoid::Validatable::PresenceValidator do
       end
 
       context "when the value is empty" do
-
         before do
           validator.validate_each(product, :name, { "en" => "" })
         end
@@ -98,7 +87,6 @@ describe Mongoid::Validatable::PresenceValidator do
       end
 
       context "when the value is empty for a language" do
-
         before do
           validator.validate_each(
             product,
@@ -113,7 +101,6 @@ describe Mongoid::Validatable::PresenceValidator do
       end
 
       context "when the value is empty for all language" do
-
         before do
           validator.validate_each(
             product,
@@ -129,11 +116,8 @@ describe Mongoid::Validatable::PresenceValidator do
     end
 
     context "when the field is aliased" do
-
       context "when the aliased field name is validated" do
-
         context "when the value is valid" do
-
           before do
             validator.validate_each(product, :sku, "12345")
           end
@@ -144,7 +128,6 @@ describe Mongoid::Validatable::PresenceValidator do
         end
 
         context "when the value is invalid" do
-
           before do
             validator.validate_each(product, :sku, nil)
           end
@@ -156,9 +139,7 @@ describe Mongoid::Validatable::PresenceValidator do
       end
 
       context "when the underlying field name is validated" do
-
         context "when the value is valid" do
-
           before do
             validator.validate_each(product, :stock_keeping_unit, "12345")
           end
@@ -169,7 +150,6 @@ describe Mongoid::Validatable::PresenceValidator do
         end
 
         context "when the value is invalid" do
-
           before do
             validator.validate_each(product, :stock_keeping_unit, nil)
           end
@@ -181,9 +161,7 @@ describe Mongoid::Validatable::PresenceValidator do
       end
 
       context "when the field is localized" do
-
         context "when the localized value is valid" do
-
           before do
             validator.validate_each(product, :tagline, { "en" => "12345" })
           end
@@ -194,11 +172,10 @@ describe Mongoid::Validatable::PresenceValidator do
         end
 
         context "when one of the localized values is invalid" do
-
           before do
             validator.validate_each(
-                product,
-                :tagline, { "en" => "12345", "fr" => nil }
+              product,
+              :tagline, { "en" => "12345", "fr" => nil }
             )
           end
 
@@ -211,9 +188,7 @@ describe Mongoid::Validatable::PresenceValidator do
   end
 
   context "when validating a relation" do
-
     context "when the relation is a has one" do
-
       around do |example|
         original_relations = Person.relations
         Person.has_one :game, autosave: true
@@ -225,19 +200,16 @@ describe Mongoid::Validatable::PresenceValidator do
       end
 
       context "when the relation is new" do
-
         let(:person) do
           Person.new
         end
 
         context "when the base is valid" do
-
           let!(:game) do
             person.build_game
           end
 
           context "when saving the base" do
-
             before do
               person.save!
             end
@@ -251,7 +223,6 @@ describe Mongoid::Validatable::PresenceValidator do
     end
 
     context "when the association is a has one and autosave is false" do
-
       before do
         HomCollege.validates :accreditation, presence: true
       end
@@ -265,19 +236,16 @@ describe Mongoid::Validatable::PresenceValidator do
       end
 
       context "when the association target is new" do
-
         let(:parent) do
           HomCollege.new
         end
 
         context "when the parent is valid" do
-
           let!(:child) do
             parent.build_accreditation
           end
 
           context "when saving the parent" do
-
             before do
               expect(parent.associations[:accreditation].options[:autosave]).to be_falsy
 
@@ -295,13 +263,11 @@ describe Mongoid::Validatable::PresenceValidator do
     end
 
     context "when the relation is a belongs to" do
-
       let(:product) do
         Product.create!(name: "testing")
       end
 
       context "when the relation is present" do
-
         let(:purchase) do
           Purchase.create!
         end
@@ -311,7 +277,6 @@ describe Mongoid::Validatable::PresenceValidator do
         end
 
         context "when the foreign key is nil" do
-
           before do
             line_item.attributes["product_id"] = nil
           end
@@ -324,7 +289,6 @@ describe Mongoid::Validatable::PresenceValidator do
     end
 
     context "when the relation is a many to many" do
-
       before do
         Person.validates :houses, presence: true
       end
@@ -335,17 +299,15 @@ describe Mongoid::Validatable::PresenceValidator do
       end
 
       context "when the relation has documents" do
-
         let!(:house) do
           House.create!
         end
 
         let!(:person) do
-          Person.create!(houses: [ house ])
+          Person.create!(houses: [house])
         end
 
         context "when the relation is loaded from the db" do
-
           let(:loaded) do
             Person.find(person.id)
           end
@@ -356,7 +318,6 @@ describe Mongoid::Validatable::PresenceValidator do
         end
 
         context "when the relation is in memory" do
-
           it "is valid" do
             expect(person).to be_valid
           end
@@ -366,9 +327,7 @@ describe Mongoid::Validatable::PresenceValidator do
   end
 
   context "when validating a localized field" do
-
     context "when any translation is blank" do
-
       let(:product) do
         Product.new
       end
@@ -388,7 +347,6 @@ describe Mongoid::Validatable::PresenceValidator do
     end
 
     context "when any translation is nil" do
-
       let(:product) do
         Product.new
       end
@@ -408,7 +366,6 @@ describe Mongoid::Validatable::PresenceValidator do
     end
 
     context "when the entire field is nil" do
-
       let(:product) do
         Product.new
       end
@@ -428,7 +385,6 @@ describe Mongoid::Validatable::PresenceValidator do
     end
 
     context "when the entire field is empty" do
-
       let(:product) do
         Product.new
       end
@@ -448,7 +404,6 @@ describe Mongoid::Validatable::PresenceValidator do
     end
 
     context "when the translations are present" do
-
       let(:product) do
         Product.new
       end
@@ -464,13 +419,12 @@ describe Mongoid::Validatable::PresenceValidator do
   end
 
   context "when presence_of array attribute is updated and saved" do
-
     let(:updated_products) do
-      [ "Laptop", "Tablet", "Smartphone", "Desktop" ]
+      ["Laptop", "Tablet", "Smartphone", "Desktop"]
     end
 
     let(:manufacturer) do
-      Manufacturer.create!(products: [ "Laptop", "Tablet" ])
+      Manufacturer.create!(products: ["Laptop", "Tablet"])
     end
 
     before do
@@ -488,17 +442,15 @@ describe Mongoid::Validatable::PresenceValidator do
   end
 
   context "when an array attribute has been updated" do
-
     let(:updated_products) do
-      [ "Laptop", "Tablet", "Smartphone", "Desktop" ]
+      ["Laptop", "Tablet", "Smartphone", "Desktop"]
     end
 
     let(:manufacturer) do
-      Manufacturer.create!(products: [ "Laptop", "Tablet" ])
+      Manufacturer.create!(products: ["Laptop", "Tablet"])
     end
 
     context "when retrieved, flattened and iterated" do
-
       before do
         manufacturer.products = updated_products
         attrs = manufacturer.attributes
@@ -511,30 +463,27 @@ describe Mongoid::Validatable::PresenceValidator do
 
       it "maintains the list of changes" do
         expect(manufacturer.changes).to eq({
-          "products" => [
-            [ "Laptop", "Tablet" ],
-            [ "Laptop", "Tablet", "Smartphone", "Desktop" ]
-          ]
-        })
+                                             "products" => [
+                                               ["Laptop", "Tablet"],
+                                               ["Laptop", "Tablet", "Smartphone", "Desktop"]
+                                             ]
+                                           })
       end
     end
   end
 
   context "when validating a boolean false value" do
-
     let(:template) do
       Template.new
     end
 
     context "when the value is false" do
-
       it "is a valid document" do
         expect(template).to be_valid
       end
     end
 
     context "when the value is true" do
-
       before do
         template.active = true
       end
@@ -546,7 +495,6 @@ describe Mongoid::Validatable::PresenceValidator do
   end
 
   context "when describing validation on the instance level" do
-
     let!(:dictionary) do
       Dictionary.create!(name: "en")
     end
@@ -556,12 +504,11 @@ describe Mongoid::Validatable::PresenceValidator do
     end
 
     it "adds the validation only to the instance" do
-      expect(validators).to eq([ described_class ])
+      expect(validators).to eq([described_class])
     end
   end
 
   context "when validating an array" do
-
     before do
       Person.validates :aliases, presence: { allow_blank: false }
     end
@@ -571,13 +518,11 @@ describe Mongoid::Validatable::PresenceValidator do
     end
 
     context "when allow blank is false" do
-
       let(:person) do
         Person.new
       end
 
       context "when the array is empty" do
-
         before do
           person.array = []
           person.valid?

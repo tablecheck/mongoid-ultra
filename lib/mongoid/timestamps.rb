@@ -6,7 +6,6 @@ require "mongoid/timestamps/updated"
 require "mongoid/timestamps/short"
 
 module Mongoid
-
   # This module handles the behavior for setting up document created at and
   # updated at timestamps.
   module Timestamps

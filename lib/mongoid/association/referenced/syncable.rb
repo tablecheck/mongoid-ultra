@@ -3,11 +3,9 @@
 module Mongoid
   module Association
     module Referenced
-
       # This module handles the behavior for synchronizing foreign keys between
       # both sides of a many to many associations.
       module Syncable
-
         # Is the document able to be synced on the inverse side? This is only if
         # the key has changed and the association bindings have not been run.
         #
@@ -92,7 +90,6 @@ module Mongoid
         end
 
         module ClassMethods
-
           # Set up the syncing of many to many foreign keys.
           #
           # @example Set up the syncing.
@@ -122,9 +119,9 @@ module Mongoid
           # @return [ Class ] The class getting set up.
           def synced_save(association)
             set_callback(
-                :save,
-                :after,
-                if: ->(doc) { doc._syncable?(association) }
+              :save,
+              :after,
+              if: ->(doc) { doc._syncable?(association) }
             ) do |doc|
               doc.update_inverse_keys(association)
             end
@@ -141,8 +138,8 @@ module Mongoid
           # @return [ Class ] The class getting set up.
           def synced_destroy(association)
             set_callback(
-                :destroy,
-                :after
+              :destroy,
+              :after
             ) do |doc|
               doc.remove_inverse_keys(association)
             end

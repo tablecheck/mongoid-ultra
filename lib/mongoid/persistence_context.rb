@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Mongoid
-
   # Object encapsulating logic for setting/getting a collection and database name
   # and a client with particular options to use when persisting models.
   class PersistenceContext
@@ -23,15 +22,14 @@ module Mongoid
     #
     # @return [ Array<Symbol> ] The list of extra options besides client options
     #   that determine the persistence context.
-    EXTRA_OPTIONS = [ :client,
-                      :collection
-                    ].freeze
+    EXTRA_OPTIONS = [:client,
+                     :collection].freeze
 
     # The full list of valid persistence context options.
     #
     # @return [ Array<Symbol> ] The full list of options defining the persistence
     #   context.
-    VALID_OPTIONS = ( Mongo::Client::VALID_OPTIONS + EXTRA_OPTIONS ).freeze
+    VALID_OPTIONS = (Mongo::Client::VALID_OPTIONS + EXTRA_OPTIONS).freeze
 
     # Initialize the persistence context object.
     #
@@ -114,8 +112,8 @@ module Mongoid
     #   context.
     def client_name
       @client_name ||= options[:client] ||
-                         Threaded.client_override ||
-                         storage_options && __evaluate__(storage_options[:client])
+                       Threaded.client_override ||
+                       storage_options && __evaluate__(storage_options[:client])
     end
 
     # Determine if this persistence context is equal to another.
@@ -128,6 +126,7 @@ module Mongoid
     # @return [ true | false ] Whether the two persistence contexts are equal.
     def ==(other)
       return false unless other.is_a?(PersistenceContext)
+
       options == other.options
     end
 
@@ -150,25 +149,27 @@ module Mongoid
 
     def set_options!(opts)
       @options ||= opts.each.reduce({}) do |_options, (key, value)|
-                     unless VALID_OPTIONS.include?(key.to_sym)
-                       raise Errors::InvalidPersistenceOption.new(key.to_sym, VALID_OPTIONS)
-                     end
-                     value ? _options.merge!(key => value) : _options
-                   end
+        unless VALID_OPTIONS.include?(key.to_sym)
+          raise Errors::InvalidPersistenceOption.new(key.to_sym, VALID_OPTIONS)
+        end
+
+        value ? _options.merge!(key => value) : _options
+      end
     end
 
     def __evaluate__(name)
       return nil unless name
+
       name.respond_to?(:call) ? name.call.to_sym : name.to_sym
     end
 
     def client_options
       @client_options ||= begin
         opts = options.select do |k, v|
-                              Mongo::Client::VALID_OPTIONS.include?(k.to_sym)
-                            end
+          Mongo::Client::VALID_OPTIONS.include?(k.to_sym)
+        end
         if opts[:read].is_a?(Symbol)
-          opts[:read] = {mode: opts[:read]}
+          opts[:read] = { mode: opts[:read] }
         end
         opts
       end
@@ -176,12 +177,11 @@ module Mongoid
 
     def database_name_option
       @database_name_option ||= options[:database] ||
-                                  Threaded.database_override ||
-                                  storage_options && storage_options[:database]
+                                Threaded.database_override ||
+                                storage_options && storage_options[:database]
     end
 
     class << self
-
       # Set the persistence context for a particular class or model instance.
       #
       # If there already is a persistence context set, options in the existing
@@ -198,10 +198,10 @@ module Mongoid
       def set(object, options_or_context)
         existing_context = get_context(object)
         existing_options = if existing_context
-          existing_context.options
-        else
-          {}
-        end
+                             existing_context.options
+                           else
+                             {}
+                           end
         if options_or_context.is_a?(PersistenceContext)
           options_or_context = options_or_context.options
         end

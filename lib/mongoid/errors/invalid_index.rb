@@ -2,10 +2,8 @@
 
 module Mongoid
   module Errors
-
     # Raised when an invalid index is defined.
     class InvalidIndex < MongoidError
-
       # Create the new error.
       #
       # @example Create the error.

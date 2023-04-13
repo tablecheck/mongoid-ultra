@@ -4,10 +4,8 @@ module Mongoid
   module Association
     module Referenced
       class HasOne
-
         # The Builder behavior for has_one associations.
         module Buildable
-
           # This method either takes an _id or an object and queries for the
           # inverse side using the id or sets the object after clearing the
           # associated object.
@@ -34,10 +32,10 @@ module Mongoid
           def clear_associated(object)
             unless inverse
               raise Errors::InverseNotFound.new(
-                  @owner_class,
-                  name,
-                  object.class,
-                  foreign_key,
+                @owner_class,
+                name,
+                object.class,
+                foreign_key,
               )
             end
             if object && (associated = object.send(inverse))

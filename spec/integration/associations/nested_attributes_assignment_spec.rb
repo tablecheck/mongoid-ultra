@@ -50,7 +50,6 @@ describe 'nested attributes assignment' do
         end
 
         context 'updating embedded documents' do
-
           it 'persists all documents' do
             truck.attributes = {
               capacity: 2,
@@ -80,7 +79,6 @@ describe 'nested attributes assignment' do
         end
 
         context 'adding embedded documents' do
-
           it 'persists all changes' do
             truck.attributes = {
               capacity: 2,

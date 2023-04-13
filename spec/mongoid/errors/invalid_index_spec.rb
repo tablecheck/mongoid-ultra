@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Errors::InvalidIndex do
-
   describe "#message" do
-
     let(:error) do
       described_class.new(Band, { name: 1 }, { invalid: true })
     end

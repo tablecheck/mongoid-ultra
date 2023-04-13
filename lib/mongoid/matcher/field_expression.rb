@@ -1,13 +1,11 @@
 module Mongoid
   module Matcher
-
     # Singleton module used for evaluating whether a given
     # value in-memory matches an MSQL query expression related
     # to a specific field.
     #
     # @api private
     module FieldExpression
-
       # Returns whether a value satisfies a condition.
       #
       # @param [ true | false ] exists Whether the value exists.
@@ -30,13 +28,13 @@ module Mongoid
                 if k == '$regex'
                   if options = condition['$options']
                     cond_v = case cond_v
-                    when Regexp
-                      BSON::Regexp::Raw.new(cond_v.source, options)
-                    when BSON::Regexp::Raw
-                      BSON::Regexp::Raw.new(cond_v.pattern, options)
-                    else
-                      BSON::Regexp::Raw.new(cond_v, options)
-                    end
+                             when Regexp
+                               BSON::Regexp::Raw.new(cond_v.source, options)
+                             when BSON::Regexp::Raw
+                               BSON::Regexp::Raw.new(cond_v.pattern, options)
+                             else
+                               BSON::Regexp::Raw.new(cond_v, options)
+                             end
                   elsif String === cond_v
                     cond_v = BSON::Regexp::Raw.new(cond_v)
                   end

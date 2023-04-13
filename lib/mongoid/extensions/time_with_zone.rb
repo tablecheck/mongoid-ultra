@@ -2,10 +2,8 @@
 
 module Mongoid
   module Extensions
-
     # Adds type-casting behavior to ActiveSupport::TimeWithZone class.
     module TimeWithZone
-
       # Mongoizes an ActiveSupport::TimeWithZone into a time.
       #
       # TimeWithZone always mongoize into TimeWithZone instances
@@ -32,17 +30,17 @@ module Mongoid
       # See https://jira.mongodb.org/browse/MONGOID-5491.
       def _bson_to_i
         return super if defined?(super)
+
         # Workaround for JRuby's #to_i rounding negative timestamps up
         # rather than down (https://github.com/jruby/jruby/issues/6104)
         if BSON::Environment.jruby?
-          (self - usec.to_r/1000000).to_i
+          (self - usec.to_r / 1000000).to_i
         else
           to_i
         end
       end
 
       module ClassMethods
-
         # Convert the object from its mongo friendly ruby type to this type.
         #
         # @example Demongoize the object.

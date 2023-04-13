@@ -19,7 +19,6 @@ class Canvas
   end
 
   class Test < Canvas
-
     field :foo, type: String, overwrite: true, default: -> { "overridden" }
   end
 end

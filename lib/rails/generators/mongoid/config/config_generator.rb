@@ -4,7 +4,6 @@ require 'rails/generators/mongoid_generator'
 
 module Mongoid
   module Generators
-
     # Generator class for Mongoid configuration files.
     class ConfigGenerator < Rails::Generators::Base
       desc "Creates Mongoid configuration files"

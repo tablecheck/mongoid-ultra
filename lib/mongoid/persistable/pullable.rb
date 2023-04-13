@@ -2,7 +2,6 @@
 
 module Mongoid
   module Persistable
-
     # Defines behavior for $pull and $pullAll operations.
     module Pullable
       extend ActiveSupport::Concern

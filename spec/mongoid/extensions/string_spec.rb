@@ -3,18 +3,14 @@
 require "spec_helper"
 
 describe Mongoid::Extensions::String do
-
   describe "#__evolve_object_id__" do
-
     context "when the string is blank" do
-
       it "returns the empty string" do
         expect("".__evolve_object_id__).to be_empty
       end
     end
 
     context "when the string is a legal object id" do
-
       let(:object_id) do
         BSON::ObjectId.new
       end
@@ -25,7 +21,6 @@ describe Mongoid::Extensions::String do
     end
 
     context "when the string is not a legal object id" do
-
       let(:string) do
         "testing"
       end
@@ -37,16 +32,13 @@ describe Mongoid::Extensions::String do
   end
 
   describe "#__mongoize_object_id__" do
-
     context "when the string is blank" do
-
       it "returns nil" do
         expect("".__mongoize_object_id__).to be_nil
       end
     end
 
     context "when the string is a legal object id" do
-
       let(:object_id) do
         BSON::ObjectId.new
       end
@@ -57,7 +49,6 @@ describe Mongoid::Extensions::String do
     end
 
     context "when the string is not a legal object id" do
-
       let(:string) do
         "testing"
       end
@@ -69,12 +60,10 @@ describe Mongoid::Extensions::String do
   end
 
   describe "#__mongoize_time__" do
-
     context "when setting ActiveSupport time zone" do
       include_context 'setting ActiveSupport time zone'
 
       context "when the string is a valid time with time zone" do
-
         let(:string) do
           # JST is +0900
           "2010-11-19 00:24:49.123457 +1100"
@@ -95,7 +84,6 @@ describe Mongoid::Extensions::String do
       end
 
       context "when the string is a valid time without time zone" do
-
         let(:string) do
           "2010-11-19 00:24:49.123457"
         end
@@ -115,7 +103,6 @@ describe Mongoid::Extensions::String do
       end
 
       context "when the string is a valid time without time" do
-
         let(:string) do
           "2010-11-19"
         end
@@ -134,7 +121,6 @@ describe Mongoid::Extensions::String do
       end
 
       context "when the string is an invalid time" do
-
         let(:string) do
           "shitty string"
         end
@@ -149,9 +135,7 @@ describe Mongoid::Extensions::String do
   end
 
   describe "#collectionize" do
-
     context "when class is namepaced" do
-
       module Medical
         class Patient
           include Mongoid::Document
@@ -164,7 +148,6 @@ describe Mongoid::Extensions::String do
     end
 
     context "when class is not namespaced" do
-
       it "returns an underscored table-ized name" do
         expect(MixedDrink.name.collectionize).to eq("mixed_drinks")
       end
@@ -172,49 +155,40 @@ describe Mongoid::Extensions::String do
   end
 
   describe "#mongoid_id?" do
-
     context "when the string is id" do
-
       it "returns true" do
         expect("id").to be_mongoid_id
       end
     end
 
     context "when the string is _id" do
-
       it "returns true" do
         expect("_id").to be_mongoid_id
       end
     end
 
     context "when the string contains id" do
-
       it "returns false" do
         expect("identity").to_not be_mongoid_id
       end
     end
 
     context "when the string contains _id" do
-
       it "returns false" do
         expect("something_id").to_not be_mongoid_id
       end
     end
   end
 
-  [ :mongoize, :demongoize ].each do |method|
-
+  [:mongoize, :demongoize].each do |method|
     describe ".#{method}" do
-
       context "when the object is not a string" do
-
         it "returns the string" do
           expect(String.send(method, :test)).to eq("test")
         end
       end
 
       context "when the object is nil" do
-
         it "returns nil" do
           expect(String.send(method, nil)).to be_nil
         end
@@ -223,30 +197,25 @@ describe Mongoid::Extensions::String do
   end
 
   describe "#mongoize" do
-
     it "returns self" do
       expect("test".mongoize).to eq("test")
     end
   end
 
   describe "#reader" do
-
     context "when string is a reader" do
-
       it "returns self" do
         expect("attribute".reader).to eq("attribute")
       end
     end
 
     context "when string is a writer" do
-
       it "returns the reader" do
         expect("attribute=".reader).to eq("attribute")
       end
     end
 
     context "when the string is before_type_cast" do
-
       it "returns the reader" do
         expect("attribute_before_type_cast".reader).to eq("attribute")
       end
@@ -254,79 +223,67 @@ describe Mongoid::Extensions::String do
   end
 
   describe "#numeric?" do
-
     context "when the string is an integer" do
-
       it "returns true" do
         expect("1234".numeric?).to eq(true)
       end
     end
 
     context "when string is a float" do
-
       it "returns true" do
         expect("1234.123".numeric?).to eq(true)
       end
     end
 
     context "when the string is has exponents" do
-
       it "returns true" do
         expect("1234.123123E4".numeric?).to eq(true)
       end
     end
 
     context "when the string is non numeric" do
-
       it "returns false" do
         expect("blah".numeric?).to eq(false)
       end
     end
 
     context "when the string is NaN" do
-
       it "returns true" do
         expect("NaN".numeric?).to eq(true)
       end
     end
 
     context "when the string is NaN and junk in front" do
-
       it "returns false" do
         expect("a\nNaN".numeric?).to eq(false)
       end
     end
 
     context "when the string is NaN and whitespace at end" do
-
       it "returns false" do
         expect("NaN\n".numeric?).to eq(false)
       end
     end
 
     context "when the string is Infinity" do
-
       it "returns true" do
         expect("Infinity".numeric?).to eq(true)
       end
     end
 
     context "when the string contains Infinity and junk in front" do
-
       it "returns false" do
         expect("a\nInfinity".numeric?).to eq(false)
       end
     end
 
     context "when the string contains Infinity and whitespace at end" do
-
       it "returns false" do
         expect("Infinity\n".numeric?).to eq(false)
       end
     end
 
     context "when the string is -Infinity" do
-
       it "returns true" do
         expect("-Infinity".numeric?).to eq(true)
       end
@@ -334,16 +291,13 @@ describe Mongoid::Extensions::String do
   end
 
   describe "#singularize" do
-
     context "when string is address" do
-
       it "returns address" do
         expect("address".singularize).to eq("address")
       end
     end
 
     context "when string is address_profiles" do
-
       it "returns address_profile" do
         expect("address_profiles".singularize).to eq("address_profile")
       end
@@ -351,16 +305,13 @@ describe Mongoid::Extensions::String do
   end
 
   describe "#writer?" do
-
     context "when string is a reader" do
-
       it "returns false" do
         expect("attribute".writer?).to be false
       end
     end
 
     context "when string is a writer" do
-
       it "returns true" do
         expect("attribute=".writer?).to be true
       end
@@ -368,20 +319,16 @@ describe Mongoid::Extensions::String do
   end
 
   describe "#before_type_cast?" do
-
     context "when string is a reader" do
-
       it "returns false" do
         expect("attribute".before_type_cast?).to be false
       end
     end
 
     context "when string is before_type_cast" do
-
       it "returns true" do
         expect("attribute_before_type_cast".before_type_cast?).to be true
       end
     end
   end
-
 end

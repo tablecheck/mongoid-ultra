@@ -12,7 +12,7 @@ class Animal
 
   embedded_in :person
   embedded_in :circus, class_name: 'Circus' # class_name is necessary because ActiveRecord think the singular of Circus
-                                            # is Circu
+  # is Circu
 
   validates_format_of :name, without: /\$\$\$/
 

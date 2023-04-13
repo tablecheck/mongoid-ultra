@@ -3,17 +3,13 @@
 require "spec_helper"
 
 describe "Polymorphic Associations" do
-
   describe "#polymorph" do
-
     let(:klass) do
       Class.new.tap { |c| c.send(:include, Mongoid::Document) }
     end
 
     context "when the relation is polymorphic" do
-
       context "when the relation stores a foreign key" do
-
         let!(:association) do
           klass.belongs_to :ratable, polymorphic: true
         end
@@ -28,7 +24,6 @@ describe "Polymorphic Associations" do
       end
 
       context "when the relation does not store a foreign key" do
-
         let!(:association) do
           klass.has_many :ratings, as: :ratable
         end
@@ -48,7 +43,6 @@ describe "Polymorphic Associations" do
     end
 
     context "when the relation is not polymorphic" do
-
       let!(:association) do
         klass.has_many :ratings
       end
@@ -68,16 +62,13 @@ describe "Polymorphic Associations" do
   end
 
   describe ".polymorphic?" do
-
     context "when the document is in a polymorphic relation" do
-
       it "returns true" do
         expect(Movie).to be_polymorphic
       end
     end
 
     context "when the document is not in a polymorphic relation" do
-
       it "returns false" do
         expect(Survey).to_not be_polymorphic
       end
@@ -85,16 +76,13 @@ describe "Polymorphic Associations" do
   end
 
   describe "#polymorphic?" do
-
     context "when the document is in a polymorphic relation" do
-
       it "returns true" do
         expect(Movie.new).to be_polymorphic
       end
     end
 
     context "when the document is not in a polymorphic relation" do
-
       it "returns false" do
         expect(Survey.new).to_not be_polymorphic
       end
@@ -102,11 +90,8 @@ describe "Polymorphic Associations" do
   end
 
   context 'when the relation is touchable' do
-
     context 'when the relation is embedded' do
-
       let(:define_classes) do
-
         class FirstOwner
           include Mongoid::Document
 
@@ -127,14 +112,12 @@ describe "Polymorphic Associations" do
       end
 
       it 'successfully defines the touch method' do
-       expect { define_classes }.not_to raise_error
+        expect { define_classes }.not_to raise_error
       end
     end
 
     context 'when the relation is not embedded' do
-
       let(:define_classes) do
-
         class FirstOwner
           include Mongoid::Document
 
@@ -155,7 +138,7 @@ describe "Polymorphic Associations" do
       end
 
       it 'successfully defines the touch method' do
-       expect { define_classes }.not_to raise_error
+        expect { define_classes }.not_to raise_error
       end
     end
   end

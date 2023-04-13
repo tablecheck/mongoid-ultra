@@ -2,10 +2,8 @@
 
 module Mongoid
   module Extensions
-
     # Adds type-casting behavior to Object class.
     module Object
-
       # Evolve a plain object into an object id.
       #
       # @example Evolve the object.
@@ -201,7 +199,6 @@ module Mongoid
       end
 
       module ClassMethods
-
         # Convert the provided object to a foreign key, given the metadata key
         # contstraint.
         #
@@ -214,6 +211,7 @@ module Mongoid
         # @return [ Object ] The converted object.
         def __mongoize_fk__(association, object)
           return nil if !object || object == ""
+
           association.convert_to_foreign_key(object)
         end
 

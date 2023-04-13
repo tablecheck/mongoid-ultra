@@ -4,7 +4,6 @@ module Mongoid
   module Association
     module Referenced
       class HasMany
-
         # This class is the wrapper for all referenced associations that have a
         # target that can be a criteria or array of _loaded documents. This
         # handles both cases or a combination of the two.
@@ -31,6 +30,7 @@ module Mongoid
           # @return [ true | false ] If the objects are equal.
           def ==(other)
             return false unless other.respond_to?(:entries)
+
             entries == other.entries
           end
 
@@ -45,6 +45,7 @@ module Mongoid
           # @return [ true | false ] If the objects are equal in a case.
           def ===(other)
             return false unless other.respond_to?(:entries)
+
             entries === other.entries
           end
 
@@ -162,6 +163,7 @@ module Mongoid
             unless block_given?
               return to_enum
             end
+
             if _loaded?
               _loaded.each_pair do |id, doc|
                 document = _added.delete(doc._id) || doc
@@ -244,9 +246,9 @@ module Mongoid
           # @return [ Mongoid::Document ] The first document found.
           def first(limit = nil)
             _loaded.try(:values).try(:first) ||
-                _added[(ul = _unloaded.try(:first, limit)).try(:_id)] ||
-                ul ||
-                _added.values.try(:first)
+              _added[(ul = _unloaded.try(:first, limit)).try(:_id)] ||
+              ul ||
+              _added.values.try(:first)
           end
 
           # Initialize the new enumerable either with a criteria or an array.
@@ -282,6 +284,7 @@ module Mongoid
           # @return [ true | false ] If the document is in the target.
           def include?(doc)
             return super unless _unloaded
+
             _unloaded.where(_id: doc._id).exists? || _added.has_key?(doc._id)
           end
 
@@ -329,9 +332,9 @@ module Mongoid
           # @return [ Mongoid::Document ] The last document found.
           def last(limit = nil)
             _added.values.try(:last) ||
-                _loaded.try(:values).try(:last) ||
-                _added[(ul = _unloaded.try(:last, limit)).try(:_id)] ||
-                ul
+              _loaded.try(:values).try(:last) ||
+              _added[(ul = _unloaded.try(:last, limit)).try(:_id)] ||
+              ul
           end
 
           # Loads all the documents in the enumerable from the database.

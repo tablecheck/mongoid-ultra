@@ -4,7 +4,6 @@ module Mongoid
   module Association
     module Referenced
       class HasAndBelongsToMany
-
         # Transparent proxy for has_and_belongs_to_many associations.
         # An instance of this class is returned when calling
         # the association getter method on the subject document.
@@ -13,7 +12,6 @@ module Mongoid
         # i.e. the array of documents on the opposite-side collection
         # which must be loaded.
         class Proxy < Referenced::HasMany::Proxy
-
           # Appends a document or array of documents to the association. Will set
           # the parent and update the index in the process.
           #
@@ -32,6 +30,7 @@ module Mongoid
           def <<(*args)
             docs = args.flatten
             return concat(docs) if docs.size > 1
+
             if doc = docs.first
               append(doc) do
                 # We ignore the changes to the value for the foreign key in the
@@ -81,6 +80,7 @@ module Mongoid
             ids, docs, inserts = {}, [], []
             documents.each do |doc|
               next unless doc
+
               append(doc)
               if persistable? || _creating?
                 ids[doc.public_send(_association.primary_key)] = true
@@ -185,6 +185,7 @@ module Mongoid
               end
             end
             raise after_remove_error if after_remove_error
+
             many_to_many
           end
 
@@ -290,7 +291,7 @@ module Mongoid
           # @return [ true | false ] If the document can be persisted.
           def child_persistable?(doc)
             (persistable? || _creating?) &&
-                !(doc.persisted? && _association.forced_nil_inverse?)
+              !(doc.persisted? && _association.forced_nil_inverse?)
           end
 
           # Returns the criteria object for the target class with its documents set
@@ -321,7 +322,6 @@ module Mongoid
           end
 
           class << self
-
             # Get the Eager object for this type of association.
             #
             # @example Get the eager loader object

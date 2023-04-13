@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe "#discriminator_key" do
-
   context "when the discriminator key is not set on a class" do
     let(:piano) do
       Piano.new
@@ -84,7 +83,6 @@ describe "#discriminator_key" do
       config_override :discriminator_key, "test"
 
       before do
-
         class PreGlobalIntDiscriminatorParent
           include Mongoid::Document
         end
@@ -229,7 +227,6 @@ describe "#discriminator_key" do
   end
 
   context "documentation tests" do
-
     context "Example 1" do
       before do
         class Example1Shape
@@ -354,7 +351,6 @@ describe "#discriminator_key" do
           field :width, type: Float
           field :height, type: Float
         end
-
       end
 
       after do

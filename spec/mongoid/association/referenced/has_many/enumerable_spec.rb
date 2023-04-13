@@ -3,11 +3,8 @@
 require "spec_helper"
 
 describe Mongoid::Association::Referenced::HasMany::Enumerable do
-
   describe "#==" do
-
     context "when comparing with an enumerable" do
-
       let(:person) do
         Person.create!
       end
@@ -17,7 +14,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when only a criteria target exists" do
-
         let(:criteria) do
           Post.where(person_id: person.id)
         end
@@ -27,23 +23,21 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         end
 
         it "returns the equality check" do
-          expect(enumerable).to eq([ post ])
+          expect(enumerable).to eq([post])
         end
       end
 
       context "when only an array target exists" do
-
         let!(:enumerable) do
-          described_class.new([ post ])
+          described_class.new([post])
         end
 
         it "returns the equality check" do
-          expect(enumerable._loaded.values).to eq([ post ])
+          expect(enumerable._loaded.values).to eq([post])
         end
       end
 
       context "when a criteria and added exist" do
-
         let(:criteria) do
           Post.where(person_id: person.id)
         end
@@ -57,42 +51,38 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         end
 
         context "when the added does not contain unloaded docs" do
-
           before do
             enumerable << post_two
           end
 
           it "returns the equality check" do
-            expect(enumerable).to eq([ post, post_two ])
+            expect(enumerable).to eq([post, post_two])
           end
         end
 
         context "when the added contains unloaded docs" do
-
           before do
             enumerable << post
           end
 
           it "returns the equality check" do
-            expect(enumerable).to eq([ post ])
+            expect(enumerable).to eq([post])
           end
         end
 
         context "when the enumerable is loaded" do
-
           before do
             enumerable.instance_variable_set(:@executed, true)
           end
 
           context "when the loaded has no docs and added is persisted" do
-
             before do
               post.save!
               enumerable._added[post.id] = post
             end
 
             it "returns the equality check" do
-              expect(enumerable).to eq([ post ])
+              expect(enumerable).to eq([post])
             end
           end
         end
@@ -100,7 +90,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when comparing with a non enumerable" do
-
       let(:enumerable) do
         described_class.new([])
       end
@@ -112,35 +101,29 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#===" do
-
     let(:data) { [] }
 
     shared_examples 'standard library-compatible enumerable' do
       context "when compared to an array class" do
-
         it "returns false" do
           expect(enumerable === Array).to be false
         end
       end
 
       context "when compared to an enumerable class" do
-
         it "returns false" do
           expect(enumerable === described_class).to be false
         end
       end
 
       context "when compared to a different class" do
-
         it "returns false" do
           expect(enumerable === Mongoid::Document).to be false
         end
       end
 
       context "when compared to an array instance" do
-
         context "when the entries are equal" do
-
           let(:data) do
             [Post.new(id: 2)]
           end
@@ -155,7 +138,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         end
 
         context "when the entries are both empty" do
-
           let(:other) do
             described_class.new([])
           end
@@ -166,9 +148,8 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         end
 
         context "when the entries are not equal" do
-
           let(:other) do
-            described_class.new([ Band.new ])
+            described_class.new([Band.new])
           end
 
           it "returns false" do
@@ -196,7 +177,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#<<" do
-
     let(:person) do
       Person.create!
     end
@@ -210,7 +190,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the association is empty" do
-
       let!(:added) do
         enumerable << post
       end
@@ -220,7 +199,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       it "returns the added documents" do
-        expect(added).to eq([ post ])
+        expect(added).to eq([post])
       end
 
       it "sets the base on the new document" do
@@ -232,7 +211,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#empty?" do
-
     let(:person) do
       Person.create!
     end
@@ -246,7 +224,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when only a criteria target exists" do
-
       let(:criteria) do
         Post.where(person_id: person.id)
       end
@@ -264,7 +241,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context 'when #empty? is called' do
-
         before { empty }
 
         it "retains the correct length" do
@@ -276,7 +252,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         end
 
         context "when iterating over the association a second time" do
-
           before do
             enumerable.each { |post| post }
           end
@@ -316,7 +291,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the documents are not loaded" do
-
       let(:criteria) do
         Post.where(person_id: person.id)
       end
@@ -335,7 +309,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when documents are added" do
-
         before do
           enumerable << post_one
         end
@@ -353,7 +326,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#any?" do
-
     let(:person) do
       Person.create!
     end
@@ -367,7 +339,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when only a criteria target exists" do
-
       let(:criteria) do
         Post.where(person_id: person.id)
       end
@@ -385,7 +356,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context 'when #any? is called' do
-
         before { any }
 
         it "retains the correct length" do
@@ -397,7 +367,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         end
 
         context "when iterating over the association a second time" do
-
           before do
             enumerable.each { |post| post }
           end
@@ -450,7 +419,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when an argument is given" do
-
         it "returns true when the argument is true" do
           expect(enumerable.any?(Post)).to be true
         end
@@ -461,7 +429,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when both an argument and a block are given" do
-
         it "gives precedence to the pattern" do
           expect(
             enumerable.any?(Post) { |doc| false }
@@ -471,7 +438,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the documents are not loaded" do
-
       let(:criteria) do
         Post.where(person_id: person.id)
       end
@@ -490,7 +456,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when documents are added" do
-
         before do
           enumerable << post_one
         end
@@ -520,7 +485,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when an argument is given" do
-
         it "returns true when the argument is true" do
           expect(enumerable.any?(Post)).to be true
         end
@@ -531,7 +495,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when both an argument and a block are given" do
-
         it "gives precedence to the pattern" do
           expect(
             enumerable.any?(Post) { |doc| false }
@@ -542,7 +505,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#clear" do
-
     let(:person) do
       Person.create!
     end
@@ -588,7 +550,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#clone" do
-
     let(:person) do
       Person.create!
     end
@@ -628,19 +589,17 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#delete" do
-
     let(:person) do
       Person.create!
     end
 
     context "when the document is loaded" do
-
       let!(:post) do
         Post.create!(person_id: person.id)
       end
 
       let!(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       let!(:deleted) do
@@ -657,7 +616,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the document is added" do
-
       let!(:post) do
         Post.new
       end
@@ -688,7 +646,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the document is unloaded" do
-
       let!(:post) do
         Post.create!(person_id: person.id)
       end
@@ -715,7 +672,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the document is not found" do
-
       let!(:post) do
         Post.create!(person_id: person.id)
       end
@@ -725,7 +681,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       let!(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       let!(:deleted) do
@@ -741,19 +697,17 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#delete_if" do
-
     let(:person) do
       Person.create!
     end
 
     context "when the document is loaded" do
-
       let!(:post) do
         Post.create!(person_id: person.id)
       end
 
       let!(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       let!(:deleted) do
@@ -770,7 +724,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the document is added" do
-
       let!(:post) do
         Post.new
       end
@@ -801,7 +754,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the document is unloaded" do
-
       let!(:post) do
         Post.create!(person_id: person.id)
       end
@@ -828,7 +780,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the block doesn't match" do
-
       let!(:post) do
         Post.create!(person_id: person.id)
       end
@@ -838,7 +789,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       let!(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       let!(:deleted) do
@@ -846,13 +797,12 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       it "returns the remaining docs" do
-        expect(deleted).to eq([ post ])
+        expect(deleted).to eq([post])
       end
     end
   end
 
   describe "#detect" do
-
     let(:person) do
       Person.create!
     end
@@ -870,7 +820,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when setting a value on the matching document" do
-
       before do
         enumerable.detect { |post| post.title = "test" }.rating = 10
       end
@@ -882,7 +831,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#each" do
-
     let(:person) do
       Person.create!
     end
@@ -892,7 +840,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when only a criteria target exists" do
-
       let(:criteria) do
         Post.where(person_id: person.id)
       end
@@ -916,7 +863,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context 'when the base association is accessed from each document' do
-
         let(:persons) do
           described_class.new(criteria).collect(&:person)
         end
@@ -933,9 +879,8 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when only an array target exists" do
-
       let!(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       let!(:iterated) do
@@ -954,7 +899,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when a criteria and added exist" do
-
       let(:criteria) do
         Post.where(person_id: person.id)
       end
@@ -968,7 +912,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when the added does not contain unloaded docs" do
-
         before do
           enumerable << post_two
         end
@@ -993,7 +936,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when the added contains unloaded docs" do
-
         before do
           enumerable << post
         end
@@ -1015,7 +957,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when no block is passed" do
-
       let(:criteria) do
         Post.where(person_id: person.id)
       end
@@ -1027,12 +968,10 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       it "returns an enumerator" do
         expect(enumerable.each.class.include?(Enumerable)).to be true
       end
-
     end
   end
 
   describe "#entries" do
-
     let(:person) do
       Person.create!
     end
@@ -1046,7 +985,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the added contains a persisted document" do
-
       let!(:post) do
         Post.create!(person_id: person.id)
       end
@@ -1066,13 +1004,11 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#first" do
-
     let(:person) do
       Person.create!
     end
 
     context "when the enumerable is not loaded" do
-
       let(:criteria) do
         Post.where(person_id: person.id)
       end
@@ -1082,9 +1018,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when unloaded is not empty" do
-
         context "when added is empty" do
-
           let!(:post) do
             Post.create!(person_id: person.id)
           end
@@ -1108,7 +1042,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         end
 
         context "when added is not empty" do
-
           let!(:post) do
             Post.create!(person_id: person.id)
           end
@@ -1126,7 +1059,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
           end
 
           context "when a perviously persisted unloaded doc exists" do
-
             it "returns the first added doc" do
               expect(first).to eq(post)
             end
@@ -1139,7 +1071,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when unloaded is empty" do
-
         let!(:post) do
           Post.new(person_id: person.id)
         end
@@ -1162,7 +1093,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when unloaded and added are empty" do
-
         let(:first) do
           enumerable.first
         end
@@ -1178,15 +1108,13 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the enumerable is loaded" do
-
       context "when loaded is not empty" do
-
         let!(:post) do
           Post.create!(person_id: person.id)
         end
 
         let(:enumerable) do
-          described_class.new([ post ])
+          described_class.new([post])
         end
 
         let(:first) do
@@ -1199,7 +1127,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when loaded is empty" do
-
         let!(:post) do
           Post.create!(person_id: person.id)
         end
@@ -1222,7 +1149,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when loaded and added are empty" do
-
         let(:enumerable) do
           described_class.new([])
         end
@@ -1238,7 +1164,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context 'when including a limit' do
-
       let(:person) do
         Person.create!
       end
@@ -1265,7 +1190,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context 'when no parameters are provided' do
-
       let(:person) do
         Person.create!
       end
@@ -1293,7 +1217,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#include?" do
-
     let(:person) do
       Person.create!
     end
@@ -1307,11 +1230,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when no criteria exists" do
-
       context "when the enumerable is loaded" do
-
         let!(:enumerable) do
-          described_class.new([ post_one, post_two ])
+          described_class.new([post_one, post_two])
         end
 
         let!(:included) do
@@ -1332,7 +1253,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when the enumerable contains an added document" do
-
         let!(:enumerable) do
           described_class.new([])
         end
@@ -1356,7 +1276,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the document is present and not the first" do
-
       let(:criteria) do
         Post.where(person_id: person.id)
       end
@@ -1382,7 +1301,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when iterating over the association a second time" do
-
         before do
           enumerable.each { |post| post }
         end
@@ -1399,13 +1317,11 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#initialize" do
-
     let(:person) do
       Person.new
     end
 
     context "when provided with a criteria" do
-
       let(:criteria) do
         Post.where(person_id: person.id)
       end
@@ -1424,13 +1340,12 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when provided an array" do
-
       let(:post) do
         Post.new
       end
 
       let(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       it "does not set a criteria" do
@@ -1444,19 +1359,17 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#in_memory" do
-
     let(:person) do
       Person.new
     end
 
     context "when the enumerable is loaded" do
-
       let(:post) do
         Post.new
       end
 
       let(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       let(:post_two) do
@@ -1472,12 +1385,11 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       it "returns the loaded and added docs" do
-        expect(in_memory).to eq([ post, post_two ])
+        expect(in_memory).to eq([post, post_two])
       end
     end
 
     context "when the enumerable is not loaded" do
-
       let(:post) do
         Post.new(person_id: person.id)
       end
@@ -1499,12 +1411,11 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       it "returns the added docs" do
-        expect(in_memory).to eq([ post_two ])
+        expect(in_memory).to eq([post_two])
       end
     end
 
     context "when passed a block" do
-
       let(:enumerable) do
         described_class.new(Post.where(person_id: person.id))
       end
@@ -1526,20 +1437,17 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#is_a?" do
-
     let(:enumerable) do
       described_class.new(Post.all)
     end
 
     context "when checking against enumerable" do
-
       it "returns true" do
         expect(enumerable.is_a?(::Enumerable)).to be true
       end
     end
 
     context "when checking against array" do
-
       it "returns true" do
         expect(enumerable.is_a?(Array)).to be true
       end
@@ -1547,13 +1455,11 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#last" do
-
     let(:person) do
       Person.create!
     end
 
     context "when the enumerable is not loaded" do
-
       let(:criteria) do
         Post.asc(:_id).where(person_id: person.id)
       end
@@ -1563,7 +1469,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when unloaded is not empty" do
-
         let!(:post) do
           Post.create!(person_id: person.id)
         end
@@ -1587,7 +1492,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when unloaded is empty" do
-
         let!(:post) do
           Post.new(person_id: person.id)
         end
@@ -1610,7 +1514,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when unloaded and added are empty" do
-
         let(:last) do
           enumerable.last
         end
@@ -1625,7 +1528,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when added is not empty" do
-
         let!(:post_one) do
           person.posts.create!
         end
@@ -1639,7 +1541,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         end
 
         context "when accessing from a reloaded child" do
-
           it "returns the last document" do
             expect(post_one.reload.person.posts.asc(:_id).last).to eq(post_two)
           end
@@ -1648,15 +1549,13 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the enumerable is loaded" do
-
       context "when loaded is not empty" do
-
         let!(:post) do
           Post.create!(person_id: person.id)
         end
 
         let(:enumerable) do
-          described_class.new([ post ])
+          described_class.new([post])
         end
 
         let(:last) do
@@ -1669,7 +1568,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when loaded is empty" do
-
         let!(:post) do
           Post.create!(person_id: person.id)
         end
@@ -1692,7 +1590,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when loaded and added are empty" do
-
         let(:enumerable) do
           described_class.new([])
         end
@@ -1708,7 +1605,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context 'when including a limit' do
-
       let(:person) do
         Person.create!
       end
@@ -1735,7 +1631,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context 'when no parameters are provided' do
-
       let(:person) do
         Person.create!
       end
@@ -1763,20 +1658,17 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#kind_of?" do
-
     let(:enumerable) do
       described_class.new(Post.all)
     end
 
     context "when checking against enumerable" do
-
       it "returns true" do
         expect(enumerable.kind_of?(::Enumerable)).to be true
       end
     end
 
     context "when checking against array" do
-
       it "returns true" do
         expect(enumerable.kind_of?(Array)).to be true
       end
@@ -1784,7 +1676,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#load_all!" do
-
     let(:person) do
       Person.create!
     end
@@ -1819,7 +1710,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#reset" do
-
     let(:person) do
       Person.create!
     end
@@ -1833,7 +1723,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     let(:enumerable) do
-      described_class.new([ post ])
+      described_class.new([post])
     end
 
     before do
@@ -1858,15 +1748,12 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#respond_to?" do
-
     let(:enumerable) do
       described_class.new([])
     end
 
     context "when checking against array methods" do
-
       [].methods.each do |method|
-
         it "returns true for #{method}" do
           expect(enumerable).to respond_to(method)
         end
@@ -1875,7 +1762,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#size" do
-
     let(:person) do
       Person.create!
     end
@@ -1885,19 +1771,16 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the base is new" do
-
       let!(:person) do
         Person.new
       end
 
       context "when the added contains a persisted document" do
-
         let!(:post) do
           Post.create!(person_id: person.id)
         end
 
         context "when the enumerable is not loaded" do
-
           let(:enumerable) do
             described_class.new(Post.where(person_id: person.id))
           end
@@ -1910,9 +1793,8 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the enumerable is loaded" do
-
       let(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       let(:post_two) do
@@ -1937,13 +1819,11 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context "when the enumerable is not loaded" do
-
       let(:enumerable) do
         described_class.new(Post.where(person_id: person.id))
       end
 
       context "when the added contains new documents" do
-
         let(:post_two) do
           Post.new(person_id: person.id)
         end
@@ -1962,7 +1842,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       context "when the added contains persisted documents" do
-
         let(:post_two) do
           Post.create!(person_id: person.id)
         end
@@ -1983,7 +1862,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#to_json" do
-
     let(:person) do
       Person.create!
     end
@@ -2014,7 +1892,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#to_json(parameters)" do
-
     let(:person) do
       Person.create!
     end
@@ -2028,7 +1905,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     let!(:json) do
-      person.posts.to_json({except: 'title'})
+      person.posts.to_json({ except: 'title' })
     end
 
     it "serializes the enumerable" do
@@ -2037,7 +1914,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#as_json" do
-
     let(:person) do
       Person.create!
     end
@@ -2069,7 +1945,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#as_json(parameters)" do
-
     let(:person) do
       Person.create!
     end
@@ -2083,7 +1958,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     let!(:json) do
-      person.posts.as_json({except: "title"})
+      person.posts.as_json({ except: "title" })
     end
 
     it "serializes the enumerable" do
@@ -2096,7 +1971,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe "#uniq" do
-
     let(:person) do
       Person.create!
     end
@@ -2123,7 +1997,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     it "returns the unique documents" do
-      expect(uniq).to eq([ post ])
+      expect(uniq).to eq([post])
     end
 
     it "sets loaded to true" do
@@ -2132,13 +2006,11 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
   end
 
   describe 'setting the same parent object on enumerated children objects' do
-
     let(:person) do
       Person.create!
     end
 
     context 'when a single child is fetched' do
-
       let!(:post) do
         person.posts << Post.new
         person.posts.first
@@ -2152,7 +2024,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context 'when a single child is fetched with a scope' do
-
       let!(:post) do
         person.posts << Post.new(title: 'open')
         person.posts.open.first
@@ -2166,7 +2037,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context 'when multiple children are fetched' do
-
       let!(:posts) do
         person.posts << Post.new
         person.posts << Post.new
@@ -2182,7 +2052,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context 'when multiple children are fetched with query criteria' do
-
       let!(:posts) do
         person.posts << Post.new(title: 'open')
         person.posts << Post.new(title: 'open')
@@ -2198,7 +2067,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context 'when multiple children are fetched with a scope' do
-
       let!(:posts) do
         person.posts << Post.new(title: 'open')
         person.posts << Post.new(title: 'open')
@@ -2214,7 +2082,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     context 'when the parent is updated in memory' do
-
       let!(:posts) do
         person.posts << Post.new
         person.posts << Post.new

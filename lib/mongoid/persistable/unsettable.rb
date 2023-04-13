@@ -2,7 +2,6 @@
 
 module Mongoid
   module Persistable
-
     # Defines behavior for $unset operations.
     module Unsettable
       extend ActiveSupport::Concern

@@ -3,15 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Association::Embedded::EmbeddedIn::Buildable do
-
   describe "#build" do
-
     let(:base) do
       double
     end
 
     let(:options) do
-      { }
+      {}
     end
 
     let(:association) do
@@ -19,7 +17,6 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Buildable do
     end
 
     context "when a document is provided" do
-
       let(:object) do
         double
       end
@@ -35,9 +32,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Buildable do
   end
 
   context 'when the object is already associated with another object' do
-
     context "when inverse is embeds_many" do
-
       let(:appointment1) do
         Appointment.new
       end
@@ -63,7 +58,6 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Buildable do
     end
 
     context "when inverse is embeds_one" do
-
       let(:scribe1) do
         Scribe.new
       end

@@ -2,11 +2,9 @@
 
 module Mongoid
   module Errors
-
     # This error is raised when a bad global executor concurrency option is attempted
     # to be set.
     class InvalidGlobalExecutorConcurrency < MongoidError
-
       # Create the new error.
       #
       # @api private

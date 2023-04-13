@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::PersistenceContext do
-
   let(:persistence_context) do
     described_class.new(object, options)
   end
@@ -13,13 +12,11 @@ describe Mongoid::PersistenceContext do
   end
 
   describe '.set' do
-
     let(:options) do
       { collection: :other }
     end
 
     context 'when the persistence context is set on the thread' do
-
       let!(:persistence_context) do
         described_class.set(object, options)
       end
@@ -31,7 +28,7 @@ describe Mongoid::PersistenceContext do
       end
 
       it 'only sets persistence context for the object on the current thread' do
-         Thread.new do
+        Thread.new do
           expect(described_class.get(object)).not_to be(persistence_context)
           expect(described_class.get(object)).to be(nil)
         end.value
@@ -40,13 +37,11 @@ describe Mongoid::PersistenceContext do
   end
 
   describe '.get' do
-
     let(:options) do
       { collection: :other }
     end
 
     context 'when there has been a persistence context set on the current thread' do
-
       let!(:persistence_context) do
         described_class.set(object, options)
       end
@@ -66,13 +61,11 @@ describe Mongoid::PersistenceContext do
   end
 
   describe '.clear' do
-
     let(:options) do
       { collection: :other }
     end
 
     context 'when the method throws an error' do
-
       let!(:persistence_context) do
         described_class.set(object, options).tap do |cxt|
           allow(cxt).to receive(:client).and_raise(Mongoid::Errors::NoClientConfig.new('default'))
@@ -86,13 +79,11 @@ describe Mongoid::PersistenceContext do
     end
 
     context 'when there has been a persistence context set on the current thread' do
-
       let!(:persistence_context) do
         described_class.set(object, options)
       end
 
       context 'when no cluster is passed to the method' do
-
         before do
           described_class.clear(object)
         end
@@ -103,9 +94,7 @@ describe Mongoid::PersistenceContext do
       end
 
       context 'when a cluster is passed to the method' do
-
         context 'when the cluster is the same as that of the persistence context on the current thread' do
-
           let(:client) do
             persistence_context.client
           end
@@ -121,7 +110,6 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when the cluster is not the same as that of the persistence context on the current thread' do
-
           let!(:client) do
             persistence_context.client
           end
@@ -136,7 +124,7 @@ describe Mongoid::PersistenceContext do
 
     context 'with reusable client' do
       let(:options) do
-        {client: :some_client}
+        { client: :some_client }
       end
 
       let(:cluster) do
@@ -162,22 +150,18 @@ describe Mongoid::PersistenceContext do
   end
 
   describe '#initialize' do
-
     let(:options) do
       { collection: 'other' }
     end
 
     context 'when an object is passed' do
-
       context 'when the object is a klass' do
-
         it 'sets the object on the persistence context' do
           expect(persistence_context.instance_variable_get(:@object)).to eq(object)
         end
       end
 
       context 'when the object is a model instance' do
-
         let(:object) do
           Band.new
         end
@@ -189,22 +173,18 @@ describe Mongoid::PersistenceContext do
     end
 
     context 'when options are passed' do
-
       let(:options) do
         { connect_timeout: 3 }
       end
 
       context 'when the options are valid client options' do
-
         it 'sets the options on the persistence context object' do
           expect(persistence_context.options).to eq(options)
         end
       end
 
       context 'when the options are not valid client options' do
-
         context 'when the options are valid extra options' do
-
           let(:options) do
             { collection: 'other' }
           end
@@ -215,7 +195,6 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when the options are not valid extra options' do
-
           let(:options) do
             { invalid: 'option' }
           end
@@ -231,7 +210,6 @@ describe Mongoid::PersistenceContext do
   end
 
   describe '#collection' do
-
     let(:persistence_context) do
       described_class.new(object, options)
     end
@@ -241,7 +219,6 @@ describe Mongoid::PersistenceContext do
     end
 
     context 'when a parent object is passed' do
-
       it 'uses the collection of the parent object' do
         expect(persistence_context.collection(Person.new).name).to eq('people')
       end
@@ -256,7 +233,6 @@ describe Mongoid::PersistenceContext do
       end
 
       context 'when the parent object has a client set' do
-
         let(:file) do
           File.join(File.dirname(__FILE__), "..", "config", "mongoid.yml")
         end
@@ -278,7 +254,6 @@ describe Mongoid::PersistenceContext do
     end
 
     context 'when a parent object is not passed' do
-
       it 'uses the collection of the object' do
         expect(persistence_context.collection.name).to eq('bands')
       end
@@ -295,7 +270,6 @@ describe Mongoid::PersistenceContext do
   end
 
   describe '#collection_name' do
-
     let(:persistence_context) do
       described_class.new(object, options)
     end
@@ -305,11 +279,9 @@ describe Mongoid::PersistenceContext do
     end
 
     context 'when storage options are set on the object' do
-
       context 'when there are no options passed to the Persistence Context' do
-
         let(:options) do
-          { }
+          {}
         end
 
         after do
@@ -317,7 +289,6 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when the storage options is static' do
-
           before do
             object.store_in collection: :schmands
           end
@@ -328,7 +299,6 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when the storage options is a block' do
-
           before do
             object.store_in collection: -> { :schmands }
           end
@@ -340,7 +310,6 @@ describe Mongoid::PersistenceContext do
       end
 
       context 'when there are options passed to the Persistence Context' do
-
         let(:options) do
           { collection: 'other' }
         end
@@ -350,7 +319,6 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when the storage options is static' do
-
           before do
             object.store_in collection: :schmands
           end
@@ -361,7 +329,6 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when the storage options is a block' do
-
           before do
             object.store_in collection: -> { :schmands }
           end
@@ -374,9 +341,7 @@ describe Mongoid::PersistenceContext do
     end
 
     context 'when storage options are not set on the object' do
-
       context 'when there are options passed to the Persistence Context' do
-
         let(:options) do
           { collection: 'other' }
         end
@@ -389,7 +354,6 @@ describe Mongoid::PersistenceContext do
   end
 
   describe '#database_name' do
-
     let(:persistence_context) do
       described_class.new(object, options)
     end
@@ -399,11 +363,9 @@ describe Mongoid::PersistenceContext do
     end
 
     context 'when storage options are set on the object' do
-
       context 'when there are no options passed to the Persistence Context' do
-
         let(:options) do
-          { }
+          {}
         end
 
         after do
@@ -423,7 +385,6 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when the storage options is static' do
-
           before do
             object.store_in database: :musique
           end
@@ -434,7 +395,6 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when the storage options is a block' do
-
           before do
             object.store_in database: -> { :musique }
           end
@@ -445,7 +405,6 @@ describe Mongoid::PersistenceContext do
       end
 
       context 'when there are options passed to the Persistence Context' do
-
         let(:options) do
           { database: 'musique' }
         end
@@ -459,7 +418,6 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when the storage options is static' do
-
           before do
             object.store_in database: :sounds
           end
@@ -474,7 +432,6 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when the storage options is a block' do
-
           before do
             object.store_in database: -> { :sounds }
           end
@@ -491,9 +448,7 @@ describe Mongoid::PersistenceContext do
     end
 
     context 'when storage options are not set on the object' do
-
       context 'when there are options passed to the Persistence Context' do
-
         let(:options) do
           { database: 'musique' }
         end
@@ -512,7 +467,6 @@ describe Mongoid::PersistenceContext do
       end
 
       context 'when there are no options passed to the Persistence Context' do
-
         context 'when there is a database override' do
           persistence_context_override :database, :other
 
@@ -525,13 +479,12 @@ describe Mongoid::PersistenceContext do
   end
 
   describe '#client' do
-
     let(:persistence_context) do
       described_class.new(object, options)
     end
 
     let(:options) do
-      { }
+      {}
     end
 
     before do
@@ -543,7 +496,6 @@ describe Mongoid::PersistenceContext do
     end
 
     context 'when the client is set in the options' do
-
       let(:options) do
         { client: :alternative }
       end
@@ -565,13 +517,11 @@ describe Mongoid::PersistenceContext do
       end
 
       context 'when there are storage options set' do
-
         after do
           object.reset_storage_options!
         end
 
         context 'when the storage options is static' do
-
           before do
             object.store_in client: :other
           end
@@ -582,7 +532,6 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when the storage options is a block' do
-
           before do
             object.store_in client: -> { :other }
           end
@@ -595,9 +544,8 @@ describe Mongoid::PersistenceContext do
     end
 
     context 'when there is no client option set' do
-
       let(:options) do
-        { }
+        {}
       end
 
       context 'when there is a client override' do
@@ -609,13 +557,11 @@ describe Mongoid::PersistenceContext do
       end
 
       context 'when there are storage options set' do
-
         after do
           object.reset_storage_options!
         end
 
         context 'when the storage options is static' do
-
           before do
             object.store_in client: :alternative
           end
@@ -626,7 +572,6 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when the storage options is a block' do
-
           before do
             object.store_in client: -> { :alternative }
           end
@@ -647,7 +592,6 @@ describe Mongoid::PersistenceContext do
     end
 
     context 'when there are client options set' do
-
       let(:options) do
         { connect_timeout: 3 }
       end
@@ -658,7 +602,6 @@ describe Mongoid::PersistenceContext do
     end
 
     context 'when there is a database name set in the options' do
-
       let(:options) do
         { database: 'other' }
       end
@@ -681,7 +624,7 @@ describe Mongoid::PersistenceContext do
 
       expect do
         user.with(database: database_id_alt) do |u|
-          u.update(name:'2')
+          u.update(name: '2')
         end
       end.to_not raise_error
     end

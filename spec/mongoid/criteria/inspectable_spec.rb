@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Criteria::Inspectable do
-
   describe "#inspect" do
-
     let(:criteria) do
       Person.where(:age.gt => 10, title: "Sir")
     end

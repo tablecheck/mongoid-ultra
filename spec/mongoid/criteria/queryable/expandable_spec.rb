@@ -3,14 +3,12 @@
 require "spec_helper"
 
 describe Mongoid::Criteria::Queryable::Expandable do
-
   let(:query) do
     Mongoid::Query.new
   end
 
   describe '#expand_condition_to_array_values' do
     shared_examples_for 'expands' do
-
       it 'expands' do
         expect(query.send(:expand_condition_to_array_values, criterion)).to eq(expected)
       end
@@ -36,11 +34,11 @@ describe Mongoid::Criteria::Queryable::Expandable do
 
     context 'literal value' do
       let(:criterion) do
-        {foo: 4}
+        { foo: 4 }
       end
 
       let(:expected) do
-        {foo: [4]}
+        { foo: [4] }
       end
 
       it_behaves_like 'expands'
@@ -48,11 +46,11 @@ describe Mongoid::Criteria::Queryable::Expandable do
 
     context 'Range value' do
       let(:criterion) do
-        {foo: 1..4}
+        { foo: 1..4 }
       end
 
       let(:expected) do
-        {foo: [1, 2, 3, 4]}
+        { foo: [1, 2, 3, 4] }
       end
 
       it_behaves_like 'expands'

@@ -2,10 +2,8 @@
 
 module Mongoid
   module Errors
-
     # Raised when Javascript criteria selector is passed for embedded document.
     class UnsupportedJavascript < MongoidError
-
       # Create the new error caused by using Javascript in embedded document criteria selector.
       #
       # @example Create the error.

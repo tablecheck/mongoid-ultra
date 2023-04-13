@@ -3,11 +3,9 @@
 module Mongoid
   class Criteria
     module Queryable
-
       # The options is a hash representation of options passed to MongoDB queries,
       # such as skip, limit, and sorting criteria.
       class Options < Smash
-
         # Convenience method for getting the field options.
         #
         # @example Get the fields options.

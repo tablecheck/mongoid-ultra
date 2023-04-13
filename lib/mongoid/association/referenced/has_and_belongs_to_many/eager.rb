@@ -4,10 +4,8 @@ module Mongoid
   module Association
     module Referenced
       class HasAndBelongsToMany
-
         # Eager class for has_and_belongs_to_many associations.
         class Eager < Association::Eager
-
           private
 
           def preload

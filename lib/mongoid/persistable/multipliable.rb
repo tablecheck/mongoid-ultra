@@ -2,7 +2,6 @@
 
 module Mongoid
   module Persistable
-
     # Defines behavior for $mul operations.
     module Multipliable
       extend ActiveSupport::Concern

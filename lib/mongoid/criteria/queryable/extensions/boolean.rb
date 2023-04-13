@@ -4,11 +4,9 @@ module Mongoid
   class Criteria
     module Queryable
       module Extensions
-
         # Adds query type-casting behavior to Mongoid::Boolean class.
         module Boolean
           module ClassMethods
-
             # Evolve the value into a boolean value stored in MongoDB. Will return
             # true for any of these values: true, t, yes, y, 1, 1.0.
             #

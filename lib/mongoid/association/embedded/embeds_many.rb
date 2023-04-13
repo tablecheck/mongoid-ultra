@@ -7,7 +7,6 @@ require 'mongoid/association/embedded/embeds_many/proxy'
 module Mongoid
   module Association
     module Embedded
-
       # The EmbedsMany type association.
       class EmbedsMany
         include Relatable
@@ -18,15 +17,15 @@ module Mongoid
         #
         # @return [ Array<Symbol> ] The extra valid options.
         ASSOCIATION_OPTIONS = [
-            :as,
-            :cascade_callbacks,
-            :cyclic,
-            :order,
-            :store_as,
-            :before_add,
-            :after_add,
-            :before_remove,
-            :after_remove
+          :as,
+          :cascade_callbacks,
+          :cyclic,
+          :order,
+          :store_as,
+          :before_add,
+          :after_add,
+          :before_remove,
+          :after_remove
         ]
 
         # The complete list of valid options for this association, including
@@ -159,11 +158,11 @@ module Mongoid
         end
 
         def relation_complements
-          @relation_complements ||= [ Embedded::EmbeddedIn ].freeze
+          @relation_complements ||= [Embedded::EmbeddedIn].freeze
         end
 
         def polymorphic_inverses(other = nil)
-          [ as ]
+          [as]
         end
 
         def determine_inverses(other)
@@ -175,6 +174,7 @@ module Mongoid
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
+
           matches.collect { |m| m.name } unless matches.blank?
         end
       end

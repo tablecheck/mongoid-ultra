@@ -1,16 +1,13 @@
 # frozen_string_literal: true
 
 module Mongoid
-
   # Mixin module which is included in Mongoid::Document to add "touch"
   # functionality to update a document's timestamp(s) atomically.
   module Touchable
-
     # Used to provide mixin functionality.
     #
     # @todo Refactor using ActiveSupport::Concern
     module InstanceMethods
-
       # Suppresses the invocation of touch callbacks, for the class that
       # includes this module, for the duration of the block.
       #
@@ -102,6 +99,7 @@ module Mongoid
       # @api private
       def _run_touch_callbacks_from_root
         return if touch_callbacks_suppressed?
+
         _parent._run_touch_callbacks_from_root if _touchable_parent?
         run_callbacks(:touch)
       end
@@ -214,7 +212,7 @@ module Mongoid
       relation_classes = if association.polymorphic?
                            association.send(:inverse_association_classes)
                          else
-                           [ association.relation_class ]
+                           [association.relation_class]
                          end
 
       method_name = "touch_#{name}_after_create_or_destroy"

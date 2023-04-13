@@ -2,11 +2,9 @@
 
 module Mongoid
   module Errors
-
     # This error is raised when attempting the change the value of a readonly
     # attribute after the document has been persisted.
     class ReadonlyAttribute < MongoidError
-
       # Create the new error.
       #
       # @example Create the new error.

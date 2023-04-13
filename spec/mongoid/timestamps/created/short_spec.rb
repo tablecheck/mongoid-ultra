@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Timestamps::Created::Short do
-
   describe ".included" do
-
     let(:quiz) do
       ShortQuiz.new
     end
@@ -37,7 +35,6 @@ describe Mongoid::Timestamps::Created::Short do
   end
 
   context "when the document is created" do
-
     let(:quiz) do
       ShortQuiz.create!
     end

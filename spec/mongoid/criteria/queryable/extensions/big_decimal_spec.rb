@@ -3,14 +3,11 @@
 require "spec_helper"
 
 describe BigDecimal do
-
   describe ".evolve" do
-
     context 'when map_big_decimal_to_decimal128 is false' do
       config_override :map_big_decimal_to_decimal128, false
 
       context "when provided a big decimal" do
-
         let(:big_decimal) do
           BigDecimal("123456.789")
         end
@@ -21,14 +18,12 @@ describe BigDecimal do
       end
 
       context "when provided a non big decimal" do
-
         it "returns the object as a string" do
           expect(described_class.evolve("testing")).to eq("testing")
         end
       end
 
       context "when provided an array of big decimals" do
-
         let(:bd_one) do
           BigDecimal("123456.789")
         end
@@ -38,7 +33,7 @@ describe BigDecimal do
         end
 
         let(:array) do
-          [ bd_one, bd_two ]
+          [bd_one, bd_two]
         end
 
         let(:evolved) do
@@ -46,7 +41,7 @@ describe BigDecimal do
         end
 
         it "returns the array as strings" do
-          expect(evolved).to eq([ bd_one.to_s, bd_two.to_s ])
+          expect(evolved).to eq([bd_one.to_s, bd_two.to_s])
         end
 
         it "does not evolve in place" do
@@ -55,7 +50,6 @@ describe BigDecimal do
       end
 
       context "when provided nil" do
-
         it "returns nil" do
           expect(described_class.evolve(nil)).to be_nil
         end
@@ -90,7 +84,6 @@ describe BigDecimal do
       config_override :map_big_decimal_to_decimal128, true
 
       context "when provided a big decimal" do
-
         let(:big_decimal) do
           BigDecimal("123456.789")
         end
@@ -101,14 +94,12 @@ describe BigDecimal do
       end
 
       context "when provided a non big decimal" do
-
         it "returns the object as a string" do
           expect(described_class.evolve("testing")).to eq("testing")
         end
       end
 
       context "when provided an array of big decimals" do
-
         let(:bd_one) do
           BigDecimal("123456.789")
         end
@@ -118,7 +109,7 @@ describe BigDecimal do
         end
 
         let(:array) do
-          [ bd_one, bd_two ]
+          [bd_one, bd_two]
         end
 
         let(:evolved) do
@@ -126,7 +117,7 @@ describe BigDecimal do
         end
 
         it "returns the array as BSON::Decimal128s" do
-          expect(evolved).to eq([ BSON::Decimal128.new(bd_one), BSON::Decimal128.new(bd_two) ])
+          expect(evolved).to eq([BSON::Decimal128.new(bd_one), BSON::Decimal128.new(bd_two)])
         end
 
         it "does not evolve in place" do
@@ -135,7 +126,6 @@ describe BigDecimal do
       end
 
       context "when provided nil" do
-
         it "returns nil" do
           expect(described_class.evolve(nil)).to be_nil
         end
@@ -168,7 +158,6 @@ describe BigDecimal do
   end
 
   describe "#__evolve_time__" do
-
     context 'UTC time zone' do
       let(:time) do
         Time.parse("2022-01-01 16:15:01 UTC")
@@ -199,7 +188,6 @@ describe BigDecimal do
   end
 
   describe "#__evolve_date__" do
-
     context 'exact match' do
       let(:date) do
         Date.parse("2022-01-01")

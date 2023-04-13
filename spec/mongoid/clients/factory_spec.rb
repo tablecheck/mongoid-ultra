@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::Clients::Factory do
-
   shared_examples_for 'includes seed address' do
     let(:configured_address) do
       address = SpecConfig.instance.addresses.first
@@ -30,11 +29,8 @@ describe Mongoid::Clients::Factory do
   end
 
   describe ".create" do
-
     context "when provided a name" do
-
       context "when the configuration exists" do
-
         context "when the configuration is standard" do
           restore_config_clients
 
@@ -66,7 +62,6 @@ describe Mongoid::Clients::Factory do
           end
 
           context 'on driver versions that do not report spurious EOF errors' do
-
             it 'does not produce driver warnings' do
               expect(Mongo::Logger.logger).not_to receive(:warn)
               client
@@ -85,11 +80,11 @@ describe Mongoid::Clients::Factory do
 
           it 'sets Mongoid as a wrapping library' do
             expect(client.options[:wrapping_libraries]).to eq([BSON::Document.new(
-              Mongoid::Clients::Factory::MONGOID_WRAPPING_LIBRARY)])
+              Mongoid::Clients::Factory::MONGOID_WRAPPING_LIBRARY
+            )])
           end
 
           context 'when configuration specifies a wrapping library' do
-
             let(:config) do
               {
                 default: { hosts: SpecConfig.instance.addresses, database: database_id },
@@ -97,7 +92,7 @@ describe Mongoid::Clients::Factory do
                   hosts: SpecConfig.instance.addresses,
                   database: database_id,
                   options: {
-                    wrapping_libraries: [{name: 'Foo'}],
+                    wrapping_libraries: [{ name: 'Foo' }],
                   },
                 }
               }
@@ -105,9 +100,9 @@ describe Mongoid::Clients::Factory do
 
             it 'adds Mongoid as another wrapping library' do
               expect(client.options[:wrapping_libraries]).to eq([
-                BSON::Document.new(Mongoid::Clients::Factory::MONGOID_WRAPPING_LIBRARY),
-                {'name' => 'Foo'},
-              ])
+                                                                  BSON::Document.new(Mongoid::Clients::Factory::MONGOID_WRAPPING_LIBRARY),
+                                                                  { 'name' => 'Foo' },
+                                                                ])
             end
           end
         end
@@ -117,8 +112,8 @@ describe Mongoid::Clients::Factory do
 
           let(:config) do
             {
-              default: { hosts: [ "127.0.0.1" ], database: database_id },
-              analytics: { hosts: [ "127.0.0.1" ], database: database_id }
+              default: { hosts: ["127.0.0.1"], database: database_id },
+              analytics: { hosts: ["127.0.0.1"], database: database_id }
             }
           end
 
@@ -156,13 +151,12 @@ describe Mongoid::Clients::Factory do
         end
 
         context "when configured via a uri" do
-
           context "when the uri has a single host:port" do
             restore_config_clients
 
             let(:config) do
               {
-                default: { hosts: [ "127.0.0.1:27017" ], database: database_id },
+                default: { hosts: ["127.0.0.1:27017"], database: database_id },
                 analytics: { uri: "mongodb://127.0.0.1:27017/mongoid_test" }
               }
             end
@@ -201,7 +195,7 @@ describe Mongoid::Clients::Factory do
 
             let(:config) do
               {
-                default: { hosts: [ "127.0.0.1:1234" ], database: database_id, server_selection_timeout: 1 },
+                default: { hosts: ["127.0.0.1:1234"], database: database_id, server_selection_timeout: 1 },
                 analytics: { uri: "mongodb://127.0.0.1:1234,127.0.0.1:5678/mongoid_test?serverSelectionTimeoutMS=1000" }
               }
             end
@@ -231,14 +225,13 @@ describe Mongoid::Clients::Factory do
             end
 
             it "sets the cluster's seeds" do
-              expect(seeds).to eq([ "127.0.0.1:1234", "127.0.0.1:5678" ])
+              expect(seeds).to eq(["127.0.0.1:1234", "127.0.0.1:5678"])
             end
           end
         end
       end
 
       context "when the configuration does not exist" do
-
         it "raises an error" do
           expect {
             described_class.create(:unknown)
@@ -296,7 +289,7 @@ describe Mongoid::Clients::Factory do
       restore_config_clients
 
       let(:config) do
-        { default: { hosts: SpecConfig.instance.addresses, database: database_id }}
+        { default: { hosts: SpecConfig.instance.addresses, database: database_id } }
       end
 
       before do
@@ -345,7 +338,7 @@ describe Mongoid::Clients::Factory do
     restore_config_clients
 
     let(:config) do
-      { default: { hosts: SpecConfig.instance.addresses, database: database_id }}
+      { default: { hosts: SpecConfig.instance.addresses, database: database_id } }
     end
 
     before do
@@ -443,8 +436,8 @@ describe Mongoid::Clients::Factory do
     let(:config) do
       {
         default: { hosts: SpecConfig.instance.addresses, database: database_id },
-        good_one: { hosts: [ "127.0.0.1:1234" ], database: database_id},
-        bad_one: { hosts: [ "127.0.0.1:1234" ], database: database_id}.merge(unknown_opts),
+        good_one: { hosts: ["127.0.0.1:1234"], database: database_id },
+        bad_one: { hosts: ["127.0.0.1:1234"], database: database_id }.merge(unknown_opts),
         good_two: { uri: "mongodb://127.0.0.1:1234,127.0.0.1:5678/#{database_id}" },
         bad_two: { uri: "mongodb://127.0.0.1:1234,127.0.0.1:5678/#{database_id}" }.merge(unknown_opts)
       }

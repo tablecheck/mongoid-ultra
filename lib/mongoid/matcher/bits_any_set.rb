@@ -1,6 +1,5 @@
 module Mongoid
   module Matcher
-
     # In-memory matcher for $bitsAnySet expression.
     #
     # @see https://www.mongodb.com/docs/manual/reference/operator/query/bitsAnySet/
@@ -20,7 +19,7 @@ module Mongoid
       # @api private
       def array_matches?(value, condition)
         condition.any? do |c|
-          value & (1<<c) > 0
+          value & (1 << c) > 0
         end
       end
 

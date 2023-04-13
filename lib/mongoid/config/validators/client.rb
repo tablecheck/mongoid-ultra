@@ -3,13 +3,12 @@
 module Mongoid
   module Config
     module Validators
-
       # Validator for client specific configuration.
       module Client
         extend self
 
         # Standard configuration options.
-        STANDARD = [ :database, :hosts, :username, :password ].freeze
+        STANDARD = [:database, :hosts, :username, :password].freeze
 
         # Validate the client configuration.
         #
@@ -21,6 +20,7 @@ module Mongoid
           unless clients.has_key?(:default)
             raise Errors::NoDefaultClient.new(clients.keys)
           end
+
           clients.each_pair do |name, config|
             validate_client_database(name, config)
             validate_client_hosts(name, config)

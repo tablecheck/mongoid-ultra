@@ -2,10 +2,8 @@
 
 module Mongoid
   module Extensions
-
     # Adds type-casting behavior to Array class.
     module Array
-
       # Evolve the array into an array of object ids.
       #
       # @example Evolve the array to object ids.
@@ -120,7 +118,6 @@ module Mongoid
       end
 
       module ClassMethods
-
         # Convert the provided object to a proper array of foreign keys.
         #
         # @example Mongoize the object.
@@ -149,6 +146,7 @@ module Mongoid
         # @return [ Array | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.nil?
+
           case object
           when ::Array, ::Set
             object.map(&:mongoize)

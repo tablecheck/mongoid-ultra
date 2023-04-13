@@ -4,10 +4,8 @@ module Mongoid
   class Criteria
     module Queryable
       module Extensions
-
         # Adds query type-casting behavior to String class.
         module String
-
           # Evolve the string into a mongodb friendly date.
           #
           # @example Evolve the string.
@@ -68,7 +66,6 @@ module Mongoid
           end
 
           module ClassMethods
-
             # Get the value as a expression.
             #
             # @example Get the value as an expression.
@@ -81,7 +78,7 @@ module Mongoid
             # @return [ Hash ] The selection.
             def __expr_part__(key, value, negating = false)
               if negating
-                { key => { "$#{value.regexp? ? "not" : "ne"}" => value }}
+                { key => { "$#{value.regexp? ? "not" : "ne"}" => value } }
               else
                 { key => value }
               end

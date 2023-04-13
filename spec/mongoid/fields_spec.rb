@@ -3,15 +3,12 @@
 require "spec_helper"
 
 describe Mongoid::Fields do
-
   describe "#\{field}_translations" do
-
     let(:product) do
       Product.new
     end
 
     context "when the field is localized" do
-
       context "when translations exist" do
         with_default_i18n_configs
 
@@ -38,16 +35,13 @@ describe Mongoid::Fields do
       end
 
       context "when translations do not exist" do
-
         context "when no default is provided" do
-
           it "returns an empty hash" do
             expect(product.description_translations).to be_empty
           end
         end
 
         context "when a default is provided" do
-
           it "returns the translations with the default" do
             expect(product.name_translations).to eq(
               { "en" => "no translation" }
@@ -62,7 +56,6 @@ describe Mongoid::Fields do
     end
 
     context "when the field is not localized" do
-
       it "does not respond to the method" do
         expect(product).to_not respond_to(:price_translations)
       end
@@ -74,7 +67,6 @@ describe Mongoid::Fields do
   end
 
   describe "#\{field}_translations=" do
-
     let(:product) do
       Product.new
     end
@@ -84,9 +76,7 @@ describe Mongoid::Fields do
     end
 
     context "when the field is localized" do
-
       context "when the field does not require mongoizations" do
-
         let(:translations) do
           { "en" => "test", "de" => "testing" }
         end
@@ -100,7 +90,6 @@ describe Mongoid::Fields do
         end
 
         context "when saving the new translations" do
-
           before do
             product.save!
           end
@@ -110,7 +99,6 @@ describe Mongoid::Fields do
           end
 
           context "when updating the translations" do
-
             before do
               product.description_translations = { "en" => "overwritten" }
               product.save!
@@ -126,7 +114,6 @@ describe Mongoid::Fields do
       end
 
       context "when the field requires mongoization" do
-
         let(:translations) do
           { "en" => 1, "de" => 2 }
         end
@@ -142,7 +129,6 @@ describe Mongoid::Fields do
         end
 
         context "when saving the new translations" do
-
           before do
             dictionary.save!
           end
@@ -154,7 +140,6 @@ describe Mongoid::Fields do
           end
 
           context "when updating the translations" do
-
             before do
               dictionary.description_translations = { "en" => "overwritten" }
               dictionary.save!
@@ -175,7 +160,6 @@ describe Mongoid::Fields do
     end
 
     context "when the field is not localized" do
-
       it "does not respond to the method" do
         expect(product).to_not respond_to(:price_translations=)
       end
@@ -187,13 +171,11 @@ describe Mongoid::Fields do
   end
 
   describe "#aliased_fields" do
-
     let(:person) do
       Person.new
     end
 
     context "when the document is subclassed" do
-
       it "does not include the child aliases" do
         expect(person.aliased_fields.keys).to_not include("spec")
       end
@@ -201,9 +183,7 @@ describe Mongoid::Fields do
   end
 
   describe "#attribute_names" do
-
     context "when the document is a parent class" do
-
       let(:shape) do
         Shape.new
       end
@@ -226,7 +206,6 @@ describe Mongoid::Fields do
     end
 
     context "when the document is a subclass" do
-
       let(:circle) do
         Circle.new
       end
@@ -254,9 +233,7 @@ describe Mongoid::Fields do
   end
 
   describe ".attribute_names" do
-
     context "when the class is a parent" do
-
       it "includes the _id field" do
         expect(Shape.attribute_names).to include("_id")
       end
@@ -275,7 +252,6 @@ describe Mongoid::Fields do
     end
 
     context "when the class is a subclass" do
-
       it "includes the _id field" do
         expect(Circle.attribute_names).to include("_id")
       end
@@ -299,14 +275,12 @@ describe Mongoid::Fields do
   end
 
   describe "#field" do
-
     before(:all) do
       Mongoid::Fields.option :custom do |model, field, value|
       end
     end
 
     context "when providing a root Boolean type" do
-
       let(:klass) do
         Class.new do
           include Mongoid::Document
@@ -319,7 +293,6 @@ describe Mongoid::Fields do
     end
 
     context "when using symbol types" do
-
       let(:klass) do
         Class.new do
           include Mongoid::Document
@@ -408,9 +381,7 @@ describe Mongoid::Fields do
     end
 
     context "when the options are valid" do
-
       context "when the options are all standard" do
-
         before do
           Band.field :acceptable, type: Mongoid::Boolean
         end
@@ -425,7 +396,6 @@ describe Mongoid::Fields do
       end
 
       context "when a custom option is provided" do
-
         before do
           Band.field :acceptable, type: Mongoid::Boolean, custom: true
         end
@@ -437,7 +407,6 @@ describe Mongoid::Fields do
     end
 
     context "when the Symbol type is used" do
-
       before do
         Mongoid::Warnings.class_eval do
           @symbol_type_deprecated = false
@@ -475,7 +444,6 @@ describe Mongoid::Fields do
     end
 
     context "when the options are not valid" do
-
       it "raises an error" do
         expect {
           Label.field :unacceptable, bad: true
@@ -485,9 +453,7 @@ describe Mongoid::Fields do
   end
 
   describe "#getter" do
-
     context "when the field is binary" do
-
       let(:binary) do
         BSON::Binary.new("testing", :md5)
       end
@@ -502,13 +468,11 @@ describe Mongoid::Fields do
     end
 
     context "when a field is localized" do
-
       let(:product) do
         Product.new
       end
 
       context "when no locale is set" do
-
         before do
           product.description = "The best"
         end
@@ -566,14 +530,12 @@ describe Mongoid::Fields do
     end
 
     context "when the attribute has not been assigned" do
-
       it "delgates to the getter" do
         expect(person.age_before_type_cast).to eq(person.age)
       end
     end
 
     context "when the attribute has been assigned" do
-
       it "returns the attribute before type cast" do
         person.age = "42"
         expect(person.age_before_type_cast).to eq("42")
@@ -581,7 +543,6 @@ describe Mongoid::Fields do
     end
 
     context "when reloading" do
-
       let(:product) do
         Product.create!(price: '1')
       end
@@ -600,10 +561,9 @@ describe Mongoid::Fields do
     end
 
     context "when reloading and writing a demongoizable value" do
-
       let(:product) do
         Product.create!.tap do |product|
-          Product.collection.update_one({ _id: product.id }, { :$set => { price: '1' }})
+          Product.collection.update_one({ _id: product.id }, { :$set => { price: '1' } })
         end
       end
 
@@ -621,7 +581,6 @@ describe Mongoid::Fields do
     end
 
     context "when reading from the db" do
-
       let(:product) do
         Product.create!(price: '1')
       end
@@ -640,10 +599,9 @@ describe Mongoid::Fields do
     end
 
     context "when reading from the db after writing a demongoizable value" do
-
       let(:product) do
         Product.create!.tap do |product|
-          Product.collection.update_one({ _id: product.id }, { :$set => { price: '1' }})
+          Product.collection.update_one({ _id: product.id }, { :$set => { price: '1' } })
         end
       end
 
@@ -661,7 +619,6 @@ describe Mongoid::Fields do
     end
 
     context "when making a new model" do
-
       context "when using new with no options" do
         let(:product) { Product.new }
 
@@ -718,27 +675,23 @@ describe Mongoid::Fields do
   end
 
   describe "#setter=" do
-
     let(:product) do
       Product.new
     end
 
     context "when setting via the setter" do
-
       it "returns the set value" do
         expect(product.price = 10).to eq(10)
       end
     end
 
     context "when setting via send" do
-
       it "returns the set value" do
         expect(product.send(:price=, 10)).to eq(10)
       end
     end
 
     context "when the field is binary" do
-
       let(:binary) do
         BSON::Binary.new("testing", :md5)
       end
@@ -757,14 +710,12 @@ describe Mongoid::Fields do
     end
 
     context "when the field is an array" do
-
       before do
-        product.stores = [ "kadewe", "karstadt" ]
+        product.stores = ["kadewe", "karstadt"]
         product.save!
       end
 
       context "when setting the value to nil" do
-
         before do
           product.stores = nil
           product.save!
@@ -776,42 +727,38 @@ describe Mongoid::Fields do
       end
 
       context "when setting any of the values to nil" do
-
         before do
-          product.stores = [ "kadewe", nil ]
+          product.stores = ["kadewe", nil]
           product.save!
         end
 
         it "allows the set of nil values" do
-          expect(product.stores).to eq([ "kadewe", nil ])
+          expect(product.stores).to eq(["kadewe", nil])
         end
 
         it "persists the nil values" do
-          expect(product.reload.stores).to eq([ "kadewe", nil ])
+          expect(product.reload.stores).to eq(["kadewe", nil])
         end
       end
 
       context "when reversing the array values" do
-
         before do
-          product.stores = [ "karstadt", "kadewe" ]
+          product.stores = ["karstadt", "kadewe"]
           product.save!
         end
 
         it "reverses the values" do
-          expect(product.stores).to eq([ "karstadt", "kadewe" ])
+          expect(product.stores).to eq(["karstadt", "kadewe"])
         end
 
         it "persists the changes" do
-          expect(product.reload.stores).to eq([ "karstadt", "kadewe" ])
+          expect(product.reload.stores).to eq(["karstadt", "kadewe"])
         end
       end
     end
 
     context "when a field is localized" do
-
       context "when no locale is set" do
-
         before do
           product.description = "Cheap drinks"
         end
@@ -865,7 +812,6 @@ describe Mongoid::Fields do
     end
 
     context "when the field needs to be mongoized" do
-
       before do
         product.price = "1"
         product.save!
@@ -910,9 +856,7 @@ describe Mongoid::Fields do
   end
 
   describe "#defaults" do
-
     context "with defaults specified as a non-primitive" do
-
       let(:person_one) do
         Person.new
       end
@@ -922,7 +866,6 @@ describe Mongoid::Fields do
       end
 
       context "when provided a default array" do
-
         before do
           Person.field(:array_testing, type: Array, default: [], overwrite: true)
         end
@@ -940,7 +883,6 @@ describe Mongoid::Fields do
       end
 
       context "when provided a default hash" do
-
         before do
           Person.field(:hash_testing, type: Hash, default: {}, overwrite: true)
         end
@@ -957,9 +899,7 @@ describe Mongoid::Fields do
       end
 
       context "when provided a default proc" do
-
         context "when the proc has no argument" do
-
           before do
             Person.field(
               :generated_testing,
@@ -982,7 +922,6 @@ describe Mongoid::Fields do
         end
 
         context "when the proc has to be evaluated on the document" do
-
           before do
             Person.field(
               :rank,
@@ -1005,41 +944,36 @@ describe Mongoid::Fields do
     end
 
     context "on parent classes" do
-
       let(:shape) do
         Shape.new
       end
 
       it "does not return subclass defaults" do
-        expect(shape.pre_processed_defaults).to eq([ "_id", "x", "y" ])
-        expect(shape.post_processed_defaults).to eq([ "_type" ])
+        expect(shape.pre_processed_defaults).to eq(["_id", "x", "y"])
+        expect(shape.post_processed_defaults).to eq(["_type"])
       end
     end
 
     context "on subclasses" do
-
       let(:circle) do
         Circle.new
       end
 
       it "has the parent and child defaults" do
-        expect(circle.pre_processed_defaults).to eq([ "_id", "x", "y", "radius" ])
-        expect(circle.post_processed_defaults).to eq([ "_type" ])
+        expect(circle.pre_processed_defaults).to eq(["_id", "x", "y", "radius"])
+        expect(circle.post_processed_defaults).to eq(["_type"])
       end
     end
   end
 
   describe ".field" do
-
     it "returns the generated field" do
       expect(Person.field(:testing)).to eq(Person.fields["testing"])
     end
 
     context "when the field name conflicts with mongoid's internals" do
-
       [:_association, :invalid].each do |meth|
         context "when the field is named #{meth}" do
-
           it "raises an error" do
             expect {
               Person.field(meth)
@@ -1071,7 +1005,6 @@ describe Mongoid::Fields do
     end
 
     context "when the field is a time" do
-
       let!(:time) do
         Time.find_zone('UTC').parse('2023-03-03 10:30:53')
       end
@@ -1091,7 +1024,6 @@ describe Mongoid::Fields do
     end
 
     context "when providing no options" do
-
       before do
         Person.field(:testing, overwrite: true)
       end
@@ -1113,10 +1045,10 @@ describe Mongoid::Fields do
       end
 
       context "when overwriting an existing field" do
-
         before do
           Person.class_eval do
             attr_reader :testing_override_called
+
             def testing=(value)
               @testing_override_called = true
               super
@@ -1132,7 +1064,6 @@ describe Mongoid::Fields do
     end
 
     context "when the type is an object" do
-
       let(:bob) do
         Person.new(reading: 10.023)
       end
@@ -1143,7 +1074,6 @@ describe Mongoid::Fields do
     end
 
     context "when type is a boolean" do
-
       let(:person) do
         Person.new(terms: true)
       end
@@ -1154,7 +1084,6 @@ describe Mongoid::Fields do
     end
 
     context "when as is specified" do
-
       let(:person) do
         Person.new(alias: true)
       end
@@ -1196,7 +1125,6 @@ describe Mongoid::Fields do
       end
 
       context "when changing the name" do
-
         before do
           person.aliased = true
         end
@@ -1211,7 +1139,6 @@ describe Mongoid::Fields do
       end
 
       context "when changing the alias" do
-
         before do
           person.alias = true
         end
@@ -1226,7 +1153,6 @@ describe Mongoid::Fields do
       end
 
       context "when defining a criteria" do
-
         let(:criteria) do
           Person.where(alias: "true")
         end
@@ -1238,9 +1164,8 @@ describe Mongoid::Fields do
     end
 
     context "custom options" do
-
       let(:handler) do
-        proc{}
+        proc {}
       end
 
       before do
@@ -1248,7 +1173,6 @@ describe Mongoid::Fields do
       end
 
       context "when option is provided" do
-
         it "calls the handler with the model" do
           User.field :custom, option: true, overwrite: true
           expect(User.fields["custom"].options[:option]).to be_truthy
@@ -1256,7 +1180,6 @@ describe Mongoid::Fields do
       end
 
       context "when option is nil" do
-
         it "calls the handler" do
           expect(handler).to receive(:call)
           User.field :custom, option: nil, overwrite: true
@@ -1264,7 +1187,6 @@ describe Mongoid::Fields do
       end
 
       context "when option is not provided" do
-
         it "does not call the handler" do
           expect(handler).to receive(:call).never
           User.field :custom, overwrite: true
@@ -1274,9 +1196,7 @@ describe Mongoid::Fields do
   end
 
   describe "#fields" do
-
     context "on parent classes" do
-
       let(:shape) do
         Shape.new
       end
@@ -1295,7 +1215,6 @@ describe Mongoid::Fields do
     end
 
     context "on subclasses" do
-
       let(:circle) do
         Circle.new
       end
@@ -1337,7 +1256,6 @@ describe Mongoid::Fields do
   end
 
   describe ".replace_field" do
-
     let!(:original) do
       Person.field(:id_test, type: BSON::ObjectId, label: "id")
     end
@@ -1364,13 +1282,11 @@ describe Mongoid::Fields do
   end
 
   context "when sending an include of another module at runtime" do
-
     before do
       Basic.send(:include, Ownable)
     end
 
     context "when the class is a parent" do
-
       let(:fields) do
         Basic.fields
       end
@@ -1381,7 +1297,6 @@ describe Mongoid::Fields do
     end
 
     context "when the class is a subclass" do
-
       let(:fields) do
         SubBasic.fields
       end
@@ -1393,7 +1308,6 @@ describe Mongoid::Fields do
   end
 
   context "when a setter accesses a field with a default" do
-
     let(:person) do
       Person.new(set_on_map_with_default: "testing")
     end
@@ -1404,7 +1318,6 @@ describe Mongoid::Fields do
   end
 
   context "when a field is defined as a big decimal" do
-
     context 'when Mongoid.map_big_decimal_to_decimal128 is false' do
       config_override :map_big_decimal_to_decimal128, false
 
@@ -1417,7 +1330,6 @@ describe Mongoid::Fields do
       end
 
       context "when setting to a big decimal" do
-
         before do
           band.sales = decimal
         end
@@ -1432,7 +1344,6 @@ describe Mongoid::Fields do
       end
 
       context "when setting to a string" do
-
         before do
           band.sales = decimal.to_s
         end
@@ -1447,7 +1358,6 @@ describe Mongoid::Fields do
       end
 
       context "when setting to an integer" do
-
         before do
           band.sales = decimal.to_i
         end
@@ -1462,7 +1372,6 @@ describe Mongoid::Fields do
       end
 
       context "when setting to a float" do
-
         before do
           band.sales = decimal.to_f
         end
@@ -1489,7 +1398,6 @@ describe Mongoid::Fields do
       end
 
       context "when setting to a big decimal" do
-
         before do
           band.sales = decimal
         end
@@ -1504,7 +1412,6 @@ describe Mongoid::Fields do
       end
 
       context "when setting to a string" do
-
         before do
           band.sales = decimal.to_s
         end
@@ -1519,7 +1426,6 @@ describe Mongoid::Fields do
       end
 
       context "when setting to an integer" do
-
         before do
           band.sales = decimal.to_i
         end
@@ -1534,7 +1440,6 @@ describe Mongoid::Fields do
       end
 
       context "when setting to a float" do
-
         before do
           band.sales = decimal.to_f
         end
@@ -1551,16 +1456,15 @@ describe Mongoid::Fields do
   end
 
   context "when the field is a hash of arrays" do
-
     let(:person) do
       Person.create!
     end
 
     let(:map) do
       {
-        "stack1" => [ 1, 2, 3, 4 ],
-        "stack2" => [ 1, 2, 3, 4 ],
-        "stack3" => [ 1, 2, 3, 4 ]
+        "stack1" => [1, 2, 3, 4],
+        "stack2" => [1, 2, 3, 4],
+        "stack3" => [1, 2, 3, 4]
       }
     end
 
@@ -1573,9 +1477,9 @@ describe Mongoid::Fields do
     it "properly updates the hash" do
       expect(person.map).to eq(
         {
-          "stack1" => [ 4, 3, 2, 1 ],
-          "stack2" => [ 1, 2, 3, 4 ],
-          "stack3" => [ 1, 2, 3, 4 ]
+          "stack1" => [4, 3, 2, 1],
+          "stack2" => [1, 2, 3, 4],
+          "stack3" => [1, 2, 3, 4]
         }
       )
     end
@@ -1583,18 +1487,16 @@ describe Mongoid::Fields do
     it "persists the changes" do
       expect(person.reload.map).to eq(
         {
-          "stack1" => [ 4, 3, 2, 1 ],
-          "stack2" => [ 1, 2, 3, 4 ],
-          "stack3" => [ 1, 2, 3, 4 ]
+          "stack1" => [4, 3, 2, 1],
+          "stack2" => [1, 2, 3, 4],
+          "stack3" => [1, 2, 3, 4]
         }
       )
     end
   end
 
   context "when overriding a parent class field" do
-
     context "when the field has a default value" do
-
       let!(:canvas) do
         Canvas.new
       end
@@ -1614,9 +1516,7 @@ describe Mongoid::Fields do
   end
 
   context "when a localized field is a boolean" do
-
     context "when the default is true" do
-
       let(:definition) do
         Definition.new
       end
@@ -1646,7 +1546,6 @@ describe Mongoid::Fields do
   end
 
   describe '.database_field_name' do
-
     shared_examples_for 'database_field_name' do
       subject { Person.database_field_name(key) }
 
@@ -1846,7 +1745,6 @@ describe Mongoid::Fields do
     end
 
     context 'when getting the database field name of a belongs_to associations' do
-
       context "when the association is the last item" do
         let(:name) do
           Game.database_field_name("person")
@@ -1870,7 +1768,6 @@ describe Mongoid::Fields do
   end
 
   describe "#get_field" do
-
     let(:klass) { Person }
     let(:field) { klass.cleanse_localized_field_names(field_name) }
 
@@ -1939,13 +1836,11 @@ describe Mongoid::Fields do
   end
 
   describe "localize: :present" do
-
     let(:product) do
       Product.new
     end
 
     context "when assigning a non blank value" do
-
       before do
         product.title = "hello"
       end

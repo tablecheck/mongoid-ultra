@@ -2,10 +2,8 @@
 
 module Mongoid
   module Extensions
-
     # Adds type-casting behavior to Time class.
     module Time
-
       # Mongoizes a Time into a time.
       #
       # Time always mongoize into Time instances
@@ -28,7 +26,6 @@ module Mongoid
       end
 
       module ClassMethods
-
         # Get the configured time to use when converting - either the time zone
         # or the time.
         #
@@ -52,19 +49,20 @@ module Mongoid
         # @return [ Time | nil ] The object as a time.
         def demongoize(object)
           return if object.blank?
+
           time = if object.acts_like?(:time)
-            Mongoid::Config.use_utc? ? object : object.getlocal
-          elsif object.acts_like?(:date)
-            ::Date.demongoize(object).to_time
-          elsif object.is_a?(String)
-            begin
-              object.__mongoize_time__
-            rescue ArgumentError
-              nil
-            end
-          elsif object.is_a?(BSON::Timestamp)
-            ::Time.at(object.seconds)
-          end
+                   Mongoid::Config.use_utc? ? object : object.getlocal
+                 elsif object.acts_like?(:date)
+                   ::Date.demongoize(object).to_time
+                 elsif object.is_a?(String)
+                   begin
+                     object.__mongoize_time__
+                   rescue ArgumentError
+                     nil
+                   end
+                 elsif object.is_a?(BSON::Timestamp)
+                   ::Time.at(object.seconds)
+                 end
 
           return if time.nil?
 
@@ -82,6 +80,7 @@ module Mongoid
         # @return [ Time | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.blank?
+
           begin
             time = object.__mongoize_time__
           rescue ArgumentError

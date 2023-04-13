@@ -2,7 +2,6 @@
 
 module Mongoid
   module Expectations
-
     def connection_class
       Mongo::Server::ConnectionBase
     end

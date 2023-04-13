@@ -3,7 +3,6 @@
 module Mongoid
   class Criteria
     module Queryable
-
       # The optional module includes all behavior that has to do with extra
       # options surrounding queries, like skip, limit, sorting, etc.
       module Optional
@@ -118,7 +117,7 @@ module Mongoid
           option(*args) do |options|
             options.store(
               :fields,
-              args.inject(options[:fields] || {}) { |sub, field| sub.tap { sub[field] = 1 }},
+              args.inject(options[:fields] || {}) { |sub, field| sub.tap { sub[field] = 1 } },
               false
             )
           end
@@ -240,7 +239,7 @@ module Mongoid
           option(*args) do |options|
             options.store(
               :fields,
-              args.inject(options[:fields] || {}) { |sub, field| sub.tap { sub[field] = 0 }},
+              args.inject(options[:fields] || {}) { |sub, field| sub.tap { sub[field] = 0 } },
               false
             )
           end
@@ -350,7 +349,6 @@ module Mongoid
         end
 
         class << self
-
           # Get the methods on the optional that can be forwarded to from a model.
           #
           # @example Get the forwardable methods.
@@ -358,7 +356,7 @@ module Mongoid
           #
           # @return [ Array<Symbol> ] The names of the forwardable methods.
           def forwardables
-            public_instance_methods(false) - [ :options, :options= ]
+            public_instance_methods(false) - [:options, :options=]
           end
         end
       end

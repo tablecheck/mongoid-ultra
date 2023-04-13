@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::Association::Macros do
-
   class TestClass
     include Mongoid::Document
   end
@@ -23,7 +22,6 @@ describe Mongoid::Association::Macros do
   end
 
   describe 'Model loading' do
-
     let(:model_associations) do
       class TestModel
         include Mongoid::Document
@@ -43,13 +41,11 @@ describe Mongoid::Association::Macros do
   end
 
   describe ".embedded_in" do
-
     it "defines the macro" do
       expect(klass).to respond_to(:embedded_in)
     end
 
     context 'when the relation name is invalid' do
-
       let(:relation) do
         klass.embedded_in(:fields)
       end
@@ -62,7 +58,6 @@ describe Mongoid::Association::Macros do
     end
 
     context "when defining the relation" do
-
       before do
         klass.embedded_in(:person)
       end
@@ -90,7 +85,6 @@ describe Mongoid::Association::Macros do
       end
 
       context 'when an invalid option is provided' do
-
         it 'raises an InvalidRelationOption exception' do
           expect {
             klass.embedded_in(:person, sandwich: true)
@@ -99,7 +93,6 @@ describe Mongoid::Association::Macros do
       end
 
       context "association properties" do
-
         let(:association) do
           klass.relations["person"]
         end
@@ -116,15 +109,12 @@ describe Mongoid::Association::Macros do
   end
 
   describe ".embeds_many" do
-
     it "defines the macro" do
       expect(klass).to respond_to(:embeds_many)
     end
 
     context "when defining the relation" do
-
       context 'when the relation name is invalid' do
-
         let(:relation) do
           klass.embeds_many(:fields)
         end
@@ -165,7 +155,6 @@ describe Mongoid::Association::Macros do
       end
 
       context 'when an invalid option is provided' do
-
         it 'raises an InvalidRelationOption exception' do
           expect {
             klass.embeds_many(:addresses, sandwich: true)
@@ -174,7 +163,6 @@ describe Mongoid::Association::Macros do
       end
 
       context "association properties" do
-
         let(:association) do
           klass.relations["addresses"]
         end
@@ -190,7 +178,6 @@ describe Mongoid::Association::Macros do
     end
 
     context 'when defining order on relation' do
-
       before do
         klass.embeds_many(:addresses, order: :number.asc)
       end
@@ -209,7 +196,6 @@ describe Mongoid::Association::Macros do
     end
 
     context "when setting validate to false" do
-
       before do
         klass.embeds_many(:addresses, validate: false)
       end
@@ -221,15 +207,12 @@ describe Mongoid::Association::Macros do
   end
 
   describe ".embeds_one" do
-
     it "defines the macro" do
       expect(klass).to respond_to(:embeds_one)
     end
 
     context "when defining the relation" do
-
       context 'when the relation name is invalid' do
-
         let(:relation) do
           klass.embeds_one(:fields)
         end
@@ -278,7 +261,6 @@ describe Mongoid::Association::Macros do
       end
 
       context 'when an invalid option is provided' do
-
         it 'raises an InvalidRelationOption exception' do
           expect {
             klass.embeds_one(:name, sandwich: true)
@@ -287,7 +269,6 @@ describe Mongoid::Association::Macros do
       end
 
       context "association properties" do
-
         let(:association) do
           klass.relations["name"]
         end
@@ -303,7 +284,6 @@ describe Mongoid::Association::Macros do
     end
 
     context "when setting validate to false" do
-
       before do
         klass.embeds_one(:name, validate: false)
       end
@@ -315,7 +295,6 @@ describe Mongoid::Association::Macros do
   end
 
   describe ".belongs_to" do
-
     let(:_class) do
       class RelationsTestClass
         include Mongoid::Document
@@ -356,9 +335,7 @@ describe Mongoid::Association::Macros do
     end
 
     context 'when the relation has options' do
-
       context 'when an invalid option is provided' do
-
         it 'raises an InvalidRelationOption exception' do
           expect {
             klass.belongs_to(:person, sandwich: true)
@@ -367,17 +344,13 @@ describe Mongoid::Association::Macros do
       end
 
       context 'when the relation has the option :required' do
-
         context 'when the relation does not have the :optional option' do
-
           context 'when :required is true' do
-
             let(:relation_options) do
               { required: true }
             end
 
             context 'when the default config is to require the association' do
-
               let(:default_require) { true }
 
               it 'requires the association' do
@@ -386,7 +359,6 @@ describe Mongoid::Association::Macros do
             end
 
             context 'when the default config is to not require the association' do
-
               let(:default_require) { false }
 
               it 'requires the association' do
@@ -396,13 +368,11 @@ describe Mongoid::Association::Macros do
           end
 
           context 'when :required is false' do
-
             let(:relation_options) do
               { required: false }
             end
 
             context 'when the default config is to require the association' do
-
               let(:default_require) { true }
 
               it 'does not require the association' do
@@ -411,7 +381,6 @@ describe Mongoid::Association::Macros do
             end
 
             context 'when the default config is to not require the association' do
-
               let(:default_require) { false }
 
               it 'does not require the association' do
@@ -422,11 +391,8 @@ describe Mongoid::Association::Macros do
         end
 
         context 'when the relation has the option :optional' do
-
           context 'when :required is true' do
-
             context 'when :optional is true' do
-
               let(:relation_options) do
                 {
                   required: true,
@@ -435,7 +401,6 @@ describe Mongoid::Association::Macros do
               end
 
               context 'when the default config is to require the association' do
-
                 let(:default_require) { true }
 
                 it 'requires the association' do
@@ -444,7 +409,6 @@ describe Mongoid::Association::Macros do
               end
 
               context 'when the default config is to not require the association' do
-
                 let(:default_require) { false }
 
                 it 'requires the association' do
@@ -454,7 +418,6 @@ describe Mongoid::Association::Macros do
             end
 
             context 'when :optional is false' do
-
               let(:relation_options) do
                 {
                   required: true,
@@ -463,7 +426,6 @@ describe Mongoid::Association::Macros do
               end
 
               context 'when the default config is to require the association' do
-
                 let(:default_require) { true }
 
                 it 'requires the association' do
@@ -472,7 +434,6 @@ describe Mongoid::Association::Macros do
               end
 
               context 'when the default config is to not require the association' do
-
                 let(:default_require) { false }
 
                 it 'requires the association' do
@@ -483,9 +444,7 @@ describe Mongoid::Association::Macros do
           end
 
           context 'when :required is false' do
-
             context 'when :optional is true' do
-
               let(:relation_options) do
                 {
                   required: false,
@@ -494,7 +453,6 @@ describe Mongoid::Association::Macros do
               end
 
               context 'when the default config is to require the association' do
-
                 let(:default_require) { true }
 
                 it 'does not require the association' do
@@ -503,7 +461,6 @@ describe Mongoid::Association::Macros do
               end
 
               context 'when the default config is to not require the association' do
-
                 let(:default_require) { true }
 
                 it 'does not require the association' do
@@ -513,7 +470,6 @@ describe Mongoid::Association::Macros do
             end
 
             context 'when :optional is false' do
-
               let(:relation_options) do
                 {
                   required: false,
@@ -522,7 +478,6 @@ describe Mongoid::Association::Macros do
               end
 
               context 'when the default config is to require the association' do
-
                 let(:default_require) { true }
 
                 it 'does not require the association' do
@@ -531,7 +486,6 @@ describe Mongoid::Association::Macros do
               end
 
               context 'when the default config is to not require the association' do
-
                 let(:default_require) { false }
 
                 it 'does not require the association' do
@@ -544,17 +498,13 @@ describe Mongoid::Association::Macros do
       end
 
       context 'when the relation does not have the option :required' do
-
         context 'when the relation has the option :optional' do
-
           context 'when :optional is true' do
-
             let(:relation_options) do
               { optional: true }
             end
 
             context 'when the default config is to require the association' do
-
               let(:default_require) { true }
 
               it 'does not require the association' do
@@ -563,7 +513,6 @@ describe Mongoid::Association::Macros do
             end
 
             context 'when the default config is to not require the association' do
-
               let(:default_require) { false }
 
               it 'does not require the association' do
@@ -573,13 +522,11 @@ describe Mongoid::Association::Macros do
           end
 
           context 'when :optional is false' do
-
             let(:relation_options) do
               { optional: false }
             end
 
             context 'when the default config is to require the association' do
-
               let(:default_require) { true }
 
               it 'requires the association' do
@@ -588,7 +535,6 @@ describe Mongoid::Association::Macros do
             end
 
             context 'when the default config is to not require the association' do
-
               let(:default_require) { false }
 
               it 'requires the association' do
@@ -601,9 +547,7 @@ describe Mongoid::Association::Macros do
     end
 
     context 'when the relation does not have options' do
-
       context 'when the default config is to require the association' do
-
         let(:default_require) { true }
 
         it 'requires the association' do
@@ -612,7 +556,6 @@ describe Mongoid::Association::Macros do
       end
 
       context 'when the default config is to not require the association' do
-
         let(:default_require) { false }
 
         it 'does not require the association' do
@@ -622,9 +565,7 @@ describe Mongoid::Association::Macros do
     end
 
     context "when the relation is polymorphic" do
-
       context "when indexed is true" do
-
         before do
           klass.belongs_to(:relatable, polymorphic: true, index: true)
         end
@@ -640,9 +581,7 @@ describe Mongoid::Association::Macros do
     end
 
     context "when defining the relation" do
-
       context 'when the relation name is invalid' do
-
         let(:relation) do
           klass.belongs_to(:fields)
         end
@@ -689,7 +628,6 @@ describe Mongoid::Association::Macros do
       end
 
       context "association properties" do
-
         let(:association) do
           klass.relations["person"]
         end
@@ -706,15 +644,12 @@ describe Mongoid::Association::Macros do
   end
 
   describe ".has_many" do
-
     it "defines the macro" do
       expect(klass).to respond_to(:has_many)
     end
 
     context "when defining the relation" do
-
       context 'when the relation name is invalid' do
-
         let(:relation) do
           klass.has_many(:fields)
         end
@@ -755,7 +690,6 @@ describe Mongoid::Association::Macros do
       end
 
       context "association properties" do
-
         let(:association) do
           klass.relations["posts"]
         end
@@ -770,7 +704,6 @@ describe Mongoid::Association::Macros do
       end
 
       context 'when an invalid option is provided' do
-
         it 'raises an InvalidRelationOption exception' do
           expect {
             klass.has_many(:names, sandwich: true)
@@ -780,7 +713,6 @@ describe Mongoid::Association::Macros do
     end
 
     context 'when defining order on relation' do
-
       before do
         klass.has_many(:posts, order: :rating.asc)
       end
@@ -799,7 +731,6 @@ describe Mongoid::Association::Macros do
     end
 
     context "when setting validate to false" do
-
       before do
         klass.has_many(:posts, validate: false)
       end
@@ -811,15 +742,12 @@ describe Mongoid::Association::Macros do
   end
 
   describe ".has_and_belongs_to_many" do
-
     it "defines the macro" do
       expect(klass).to respond_to(:has_and_belongs_to_many)
     end
 
     context "when defining the relation" do
-
       context 'when the relation name is invalid' do
-
         let(:relation) do
           klass.has_and_belongs_to_many(:fields)
         end
@@ -832,7 +760,6 @@ describe Mongoid::Association::Macros do
       end
 
       context 'when an invalid option is provided' do
-
         it 'raises an InvalidRelationOption exception' do
           expect {
             klass.has_and_belongs_to_many(:fields, sandwich: true)
@@ -867,7 +794,6 @@ describe Mongoid::Association::Macros do
       end
 
       context 'when defining order on relation' do
-
         before do
           klass.has_and_belongs_to_many(:preferences, order: :ranking.asc)
         end
@@ -886,7 +812,6 @@ describe Mongoid::Association::Macros do
       end
 
       context "association properties" do
-
         let(:association) do
           klass.relations["preferences"]
         end
@@ -903,15 +828,12 @@ describe Mongoid::Association::Macros do
   end
 
   describe ".has_one" do
-
     it "defines the macro" do
       expect(klass).to respond_to(:has_one)
     end
 
     context "when defining the relation" do
-
       context 'when the relation name is invalid' do
-
         let(:relation) do
           klass.has_one(:fields)
         end
@@ -924,7 +846,6 @@ describe Mongoid::Association::Macros do
       end
 
       context 'when an invalid option is provided' do
-
         it 'raises an InvalidRelationOption exception' do
           expect {
             klass.has_one(:game, sandwich: true)
@@ -969,7 +890,6 @@ describe Mongoid::Association::Macros do
       end
 
       context "association properties" do
-
         let(:association) do
           klass.relations["game"]
         end
@@ -985,7 +905,6 @@ describe Mongoid::Association::Macros do
     end
 
     context "when setting validate to false" do
-
       before do
         klass.has_one(:game, validate: false)
       end
@@ -997,7 +916,6 @@ describe Mongoid::Association::Macros do
   end
 
   describe "#relations" do
-
     before do
       klass.embeds_one(:name)
     end
@@ -1026,7 +944,6 @@ describe Mongoid::Association::Macros do
   end
 
   describe ".relations" do
-
     before do
       klass.embeds_one(:name)
     end
@@ -1051,7 +968,6 @@ describe Mongoid::Association::Macros do
   end
 
   context "when creating an association with an extension" do
-
     class Peep
       include Mongoid::Document
     end
@@ -1077,7 +993,6 @@ describe Mongoid::Association::Macros do
     end
 
     context "when the extension is a block" do
-
       before do
         Peep.embeds_one(:handle) do
           def full_name
@@ -1092,7 +1007,6 @@ describe Mongoid::Association::Macros do
     end
 
     context "when the extension is a module" do
-
       before do
         Peep.embeds_one(:handle, extend: Handle::Extension)
       end
@@ -1103,9 +1017,8 @@ describe Mongoid::Association::Macros do
     end
 
     context "when the extension is two modules" do
-
       before do
-        Peep.embeds_one(:handle, extend: [ Handle::Extension, Handle::AnotherExtension ])
+        Peep.embeds_one(:handle, extend: [Handle::Extension, Handle::AnotherExtension])
       end
 
       it "extends the relation" do

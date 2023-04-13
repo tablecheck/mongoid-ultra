@@ -2,12 +2,10 @@
 
 module Mongoid
   class Criteria
-
     # Mixin module for Mongoid::Criteria which adds strong
     # parameters validation when using ActionController::Parameters
     # objects as arguments to condition methods.
     module Permission
-
       [:all,
        :all_in,
        :and,
@@ -40,10 +38,10 @@ module Mongoid
        :within_box,
        :within_circle,
        :within_polygon,
-       :within_spherical_circle
-      ].each do |method|
+       :within_spherical_circle].each do |method|
         define_method(method) do |*criteria|
           raise Errors::CriteriaNotPermitted.new(klass, method, criteria) unless should_permit?(criteria)
+
           super(*criteria)
         end
       end

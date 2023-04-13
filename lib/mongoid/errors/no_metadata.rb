@@ -2,10 +2,8 @@
 
 module Mongoid
   module Errors
-
     # Used when trying to persist data when metadata has not been set.
     class NoMetadata < MongoidError
-
       # Create the new error.
       #
       # @example Create the error.

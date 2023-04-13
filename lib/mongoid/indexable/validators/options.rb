@@ -3,7 +3,6 @@
 module Mongoid
   module Indexable
     module Validators
-
       # Validates the options passed to the index macro.
       module Options
         extend self
@@ -92,6 +91,7 @@ module Mongoid
         # @raise [ Errors::InvalidIndex ] If validation failed.
         def validate_spec(klass, spec, options)
           raise Errors::InvalidIndex.new(klass, spec, options) if !spec.is_a?(::Hash)
+
           spec.each_pair do |name, value|
             next if name == :options
             unless VALID_TYPES.include?(value)

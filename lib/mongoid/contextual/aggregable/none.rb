@@ -7,7 +7,6 @@ module Mongoid
     module Aggregable
       # Contains behavior for aggregating values in null context.
       module None
-
         # Get all the aggregate values for the provided field in null context.
         # Provided for interface consistency with Aggregable::Mongo.
         #

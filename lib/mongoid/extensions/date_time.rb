@@ -2,10 +2,8 @@
 
 module Mongoid
   module Extensions
-
     # Adds type-casting behavior to Time class.
     module DateTime
-
       # Mongoize the date time into a time.
       #
       # @example Mongoize the date time.
@@ -28,7 +26,6 @@ module Mongoid
       end
 
       module ClassMethods
-
         # Convert the object from its mongo friendly ruby type to this type.
         #
         # @example Demongoize the object.

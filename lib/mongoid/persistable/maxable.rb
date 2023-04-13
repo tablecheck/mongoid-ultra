@@ -2,7 +2,6 @@
 
 module Mongoid
   module Persistable
-
     # Defines behavior for setting a field (or fields) to the larger of
     # either it's current value, or a given value.
     module Maxable

@@ -2,7 +2,6 @@
 
 module Mongoid
   module Contextual
-
     # Represents a mapReduce database command instruction.
     class MapReduce
       extend Forwardable
@@ -204,7 +203,7 @@ module Mongoid
       #
       # @return [ String ] The inspection string.
       def inspect
-%Q{#<Mongoid::Contextual::MapReduce
+        %Q{#<Mongoid::Contextual::MapReduce
   selector: #{criteria.selector.inspect}
   class:    #{criteria.klass}
   map:      #{command[:map]}

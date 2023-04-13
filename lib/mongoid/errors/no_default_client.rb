@@ -2,10 +2,8 @@
 
 module Mongoid
   module Errors
-
     # This error is raised when a default client is not defined.
     class NoDefaultClient < MongoidError
-
       # Create the new error with the defined client names.
       #
       # @example Create the new error.

@@ -4,11 +4,8 @@ require "spec_helper"
 require_relative './attributes/nested_spec_models'
 
 describe Mongoid::Attributes do
-
   describe "\#{attribute}" do
-
     context "when setting the value in the getter" do
-
       let(:account) do
         Account.new
       end
@@ -19,21 +16,17 @@ describe Mongoid::Attributes do
     end
 
     context "when the attribute was excluded in a criteria" do
-
       let!(:person) do
         Person.create!(title: "sir")
       end
 
       context "when the attribute is localized" do
-
         before do
           person.update_attribute(:desc, "test")
         end
 
         context "when the context includes" do
-
           context "when the attribute exists" do
-
             let(:from_db) do
               Person.only(:desc).first
             end
@@ -43,16 +36,14 @@ describe Mongoid::Attributes do
             end
 
             context "accessing via []" do
-
               it "does not raise an error" do
                 expect(from_db["desc"]).to eq("test")
               end
             end
 
             context "when calling only on a sub-document" do
-
-              let(:title) {"Executive"}
-              let(:city) {"NYC"}
+              let(:title) { "Executive" }
+              let(:city) { "NYC" }
               let!(:agent) do
                 agent = Agent.new(:title => title)
                 agent.build_address(:city => city)
@@ -64,14 +55,12 @@ describe Mongoid::Attributes do
               end
 
               context "when the field is in the only" do
-
                 it "does not raise an error" do
                   expect(from_db.address.city).to eq(city)
                 end
               end
 
               context "accessing via []" do
-
                 it "does not raise an error" do
                   expect(from_db["address.city"]).to eq(city)
                 end
@@ -80,7 +69,6 @@ describe Mongoid::Attributes do
           end
 
           context 'when the attribute is a hash field' do
-
             before do
               person.update_attribute(:map, map)
             end
@@ -98,7 +86,6 @@ describe Mongoid::Attributes do
             end
 
             context 'when only one of the hash fields is projected' do
-
               let(:map) do
                 { 'dates' => { 'y' => { '2016' => 'Berlin', '2017' => 'Munich' } } }
               end
@@ -115,7 +102,6 @@ describe Mongoid::Attributes do
             end
 
             context 'when several of the hash fields is projected' do
-
               let(:map) do
                 { 'dates' => { 'y' => {
                   '2016' => 'Berlin',
@@ -143,9 +129,7 @@ describe Mongoid::Attributes do
         end
 
         context "when the context excludes" do
-
           context "when the attribute exists" do
-
             let(:from_db) do
               Person.without(:pets).first
             end
@@ -158,7 +142,6 @@ describe Mongoid::Attributes do
       end
 
       context "when excluding with only" do
-
         let(:from_db) do
           Person.only(:_id).first
         end
@@ -170,7 +153,6 @@ describe Mongoid::Attributes do
         end
 
         context "accessing via []" do
-
           it "raises an error" do
             expect {
               from_db["title"]
@@ -180,7 +162,6 @@ describe Mongoid::Attributes do
       end
 
       context "when excluding with without" do
-
         let(:from_db) do
           Person.without(:title).first
         end
@@ -195,9 +176,7 @@ describe Mongoid::Attributes do
   end
 
   describe "#[]" do
-
     context 'when the document has a custom attribute type' do
-
       let(:bar) do
         Bar.create!(lat_lng: LatLng.new(52.30, 13.25))
       end
@@ -208,26 +187,22 @@ describe Mongoid::Attributes do
     end
 
     context "when the document is a new record" do
-
       let(:person) do
         Person.new
       end
 
       context "when accessing a localized field" do
-
         before do
           person.desc = "testing"
         end
 
         context "when passing just the name" do
-
           it "returns the full value" do
             expect(person[:desc]).to eq("testing")
           end
         end
 
         context "when passing the name with locale" do
-
           it "returns the value for the locale" do
             expect(person["desc.en"]).to eq("testing")
           end
@@ -235,14 +210,12 @@ describe Mongoid::Attributes do
       end
 
       context "when attribute does not exist" do
-
         it "returns the default value" do
           expect(person[:age]).to eq(100)
         end
       end
 
       context "when attribute is not accessible" do
-
         before do
           person.owner_id = 5
         end
@@ -254,15 +227,12 @@ describe Mongoid::Attributes do
     end
 
     context "when the document is an existing record" do
-
       let!(:person) do
         Person.create!(title: "sir")
       end
 
       context "when the attribute was excluded in a criteria" do
-
         context "when excluding with only" do
-
           let(:from_db) do
             Person.only(:_id).first
           end
@@ -275,7 +245,6 @@ describe Mongoid::Attributes do
         end
 
         context "when excluding with without" do
-
           let(:from_db) do
             Person.without(:title).first
           end
@@ -289,9 +258,7 @@ describe Mongoid::Attributes do
       end
 
       context "when the field was not explicitly defined" do
-
         context "when excluding with only and the field was not excluded" do
-
           let(:from_db) do
             Person.only(:_id).first
           end
@@ -304,7 +271,6 @@ describe Mongoid::Attributes do
         end
 
         context "when excluding with without and the field was excluded" do
-
           let(:from_db) do
             Person.without(:title).first
           end
@@ -317,7 +283,6 @@ describe Mongoid::Attributes do
         end
 
         context "when excluding with without and the field was not excluded" do
-
           let(:from_db) do
             Person.without(:title).first
           end
@@ -339,7 +304,6 @@ describe Mongoid::Attributes do
           end
 
           context 'when retrieving a field of the association using the dot notation' do
-
             it 'retrieves the field' do
               expect(from_db['name.first_name']).to eq 'Jose'
             end
@@ -374,15 +338,13 @@ describe Mongoid::Attributes do
       end
 
       context "when the attribute does not exist" do
-
         before do
           person.collection
-            .find({ _id: person.id })
-            .update_one({ "$unset" => { age: 1 }})
+                .find({ _id: person.id })
+                .update_one({ "$unset" => { age: 1 } })
         end
 
         context "when found" do
-
           let(:found) do
             Person.find(person.id)
           end
@@ -408,9 +370,7 @@ describe Mongoid::Attributes do
   end
 
   describe "#[]=" do
-
     context 'when the document has a custom attribute type' do
-
       let(:bar) do
         Bar.new.tap do |b|
           b[:lat_lng] = LatLng.new(52.30, 13.25)
@@ -428,7 +388,6 @@ describe Mongoid::Attributes do
     end
 
     context "when setting the attribute to nil" do
-
       let!(:age) do
         person[:age] = nil
       end
@@ -443,7 +402,6 @@ describe Mongoid::Attributes do
     end
 
     context "when field has a default value" do
-
       let!(:terms) do
         person[:terms] = true
       end
@@ -465,7 +423,7 @@ describe Mongoid::Attributes do
       end
 
       it 'writes the value into attributes' do
-        expect(bar.attributes).to eq({'_id' => bar.id, 'missing_field' => 42})
+        expect(bar.attributes).to eq({ '_id' => bar.id, 'missing_field' => 42 })
       end
 
       it 'makes the attribute accessible via []' do
@@ -473,13 +431,11 @@ describe Mongoid::Attributes do
       end
 
       context 'when writing fields on a document with projection' do
-
         let!(:person) do
           Person.create!(title: "sir")
         end
 
         context "when excluding with only and the field was not excluded" do
-
           let(:from_db) do
             Person.only(:_id).first
           end
@@ -492,7 +448,6 @@ describe Mongoid::Attributes do
         end
 
         context "when excluding with without and the field was excluded" do
-
           let(:from_db) do
             Person.without(:title).first
           end
@@ -505,7 +460,6 @@ describe Mongoid::Attributes do
         end
 
         context "when excluding with without and the field was not excluded" do
-
           let(:from_db) do
             Person.without(:title).first
           end
@@ -520,7 +474,6 @@ describe Mongoid::Attributes do
   end
 
   describe "#_id" do
-
     let(:person) do
       Person.new
     end
@@ -530,7 +483,6 @@ describe Mongoid::Attributes do
     end
 
     context "when #id alias is overridden" do
-
       let(:object) do
         IdKey.new(key: 'foo')
       end
@@ -542,7 +494,6 @@ describe Mongoid::Attributes do
   end
 
   describe "#_id=" do
-
     after(:all) do
       Person.field(
         :_id,
@@ -554,7 +505,6 @@ describe Mongoid::Attributes do
     end
 
     context "when using object ids" do
-
       before(:all) do
         Person.field(
           :_id,
@@ -574,7 +524,6 @@ describe Mongoid::Attributes do
       end
 
       context "when providing an object id" do
-
         before do
           person._id = bson_id
         end
@@ -585,7 +534,6 @@ describe Mongoid::Attributes do
       end
 
       context "when providing a string" do
-
         before do
           person._id = bson_id.to_s
         end
@@ -596,7 +544,6 @@ describe Mongoid::Attributes do
       end
 
       context "when providing an integer" do
-
         before do
           person._id = 2
         end
@@ -607,7 +554,6 @@ describe Mongoid::Attributes do
       end
 
       context "when #id= alias is overridden" do
-
         let(:object) do
           IdKey.new(key: 'foo')
         end
@@ -617,11 +563,9 @@ describe Mongoid::Attributes do
           expect(object.id).to eq('bar')
         end
       end
-
     end
 
     context "when using string ids" do
-
       before(:all) do
         Person.field(
           :_id,
@@ -641,7 +585,6 @@ describe Mongoid::Attributes do
       end
 
       context "when providing an object id" do
-
         before do
           person._id = bson_id
         end
@@ -652,7 +595,6 @@ describe Mongoid::Attributes do
       end
 
       context "when providing a string" do
-
         before do
           person._id = bson_id.to_s
         end
@@ -663,7 +605,6 @@ describe Mongoid::Attributes do
       end
 
       context "when providing an integer" do
-
         before do
           person._id = 2
         end
@@ -675,7 +616,6 @@ describe Mongoid::Attributes do
     end
 
     context "when using integer ids" do
-
       before(:all) do
         Person.field(:_id, type: Integer, overwrite: true)
       end
@@ -685,7 +625,6 @@ describe Mongoid::Attributes do
       end
 
       context "when providing a string" do
-
         before do
           person._id = 1.to_s
         end
@@ -696,7 +635,6 @@ describe Mongoid::Attributes do
       end
 
       context "when providing an integer" do
-
         before do
           person._id = 2
         end
@@ -709,7 +647,6 @@ describe Mongoid::Attributes do
   end
 
   describe "#method_missing" do
-
     let(:attributes) do
       { testing: "Testing" }
     end
@@ -719,7 +656,6 @@ describe Mongoid::Attributes do
     end
 
     context "when an attribute exists" do
-
       it "allows the getter" do
         expect(person.testing).to eq("Testing")
       end
@@ -739,7 +675,6 @@ describe Mongoid::Attributes do
     end
 
     context "when the provided value needs mongoization" do
-
       let(:new_years) do
         DateTime.new(2013, 1, 1, 0, 0, 0)
       end
@@ -759,9 +694,7 @@ describe Mongoid::Attributes do
   end
 
   describe "#process" do
-
     context "when attributes dont have fields defined" do
-
       let(:attributes) do
         {
           nofieldstring: "Testing",
@@ -771,20 +704,17 @@ describe Mongoid::Attributes do
       end
 
       context "when allowing dynamic fields" do
-
         let!(:person) do
           Person.new(attributes)
         end
 
         context "when attribute is a string" do
-
           it "adds the string to the attributes" do
             expect(person.attributes["nofieldstring"]).to eq("Testing")
           end
         end
 
         context "when attribute is not a string" do
-
           it "adds a cast value to the attributes" do
             expect(person.attributes["nofieldint"]).to eq(5)
           end
@@ -792,7 +722,6 @@ describe Mongoid::Attributes do
       end
 
       context "when not allowing dynamic fields" do
-
         it "raises an unknown attribute error on instantiation" do
           expect {
             Account.new({ anothernew: "Test" })
@@ -802,7 +731,6 @@ describe Mongoid::Attributes do
     end
 
     context "when supplied hash has string values" do
-
       let(:bson_id) do
         BSON::ObjectId.new
       end
@@ -841,9 +769,7 @@ describe Mongoid::Attributes do
     end
 
     context "when associations provided in the attributes" do
-
       context "when association is a has_one" do
-
         let(:name) do
           Name.new(first_name: "Testy")
         end
@@ -862,7 +788,6 @@ describe Mongoid::Attributes do
       end
 
       context "when association is a references_one" do
-
         let(:game) do
           Game.new(score: 100)
         end
@@ -885,7 +810,6 @@ describe Mongoid::Attributes do
       end
 
       context "when association is a embedded_in" do
-
         let(:person) do
           Person.new
         end
@@ -901,7 +825,6 @@ describe Mongoid::Attributes do
     end
 
     context "when non-associations provided in the attributes" do
-
       let(:employer) do
         Employer.new
       end
@@ -920,7 +843,6 @@ describe Mongoid::Attributes do
     end
 
     context "when an empty array is provided in the attributes" do
-
       let(:attributes) do
         { aliases: [] }
       end
@@ -935,7 +857,6 @@ describe Mongoid::Attributes do
     end
 
     context "when an empty hash is provided in the attributes" do
-
       let(:attributes) do
         { map: {} }
       end
@@ -950,7 +871,6 @@ describe Mongoid::Attributes do
     end
 
     context "when providing tainted parameters" do
-
       let(:params) do
         ActionController::Parameters.new(title: "sir")
       end
@@ -964,7 +884,6 @@ describe Mongoid::Attributes do
   end
 
   context "updating when attributes already exist" do
-
     let(:person) do
       Person.new(title: "Sir")
     end
@@ -983,9 +902,7 @@ describe Mongoid::Attributes do
   end
 
   describe "#read_attribute" do
-
     context 'when the document has a custom attribute type' do
-
       let(:bar) do
         Bar.create!(lat_lng: LatLng.new(52.30, 13.25))
       end
@@ -996,22 +913,18 @@ describe Mongoid::Attributes do
     end
 
     context "when the document is a new record" do
-
       let(:person) do
         Person.new
       end
 
       context "when attribute does not exist" do
-
         it "returns the default value" do
           expect(person.age).to eq(100)
           expect(person.pets).to be false
         end
-
       end
 
       context "when attribute is not accessible" do
-
         before do
           person.owner_id = 5
         end
@@ -1023,7 +936,6 @@ describe Mongoid::Attributes do
     end
 
     context "when the document is an existing record" do
-
       let(:person) do
         Person.create!
       end
@@ -1033,8 +945,8 @@ describe Mongoid::Attributes do
 
         before do
           person.collection
-            .find({ _id: person.id })
-            .update_one({ "$unset" => { age: 1 }})
+                .find({ _id: person.id })
+                .update_one({ "$unset" => { age: 1 } })
           person.reload
         end
 
@@ -1045,7 +957,6 @@ describe Mongoid::Attributes do
     end
 
     context "when attribute has an aliased name" do
-
       let(:person) do
         Person.new
       end
@@ -1061,20 +972,17 @@ describe Mongoid::Attributes do
   end
 
   describe "#read_attribute_before_type_cast" do
-
     let(:person) do
       Person.create!
     end
 
     context "when the attribute has not yet been assigned" do
-
       it "returns the default value" do
         expect(person.age_before_type_cast).to eq(100)
       end
     end
 
     context "after the attribute has been assigned" do
-
       it "returns the default value" do
         person.age = "42"
         expect(person.age_before_type_cast).to eq("42")
@@ -1082,13 +990,11 @@ describe Mongoid::Attributes do
     end
 
     context 'when reading fields on a document with projection' do
-
       let!(:person) do
         Person.create!(title: "sir")
       end
 
       context "when excluding with only and the field was not excluded" do
-
         let(:from_db) do
           Person.only(:_id).first
         end
@@ -1101,7 +1007,6 @@ describe Mongoid::Attributes do
       end
 
       context "when excluding with without and the field was excluded" do
-
         let(:from_db) do
           Person.without(:title).first
         end
@@ -1114,7 +1019,6 @@ describe Mongoid::Attributes do
       end
 
       context "when excluding with without and the field was not excluded" do
-
         let(:from_db) do
           Person.without(:title).first
         end
@@ -1127,15 +1031,12 @@ describe Mongoid::Attributes do
   end
 
   describe "#attribute_present?" do
-
     context "when document is a new record" do
-
       let(:person) do
         Person.new
       end
 
       context "when attribute does not exist" do
-
         it "returns false" do
           expect(person.attribute_present?(:owner_id)).to be false
         end
@@ -1153,7 +1054,6 @@ describe Mongoid::Attributes do
     end
 
     context "when the document is an existing record" do
-
       let(:person) do
         Person.create!
       end
@@ -1163,8 +1063,8 @@ describe Mongoid::Attributes do
 
         before do
           person.collection
-            .find({ _id: person.id })
-            .update_one({ "$unset" => { age: 1 }})
+                .find({ _id: person.id })
+                .update_one({ "$unset" => { age: 1 } })
           person.reload
         end
 
@@ -1175,24 +1075,20 @@ describe Mongoid::Attributes do
     end
 
     context "when the value is boolean" do
-
       let(:person) do
         Person.new
       end
 
       context "when attribute does not exist" do
-
         context "when the value is true" do
-
-          it "return true"  do
+          it "return true" do
             person.terms = false
             expect(person.attribute_present?(:terms)).to be true
           end
         end
 
         context "when the value is false" do
-
-          it "return true"  do
+          it "return true" do
             person.terms = false
             expect(person.attribute_present?(:terms)).to be true
           end
@@ -1201,7 +1097,6 @@ describe Mongoid::Attributes do
     end
 
     context "when the value is blank string" do
-
       let(:person) do
         Person.new(title: '')
       end
@@ -1212,7 +1107,6 @@ describe Mongoid::Attributes do
     end
 
     context "when the attribute is not on only list" do
-
       before { Person.create! }
       let(:person) do
         Person.only(:id).first
@@ -1225,22 +1119,18 @@ describe Mongoid::Attributes do
   end
 
   describe "#has_attribute?" do
-
     let(:person) do
       Person.new(title: "sir")
     end
 
     context "when the key is in the attributes" do
-
       context "when provided a symbol" do
-
         it "returns true" do
           expect(person.has_attribute?(:title)).to be true
         end
       end
 
       context "when provided a string" do
-
         it "returns true" do
           expect(person.has_attribute?("title")).to be true
         end
@@ -1248,7 +1138,6 @@ describe Mongoid::Attributes do
     end
 
     context "when the key is not in the attributes" do
-
       it "returns false" do
         expect(person.has_attribute?(:employer_id)).to be false
       end
@@ -1256,20 +1145,17 @@ describe Mongoid::Attributes do
   end
 
   describe '#has_attribute_before_type_cast?' do
-
     let(:person) do
       Person.new
     end
 
     context "before the attribute has been assigned" do
-
       it "returns true" do
         expect(person.has_attribute_before_type_cast?(:age)).to be true
       end
     end
 
     context "after the attribute has been assigned" do
-
       it "returns true" do
         person.age = '42'
         expect(person.has_attribute_before_type_cast?(:age)).to be true
@@ -1278,9 +1164,7 @@ describe Mongoid::Attributes do
   end
 
   describe "#remove_attribute" do
-
     context "when the attribute exists" do
-
       let(:person) do
         Person.create!(title: "Sir")
       end
@@ -1298,7 +1182,6 @@ describe Mongoid::Attributes do
       end
 
       context "when saving after the removal" do
-
         before do
           person.save!
         end
@@ -1310,43 +1193,39 @@ describe Mongoid::Attributes do
     end
 
     context "when the attribute exists in embedded document" do
+      let(:pet) do
+        Animal.new(name: "Cat")
+      end
 
-     let(:pet) do
-       Animal.new(name: "Cat")
-     end
+      let(:person) do
+        Person.new(pet: pet)
+      end
 
-     let(:person) do
-       Person.new(pet: pet)
-     end
+      before do
+        person.save!
+        person.pet.remove_attribute(:name)
+      end
 
-     before do
-       person.save!
-       person.pet.remove_attribute(:name)
-     end
+      it "removes the attribute" do
+        expect(person.pet.name).to be_nil
+      end
 
-     it "removes the attribute" do
-       expect(person.pet.name).to be_nil
-     end
+      it "removes the key from the attributes hash" do
+        expect(person.pet.has_attribute?(:name)).to be false
+      end
 
-     it "removes the key from the attributes hash" do
-       expect(person.pet.has_attribute?(:name)).to be false
-     end
+      context "when saving after the removal" do
+        before do
+          person.save!
+        end
 
-     context "when saving after the removal" do
-
-       before do
-         person.save!
-       end
-
-       it "persists the removal" do
-         expect(person.reload.pet.has_attribute?(:name)).to be false
-       end
-     end
-
+        it "persists the removal" do
+          expect(person.reload.pet.has_attribute?(:name)).to be false
+        end
+      end
     end
 
     context "when the attribute does not exist" do
-
       let(:person) do
         Person.new
       end
@@ -1361,7 +1240,6 @@ describe Mongoid::Attributes do
     end
 
     context "when the document is new" do
-
       let(:person) do
         Person.new(title: "sir")
       end
@@ -1376,9 +1254,7 @@ describe Mongoid::Attributes do
     end
 
     context "when the attribute is aliased" do
-
       context 'when the database name is used' do
-
         let(:person) do
           Person.create!(at: Time.now)
         end
@@ -1396,7 +1272,6 @@ describe Mongoid::Attributes do
         end
 
         context "when saving after the removal" do
-
           before do
             person.save!
           end
@@ -1408,7 +1283,6 @@ describe Mongoid::Attributes do
       end
 
       context 'when the alias is used' do
-
         let(:person) do
           Person.create!(aliased_timestamp: Time.now)
         end
@@ -1426,7 +1300,6 @@ describe Mongoid::Attributes do
         end
 
         context "when saving after the removal" do
-
           before do
             person.save!
           end
@@ -1440,17 +1313,13 @@ describe Mongoid::Attributes do
   end
 
   describe "#respond_to?" do
-
     context "when allowing dynamic fields" do
-
       let(:person) do
         Person.new
       end
 
       context "when asking for the getter" do
-
         context "when the attribute exists" do
-
           before do
             person[:attr] = "test"
           end
@@ -1461,7 +1330,6 @@ describe Mongoid::Attributes do
         end
 
         context "when the attribute does not exist" do
-
           it "returns false" do
             expect(person).to_not respond_to(:attr)
           end
@@ -1469,9 +1337,7 @@ describe Mongoid::Attributes do
       end
 
       context "when asking for the setter" do
-
         context "when the attribute exists" do
-
           before do
             person[:attr] = "test"
           end
@@ -1482,7 +1348,6 @@ describe Mongoid::Attributes do
         end
 
         context "when the attribute does not exist" do
-
           it "returns false" do
             expect(person).to_not respond_to(:attr=)
           end
@@ -1491,20 +1356,17 @@ describe Mongoid::Attributes do
     end
 
     context "when not allowing dynamic fields" do
-
       let(:bar) do
         Bar.new
       end
 
       context "when asking for the getter" do
-
         it "returns false" do
           expect(bar).to_not respond_to(:attr)
         end
       end
 
       context "when asking for the setter" do
-
         it "returns false" do
           expect(bar).to_not respond_to(:attr=)
         end
@@ -1513,9 +1375,7 @@ describe Mongoid::Attributes do
   end
 
   describe "#write_attribute" do
-
     context "when attribute does not exist" do
-
       let(:person) do
         Person.new
       end
@@ -1526,7 +1386,6 @@ describe Mongoid::Attributes do
     end
 
     context "when setting an attribute that needs type casting" do
-
       let(:person) do
         Person.new(age: "42")
       end
@@ -1537,7 +1396,6 @@ describe Mongoid::Attributes do
     end
 
     context "when setting the attribute to nil" do
-
       let(:person) do
         Person.new(age: nil)
       end
@@ -1548,7 +1406,6 @@ describe Mongoid::Attributes do
     end
 
     context "when field has a default value" do
-
       let(:person) do
         Person.new
       end
@@ -1563,7 +1420,6 @@ describe Mongoid::Attributes do
     end
 
     context "when attribute has an aliased name" do
-
       let(:person) do
         Person.new
       end
@@ -1591,15 +1447,15 @@ describe Mongoid::Attributes do
       end
 
       it "can set a Hash value with stringified keys" do
-        expect(person.map).to eq( { "somekey" => "somevalue" } )
+        expect(person.map).to eq({ "somekey" => "somevalue" })
       end
     end
 
     context "when attribute is an Array" do
-      let(:person) { Person.new aliases: [ :alias_1 ] }
+      let(:person) { Person.new aliases: [:alias_1] }
 
       it "can set an Array Value" do
-        expect(person.aliases).to eq([ :alias_1 ])
+        expect(person.aliases).to eq([:alias_1])
       end
 
       it "writes nil when trying to set a value of invalid type - hash" do
@@ -1627,13 +1483,11 @@ describe Mongoid::Attributes do
     end
 
     context 'when writing fields on a document with projection' do
-
       let!(:person) do
         Person.create!(title: "sir")
       end
 
       context "when excluding with only and the field was not excluded" do
-
         let(:from_db) do
           Person.only(:_id).first
         end
@@ -1646,7 +1500,6 @@ describe Mongoid::Attributes do
       end
 
       context "when excluding with without and the field was excluded" do
-
         let(:from_db) do
           Person.without(:title).first
         end
@@ -1659,7 +1512,6 @@ describe Mongoid::Attributes do
       end
 
       context "when excluding with without and the field was not excluded" do
-
         let(:from_db) do
           Person.without(:title).first
         end
@@ -1691,7 +1543,6 @@ describe Mongoid::Attributes do
       end
 
       context "when the field is resizable" do
-
         let(:arrays) do
           person.write_attribute(:arrays, [])
         end
@@ -1702,7 +1553,6 @@ describe Mongoid::Attributes do
       end
 
       context "when the field is a HABTM foreign key array" do
-
         let(:preference_ids) do
           person.write_attribute(:preference_ids, [])
         end
@@ -1715,20 +1565,17 @@ describe Mongoid::Attributes do
   end
 
   describe "#typed_value_for" do
-
     let(:person) do
       Person.new
     end
 
     context "when the key has been specified as a field" do
-
       it "retuns the typed value" do
         person.send(:typed_value_for, "age", "51")
       end
     end
 
     context "when the key has not been specified as a field" do
-
       before do
         allow(person).to receive(:fields).and_return({})
       end
@@ -1740,7 +1587,6 @@ describe Mongoid::Attributes do
   end
 
   describe "#apply_default_attributes" do
-
     let(:person) do
       Person.new
     end
@@ -1750,8 +1596,7 @@ describe Mongoid::Attributes do
     end
   end
 
-  describe "#typed_attributes"  do
-
+  describe "#typed_attributes" do
     let(:date_time) do
       DateTime.current
     end
@@ -1766,17 +1611,14 @@ describe Mongoid::Attributes do
   end
 
   [:attributes=, :write_attributes].each do |method|
-
     describe "##{method}" do
-
       context "when nested" do
-
         let(:person) do
           Person.new
         end
 
         before do
-          person.send(method, { videos: [{title: "Fight Club"}] })
+          person.send(method, { videos: [{ title: "Fight Club" }] })
         end
 
         it "sets nested documents" do
@@ -1785,7 +1627,6 @@ describe Mongoid::Attributes do
       end
 
       context "typecasting" do
-
         let(:person) do
           Person.new
         end
@@ -1795,7 +1636,6 @@ describe Mongoid::Attributes do
         end
 
         context "when passing a hash" do
-
           before do
             person.send(method, attributes)
           end
@@ -1806,7 +1646,6 @@ describe Mongoid::Attributes do
         end
 
         context "when passing nil" do
-
           before do
             person.send(method, nil)
           end
@@ -1818,7 +1657,6 @@ describe Mongoid::Attributes do
       end
 
       context "copying from instance" do
-
         let(:person) do
           Person.new
         end
@@ -1845,9 +1683,7 @@ describe Mongoid::Attributes do
       end
 
       context "on a parent document" do
-
         context "when the parent has a has many through a has one" do
-
           let(:owner) do
             PetOwner.new(title: "Mr")
           end
@@ -1862,7 +1698,7 @@ describe Mongoid::Attributes do
 
           before do
             owner.pet = pet
-            pet.vet_visits = [ vet_visit ]
+            pet.vet_visits = [vet_visit]
             owner.send(method, { pet: { name: "Bingo" } })
           end
 
@@ -1873,7 +1709,6 @@ describe Mongoid::Attributes do
         end
 
         context "when parent destroy all child on setter" do
-
           let(:owner) do
             PetOwner.create!(title: "Mr")
           end
@@ -1901,7 +1736,6 @@ describe Mongoid::Attributes do
         end
 
         context "when the parent has an empty embeds_many" do
-
           let(:person) do
             Person.new
           end
@@ -1917,9 +1751,7 @@ describe Mongoid::Attributes do
       end
 
       context "on a child document" do
-
         context "when child is part of a has one" do
-
           let(:person) do
             Person.new(title: "Sir", age: 30)
           end
@@ -1941,7 +1773,6 @@ describe Mongoid::Attributes do
         end
 
         context "when child is part of a has many" do
-
           let(:person) do
             Person.new(title: "Sir")
           end
@@ -2021,13 +1852,11 @@ describe Mongoid::Attributes do
   end
 
   describe "#alias_attribute" do
-
     let(:product) do
       Product.new
     end
 
     context "when checking against the alias" do
-
       before do
         product.cost = 500
       end
@@ -2049,7 +1878,7 @@ describe Mongoid::Attributes do
       end
 
       it "aliases *_change" do
-        expect(product.cost_change).to eq([ nil, 500 ])
+        expect(product.cost_change).to eq([nil, 500])
       end
 
       it "aliases *_will_change!" do
@@ -2072,7 +1901,6 @@ describe Mongoid::Attributes do
     end
 
     context "when checking against the original" do
-
       before do
         product.price = 500
       end
@@ -2090,7 +1918,7 @@ describe Mongoid::Attributes do
       end
 
       it "aliases *_change" do
-        expect(product.price_change).to eq([ nil, 500 ])
+        expect(product.price_change).to eq([nil, 500])
       end
 
       it "aliases *_will_change!" do
@@ -2109,7 +1937,6 @@ describe Mongoid::Attributes do
   end
 
   context "when persisting nil attributes" do
-
     let!(:person) do
       Person.create!(score: nil)
     end
@@ -2120,7 +1947,6 @@ describe Mongoid::Attributes do
   end
 
   context "with a default last_drink_taken_at" do
-
     let(:person) do
       Person.new
     end
@@ -2132,9 +1958,7 @@ describe Mongoid::Attributes do
   end
 
   context "when default values are defined" do
-
     context "when no value exists in the database" do
-
       let(:person) do
         Person.create!
       end
@@ -2145,9 +1969,7 @@ describe Mongoid::Attributes do
     end
 
     context "when a value exists in the database" do
-
       context "when the value is not nil" do
-
         let!(:person) do
           Person.create!(age: 50)
         end
@@ -2162,7 +1984,6 @@ describe Mongoid::Attributes do
       end
 
       context "when the value is explicitly nil" do
-
         let!(:person) do
           Person.create!(age: nil)
         end
@@ -2177,7 +1998,6 @@ describe Mongoid::Attributes do
       end
 
       context "when the default is a proc" do
-
         let!(:account) do
           Account.create!(name: "savings", balance: 100)
         end
@@ -2194,7 +2014,6 @@ describe Mongoid::Attributes do
   end
 
   context 'when calling the attribute check method' do
-
     context 'when the attribute is blank' do
       let(:person) do
         Person.create!(title: '')
@@ -2211,14 +2030,12 @@ describe Mongoid::Attributes do
       end
 
       context 'after initialization when the field is nil' do
-
         it 'returns false' do
           expect(person.desc?).to be(false)
         end
       end
 
       context 'when setting the field to nil' do
-
         it 'applies the localization when checking the attribute' do
           person.desc = nil
           expect(person.desc?).to be(false)
@@ -2226,7 +2043,6 @@ describe Mongoid::Attributes do
       end
 
       context 'when the field is a boolean' do
-
         before do
           person.desc = false
         end
@@ -2268,9 +2084,7 @@ describe Mongoid::Attributes do
   end
 
   describe "attributes after setting an association without reloading" do
-
     context "on embeds_many" do
-
       context "when not setting anything" do
         let(:doc) { NestedBook.create! }
 
@@ -2287,7 +2101,7 @@ describe Mongoid::Attributes do
         let(:doc) { NestedBook.create! }
 
         before do
-          doc.update_attributes({ pages_attributes: [ {} ] })
+          doc.update_attributes({ pages_attributes: [{}] })
         end
 
         it "updates the attributes" do
@@ -2543,7 +2357,6 @@ describe Mongoid::Attributes do
     end
 
     context "on embeds_one" do
-
       let(:attrs) { { "title" => "Title" } }
 
       context "when using nested attributes" do
@@ -2621,7 +2434,6 @@ describe Mongoid::Attributes do
           expect(doc.attributes["cover"]).to eq(attrs.merge("_id" => doc.cover.id))
         end
 
-
         it "has the same attributes after reloading" do
           expect(doc.attributes).to eq(doc.reload.attributes)
         end
@@ -2693,7 +2505,7 @@ describe Mongoid::Attributes do
   end
 
   context "when modifiying a set referenced with the [] notation" do
-    let(:catalog) { Catalog.create!(set_field: [ 1 ].to_set) }
+    let(:catalog) { Catalog.create!(set_field: [1].to_set) }
 
     before do
       catalog[:set_field] << 2
@@ -2703,7 +2515,7 @@ describe Mongoid::Attributes do
 
     it "persists the updated hash" do
       pending "MONGOID-2951"
-      expect(catalog.set_field).to eq(Set.new([ 1, 2 ]))
+      expect(catalog.set_field).to eq(Set.new([1, 2]))
     end
   end
 end
