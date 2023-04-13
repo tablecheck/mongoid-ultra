@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Mongoid
+
   # Provides behavior for generating the selector for a specific document.
   module Selectable
     extend ActiveSupport::Concern

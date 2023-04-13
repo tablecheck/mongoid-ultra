@@ -8,6 +8,7 @@ require "mongoid/config/introspection"
 require "mongoid/config/encryption"
 
 module Mongoid
+
   # This module defines all the configuration options for Mongoid, including
   # the database connections.
   module Config
@@ -130,11 +131,11 @@ module Mongoid
     #   config.connect_to("mongoid_test")
     #
     # @param [ String ] name The database name.
-    def connect_to(name, options = { read: { mode: :primary } })
+    def connect_to(name, options = { read: { mode: :primary }})
       self.clients = {
         default: {
           database: name,
-          hosts: ["localhost:27017"],
+          hosts: [ "localhost:27017" ],
           options: options
         }
       }
@@ -322,7 +323,6 @@ module Mongoid
 
     def clients=(clients)
       raise Errors::NoClientsConfig.new unless clients
-
       c = clients.with_indifferent_access
       Validators::Client.validate(c)
       @clients = c
@@ -333,11 +333,11 @@ module Mongoid
     #
     # @return [Mongo::Client] Client according to global overrides.
     def global_client
-      client = if Threaded.client_override
-                 Clients.with_name(Threaded.client_override)
-               else
-                 Clients.default
-               end
+      client =  if Threaded.client_override
+                  Clients.with_name(Threaded.client_override)
+                else
+                  Clients.default
+                end
       if Threaded.database_override
         client.use(Threaded.database_override)
       else

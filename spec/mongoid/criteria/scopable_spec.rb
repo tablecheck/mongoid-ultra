@@ -3,14 +3,17 @@
 require "spec_helper"
 
 describe Mongoid::Criteria::Scopable do
+
   describe "#apply_default_scope" do
+
     context "when the default scope has options" do
+
       let(:scope) do
         Band.skip(20)
       end
 
       before do
-        Band.default_scope -> { scope }
+        Band.default_scope ->{ scope }
       end
 
       after do
@@ -33,12 +36,13 @@ describe Mongoid::Criteria::Scopable do
     end
 
     context "when the default scope has selection" do
+
       let(:scope) do
         Band.where(name: "Depeche Mode")
       end
 
       before do
-        Band.default_scope -> { scope }
+        Band.default_scope ->{ scope }
       end
 
       after do
@@ -61,12 +65,13 @@ describe Mongoid::Criteria::Scopable do
     end
 
     context "when the default scope has inclusions" do
+
       let(:scope) do
         Band.includes(:records)
       end
 
       before do
-        Band.default_scope -> { scope }
+        Band.default_scope ->{ scope }
       end
 
       after do
@@ -74,6 +79,7 @@ describe Mongoid::Criteria::Scopable do
       end
 
       context "when merging with an empty criteria" do
+
         let(:scoped) do
           Band.all.tap do |criteria|
             criteria.apply_default_scope
@@ -82,7 +88,7 @@ describe Mongoid::Criteria::Scopable do
 
         it "merges in the inclusions" do
           expect(scoped.inclusions).to eq(
-            [Band.relations["records"]]
+            [ Band.relations["records"] ]
           )
         end
 
@@ -92,6 +98,7 @@ describe Mongoid::Criteria::Scopable do
       end
 
       context "when merging with a criteria that has inclusions" do
+
         let(:scoped) do
           Band.includes(:label).tap do |criteria|
             criteria.apply_default_scope
@@ -100,7 +107,7 @@ describe Mongoid::Criteria::Scopable do
 
         it "merges in the inclusions" do
           expect(scoped.inclusions).to eq(
-            [Band.relations["records"], Band.relations["label"]]
+            [ Band.relations["records"], Band.relations["label"] ]
           )
         end
 
@@ -112,6 +119,7 @@ describe Mongoid::Criteria::Scopable do
   end
 
   describe "#apply_scope" do
+
     let(:criteria) do
       Band.skip(20).where(name: 'Black Sabbath').includes(:same_name)
     end
@@ -121,13 +129,14 @@ describe Mongoid::Criteria::Scopable do
     end
 
     context "when the scope is a Criteria" do
+
       context 'when standard scope' do
         let(:scope) do
           Band.gt(member_count: 3).limit(3).includes(:artists)
         end
 
         it 'merges the criteria' do
-          expect(result.selector).to eq("name" => "Black Sabbath", "member_count" => { "$gt" => 3 })
+          expect(result.selector).to eq("name" => "Black Sabbath", "member_count" => { "$gt"=>3 })
           expect(result.options).to eq(skip: 20, limit: 3)
           expect(result.inclusions.map(&:name)).to eq(%i[same_name artists])
         end
@@ -139,7 +148,7 @@ describe Mongoid::Criteria::Scopable do
         end
 
         it 'unscoped has no effect' do
-          expect(result.selector).to eq("name" => "Black Sabbath", "member_count" => { "$gt" => 3 })
+          expect(result.selector).to eq("name" => "Black Sabbath", "member_count" => { "$gt"=>3 })
           expect(result.options).to eq(skip: 20, limit: 3)
           expect(result.inclusions.map(&:name)).to eq(%i[same_name artists])
         end
@@ -147,13 +156,14 @@ describe Mongoid::Criteria::Scopable do
     end
 
     context "when the scope is a Proc" do
+
       context 'when standard scope' do
         let(:scope) do
           -> { gt(member_count: 3).limit(3).includes(:artists) }
         end
 
         it 'adds the scope' do
-          expect(result.selector).to eq("name" => "Black Sabbath", "member_count" => { "$gt" => 3 })
+          expect(result.selector).to eq("name" => "Black Sabbath", "member_count" => { "$gt"=>3 })
           expect(result.options).to eq(skip: 20, limit: 3)
           expect(result.inclusions.map(&:name)).to eq(%i[same_name artists])
         end
@@ -165,7 +175,7 @@ describe Mongoid::Criteria::Scopable do
         end
 
         it 'removes existing scopes then adds the new scope' do
-          expect(result.selector).to eq("member_count" => { "$gt" => 3 })
+          expect(result.selector).to eq("member_count" => { "$gt"=>3 })
           expect(result.options).to eq(limit: 3)
           expect(result.inclusions.map(&:name)).to eq(%i[same_name artists])
         end
@@ -173,6 +183,7 @@ describe Mongoid::Criteria::Scopable do
     end
 
     context "when the scope is a Symbol" do
+
       context 'when standard scope' do
         let(:scope) do
           :highly_rated
@@ -199,8 +210,9 @@ describe Mongoid::Criteria::Scopable do
     end
 
     context 'when model has default_scope' do
+
       before do
-        Band.default_scope -> { Band.where(active: true).includes(:records) }
+        Band.default_scope ->{ Band.where(active: true).includes(:records) }
       end
 
       after do
@@ -234,7 +246,9 @@ describe Mongoid::Criteria::Scopable do
   end
 
   describe "#remove_scoping" do
+
     context "when the other has selection" do
+
       let(:criteria) do
         Band.where(name: "Depeche Mode")
       end
@@ -249,7 +263,9 @@ describe Mongoid::Criteria::Scopable do
     end
 
     context "when the other has options" do
+
       context "when both are options only" do
+
         let(:criteria) do
           Band.skip(10)
         end
@@ -264,6 +280,7 @@ describe Mongoid::Criteria::Scopable do
       end
 
       context "when the criteria is selection only with nil" do
+
         let(:criteria) do
           Band.where(name: nil)
         end
@@ -283,6 +300,7 @@ describe Mongoid::Criteria::Scopable do
     end
 
     context "when the other has inclusions" do
+
       let(:criteria) do
         Band.includes(:records, :label)
       end
@@ -296,17 +314,19 @@ describe Mongoid::Criteria::Scopable do
       end
 
       it "removes the matching inclusions" do
-        expect(criteria.inclusions).to eq([Band.relations["records"]])
+        expect(criteria.inclusions).to eq([ Band.relations["records"] ])
       end
     end
   end
 
   describe "#scoped" do
+
     let(:empty) do
       Mongoid::Criteria.new(Band)
     end
 
     context "when no options are provided" do
+
       let(:scoped) do
         empty.scoped
       end
@@ -325,6 +345,7 @@ describe Mongoid::Criteria::Scopable do
     end
 
     context "when options are provided" do
+
       let(:scoped) do
         empty.scoped(skip: 10, limit: 10)
       end
@@ -343,12 +364,13 @@ describe Mongoid::Criteria::Scopable do
     end
 
     context "when a default scope exists" do
+
       let(:criteria) do
         Band.where(name: "Depeche Mode")
       end
 
       before do
-        Band.default_scope -> { criteria }
+        Band.default_scope ->{ criteria }
       end
 
       after do
@@ -368,6 +390,7 @@ describe Mongoid::Criteria::Scopable do
       end
 
       context "when chained after an unscoped criteria" do
+
         let(:scoped) do
           empty.unscoped.scoped
         end
@@ -380,6 +403,7 @@ describe Mongoid::Criteria::Scopable do
   end
 
   describe "#scoping_options" do
+
     let(:criteria) do
       Band.all
     end
@@ -389,11 +413,12 @@ describe Mongoid::Criteria::Scopable do
     end
 
     it "returns the scoping options" do
-      expect(criteria.scoping_options).to eq([true, false])
+      expect(criteria.scoping_options).to eq([ true, false ])
     end
   end
 
   describe "#scoping_options=" do
+
     let(:criteria) do
       Band.all
     end
@@ -412,6 +437,7 @@ describe Mongoid::Criteria::Scopable do
   end
 
   describe ".unscoped" do
+
     let(:empty) do
       Mongoid::Criteria.new(Band)
     end
@@ -421,7 +447,7 @@ describe Mongoid::Criteria::Scopable do
     end
 
     before do
-      Band.default_scope -> { criteria }
+      Band.default_scope ->{ criteria }
     end
 
     after do
@@ -429,6 +455,7 @@ describe Mongoid::Criteria::Scopable do
     end
 
     context "when called directly" do
+
       let(:unscoped) do
         empty.unscoped
       end
@@ -438,6 +465,7 @@ describe Mongoid::Criteria::Scopable do
       end
 
       context "when chained after a scoped criteria" do
+
         let(:unscoped) do
           empty.scoped.unscoped
         end
@@ -449,7 +477,9 @@ describe Mongoid::Criteria::Scopable do
     end
 
     context "when used with a block" do
+
       context "when a criteria is called in the block" do
+
         it "does not allow default scoping to be added in the block" do
           Band.unscoped do
             expect(empty.skip(10).selector).to be_empty
@@ -458,6 +488,7 @@ describe Mongoid::Criteria::Scopable do
       end
 
       context "when a call is made to scoped in the block" do
+
         it "does not allow default scoping to be added in the block" do
           Band.unscoped do
             expect(empty.scoped.selector).to be_empty
@@ -466,8 +497,9 @@ describe Mongoid::Criteria::Scopable do
       end
 
       context "when a named scope is called in the block" do
+
         before do
-          Band.scope(:skipped, -> { Band.skip(10) })
+          Band.scope(:skipped, ->{ Band.skip(10) })
         end
 
         after do
@@ -517,12 +549,12 @@ describe Mongoid::Criteria::Scopable do
     class ArgumentScopeWhereModel
       include Mongoid::Document
 
-      scope :my_text_search, ->(search) { where('$text' => { '$search' => search }) }
+      scope :my_text_search, ->(search) { where('$text' => {'$search' => search}) }
     end
 
     shared_examples_for 'restricts to both' do
       it 'restricts to both' do
-        expect(result.selector['$text']).to eq({ '$search' => 'bar' })
+        expect(result.selector['$text']).to eq({'$search' => 'bar'})
         expect(result.selector['hello']).to eq('world')
       end
     end
@@ -549,7 +581,7 @@ describe Mongoid::Criteria::Scopable do
 
     shared_examples_for 'restricts to both' do
       it 'restricts to both' do
-        expect(result.selector['$text']).to eq({ '$search' => 'bar' })
+        expect(result.selector['$text']).to eq({'$search' => 'bar'})
         expect(result.selector['hello']).to eq('world')
       end
     end

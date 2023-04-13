@@ -3,42 +3,50 @@
 require "spec_helper"
 
 describe Mongoid::Extensions::Set do
+
   describe "#demongoize" do
+
     it "returns the set if Array" do
-      expect(Set.demongoize(["test"])).to eq(Set.new(["test"]))
+      expect(Set.demongoize([ "test" ])).to eq(Set.new([ "test" ]))
     end
   end
 
   describe ".mongoize" do
+
     it "returns an array" do
-      expect(Set.mongoize(["test"])).to eq(["test"])
+      expect(Set.mongoize([ "test" ])).to eq([ "test" ])
     end
 
     it "returns an array even if the value is a set" do
-      expect(Set.mongoize(Set.new(["test"]))).to eq(["test"])
+      expect(Set.mongoize(Set.new([ "test" ]))).to eq([ "test" ])
     end
   end
 
   describe ".demongoize" do
+
     context "when passing an array" do
+
       it "returns a set" do
-        expect(Set.demongoize(["test"])).to eq(["test"].to_set)
+        expect(Set.demongoize([ "test" ])).to eq([ "test" ].to_set)
       end
     end
 
     context "when passing a set" do
+
       it "returns a set " do
-        expect(Set.demongoize(Set.new(["test"]))).to eq(["test"].to_set)
+        expect(Set.demongoize(Set.new([ "test" ]))).to eq([ "test" ].to_set)
       end
     end
 
     context "when passing nil" do
+
       it "returns nil" do
         expect(Set.demongoize(nil)).to be_nil
       end
     end
 
     context "when passing an uncastable value" do
+
       it "returns nil" do
         expect(Set.demongoize("bogus")).to be_nil
       end
@@ -46,12 +54,13 @@ describe Mongoid::Extensions::Set do
   end
 
   describe "#mongoize" do
+
     let(:set) do
-      Set.new(["test"])
+      Set.new([ "test" ])
     end
 
     it "returns an array" do
-      expect(set.mongoize).to eq(["test"])
+      expect(set.mongoize).to eq([ "test" ])
     end
 
     context "when there are mongoizable values in the container" do
@@ -64,8 +73,9 @@ describe Mongoid::Extensions::Set do
       end
 
       context "when the input is an array" do
+
         let(:input) do
-          [date]
+          [ date ]
         end
 
         it "mongoizes to a set" do
@@ -83,7 +93,7 @@ describe Mongoid::Extensions::Set do
 
       context "when the input is a set" do
         let(:input) do
-          [date].to_set
+          [ date ].to_set
         end
 
         it "mongoizes to a set" do
@@ -107,21 +117,21 @@ describe Mongoid::Extensions::Set do
 
       context "when the input is a set" do
         let(:input) do
-          [1, 2, 3, 4].map(&:to_d).to_set
+          [ 1, 2, 3, 4 ].map(&:to_d).to_set
         end
 
         it "removes duplicates" do
-          expect(mongoized).to eq([1])
+          expect(mongoized).to eq([ 1 ])
         end
       end
 
       context "when the input is an array" do
         let(:input) do
-          [1, 2, 3, 4].map(&:to_d)
+          [ 1, 2, 3, 4 ].map(&:to_d)
         end
 
         it "removes duplicates" do
-          expect(mongoized).to eq([1])
+          expect(mongoized).to eq([ 1 ])
         end
       end
     end

@@ -2,9 +2,11 @@
 
 module Mongoid
   module Errors
+
     # This error is raised when no clients exists in the database
     # configuration.
     class NoClientsConfig < MongoidError
+
       # Create the new error.
       #
       # @example Create the error.

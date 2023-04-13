@@ -2,9 +2,11 @@
 
 module Mongoid
   module Errors
+
     # This error is raised when a bad async query executor option is attempted
     # to be set.
     class InvalidQueryExecutor < MongoidError
+
       # Create the new error.
       #
       # @param [ Symbol | String ] executor The attempted async query executor.

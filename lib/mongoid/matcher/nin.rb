@@ -1,11 +1,13 @@
 module Mongoid
   module Matcher
+
     # In-memory matcher for $nin expression.
     #
     # @see https://www.mongodb.com/docs/manual/reference/operator/query/nin/
     #
     # @api private
     module Nin
+
       # Returns whether a value satisfies a $nin expression.
       #
       # @param [ true | false ] exists Whether the value exists.

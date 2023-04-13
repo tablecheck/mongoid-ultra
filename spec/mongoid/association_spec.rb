@@ -3,17 +3,19 @@
 require "spec_helper"
 
 describe Mongoid::Association do
+
   before(:all) do
     Person.field(
       :_id,
       type: BSON::ObjectId,
       pre_processed: true,
-      default: -> { BSON::ObjectId.new },
+      default: ->{ BSON::ObjectId.new },
       overwrite: true
     )
   end
 
   describe "#embedded?" do
+
     let(:person) do
       Person.new
     end
@@ -23,6 +25,7 @@ describe Mongoid::Association do
     end
 
     context "when the document has a parent" do
+
       before do
         document.parentize(person)
       end
@@ -33,13 +36,16 @@ describe Mongoid::Association do
     end
 
     context "when the document has no parent" do
+
       context "when the document is embedded in" do
+
         it "returns true" do
           expect(document).to be_embedded
         end
       end
 
       context "when the document class is not embedded in" do
+
         it "returns false" do
           expect(person).to_not be_embedded
         end
@@ -47,7 +53,9 @@ describe Mongoid::Association do
     end
 
     context "when the document is subclassed" do
+
       context "when the document has no parent" do
+
         it "returns false" do
           expect(Item).to_not be_embedded
         end
@@ -55,7 +63,9 @@ describe Mongoid::Association do
     end
 
     context "when the document is a subclass" do
+
       context "when the document has a parent" do
+
         it "returns true" do
           expect(SubItem).to be_embedded
         end
@@ -64,11 +74,13 @@ describe Mongoid::Association do
   end
 
   describe "#embedded_many?" do
+
     let(:person) do
       Person.new
     end
 
     context "when the document is in an embeds_many" do
+
       let(:address) do
         person.addresses.build
       end
@@ -79,6 +91,7 @@ describe Mongoid::Association do
     end
 
     context "when the document is not in an embeds_many" do
+
       let(:name) do
         person.build_name(first_name: "Test")
       end
@@ -90,11 +103,13 @@ describe Mongoid::Association do
   end
 
   describe "#embedded_one?" do
+
     let(:person) do
       Person.new
     end
 
     context "when the document is in an embeds_one" do
+
       let(:name) do
         person.build_name(first_name: "Test")
       end
@@ -105,6 +120,7 @@ describe Mongoid::Association do
     end
 
     context "when the document is not in an embeds_one" do
+
       let(:address) do
         person.addresses.build
       end
@@ -116,11 +132,13 @@ describe Mongoid::Association do
   end
 
   describe "#referenced_many?" do
+
     let(:person) do
       Person.new
     end
 
     context "when the document is in an references_many" do
+
       let(:post) do
         person.posts.build
       end
@@ -131,6 +149,7 @@ describe Mongoid::Association do
     end
 
     context "when the document is not in an references_many" do
+
       let(:game) do
         person.build_game(score: 1)
       end
@@ -142,11 +161,13 @@ describe Mongoid::Association do
   end
 
   describe "#referenced_one?" do
+
     let(:person) do
       Person.new
     end
 
     context "when the document is in an references_one" do
+
       let(:game) do
         person.build_game(score: 1)
       end
@@ -157,6 +178,7 @@ describe Mongoid::Association do
     end
 
     context "when the document is not in an references_one" do
+
       let(:post) do
         person.posts.build
       end

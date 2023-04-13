@@ -3,8 +3,11 @@
 require "spec_helper"
 
 describe String do
+
   describe "#__evolve_date__" do
+
     context "when the string is verbose" do
+
       let(:date) do
         "1st Jan 2010"
       end
@@ -19,6 +22,7 @@ describe String do
     end
 
     context "when the string is in international format" do
+
       let(:date) do
         "2010-1-1"
       end
@@ -34,7 +38,9 @@ describe String do
   end
 
   describe "#__evolve_time__" do
+
     context "when the string is verbose" do
+
       let(:date) do
         "1st Jan 2010 12:00:00+01:00"
       end
@@ -49,6 +55,7 @@ describe String do
     end
 
     context "when the string is in international format" do
+
       let(:date) do
         "2010-01-01 12:00:00+01:00"
       end
@@ -63,6 +70,7 @@ describe String do
     end
 
     context "when the string without timezone" do
+
       context "when setting ActiveSupport time zone" do
         time_zone_override "Tokyo"
 
@@ -82,7 +90,9 @@ describe String do
   end
 
   describe "#__sort_option__" do
+
     context "when the string contains ascending" do
+
       let(:option) do
         "field_one ascending, field_two ascending".__sort_option__
       end
@@ -93,6 +103,7 @@ describe String do
     end
 
     context "when the string contains asc" do
+
       let(:option) do
         "field_one asc, field_two asc".__sort_option__
       end
@@ -103,6 +114,7 @@ describe String do
     end
 
     context "when the string contains ASCENDING" do
+
       let(:option) do
         "field_one ASCENDING, field_two ASCENDING".__sort_option__
       end
@@ -113,6 +125,7 @@ describe String do
     end
 
     context "when the string contains ASC" do
+
       let(:option) do
         "field_one ASC, field_two ASC".__sort_option__
       end
@@ -123,6 +136,7 @@ describe String do
     end
 
     context "when the string contains descending" do
+
       let(:option) do
         "field_one descending, field_two descending".__sort_option__
       end
@@ -133,6 +147,7 @@ describe String do
     end
 
     context "when the string contains desc" do
+
       let(:option) do
         "field_one desc, field_two desc".__sort_option__
       end
@@ -143,6 +158,7 @@ describe String do
     end
 
     context "when the string contains DESCENDING" do
+
       let(:option) do
         "field_one DESCENDING, field_two DESCENDING".__sort_option__
       end
@@ -153,6 +169,7 @@ describe String do
     end
 
     context "when the string contains DESC" do
+
       let(:option) do
         "field_one DESC, field_two DESC".__sort_option__
       end
@@ -164,6 +181,7 @@ describe String do
   end
 
   describe "#__expr_part__" do
+
     let(:specified) do
       "field".__expr_part__(10)
     end
@@ -173,6 +191,7 @@ describe String do
     end
 
     context "with a regexp" do
+
       let(:specified) do
         "field".__expr_part__(/test/)
       end
@@ -180,10 +199,13 @@ describe String do
       it "returns the symbol with the value" do
         expect(specified).to eq({ "field" => /test/ })
       end
+
     end
 
     context "when negated" do
+
       context "with a regexp" do
+
         let(:specified) do
           "field".__expr_part__(/test/, true)
         end
@@ -191,22 +213,26 @@ describe String do
         it "returns the string with the value negated" do
           expect(specified).to eq({ "field" => { "$not" => /test/ } })
         end
+
       end
 
       context "with anything else" do
+
         let(:specified) do
           "field".__expr_part__('test', true)
         end
 
         it "returns the string with the value negated" do
-          expect(specified).to eq({ "field" => { "$ne" => "test" } })
+          expect(specified).to eq({ "field" => { "$ne" => "test" }})
         end
       end
     end
   end
 
   describe ".evolve" do
+
     context "when provided a regex" do
+
       let(:regex) do
         /\A[123]/.freeze
       end
@@ -221,6 +247,7 @@ describe String do
     end
 
     context "when provided an object" do
+
       let(:object) do
         1234
       end

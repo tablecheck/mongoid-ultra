@@ -4,6 +4,7 @@ module Mongoid
   module Association
     module Embedded
       class EmbeddedIn
+
         # Transparent proxy for embedded_in associations.
         # An instance of this class is returned when calling the
         # association getter method on the child document. This
@@ -11,6 +12,7 @@ module Mongoid
         # most of its methods to the target of the association, i.e.
         # the parent document.
         class Proxy < Association::One
+
           # Instantiate a new embedded_in association.
           #
           # @example Create the new association.

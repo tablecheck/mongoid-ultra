@@ -3,7 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Timestamps::Updated::Short do
+
   describe ".included" do
+
     let(:agent) do
       ShortAgent.new
     end
@@ -39,7 +41,9 @@ describe Mongoid::Timestamps::Updated::Short do
   end
 
   context "when the document is new" do
+
     context "when providing the timestamp" do
+
       let(:time) do
         Time.new(2012, 1, 1)
       end
@@ -59,6 +63,7 @@ describe Mongoid::Timestamps::Updated::Short do
   end
 
   context "when the document has not changed" do
+
     let(:agent) do
       ShortAgent.instantiate("_id" => BSON::ObjectId.new, "account_ids" => [])
     end
@@ -74,6 +79,7 @@ describe Mongoid::Timestamps::Updated::Short do
   end
 
   context "when the document is created" do
+
     let(:agent) do
       ShortAgent.create!
     end

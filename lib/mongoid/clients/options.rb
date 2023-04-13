@@ -2,6 +2,7 @@
 
 module Mongoid
   module Clients
+
     # Mixin module included into Mongoid::Document which gives
     # the ability to manage the database context for persistence
     # and query operations. For example, this includes saving
@@ -83,8 +84,8 @@ module Mongoid
           _root.persistence_context
         else
           PersistenceContext.get(self) ||
-            PersistenceContext.get(self.class) ||
-            PersistenceContext.new(self.class)
+              PersistenceContext.get(self.class) ||
+              PersistenceContext.new(self.class)
         end
       end
 
@@ -117,6 +118,7 @@ module Mongoid
       end
 
       module ClassMethods
+
         # Get the database client name for the current persistence context
         # of the document class.
         #

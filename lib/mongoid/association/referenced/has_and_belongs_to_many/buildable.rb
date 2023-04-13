@@ -4,8 +4,10 @@ module Mongoid
   module Association
     module Referenced
       class HasAndBelongsToMany
+
         # The Builder behavior for has_and_belongs_to_many associations.
         module Buildable
+
           # This builder either takes a hash and queries for the
           # object or an array of documents, where it will just return them.
           #

@@ -2,6 +2,7 @@
 
 module Mongoid
   module Errors
+
     # Raised when trying to set a polymorphic "references in" association to a
     # model with multiple "references many/one" associations pointing to that
     # first model.
@@ -24,6 +25,7 @@ module Mongoid
     #   face = Face.new
     #   eye.eyeable = face # Raises error
     class InvalidSetPolymorphicRelation < MongoidError
+
       # Create the new invalid set polymorphic association error.
       #
       # @example Create the error.

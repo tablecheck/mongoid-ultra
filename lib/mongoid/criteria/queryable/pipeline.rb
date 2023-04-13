@@ -3,8 +3,10 @@
 module Mongoid
   class Criteria
     module Queryable
+
       # Represents an aggregation pipeline.
       class Pipeline < Array
+
         # @attribute [r] aliases The field aliases.
         attr_reader :aliases
 

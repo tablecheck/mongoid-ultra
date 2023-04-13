@@ -3,6 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Criteria::Queryable::Extensions::Numeric::ClassMethods do
+
   let(:host) do
     Class.new do
       include Mongoid::Criteria::Queryable::Extensions::Numeric::ClassMethods

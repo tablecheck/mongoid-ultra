@@ -3,7 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Errors::InvalidStorageOptions do
+
   describe "#message" do
+
     let(:error) do
       described_class.new(Band, :bad_option)
     end

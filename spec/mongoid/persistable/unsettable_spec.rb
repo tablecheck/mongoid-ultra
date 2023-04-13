@@ -3,9 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Persistable::Unsettable do
+
   describe "#unset" do
+
     context "when the document is a root document" do
+
       shared_examples_for "an unsettable root document" do
+
         it "unsets the first field" do
           expect(person.title).to be_nil
         end
@@ -40,6 +44,7 @@ describe Mongoid::Persistable::Unsettable do
       end
 
       context "when provided a splat of symbols" do
+
         let!(:unset) do
           person.unset(:title, :age)
         end
@@ -48,6 +53,7 @@ describe Mongoid::Persistable::Unsettable do
       end
 
       context "when provided a splat of strings" do
+
         let!(:unset) do
           person.unset("title", "age")
         end
@@ -56,16 +62,18 @@ describe Mongoid::Persistable::Unsettable do
       end
 
       context "when provided an array of symbols" do
+
         let!(:unset) do
-          person.unset([:title, :age])
+          person.unset([ :title, :age ])
         end
 
         it_behaves_like "an unsettable root document"
       end
 
       context "when provided an array of strings" do
+
         let!(:unset) do
-          person.unset(["title", "age"])
+          person.unset([ "title", "age" ])
         end
 
         it_behaves_like "an unsettable root document"
@@ -73,7 +81,9 @@ describe Mongoid::Persistable::Unsettable do
     end
 
     context "when the document is embedded" do
+
       shared_examples_for "an unsettable embedded document" do
+
         it "unsets the first field" do
           expect(address.number).to be_nil
         end
@@ -108,6 +118,7 @@ describe Mongoid::Persistable::Unsettable do
       end
 
       context "when provided a splat of symbols" do
+
         let!(:unset) do
           address.unset(:number, :city)
         end
@@ -116,6 +127,7 @@ describe Mongoid::Persistable::Unsettable do
       end
 
       context "when provided a splat of strings" do
+
         let!(:unset) do
           address.unset("number", "city")
         end
@@ -124,16 +136,18 @@ describe Mongoid::Persistable::Unsettable do
       end
 
       context "when provided an array of symbols" do
+
         let!(:unset) do
-          address.unset([:number, :city])
+          address.unset([ :number, :city ])
         end
 
         it_behaves_like "an unsettable embedded document"
       end
 
       context "when provided an array of strings" do
+
         let!(:unset) do
-          address.unset(["number", "city"])
+          address.unset([ "number", "city" ])
         end
 
         it_behaves_like "an unsettable embedded document"
@@ -141,6 +155,7 @@ describe Mongoid::Persistable::Unsettable do
     end
 
     context "when executing atomically" do
+
       let(:person) do
         Person.create!(title: "sir", age: 30)
       end
@@ -148,12 +163,13 @@ describe Mongoid::Persistable::Unsettable do
       it "marks a dirty change for the unset fields" do
         person.atomically do
           person.unset :title
-          expect(person.changes).to eq({ "title" => ["sir", nil] })
+          expect(person.changes).to eq({"title" => ["sir", nil]})
         end
       end
     end
 
     context "when executing on a readonly document" do
+
       let(:person) do
         Person.create!(title: "sir", age: 30)
       end

@@ -3,9 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Persistable::Renamable do
+
   describe "#rename" do
+
     context "when the document is a root document" do
+
       shared_examples_for "a renamable root document" do
+
         it "renames the first field" do
           expect(person.salutation).to eq("sir")
         end
@@ -56,6 +60,7 @@ describe Mongoid::Persistable::Renamable do
       end
 
       context "when provided symbol names" do
+
         let!(:rename) do
           person.rename(title: :salutation, dob: :date_of_birth)
         end
@@ -64,6 +69,7 @@ describe Mongoid::Persistable::Renamable do
       end
 
       context "when provided string names" do
+
         let!(:rename) do
           person.rename(title: "salutation", dob: "date_of_birth")
         end
@@ -73,7 +79,9 @@ describe Mongoid::Persistable::Renamable do
     end
 
     context "when the document is embedded" do
+
       shared_examples_for "a renamable embedded document" do
+
         it "renames the first field" do
           expect(name.mi).to eq("blah")
         end
@@ -108,6 +116,7 @@ describe Mongoid::Persistable::Renamable do
       end
 
       context "when provided symbol names" do
+
         let!(:rename) do
           name.rename(middle: :mi)
         end
@@ -116,6 +125,7 @@ describe Mongoid::Persistable::Renamable do
       end
 
       context "when provided string names" do
+
         let!(:rename) do
           name.rename(middle: "mi")
         end
@@ -125,6 +135,7 @@ describe Mongoid::Persistable::Renamable do
     end
 
     context "when executing atomically" do
+
       let(:person) do
         Person.create!(title: "sir")
       end
@@ -132,12 +143,13 @@ describe Mongoid::Persistable::Renamable do
       it "marks a dirty change for the renamed fields" do
         person.atomically do
           person.rename title: :salutation
-          expect(person.changes).to eq({ "title" => ["sir", nil], "salutation" => [nil, "sir"] })
+          expect(person.changes).to eq({"title" => ["sir", nil], "salutation" => [nil, "sir"]})
         end
       end
     end
 
     context "when executing on a readonly document" do
+
       let(:person) do
         Person.create!(title: "sir")
       end

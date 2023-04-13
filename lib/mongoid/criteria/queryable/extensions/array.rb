@@ -4,8 +4,10 @@ module Mongoid
   class Criteria
     module Queryable
       module Extensions
+
         # Adds query type-casting behavior to Array class.
         module Array
+
           # Combine the two objects using the add strategy.
           #
           # @example Add the object to the array.
@@ -117,10 +119,11 @@ module Mongoid
           #
           # @return [ Array ] The multi-dimensional array.
           def multi
-            first.is_a?(::Symbol) || first.is_a?(::String) ? [self] : self
+            first.is_a?(::Symbol) || first.is_a?(::String) ? [ self ] : self
           end
 
           module ClassMethods
+
             # Evolve the object when the serializer is defined as an array.
             #
             # @example Evolve the object.

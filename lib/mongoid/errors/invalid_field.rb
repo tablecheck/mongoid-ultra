@@ -2,9 +2,11 @@
 
 module Mongoid
   module Errors
+
     # This error is raised when trying to create a field that conflicts with
     # an already defined method.
     class InvalidField < MongoidError
+
       # Create the new error.
       #
       # @example Create the error.
@@ -56,7 +58,7 @@ module Mongoid
       # @return [ Array<String, Integer> ] The location of the method.
       def location(klass, name)
         @location ||=
-          (klass.instance_method(name).source_location || ["Unknown", 0])
+          (klass.instance_method(name).source_location || [ "Unknown", 0 ])
       end
     end
   end

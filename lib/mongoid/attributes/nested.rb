@@ -2,6 +2,7 @@
 
 module Mongoid
   module Attributes
+
     # Defines behavior around that lovel Rails feature nested attributes.
     module Nested
       extend ActiveSupport::Concern
@@ -12,7 +13,8 @@ module Mongoid
       end
 
       module ClassMethods
-        REJECT_ALL_BLANK_PROC = ->(attributes) {
+
+        REJECT_ALL_BLANK_PROC = ->(attributes){
           attributes.all? { |key, value| key == '_destroy' || value.blank? }
         }
 
@@ -52,7 +54,6 @@ module Mongoid
             self.nested_attributes["#{name}_attributes"] = meth
             association = relations[name.to_s]
             raise Errors::NestedAttributesMetadataNotFound.new(self, name) unless association
-
             autosave_nested_attributes(association) if options[:autosave]
 
             re_define_method(meth) do |attrs|

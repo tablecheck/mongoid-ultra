@@ -2,12 +2,14 @@
 
 module Mongoid
   module Contextual
+
     # Mixin module included in Mongoid::Criteria which provides a
     # direct method interface to MongoDB's Update Operators ($set,
     # $pull, $inc, etc.) These operators can be applied to update
     # all documents in the database within the criteria scope,
     # without loading each document into Mongoid's memory.
     module Atomic
+
       # Execute an atomic $addToSet on the matching documents.
       #
       # @example Add the value to the set.
@@ -231,7 +233,7 @@ module Mongoid
       #
       # @param [ Array | Hash ] ops The operations to collect.
       # @param [ Hash ] aggregator The hash to use to aggregate the operations.
-      #
+      # 
       # @return [ Hash ] The aggregated operations, by field.
       def collect_operations(ops, aggregator = {})
         ops.each_with_object(aggregator) do |(field, value), operations|

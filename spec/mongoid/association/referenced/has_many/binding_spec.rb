@@ -3,6 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Association::Referenced::HasMany::Binding do
+
   let(:person) do
     Person.new
   end
@@ -12,7 +13,7 @@ describe Mongoid::Association::Referenced::HasMany::Binding do
   end
 
   let(:target) do
-    Mongoid::Association::Referenced::HasMany::Enumerable.new([post])
+    Mongoid::Association::Referenced::HasMany::Enumerable.new([ post ])
   end
 
   let(:association) do
@@ -20,11 +21,13 @@ describe Mongoid::Association::Referenced::HasMany::Binding do
   end
 
   describe "#bind_one" do
+
     let(:binding) do
       described_class.new(person, target, association)
     end
 
     context "when the document is bindable" do
+
       let(:post_two) do
         Post.new
       end
@@ -43,6 +46,7 @@ describe Mongoid::Association::Referenced::HasMany::Binding do
     end
 
     context "when the document is not bindable" do
+
       it "does nothing" do
         expect(person.posts).to receive(:<<).never
         binding.bind_one(post)
@@ -51,11 +55,13 @@ describe Mongoid::Association::Referenced::HasMany::Binding do
   end
 
   describe "#unbind_one" do
+
     let(:binding) do
       described_class.new(person, target, association)
     end
 
     context "when the documents are unbindable" do
+
       before do
         binding.bind_one(target.first)
         expect(person).to receive(:delete).never
@@ -73,6 +79,7 @@ describe Mongoid::Association::Referenced::HasMany::Binding do
     end
 
     context "when the documents are not unbindable" do
+
       it "does nothing" do
         expect(person).to receive(:posts=).never
         binding.unbind_one(target.first)
@@ -81,11 +88,13 @@ describe Mongoid::Association::Referenced::HasMany::Binding do
   end
 
   context "when binding frozen documents" do
+
     let(:person) do
       Person.new
     end
 
     context "when the child is frozen" do
+
       let(:post) do
         Post.new.freeze
       end
@@ -101,11 +110,13 @@ describe Mongoid::Association::Referenced::HasMany::Binding do
   end
 
   context "when unbinding frozen documents" do
+
     let(:person) do
       Person.new
     end
 
     context "when the child is frozen" do
+
       let(:post) do
         Post.new
       end
@@ -123,6 +134,7 @@ describe Mongoid::Association::Referenced::HasMany::Binding do
   end
 
   context "when the inverse relation can not be determined" do
+
     let(:person) do
       Person.new
     end
@@ -132,6 +144,7 @@ describe Mongoid::Association::Referenced::HasMany::Binding do
     end
 
     context "when adding the document" do
+
       it "raises an error" do
         expect {
           person.posts << band

@@ -8,6 +8,7 @@ require 'mongoid/association/referenced/has_and_belongs_to_many/eager'
 module Mongoid
   module Association
     module Referenced
+
       # The HasAndBelongsToMany type association.
       class HasAndBelongsToMany
         include Relatable
@@ -18,20 +19,20 @@ module Mongoid
         #
         # @return [ Array<Symbol> ] The extra valid options.
         ASSOCIATION_OPTIONS = [
-          :after_add,
-          :after_remove,
-          :autosave,
-          :before_add,
-          :before_remove,
-          :counter_cache,
-          :dependent,
-          :foreign_key,
-          :index,
-          :order,
-          :primary_key,
-          :inverse_primary_key,
-          :inverse_foreign_key,
-          :scope,
+            :after_add,
+            :after_remove,
+            :autosave,
+            :before_add,
+            :before_remove,
+            :counter_cache,
+            :dependent,
+            :foreign_key,
+            :index,
+            :order,
+            :primary_key,
+            :inverse_primary_key,
+            :inverse_foreign_key,
+            :scope,
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -54,7 +55,7 @@ module Mongoid
         #
         # @return [ Array<Mongoid::Association::Relatable> ] The association complements.
         def relation_complements
-          @relation_complements ||= [self.class].freeze
+          @relation_complements ||= [ self.class ].freeze
         end
 
         # Setup the instance methods, fields, etc. on the association owning class.
@@ -210,8 +211,8 @@ module Mongoid
         def synced_destroy
           assoc = self
           inverse_class.set_callback(
-            :destroy,
-            :after
+              :destroy,
+              :after
           ) do |doc|
             doc.remove_inverse_keys(assoc)
           end
@@ -220,9 +221,9 @@ module Mongoid
         def synced_save
           assoc = self
           inverse_class.set_callback(
-            :persist_parent,
-            :after,
-            if: ->(doc) { doc._syncable?(assoc) }
+              :persist_parent,
+              :after,
+              if: ->(doc){ doc._syncable?(assoc) }
           ) do |doc|
             doc.update_inverse_keys(assoc)
           end
@@ -231,24 +232,24 @@ module Mongoid
         def create_foreign_key_field!
           inverse_class.aliased_associations[foreign_key] = name.to_s
           @owner_class.field(
-            foreign_key,
-            type: FOREIGN_KEY_FIELD_TYPE,
-            identity: true,
-            overwrite: true,
-            association: self,
-            default: nil
+              foreign_key,
+              type: FOREIGN_KEY_FIELD_TYPE,
+              identity: true,
+              overwrite: true,
+              association: self,
+              default: nil
           )
         end
 
         def determine_inverses(other)
           matches = (other || relation_class).relations.values.select do |rel|
             relation_complements.include?(rel.class) &&
-              rel.relation_class_name == inverse_class_name
+                rel.relation_class_name == inverse_class_name
+
           end
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
-
           matches.collect { |m| m.name } unless matches.blank?
         end
 
@@ -263,11 +264,11 @@ module Mongoid
         def query_criteria(id_list)
           crit = relation_class.criteria
           crit = if id_list
-                   crit = crit.apply_scope(scope)
-                   crit.all_of(primary_key => { "$in" => id_list })
-                 else
-                   crit.none
-                 end
+            crit = crit.apply_scope(scope)
+            crit.all_of(primary_key => { "$in" => id_list })
+          else
+            crit.none
+          end
           with_ordering(crit)
         end
       end

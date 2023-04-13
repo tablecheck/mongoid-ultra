@@ -4,7 +4,9 @@ require "spec_helper"
 require_relative '../embeds_many_models'
 
 describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
+
   describe "#===" do
+
     let(:base) do
       Name.new
     end
@@ -22,13 +24,16 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
     end
 
     context "when the proxied document is same class" do
+
       context "when the document is a different instance" do
+
         it "returns false" do
           expect((relation === Person.new)).to be false
         end
       end
 
       context "when the document is the same instance" do
+
         it "returns true" do
           expect((relation === target)).to be true
         end
@@ -37,8 +42,11 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
   end
 
   describe "#=" do
+
     context "when the inverse of an embeds one" do
+
       context "when the child is a new record" do
+
         let(:person) do
           Person.new
         end
@@ -69,6 +77,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
       end
 
       context "when the parent is not a new record" do
+
         let(:person) do
           Person.create!
         end
@@ -100,7 +109,9 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
     end
 
     context "when the inverse of an embeds many" do
+
       context "when the child is a new record" do
+
         let(:person) do
           Person.new
         end
@@ -118,7 +129,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
         end
 
         it "appends the base on the inverse relation" do
-          expect(person.addresses).to eq([address])
+          expect(person.addresses).to eq([ address ])
         end
 
         it "sets the same instance in the inverse relation" do
@@ -131,6 +142,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
       end
 
       context "when the parent is not a new record" do
+
         let!(:person) do
           Person.create!
         end
@@ -152,15 +164,18 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
         end
 
         it "appends the base on the inverse relation" do
-          expect(person.addresses).to eq([address])
+          expect(person.addresses).to eq([ address ])
         end
       end
     end
   end
 
   describe "#= nil" do
+
     context "when the inverse of an embeds one" do
+
       context "when the parent is a new record" do
+
         let(:person) do
           Person.new
         end
@@ -184,6 +199,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
       end
 
       context "when the inverse is already nil" do
+
         let(:person) do
           Person.new
         end
@@ -206,6 +222,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
       end
 
       context "when the documents are not new records" do
+
         let(:person) do
           Person.create!
         end
@@ -234,7 +251,9 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
     end
 
     context "when the inverse of an embeds many" do
+
       context "when the parent is a new record" do
+
         let(:person) do
           Person.new
         end
@@ -258,6 +277,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
       end
 
       context "when the inverse is already nil" do
+
         let(:address) do
           Address.new
         end
@@ -272,6 +292,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
       end
 
       context "when the documents are not new records" do
+
         let(:person) do
           Person.create!
         end
@@ -299,6 +320,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
       end
 
       context "when a child already exists on the parent" do
+
         let(:person) do
           Person.create!
         end
@@ -312,7 +334,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
         end
 
         before do
-          person.addresses = [address_one, address_two]
+          person.addresses = [ address_one, address_two ]
           address_one.addressable = nil
         end
 
@@ -321,7 +343,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
         end
 
         it "removed the inverse relation" do
-          expect(person.addresses).to eq([address_two])
+          expect(person.addresses).to eq([ address_two ])
         end
 
         it "deletes the child document" do
@@ -336,12 +358,14 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
   end
 
   describe ".embedded?" do
+
     it "returns true" do
       expect(described_class).to be_embedded
     end
   end
 
   describe "#respond_to?" do
+
     let(:person) do
       Person.new
     end
@@ -355,7 +379,9 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
     end
 
     Mongoid::Document.public_instance_methods(true).each do |method|
+
       context "when checking #{method}" do
+
         it "returns true" do
           expect(document.respond_to?(method)).to be true
         end
@@ -364,6 +390,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
   end
 
   context "when creating the tree through initialization" do
+
     let!(:person) do
       Person.create!
     end
@@ -398,12 +425,13 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
 
     it "has the locations in the association array" do
       expect(Person.last.addresses.last.locations).to eq(
-        [first_location, second_location]
-      )
+                                                          [first_location, second_location]
+                                                      )
     end
   end
 
   context "when instantiating a new child with a persisted parent" do
+
     let!(:person) do
       Person.create!
     end
@@ -426,6 +454,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
   end
 
   context "when replacing the relation with another" do
+
     let!(:person) do
       Person.create!
     end
@@ -460,6 +489,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
     end
 
     context "when reloading" do
+
       before do
         person.reload
       end
@@ -479,12 +509,15 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
   end
 
   context "when the same class is embedded multiple times; embeds_one" do
+
     let(:customer) do
       Customer.new
     end
 
     context "assignment after saving" do
+
       it "correctly sets the association for the embedded class" do
+
         customer.home_address = CustomerAddress.new
         customer.work_address = CustomerAddress.new
 
@@ -511,6 +544,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
     end
 
     context "inverse assignment" do
+
       it "raises an error when trying to set the association" do
         customer.work_address = CustomerAddress.new
 
@@ -521,6 +555,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
     end
 
     context "when there is an explicit inverse_of" do
+
       let(:customer) { EmmCustomer.new }
 
       it "correctly sets the association for the embedded class" do
@@ -536,12 +571,15 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
   end
 
   context "when the same class is embedded multiple times; embeds_many" do
+
     let(:customer) do
       EmmCustomer.new
     end
 
     context "assignment after saving" do
+
       it "correctly sets the association for the embedded class" do
+
         customer.close_friends = [EmmFriend.new]
         customer.acquaintances = [EmmFriend.new]
 
@@ -568,6 +606,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
     end
 
     context "inverse assignment" do
+
       it "raises an error when trying to set the association" do
         customer.acquaintances = [EmmFriend.new]
 

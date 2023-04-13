@@ -2,8 +2,10 @@
 
 module Mongoid
   module Extensions
+
     # Adds type-casting behavior to Symbol class.
     module Symbol
+
       # Is the symbol a valid value for a Mongoid id?
       #
       # @example Is the string an id value?
@@ -15,6 +17,7 @@ module Mongoid
       end
 
       module ClassMethods
+
         # Turn the object from the ruby type we deal with to a Mongo friendly
         # type.
         #

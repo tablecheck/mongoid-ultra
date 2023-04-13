@@ -4,8 +4,10 @@ module Mongoid
   class Criteria
     module Queryable
       module Extensions
+
         # Adds query type-casting behavior to Regexp class.
         module Regexp
+
           # Is the object a regexp?
           #
           # @example Is the object a regex?
@@ -15,6 +17,7 @@ module Mongoid
           def regexp?; true; end
 
           module ClassMethods
+
             # Evolve the object into a regex.
             #
             # @example Evolve the object to a regex.
@@ -32,6 +35,7 @@ module Mongoid
 
           # Adds query type-casting behavior to BSON::Regexp::Raw class.
           module Raw_
+
             # Is the object a regexp?
             #
             # @example Is the object a regex?
@@ -41,6 +45,7 @@ module Mongoid
             def regexp?; true; end
 
             module ClassMethods
+
               # Evolve the object into a raw bson regex.
               #
               # @example Evolve the object to a regex.
@@ -62,7 +67,7 @@ module Mongoid
   end
 end
 
-::Regexp.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Regexp)
+::Regexp.__send__(:include,Mongoid::Criteria::Queryable::Extensions::Regexp)
 ::Regexp.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Regexp::ClassMethods)
-BSON::Regexp::Raw.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Regexp::Raw_)
+BSON::Regexp::Raw.__send__(:include,Mongoid::Criteria::Queryable::Extensions::Regexp::Raw_)
 BSON::Regexp::Raw.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Regexp::Raw_::ClassMethods)

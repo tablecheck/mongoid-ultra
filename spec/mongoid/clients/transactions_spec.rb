@@ -64,6 +64,7 @@ describe Mongoid::Clients::Sessions do
   end
 
   context 'when a transaction is used on a model class' do
+
     context 'when transactions are supported' do
       require_transaction_support
 
@@ -203,8 +204,8 @@ describe Mongoid::Clients::Sessions do
               expect(Person.count).to be(2)
               expect(Post.count).to be(1)
               expect(insert_events_txn_numbers.size).to eq(2)
-              expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(0)
-              expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(1)
+              expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(0)
+              expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(1)
             end
           end
 
@@ -308,6 +309,7 @@ describe Mongoid::Clients::Sessions do
         context 'using #transaction' do
           it 'does not raise an error and has the correct document' do
             Canvas.transaction do
+
               p = Palette.new
               c = Canvas.new(palette: p)
               c.save!
@@ -337,8 +339,8 @@ describe Mongoid::Clients::Sessions do
         end
 
         it 'aborts the transaction' do
-          expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(1)
-          expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(0)
+          expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(1)
+          expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(0)
         end
       end
     end
@@ -357,6 +359,7 @@ describe Mongoid::Clients::Sessions do
   end
 
   context 'when a transaction is used on a model instance' do
+
     let!(:person) do
       Person.with(client: :other) do |klass|
         klass.create!
@@ -417,6 +420,7 @@ describe Mongoid::Clients::Sessions do
       end
 
       context 'when the operations in the transaction block are also on another class' do
+
         context 'when the other class uses the same client' do
           shared_examples 'it uses a single transaction number for all operations on the class' do
             it do
@@ -556,6 +560,7 @@ describe Mongoid::Clients::Sessions do
               expect(update_events).to be_empty
             end
           end
+
         end
       end
 
@@ -575,8 +580,8 @@ describe Mongoid::Clients::Sessions do
         end
 
         it 'aborts the transaction' do
-          expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(1)
-          expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(0)
+          expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(1)
+          expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(0)
         end
       end
     end
@@ -624,8 +629,8 @@ describe Mongoid::Clients::Sessions do
         end
 
         it 'commits the transacrion' do
-          expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(0)
-          expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(1)
+          expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(0)
+          expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(1)
         end
 
         it 'executes the commands inside the transaction' do
@@ -644,8 +649,8 @@ describe Mongoid::Clients::Sessions do
         end
 
         it 'aborts the transaction' do
-          expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(1)
-          expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(0)
+          expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(1)
+          expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(0)
         end
 
         it 'passes on the error' do

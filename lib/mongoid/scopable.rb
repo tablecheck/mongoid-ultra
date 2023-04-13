@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Mongoid
+
   # This module contains behavior for all Mongoid scoping - named scopes,
   # default scopes, and criteria accessors via scoped and unscoped.
   module Scopable
@@ -32,6 +33,7 @@ module Mongoid
     end
 
     module ClassMethods
+
       # Returns a hash of all the scopes defined for this class, including
       # scopes defined on ancestor classes.
       #
@@ -311,7 +313,7 @@ module Mongoid
       # @param [ Mongoid::Criteria | Proc ] value The default scope value.
       def process_default_scope(value)
         if existing = default_scoping
-          -> { existing.call.merge(value.to_proc.call) }
+          ->{ existing.call.merge(value.to_proc.call) }
         else
           value.to_proc
         end

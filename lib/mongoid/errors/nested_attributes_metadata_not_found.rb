@@ -2,9 +2,11 @@
 
 module Mongoid
   module Errors
+
     # This error is raised when metadata could not be found when defining
     # nested attributes, or the name was incorrect.
     class NestedAttributesMetadataNotFound < MongoidError
+
       # Create the new metadata error.
       #
       # @example Create the new metadata error.

@@ -2,6 +2,7 @@
 
 module Mongoid
   module Association
+
     # Base class for eager load preload functions.
     class Eager
       # Instantiate the eager load class.

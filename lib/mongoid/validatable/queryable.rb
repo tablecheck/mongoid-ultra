@@ -2,6 +2,7 @@
 
 module Mongoid
   module Validatable
+
     # Mixin module included in Mongoid::Validatable::Uniqueness class
     # when ensures that the persistence context is cleared when
     # executing uniqueness queries.
@@ -10,6 +11,7 @@ module Mongoid
     #
     # @api private
     module Queryable
+
       # Wrap the validation inside the an execution block that alert's the
       # client not to clear its persistence options.
       #

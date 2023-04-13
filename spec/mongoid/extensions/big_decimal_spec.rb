@@ -3,6 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Extensions::BigDecimal do
+
   let(:big_decimal) do
     BigDecimal("123456.789")
   end
@@ -11,11 +12,13 @@ describe Mongoid::Extensions::BigDecimal do
     config_override :map_big_decimal_to_decimal128, false
 
     describe ".demongoize" do
+
       let(:demongoized) do
         BigDecimal.demongoize(value)
       end
 
       context "when the value is an empty String" do
+
         let(:value) do
           ""
         end
@@ -26,6 +29,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is a numeric String" do
+
         let(:value) do
           "123456.789"
         end
@@ -36,6 +40,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the numeric String zero" do
+
         let(:value) do
           "0.0"
         end
@@ -46,6 +51,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the numeric String negative zero" do
+
         let(:value) do
           "-0.0"
         end
@@ -56,6 +62,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is a non-numeric String" do
+
         let(:value) do
           "1a2"
         end
@@ -66,6 +73,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is nil" do
+
         let(:value) do
           nil
         end
@@ -76,6 +84,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is true" do
+
         let(:value) do
           true
         end
@@ -86,6 +95,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is false" do
+
         let(:value) do
           false
         end
@@ -96,6 +106,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is an Integer" do
+
         let(:value) do
           123456
         end
@@ -106,6 +117,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is a Float" do
+
         let(:value) do
           123456.789
         end
@@ -116,6 +128,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the String 'NaN'" do
+
         let(:value) do
           "NaN"
         end
@@ -130,6 +143,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the String 'Infinity'" do
+
         let(:value) do
           "Infinity"
         end
@@ -144,6 +158,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the String '-Infinity'" do
+
         let(:value) do
           "-Infinity"
         end
@@ -158,6 +173,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is a BSON::Decimal128" do
+
         let(:value) do
           BSON::Decimal128.new("1.2")
         end
@@ -175,11 +191,13 @@ describe Mongoid::Extensions::BigDecimal do
     end
 
     describe ".mongoize" do
+
       let(:mongoized) do
         BigDecimal.mongoize(value)
       end
 
       context "when the value is a BigDecimal" do
+
         let(:value) do
           big_decimal
         end
@@ -190,6 +208,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the BigDecimal zero" do
+
         let(:value) do
           BigDecimal("0.0")
         end
@@ -200,6 +219,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the BigDecimal negative zero" do
+
         let(:value) do
           BigDecimal("-0.0")
         end
@@ -210,6 +230,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is an empty String" do
+
         let(:value) do
           ""
         end
@@ -220,6 +241,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is an integer numeric String" do
+
         let(:value) do
           "123456"
         end
@@ -230,6 +252,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is a float numeric String" do
+
         let(:value) do
           "123456.789"
         end
@@ -240,6 +263,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is a non-numeric String" do
+
         let(:value) do
           "1a2"
         end
@@ -250,6 +274,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is castable" do
+
         let(:value) do
           2.hours
         end
@@ -264,6 +289,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is nil" do
+
         let(:value) do
           nil
         end
@@ -274,6 +300,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is true" do
+
         let(:value) do
           true
         end
@@ -284,6 +311,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is false" do
+
         let(:value) do
           false
         end
@@ -304,6 +332,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is a Float" do
+
         let(:value) do
           123456.789
         end
@@ -314,6 +343,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is String NaN" do
+
         let(:value) do
           "NaN"
         end
@@ -324,6 +354,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is String Infinity" do
+
         let(:value) do
           "Infinity"
         end
@@ -334,6 +365,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is String negative Infinity" do
+
         let(:value) do
           "-Infinity"
         end
@@ -344,6 +376,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is BigDecimal NaN" do
+
         let(:value) do
           BigDecimal("NaN")
         end
@@ -354,6 +387,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is BigDecimal Infinity" do
+
         let(:value) do
           BigDecimal("Infinity")
         end
@@ -364,6 +398,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is BigDecimal negative Infinity" do
+
         let(:value) do
           BigDecimal("-Infinity")
         end
@@ -374,6 +409,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the constant Float::NAN" do
+
         let(:value) do
           Float::NAN
         end
@@ -384,6 +420,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is constant Float::INFINITY" do
+
         let(:value) do
           Float::INFINITY
         end
@@ -394,6 +431,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is constant Float::INFINITY * -1" do
+
         let(:value) do
           Float::INFINITY * -1
         end
@@ -415,12 +453,14 @@ describe Mongoid::Extensions::BigDecimal do
     end
 
     describe "#mongoize" do
+
       it "returns a string" do
         expect(big_decimal.mongoize).to eq(big_decimal.to_s)
       end
     end
 
     describe "#numeric?" do
+
       it "returns true" do
         expect(big_decimal.numeric?).to eq(true)
       end
@@ -431,11 +471,13 @@ describe Mongoid::Extensions::BigDecimal do
     config_override :map_big_decimal_to_decimal128, true
 
     describe ".demongoize" do
+
       let(:demongoized) do
         BigDecimal.demongoize(value)
       end
 
       context "when the value is an empty String" do
+
         let(:value) do
           ""
         end
@@ -446,6 +488,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is a numeric String" do
+
         let(:value) do
           "123456.789"
         end
@@ -456,6 +499,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the numeric String zero" do
+
         let(:value) do
           "0.0"
         end
@@ -466,6 +510,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the numeric String negative zero" do
+
         let(:value) do
           "-0.0"
         end
@@ -476,6 +521,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is a non-numeric String" do
+
         let(:value) do
           "1a2"
         end
@@ -486,6 +532,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is nil" do
+
         let(:value) do
           nil
         end
@@ -496,6 +543,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is an Integer" do
+
         let(:value) do
           123456
         end
@@ -506,6 +554,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is a BSON::Decimal128 object" do
+
         let(:value) do
           BSON::Decimal128.new("123456")
         end
@@ -516,6 +565,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is a Float" do
+
         let(:value) do
           123456.789
         end
@@ -526,6 +576,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the String 'NaN'" do
+
         let(:value) do
           "NaN"
         end
@@ -540,6 +591,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the String 'Infinity'" do
+
         let(:value) do
           "Infinity"
         end
@@ -554,6 +606,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the String '-Infinity'" do
+
         let(:value) do
           "-Infinity"
         end
@@ -568,6 +621,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is true" do
+
         let(:value) do
           true
         end
@@ -578,6 +632,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is false" do
+
         let(:value) do
           false
         end
@@ -589,11 +644,13 @@ describe Mongoid::Extensions::BigDecimal do
     end
 
     describe ".mongoize" do
+
       let(:mongoized) do
         BigDecimal.mongoize(value)
       end
 
       context "when the value is a BigDecimal" do
+
         let(:value) do
           big_decimal
         end
@@ -604,6 +661,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the BigDecimal zero" do
+
         let(:value) do
           BigDecimal("0.0")
         end
@@ -614,6 +672,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the BigDecimal negative zero" do
+
         let(:value) do
           BigDecimal("-0.0")
         end
@@ -624,6 +683,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is an empty String" do
+
         let(:value) do
           ""
         end
@@ -634,6 +694,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is an integer numeric String" do
+
         let(:value) do
           "123456"
         end
@@ -644,6 +705,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is a float numeric String" do
+
         let(:value) do
           "123456.789"
         end
@@ -654,6 +716,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is a non-numeric String" do
+
         let(:value) do
           "1a2"
         end
@@ -664,6 +727,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is nil" do
+
         let(:value) do
           nil
         end
@@ -674,6 +738,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is true" do
+
         let(:value) do
           true
         end
@@ -684,6 +749,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is false" do
+
         let(:value) do
           false
         end
@@ -694,6 +760,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is an Integer" do
+
         let(:value) do
           123456
         end
@@ -704,6 +771,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is a Float" do
+
         let(:value) do
           123456.789
         end
@@ -714,6 +782,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is String NaN" do
+
         let(:value) do
           "NaN"
         end
@@ -724,6 +793,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is String Infinity" do
+
         let(:value) do
           "Infinity"
         end
@@ -734,6 +804,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is String negative Infinity" do
+
         let(:value) do
           "-Infinity"
         end
@@ -744,6 +815,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is BigDecimal NaN" do
+
         let(:value) do
           BigDecimal("NaN")
         end
@@ -754,6 +826,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is BigDecimal Infinity" do
+
         let(:value) do
           BigDecimal("Infinity")
         end
@@ -764,6 +837,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is BigDecimal negative Infinity" do
+
         let(:value) do
           BigDecimal("-Infinity")
         end
@@ -774,6 +848,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is the constant Float::NAN" do
+
         let(:value) do
           Float::NAN
         end
@@ -784,6 +859,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is constant Float::INFINITY" do
+
         let(:value) do
           Float::INFINITY
         end
@@ -794,6 +870,7 @@ describe Mongoid::Extensions::BigDecimal do
       end
 
       context "when the value is constant Float::INFINITY * -1" do
+
         let(:value) do
           Float::INFINITY * -1
         end
@@ -815,12 +892,14 @@ describe Mongoid::Extensions::BigDecimal do
     end
 
     describe "#mongoize" do
+
       it "returns a BSON::Decimal128 representation of the BigDecimal" do
         expect(big_decimal.mongoize).to eq(BSON::Decimal128.new(big_decimal))
       end
     end
 
     describe "#numeric?" do
+
       it "returns true" do
         expect(big_decimal.numeric?).to eq(true)
       end

@@ -115,7 +115,7 @@ module Mongoid
   #
   # @example Delegate the configuration methods.
   #   Mongoid.database = Mongo::Connection.new.db("test")
-  def_delegators Config, *(Config.public_instance_methods(false) - [:logger=, :logger])
+  def_delegators Config, *(Config.public_instance_methods(false) - [ :logger=, :logger ])
 
   # Define persistence context that is used when a transaction method is called
   # on Mongoid module.
@@ -138,6 +138,7 @@ module Mongoid
   #
   # @api private
   module GlobalDiscriminatorKeyAssignment
+
     # This class is used for obtaining the method definition location for
     # Mongoid methods.
     class InvalidFieldHost

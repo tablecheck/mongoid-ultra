@@ -3,8 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Extensions::Hash do
+
   describe "#__evolve_object_id__" do
+
     context "when values have object id strings" do
+
       let(:object_id) do
         BSON::ObjectId.new
       end
@@ -23,6 +26,7 @@ describe Mongoid::Extensions::Hash do
     end
 
     context "when values have object ids" do
+
       let(:object_id) do
         BSON::ObjectId.new
       end
@@ -41,6 +45,7 @@ describe Mongoid::Extensions::Hash do
     end
 
     context "when values have empty strings" do
+
       let(:object_id) do
         BSON::ObjectId.new
       end
@@ -59,6 +64,7 @@ describe Mongoid::Extensions::Hash do
     end
 
     context "when values have nils" do
+
       let(:object_id) do
         BSON::ObjectId.new
       end
@@ -78,7 +84,9 @@ describe Mongoid::Extensions::Hash do
   end
 
   describe "#__mongoize_object_id__" do
+
     context "when values have object id strings" do
+
       let(:object_id) do
         BSON::ObjectId.new
       end
@@ -97,6 +105,7 @@ describe Mongoid::Extensions::Hash do
     end
 
     context "when values have object ids" do
+
       let(:object_id) do
         BSON::ObjectId.new
       end
@@ -115,6 +124,7 @@ describe Mongoid::Extensions::Hash do
     end
 
     context "when values have empty strings" do
+
       let(:object_id) do
         BSON::ObjectId.new
       end
@@ -133,6 +143,7 @@ describe Mongoid::Extensions::Hash do
     end
 
     context "when values have nils" do
+
       let(:object_id) do
         BSON::ObjectId.new
       end
@@ -152,10 +163,13 @@ describe Mongoid::Extensions::Hash do
   end
 
   describe "#__consolidate__" do
+
     context "when the hash already contains the key" do
+
       context "when the $set is first" do
+
         let(:hash) do
-          { "$set" => { name: "Tool" }, likes: 10, "$inc" => { plays: 1 } }
+          { "$set" => { name: "Tool" }, likes: 10, "$inc" => { plays: 1 }}
         end
 
         let(:consolidated) do
@@ -164,14 +178,15 @@ describe Mongoid::Extensions::Hash do
 
         it "moves the non hash values under the provided key" do
           expect(consolidated).to eq({
-                                       "$set" => { name: "Tool", likes: 10 }, "$inc" => { plays: 1 }
-                                     })
+            "$set" => { name: "Tool", likes: 10 }, "$inc" => { plays: 1 }
+          })
         end
       end
 
       context "when the $set is not first" do
+
         let(:hash) do
-          { likes: 10, "$inc" => { plays: 1 }, "$set" => { name: "Tool" } }
+          { likes: 10, "$inc" => { plays: 1 }, "$set" => { name: "Tool" }}
         end
 
         let(:consolidated) do
@@ -180,15 +195,16 @@ describe Mongoid::Extensions::Hash do
 
         it "moves the non hash values under the provided key" do
           expect(consolidated).to eq({
-                                       "$set" => { likes: 10, name: "Tool" }, "$inc" => { plays: 1 }
-                                     })
+            "$set" => { likes: 10, name: "Tool" }, "$inc" => { plays: 1 }
+          })
         end
       end
     end
 
     context "when the hash does not contain the key" do
+
       let(:hash) do
-        { likes: 10, "$inc" => { plays: 1 }, name: "Tool" }
+        { likes: 10, "$inc" => { plays: 1 }, name: "Tool"}
       end
 
       let(:consolidated) do
@@ -197,13 +213,14 @@ describe Mongoid::Extensions::Hash do
 
       it "moves the non hash values under the provided key" do
         expect(consolidated).to eq({
-                                     "$set" => { likes: 10, name: "Tool" }, "$inc" => { plays: 1 }
-                                   })
+          "$set" => { likes: 10, name: "Tool" }, "$inc" => { plays: 1 }
+        })
       end
     end
   end
 
   context "when the hash key is a string" do
+
     let(:hash) do
       { "100" => { "name" => "hundred" } }
     end
@@ -250,6 +267,7 @@ describe Mongoid::Extensions::Hash do
   end
 
   context "when the parent key is not present" do
+
     let(:hash) do
       { "101" => { "name" => "hundred and one" } }
     end
@@ -264,6 +282,7 @@ describe Mongoid::Extensions::Hash do
   end
 
   describe ".demongoize" do
+
     let(:hash) do
       { field: 1 }
     end
@@ -294,7 +313,9 @@ describe Mongoid::Extensions::Hash do
   end
 
   describe ".mongoize" do
+
     context "when object isn't nil" do
+
       let(:date) do
         Date.new(2012, 1, 1)
       end
@@ -356,6 +377,7 @@ describe Mongoid::Extensions::Hash do
   end
 
   describe "#mongoize" do
+
     let(:date) do
       Date.new(2012, 1, 1)
     end
@@ -378,21 +400,25 @@ describe Mongoid::Extensions::Hash do
   end
 
   describe "#resizable?" do
+
     it "returns true" do
       expect({}).to be_resizable
     end
   end
 
   describe ".resizable?" do
+
     it "returns true" do
       expect(Hash).to be_resizable
     end
   end
 
   shared_examples_for 'unsatisfiable criteria method' do
+
     context "when the hash has only an empty _id criteria" do
+
       let(:hash) do
-        { "_id" => { "$in" => [] } }
+        { "_id" => { "$in" => [] }}
       end
 
       it "is true" do
@@ -401,8 +427,9 @@ describe Mongoid::Extensions::Hash do
     end
 
     context "when the hash has an empty _id criteria and another criteria" do
+
       let(:hash) do
-        { "_id" => { "$in" => [] }, 'foo' => 'bar' }
+        { "_id" => { "$in" => [] }, 'foo' => 'bar'}
       end
 
       it "is false" do
@@ -411,8 +438,9 @@ describe Mongoid::Extensions::Hash do
     end
 
     context "when the hash has an empty _id criteria via $and" do
+
       let(:hash) do
-        { '$and' => [{ "_id" => { "$in" => [] } }] }
+        {'$and' => [{ "_id" => { "$in" => [] }}]}
       end
 
       it "is true" do
@@ -421,8 +449,9 @@ describe Mongoid::Extensions::Hash do
     end
 
     context "when the hash has an empty _id criteria via $and and another criteria at top level" do
+
       let(:hash) do
-        { '$and' => [{ "_id" => { "$in" => [] } }], 'foo' => 'bar' }
+        {'$and' => [{ "_id" => { "$in" => [] }}], 'foo' => 'bar'}
       end
 
       it "is false" do
@@ -431,8 +460,9 @@ describe Mongoid::Extensions::Hash do
     end
 
     context "when the hash has an empty _id criteria via $and and another criteria in $and" do
+
       let(:hash) do
-        { '$and' => [{ "_id" => { "$in" => [] } }, { 'foo' => 'bar' }] }
+        {'$and' => [{ "_id" => { "$in" => [] }}, {'foo' => 'bar'}]}
       end
 
       it "is true" do
@@ -441,8 +471,9 @@ describe Mongoid::Extensions::Hash do
     end
 
     context "when the hash has an empty _id criteria via $and and another criteria in $and value" do
+
       let(:hash) do
-        { '$and' => [{ "_id" => { "$in" => [] }, 'foo' => 'bar' }] }
+        {'$and' => [{ "_id" => { "$in" => [] }, 'foo' => 'bar'}]}
       end
 
       it "is false" do
@@ -451,8 +482,9 @@ describe Mongoid::Extensions::Hash do
     end
 
     context "when the hash has an empty _id criteria via $or" do
+
       let(:hash) do
-        { '$or' => [{ "_id" => { "$in" => [] } }] }
+        {'$or' => [{ "_id" => { "$in" => [] }}]}
       end
 
       it "is false" do
@@ -461,8 +493,9 @@ describe Mongoid::Extensions::Hash do
     end
 
     context "when the hash has an empty _id criteria via $nor" do
+
       let(:hash) do
-        { '$nor' => [{ "_id" => { "$in" => [] } }] }
+        {'$nor' => [{ "_id" => { "$in" => [] }}]}
       end
 
       it "is false" do

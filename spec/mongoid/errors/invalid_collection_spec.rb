@@ -3,8 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Errors::InvalidCollection do
+
   describe "#message" do
+
     context "default" do
+
       let(:klass) do
         Address
       end

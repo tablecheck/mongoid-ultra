@@ -3,12 +3,15 @@
 require "spec_helper"
 
 describe Mongoid::Traversable do
+
   describe "#_children" do
+
     let(:person) do
       Person.new(title: "King")
     end
 
     context "with one level of embedding" do
+
       let(:name) do
         Name.new(first_name: "Titus")
       end
@@ -32,6 +35,7 @@ describe Mongoid::Traversable do
     end
 
     context "with multiple levels of embedding" do
+
       let(:name) do
         Name.new(first_name: "Titus")
       end
@@ -65,11 +69,13 @@ describe Mongoid::Traversable do
   end
 
   describe "#_descendants" do
+
     let(:person) do
       Person.new(title: "King")
     end
 
     context "with one level of embedding" do
+
       let(:name) do
         Name.new(first_name: "Titus")
       end
@@ -93,6 +99,7 @@ describe Mongoid::Traversable do
     end
 
     context "with multiple levels of embedding" do
+
       let(:name) do
         Name.new(first_name: "Titus")
       end
@@ -126,13 +133,16 @@ describe Mongoid::Traversable do
   end
 
   describe ".hereditary?" do
+
     context "when the document is a subclass" do
+
       it "returns true" do
         expect(Circle.hereditary?).to be true
       end
     end
 
     context "when the document is not a subclass" do
+
       it "returns false" do
         expect(Shape.hereditary?).to be false
       end
@@ -140,13 +150,16 @@ describe Mongoid::Traversable do
   end
 
   describe "#hereditary?" do
+
     context "when the document is a subclass" do
+
       it "returns true" do
         expect(Circle.new).to be_hereditary
       end
     end
 
     context "when the document is not a subclass" do
+
       it "returns false" do
         expect(Shape.new).to_not be_hereditary
       end
@@ -154,12 +167,14 @@ describe Mongoid::Traversable do
   end
 
   describe "#inherited" do
+
     it "duplicates the localized fields" do
       expect(Actress.localized_fields).to_not equal(Actor.localized_fields)
     end
   end
 
   describe "#parentize" do
+
     let(:address) do
       Address.new
     end
@@ -178,11 +193,13 @@ describe Mongoid::Traversable do
   end
 
   describe "#remove_child" do
+
     let(:person) do
       Person.new
     end
 
     context "when child is an embeds one" do
+
       let!(:name) do
         person.build_name(first_name: "James")
       end
@@ -197,6 +214,7 @@ describe Mongoid::Traversable do
     end
 
     context "when child is an embeds many" do
+
       let!(:address) do
         person.addresses.build(street: "Upper St")
       end
@@ -212,6 +230,7 @@ describe Mongoid::Traversable do
   end
 
   describe "#_root" do
+
     let(:address) do
       Address.new
     end
@@ -225,12 +244,14 @@ describe Mongoid::Traversable do
     end
 
     context "when the document is not the root" do
+
       it "returns the root" do
         expect(address._root).to eq(person)
       end
     end
 
     context "when the document is the root" do
+
       it "returns self" do
         expect(person._root).to eq(person)
       end
@@ -238,8 +259,11 @@ describe Mongoid::Traversable do
   end
 
   describe "#_root?" do
+
     context "when the document can be the root" do
+
       context "when the document is not embedded" do
+
         let(:band) do
           Band.new
         end
@@ -250,17 +274,20 @@ describe Mongoid::Traversable do
       end
 
       context "when the document is embedded" do
+
         let(:root_role) do
           Role.new
         end
 
         context "when the document is root in a cyclic relation" do
+
           it "returns true" do
             expect(root_role).to be__root
           end
         end
 
         context "when document is embedded in a cyclic relation" do
+
           let(:child_role) do
             root_role.child_roles.build
           end
@@ -273,6 +300,7 @@ describe Mongoid::Traversable do
     end
 
     context "when the document is embedded and not cyclic" do
+
       let(:person) do
         Person.new
       end
@@ -288,6 +316,7 @@ describe Mongoid::Traversable do
   end
 
   describe "#discriminator_key" do
+
     context "when the discriminator key is not set on a class" do
       it "sets the global discriminator key to _type" do
         expect(Mongoid.discriminator_key).to eq("_type")
@@ -433,6 +462,7 @@ describe Mongoid::Traversable do
     end
 
     context "when discriminator key is called on an instance" do
+
       let(:guitar) do
         Guitar.new
       end
@@ -497,6 +527,7 @@ describe Mongoid::Traversable do
           it "does not have the new global value in the child" do
             expect(GlobalDiscriminatorChild.fields.keys).to_not include("test")
           end
+
         end
 
         context "before class creation" do
@@ -793,6 +824,7 @@ describe Mongoid::Traversable do
       config_override :duplicate_fields_exception, true
 
       before do
+
         class DuplicateDiscriminatorKeyParent
           include Mongoid::Document
           field :dkey, type: String
@@ -810,12 +842,14 @@ describe Mongoid::Traversable do
     end
 
     context "when the discriminator key conflicts with mongoid's internals" do
+
       after do
         Person.discriminator_key = nil
       end
 
       [:_association, :invalid].each do |meth|
         context "when the field is named #{meth}" do
+
           it "raises an error" do
             expect {
               Person.discriminator_key = meth
@@ -830,6 +864,7 @@ describe Mongoid::Traversable do
       config_override :discriminator_key, "dkey"
 
       before do
+
         class GlobalDuplicateDiscriminatorKeyParent
           include Mongoid::Document
         end
@@ -854,6 +889,7 @@ describe Mongoid::Traversable do
 
       [:_association, :invalid].each do |meth|
         context "when the field is named #{meth}" do
+
           it "raises an error" do
             expect do
               Mongoid.discriminator_key = meth
@@ -865,7 +901,9 @@ describe Mongoid::Traversable do
   end
 
   describe "#discriminator_value" do
+
     context "when the discriminator value is not set" do
+
       it "has the correct discriminator_value" do
         expect(Guitar.discriminator_value).to eq("Guitar")
       end
@@ -878,6 +916,7 @@ describe Mongoid::Traversable do
         expect(Instrument.discriminator_value).to eq("Instrument")
       end
     end
+
 
     context "when the discriminator value is set on the child class" do
       before do
@@ -953,6 +992,7 @@ describe Mongoid::Traversable do
     end
 
     describe ".fields" do
+
       let(:guitar) do
         Guitar.new
       end

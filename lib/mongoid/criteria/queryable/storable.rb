@@ -15,6 +15,7 @@ module Mongoid
       #
       # @api private
       module Storable
+
         # Adds a field expression to the query.
         #
         # +field+ must be a field name, and it must be a string. The upstream
@@ -44,17 +45,17 @@ module Mongoid
             # We already have a restriction by the field we are trying
             # to restrict, combine the restrictions.
             if value.is_a?(Hash) && selector[field].is_a?(Hash) &&
-               value.keys.all? { |key|
-                 key_s = key.to_s
-                 key_s.start_with?('$') && !selector[field].key?(key_s)
-               }
+              value.keys.all? { |key|
+                key_s = key.to_s
+                key_s.start_with?('$') && !selector[field].key?(key_s)
+              }
             then
               # Multiple operators can be combined on the same field by
               # adding them to the existing hash.
               new_value = selector[field].merge(value)
               selector.store(field, new_value)
             elsif selector[field] != value
-              add_operator_expression('$and', [{ field => value }])
+              add_operator_expression('$and', [{field => value}])
             end
           else
             selector.store(field, value)
@@ -200,7 +201,7 @@ module Mongoid
           # query, add the new condition with $and, otherwise add the
           # new condition to the top level.
           if selector[operator]
-            add_logical_operator_expression('$and', [{ operator => op_expr }])
+            add_logical_operator_expression('$and', [{operator => op_expr}])
           else
             selector.store(operator, op_expr)
           end
@@ -229,6 +230,7 @@ module Mongoid
             add_field_expression(field, value)
           end
         end
+
       end
     end
   end

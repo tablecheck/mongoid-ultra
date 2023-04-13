@@ -4,6 +4,7 @@ require "spec_helper"
 
 describe Mongoid::Criteria::Marshalable do
   describe "Marshal.dump" do
+
     let(:criteria) do
       Band.where(name: "Depeche Mode")
     end
@@ -16,6 +17,7 @@ describe Mongoid::Criteria::Marshalable do
   end
 
   describe "Marshal.load" do
+
     let(:criteria) do
       Band.where(name: "Depeche Mode")
     end

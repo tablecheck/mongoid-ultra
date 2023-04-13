@@ -3,8 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Clients do
+
   describe "#collection" do
+
     shared_examples_for "an overridden collection at the class level" do
+
       it "returns the collection for the model" do
         expect(instance_collection).to be_a(Mongo::Collection)
       end
@@ -14,6 +17,7 @@ describe Mongoid::Clients do
       end
 
       context "when accessing from the class level" do
+
         it "returns the collection for the model" do
           expect(class_collection).to be_a(Mongo::Collection)
         end
@@ -25,6 +29,7 @@ describe Mongoid::Clients do
     end
 
     context "when overriding the persistence options" do
+
       let(:instance_collection) do
         Band.with(collection: "artists") do |klass|
           klass.new.collection
@@ -41,6 +46,7 @@ describe Mongoid::Clients do
     end
 
     context "when overriding store_in and persistence options" do
+
       before do
         Band.store_in collection: "foo"
       end
@@ -65,11 +71,13 @@ describe Mongoid::Clients do
     end
 
     context "when overriding the default with store_in" do
+
       after do
         Band.reset_storage_options!
       end
 
       context "when called multiple times with different options" do
+
         before do
           Band.store_in collection: "artists"
           Band.store_in client: "another"
@@ -82,8 +90,9 @@ describe Mongoid::Clients do
       end
 
       context "when overriding with a proc" do
+
         before do
-          Band.store_in(collection: -> { "artists" })
+          Band.store_in(collection: ->{ "artists" })
         end
 
         let(:instance_collection) do
@@ -98,6 +107,7 @@ describe Mongoid::Clients do
       end
 
       context "when overriding with a string" do
+
         before do
           Band.store_in(collection: "artists")
         end
@@ -118,6 +128,7 @@ describe Mongoid::Clients do
       end
 
       context "when overriding with a symbol" do
+
         before do
           Band.store_in(collection: :artists)
         end
@@ -139,6 +150,7 @@ describe Mongoid::Clients do
     end
 
     context "when not overriding the default" do
+
       let(:band) do
         Band.new
       end
@@ -152,6 +164,7 @@ describe Mongoid::Clients do
       end
 
       context "when accessing from the class level" do
+
         it "returns the collection for the model" do
           expect(Band.collection).to be_a(Mongo::Collection)
         end
@@ -164,14 +177,18 @@ describe Mongoid::Clients do
   end
 
   describe "#collection_name" do
+
     shared_examples_for "an overridden collection name at the class level" do
+
       context "when accessing from the instance" do
+
         it "returns the overridden value" do
           expect(instance_collection_name).to eq(:artists)
         end
       end
 
       context "when accessing from the class level" do
+
         it "returns the overridden value" do
           expect(class_collection_name).to eq(:artists)
         end
@@ -179,6 +196,7 @@ describe Mongoid::Clients do
     end
 
     context "when overriding the persistence options" do
+
       let(:instance_collection_name) do
         Band.with(collection: "artists") do |klass|
           klass.new.collection_name
@@ -261,6 +279,7 @@ describe Mongoid::Clients do
     end
 
     context "when overriding store_in and persistence options" do
+
       let(:instance_collection_name) do
         Band.with(collection: "artists") do |klass|
           klass.new.collection_name
@@ -285,6 +304,7 @@ describe Mongoid::Clients do
     end
 
     context "when overriding the default with store_in" do
+
       let(:instance_collection_name) do
         Band.new.collection_name
       end
@@ -298,14 +318,16 @@ describe Mongoid::Clients do
       end
 
       context "when overriding with a proc" do
+
         before do
-          Band.store_in(collection: -> { "artists" })
+          Band.store_in(collection: ->{ "artists" })
         end
 
         it_behaves_like "an overridden collection name at the class level"
       end
 
       context "when overriding with a string" do
+
         before do
           Band.store_in(collection: "artists")
         end
@@ -314,6 +336,7 @@ describe Mongoid::Clients do
       end
 
       context "when overriding with a symbol" do
+
         before do
           Band.store_in(collection: :artists)
         end
@@ -323,6 +346,7 @@ describe Mongoid::Clients do
     end
 
     context "when not overriding the default" do
+
       let(:band) do
         Band.new
       end
@@ -332,6 +356,7 @@ describe Mongoid::Clients do
       end
 
       context "when accessing from the class level" do
+
         it "returns the pluralized model name" do
           expect(Band.collection_name).to eq(:bands)
         end
@@ -339,6 +364,7 @@ describe Mongoid::Clients do
     end
 
     context "when the model is a subclass" do
+
       let(:firefox) do
         Firefox.new
       end
@@ -348,6 +374,7 @@ describe Mongoid::Clients do
       end
 
       context "when accessing from the class level" do
+
         it "returns the root class pluralized model name" do
           expect(Firefox.collection_name).to eq(:canvases)
         end
@@ -356,18 +383,22 @@ describe Mongoid::Clients do
   end
 
   describe "#database_name" do
+
     shared_examples_for "an overridden database name" do
+
       after do
         class_mongo_client.close
       end
 
       context "when accessing from the instance" do
+
         it "returns the overridden value" do
           expect(instance_database.name.to_s).to eq(database_id_alt)
         end
       end
 
       context "when accessing from the class level" do
+
         it "returns the overridden value" do
           expect(class_database.name.to_s).to eq(database_id_alt)
         end
@@ -379,6 +410,7 @@ describe Mongoid::Clients do
     end
 
     context "when overriding the persistence options" do
+
       let(:instance_database) do
         Band.with(database: database_id_alt) do |klass|
           klass.new.mongo_client.database
@@ -401,6 +433,7 @@ describe Mongoid::Clients do
     end
 
     context "when overriding with store_in" do
+
       let(:instance_database) do
         Band.new.mongo_client.database
       end
@@ -426,6 +459,7 @@ describe Mongoid::Clients do
     end
 
     context "when overriding store_in and persistence options" do
+
       let(:instance_database) do
         Band.with(database: database_id_alt) do |klass|
           klass.new.mongo_client.database
@@ -457,6 +491,7 @@ describe Mongoid::Clients do
     end
 
     context "when overriding using the client" do
+
       let(:client_name) { :alternative }
 
       before do
@@ -468,6 +503,7 @@ describe Mongoid::Clients do
       end
 
       context "when overriding the persistence options" do
+
         let(:instance_database) do
           Band.with(client: :alternative) do |klass|
             klass.new.mongo_client.database
@@ -490,6 +526,7 @@ describe Mongoid::Clients do
       end
 
       context "when overriding with store_in" do
+
         let(:instance_database) do
           Band.new.mongo_client.database
         end
@@ -517,6 +554,7 @@ describe Mongoid::Clients do
   end
 
   describe "#mongo_client" do
+
     let(:file) do
       File.join(File.dirname(__FILE__), "..", "config", "mongoid.yml")
     end
@@ -528,6 +566,7 @@ describe Mongoid::Clients do
     end
 
     context "when getting the default" do
+
       let(:file) do
         File.join(File.dirname(__FILE__), "..", "config", "mongoid.yml")
       end
@@ -564,6 +603,7 @@ describe Mongoid::Clients do
     end
 
     context "when no client exists with the key" do
+
       before(:all) do
         Band.store_in(client: :nonexistent)
       end
@@ -609,6 +649,7 @@ describe Mongoid::Clients do
     end
 
     context 'when the app_name is not set in the config' do
+
       before do
         Mongoid::Config.reset
         Mongoid.configure do |config|
@@ -627,6 +668,7 @@ describe Mongoid::Clients do
   end
 
   describe ".mongo_client" do
+
     let(:file) do
       File.join(File.dirname(__FILE__), "..", "config", "mongoid.yml")
     end
@@ -642,6 +684,7 @@ describe Mongoid::Clients do
     end
 
     context "when getting the default" do
+
       let(:file) do
         File.join(File.dirname(__FILE__), "..", "config", "mongoid.yml")
       end
@@ -671,6 +714,7 @@ describe Mongoid::Clients do
     end
 
     context "when no client exists with the key" do
+
       before(:all) do
         Band.store_in(client: :nonexistent)
       end
@@ -684,7 +728,9 @@ describe Mongoid::Clients do
   end
 
   describe ".store_in" do
+
     context "when provided a non hash" do
+
       it "raises an error" do
         expect {
           Band.store_in :artists
@@ -693,7 +739,9 @@ describe Mongoid::Clients do
     end
 
     context "when provided a hash" do
+
       context "when the hash is not valid" do
+
         it "raises an error" do
           expect {
             Band.store_in coll: "artists"
@@ -703,6 +751,7 @@ describe Mongoid::Clients do
     end
 
     context "when it is called on a subclass" do
+
       let(:client) { StoreParent.collection.client }
       let(:parent) { StoreParent.create! }
       let(:child1) { StoreChild1.create! }
@@ -727,11 +776,13 @@ describe Mongoid::Clients do
       end
 
       context "when it is not called on the parent" do
+
         context "when it is called on all subclasses" do
+
           before do
             StoreChild1.store_in collection: :store_ones
             StoreChild2.store_in collection: :store_twos
-            [parent, child1, child2]
+            [ parent, child1, child2 ]
           end
 
           let(:db_parent) { client['store_parents'].find.first }
@@ -752,9 +803,10 @@ describe Mongoid::Clients do
         end
 
         context "when it is called on one of the subclasses" do
+
           before do
             StoreChild1.store_in collection: :store_ones
-            [parent, child1, child2]
+            [ parent, child1, child2 ]
           end
 
           let(:db_parent) { client['store_parents'].find.first }
@@ -776,15 +828,17 @@ describe Mongoid::Clients do
       end
 
       context "when it is called on the parent" do
+
         before do
           StoreParent.store_in collection: :st_parents
         end
 
         context "when it is called on all subclasses" do
+
           before do
             StoreChild1.store_in collection: :store_ones
             StoreChild2.store_in collection: :store_twos
-            [parent, child1, child2]
+            [ parent, child1, child2 ]
           end
 
           let(:db_parent) { client['st_parents'].find.first }
@@ -799,9 +853,10 @@ describe Mongoid::Clients do
         end
 
         context "when it is called on one of the subclasses" do
+
           before do
             StoreChild1.store_in collection: :store_ones
-            [parent, child1, child2]
+            [ parent, child1, child2 ]
           end
 
           let(:db_parent) { client['st_parents'].find.first }
@@ -819,7 +874,9 @@ describe Mongoid::Clients do
   end
 
   describe ".with" do
+
     context "when changing write concern options" do
+
       let(:client_one) do
         Band.with(write: { w: 2 }) do |klass|
           klass.mongo_client
@@ -836,6 +893,7 @@ describe Mongoid::Clients do
     end
 
     context "when sending operations to a different database" do
+
       after do
         Band.with(database: database_id_alt) do |klass|
           klass.delete_all
@@ -843,6 +901,7 @@ describe Mongoid::Clients do
       end
 
       describe ".create!" do
+
         let!(:band) do
           Band.with(database: database_id_alt) do |klass|
             klass.create!
@@ -878,7 +937,9 @@ describe Mongoid::Clients do
     end
 
     context "when sending operations to a different collection" do
+
       describe ".create!" do
+
         let!(:band) do
           Band.with(collection: "artists") do |klass|
             klass.create!
@@ -914,7 +975,9 @@ describe Mongoid::Clients do
     end
 
     context "when sending operations with safe mode" do
+
       describe ".create" do
+
         before do
           Person.index({ ssn: 1 }, { unique: true })
           Person.create_indexes
@@ -926,12 +989,14 @@ describe Mongoid::Clients do
         end
 
         context "when no error occurs" do
+
           it "inserts the document" do
             expect(Person.count).to eq(1)
           end
         end
 
         context "when a mongodb error occurs" do
+
           it "bubbles up to the caller" do
             expect {
               Person.create(ssn: "432-97-1111")
@@ -941,6 +1006,7 @@ describe Mongoid::Clients do
       end
 
       describe ".create!" do
+
         before do
           Person.create!(ssn: "432-97-1112")
         end
@@ -950,12 +1016,14 @@ describe Mongoid::Clients do
         end
 
         context "when no error occurs" do
+
           it "inserts the document" do
             expect(Person.count).to eq(1)
           end
         end
 
         context "when a mongodb error occurs" do
+
           before do
             Person.index({ ssn: 1 }, { unique: true })
             Person.create_indexes
@@ -973,6 +1041,7 @@ describe Mongoid::Clients do
         end
 
         context "when a validation error occurs" do
+
           it "raises the validation error" do
             expect {
               Account.create!(name: "this name is way too long")
@@ -982,11 +1051,13 @@ describe Mongoid::Clients do
       end
 
       describe ".save" do
+
         before do
           Person.create!(ssn: "432-97-1113")
         end
 
         context "when a mongodb error occurs" do
+
           let(:person) do
             Person.new(ssn: "432-97-1113")
           end
@@ -1009,11 +1080,13 @@ describe Mongoid::Clients do
       end
 
       describe ".save!" do
+
         before do
           Person.create!(ssn: "432-97-1114")
         end
 
         context "when a mongodb error occurs" do
+
           let(:person) do
             Person.new(ssn: "432-97-1114")
           end
@@ -1035,6 +1108,7 @@ describe Mongoid::Clients do
         end
 
         context "when a validation error occurs" do
+
           let(:account) do
             Account.new(name: "this name is way too long")
           end
@@ -1101,6 +1175,7 @@ describe Mongoid::Clients do
   end
 
   context "when overriding the default database" do
+
     let(:file) do
       File.join(File.dirname(__FILE__), "..", "config", "mongoid.yml")
     end
@@ -1110,6 +1185,7 @@ describe Mongoid::Clients do
     end
 
     context "when the override is global" do
+
       before do
         Mongoid.override_database(:mongoid_optional)
       end

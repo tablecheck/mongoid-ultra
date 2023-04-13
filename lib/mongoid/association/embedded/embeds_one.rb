@@ -7,6 +7,7 @@ require 'mongoid/association/embedded/embeds_one/proxy'
 module Mongoid
   module Association
     module Embedded
+
       # The EmbedsOne type association.
       class EmbedsOne
         include Relatable
@@ -17,11 +18,11 @@ module Mongoid
         #
         # @return [ Array<Symbol> ] The extra valid options.
         ASSOCIATION_OPTIONS = [
-          :autobuild,
-          :as,
-          :cascade_callbacks,
-          :cyclic,
-          :store_as
+            :autobuild,
+            :as,
+            :cascade_callbacks,
+            :cyclic,
+            :store_as
         ]
 
         # The complete list of valid options for this association, including
@@ -124,11 +125,11 @@ module Mongoid
         end
 
         def relation_complements
-          @relation_complements ||= [Embedded::EmbeddedIn].freeze
+          @relation_complements ||= [ Embedded::EmbeddedIn ].freeze
         end
 
         def polymorphic_inverses(other = nil)
-          [as]
+          [ as ]
         end
 
         def determine_inverses(other)
@@ -136,11 +137,11 @@ module Mongoid
             relation_complements.include?(rel.class) &&
               # https://jira.mongodb.org/browse/MONGOID-4882
               rel.relation_class_name.sub(/\A::/, '') == inverse_class_name
+
           end
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
-
           matches.collect { |m| m.name } unless matches.blank?
         end
       end

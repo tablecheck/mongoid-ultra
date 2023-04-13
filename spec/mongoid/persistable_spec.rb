@@ -3,15 +3,19 @@
 require "spec_helper"
 
 describe Mongoid::Persistable do
+
   class PersistableSpecTestException < StandardError; end
 
   describe "#atomically" do
+
     let(:document) do
       Band.create!(member_count: 0, likes: 60, origin: "London")
     end
 
     context "when providing a block" do
+
       shared_examples_for "an atomically updatable root document" do
+
         it "performs inc updates" do
           expect(document.member_count).to eq(10)
         end
@@ -50,14 +54,14 @@ describe Mongoid::Persistable do
       end
 
       context "when not chaining the operations" do
+
         let(:operations) do
           [{
             "$inc" => { "member_count" => 10 },
-            "$bit" => { "likes" => { :and => 13 } },
+            "$bit" => { "likes" => { :and => 13 }},
             "$set" => { "name" => "Placebo" },
-            "$unset" => { "origin" => true }
-          },
-           { :session => nil }]
+            "$unset" => { "origin" => true }},
+            { :session => nil } ]
         end
 
         before do
@@ -77,14 +81,14 @@ describe Mongoid::Persistable do
       end
 
       context "when chaining the operations" do
+
         let(:operations) do
           [{
             "$inc" => { "member_count" => 10 },
-            "$bit" => { "likes" => { :and => 13 } },
+            "$bit" => { "likes" => { :and => 13 }},
             "$set" => { "name" => "Placebo" },
-            "$unset" => { "origin" => true }
-          },
-           { :session => nil }]
+            "$unset" => { "origin" => true } },
+            { :session => nil } ]
         end
 
         before do
@@ -93,11 +97,11 @@ describe Mongoid::Persistable do
 
         let!(:update) do
           document.atomically do
-            document
-              .inc(member_count: 10)
-              .bit(likes: { and: 13 })
-              .set(name: "Placebo")
-              .unset(:origin)
+            document.
+              inc(member_count: 10).
+              bit(likes: { and: 13 }).
+              set(name: "Placebo").
+              unset(:origin)
           end
         end
 
@@ -105,14 +109,14 @@ describe Mongoid::Persistable do
       end
 
       context "when given multiple operations of the same type" do
+
         let(:operations) do
-          [{
+         [{
             "$inc" => { "member_count" => 10, "other_count" => 10 },
-            "$bit" => { "likes" => { :and => 13 } },
+            "$bit" => { "likes" => { :and => 13 }},
             "$set" => { "name" => "Placebo" },
-            "$unset" => { "origin" => true }
-          },
-           { :session => nil }]
+            "$unset" => { "origin" => true }},
+            { :session => nil } ]
         end
 
         before do
@@ -121,12 +125,12 @@ describe Mongoid::Persistable do
 
         let!(:update) do
           document.atomically do
-            document
-              .inc(member_count: 10)
-              .inc(other_count: 10)
-              .bit(likes: { and: 13 })
-              .set(name: "Placebo")
-              .unset(:origin)
+            document.
+              inc(member_count: 10).
+              inc(other_count: 10).
+              bit(likes: { and: 13 }).
+              set(name: "Placebo").
+              unset(:origin)
           end
         end
 
@@ -142,14 +146,14 @@ describe Mongoid::Persistable do
       end
 
       context "when expecting the document to be yielded" do
+
         let(:operations) do
           [{
             "$inc" => { "member_count" => 10 },
-            "$bit" => { "likes" => { :and => 13 } },
+            "$bit" => { "likes" => { :and => 13 }},
             "$set" => { "name" => "Placebo" },
-            "$unset" => { "origin" => true }
-          },
-           { :session => nil }]
+            "$unset" => { "origin" => true }},
+            { :session => nil } ]
         end
 
         before do
@@ -158,11 +162,11 @@ describe Mongoid::Persistable do
 
         let!(:update) do
           document.atomically do |doc|
-            doc
-              .inc(member_count: 10)
-              .bit(likes: { and: 13 })
-              .set(name: "Placebo")
-              .unset(:origin)
+            doc.
+              inc(member_count: 10).
+              bit(likes: { and: 13 }).
+              set(name: "Placebo").
+              unset(:origin)
           end
         end
 
@@ -170,6 +174,7 @@ describe Mongoid::Persistable do
       end
 
       context "when nesting atomically calls" do
+
         before do
           class Band
             def my_updates(**args)
@@ -182,6 +187,7 @@ describe Mongoid::Persistable do
         end
 
         context "when given join_context: false" do
+
           let(:run_update) do
             document.atomically do |doc|
               doc.set origin: "Paris"
@@ -223,6 +229,7 @@ describe Mongoid::Persistable do
         end
 
         context "when given join_context: true" do
+
           let(:run_update) do
             document.atomically do |doc|
               doc.inc(member_count: 10)
@@ -263,29 +270,31 @@ describe Mongoid::Persistable do
       end
     end
 
-    context "when providing no block " do
+    context "when providing no block "do
+
       it "returns true" do
         expect(document.atomically).to be true
       end
     end
 
     context "when the block has no operations" do
-      before do
-        expect_any_instance_of(Mongo::Collection::View).to_not receive(:update_one)
-      end
-
-      let!(:update) do
-        document.atomically do
+        before do
+          expect_any_instance_of(Mongo::Collection::View).to_not receive(:update_one)
         end
-      end
 
-      it "doesn't update the document" do
-        expect(document.reload.origin).to eq("London")
-      end
+        let!(:update) do
+          document.atomically do
+          end
+        end
+
+        it "doesn't update the document" do
+          expect(document.reload.origin).to eq("London")
+        end
     end
   end
 
   describe "#fail_due_to_valiation!" do
+
     let(:document) do
       Band.new
     end
@@ -298,6 +307,7 @@ describe Mongoid::Persistable do
   end
 
   describe "#fail_due_to_callback!" do
+
     let(:document) do
       Band.new
     end

@@ -8,7 +8,7 @@ describe 'Queries with Range criteria' do
   let(:today) { Date.new(2020, 1, 1) }
 
   let(:labels) do
-    [Label.new(age: 12), Label.new(age: 16)]
+    [ Label.new(age: 12), Label.new(age: 16) ]
   end
 
   let!(:band1) { Band.create!(likes: 0, rating: 0.9, founded: today, updated_at: now_utc) }
@@ -18,6 +18,7 @@ describe 'Queries with Range criteria' do
   let!(:band5) { Band.create!(likes: 4, rating: 3.1, founded: today + 4.days, updated_at: now_utc + 4.days, labels: labels) }
 
   context 'Range<Integer> criteria vs Integer field' do
+
     it 'returns objects within the range' do
       expect(Band.where(likes: 1..3).to_a).to eq [band2, band3, band4]
       expect(Band.where(likes: 1...3).to_a).to eq [band2, band3]
@@ -38,6 +39,7 @@ describe 'Queries with Range criteria' do
   end
 
   context 'Range<Integer> criteria vs Float field' do
+
     it 'returns objects within the range' do
       expect(Band.where(rating: 1..3).to_a).to eq [band2, band3, band4]
       expect(Band.where(rating: 1...3).to_a).to eq [band2, band3]
@@ -58,6 +60,7 @@ describe 'Queries with Range criteria' do
   end
 
   context 'Range<Float> criteria vs Integer field' do
+
     it 'returns objects within the range' do
       expect(Band.where(likes: 0.95..3.05).to_a).to eq [band2, band3, band4]
       expect(Band.where(likes: 0.95...3.0).to_a).to eq [band2, band3]
@@ -78,6 +81,7 @@ describe 'Queries with Range criteria' do
   end
 
   context 'Range<Float> criteria vs Float field' do
+
     it 'returns objects within the range' do
       expect(Band.where(rating: 0.95..3.05).to_a).to eq [band2, band3, band4]
       expect(Band.where(rating: 0.95...3.0).to_a).to eq [band2, band3]
@@ -98,6 +102,7 @@ describe 'Queries with Range criteria' do
   end
 
   context 'Range<Time> criteria vs Time field' do
+
     it 'returns objects within the range' do
       expect(Band.where(updated_at: (now_utc + 1.day)..(now_utc + 3.days)).to_a).to eq [band2, band3, band4]
       expect(Band.where(updated_at: (now_utc + 1.day)...(now_utc + 3.days)).to_a).to eq [band2, band3]
@@ -118,6 +123,7 @@ describe 'Queries with Range criteria' do
   end
 
   context 'Range<Time> criteria vs Date field' do
+
     it 'returns objects within the range' do
       expect(Band.where(founded: (now_utc + 1.day)..(now_utc + 3.days)).to_a).to eq [band2, band3, band4]
       expect(Band.where(founded: (now_utc + 1.day)...(now_utc + 3.days)).to_a).to eq [band2, band3]
@@ -138,6 +144,7 @@ describe 'Queries with Range criteria' do
   end
 
   context 'Range<ActiveSupport::TimeWithZone> criteria vs Time field' do
+
     it 'returns objects within the range' do
       expect(Band.where(updated_at: (now_in_zone + 1.day)..(now_in_zone + 3.days)).to_a).to eq [band2, band3, band4]
       expect(Band.where(updated_at: (now_in_zone + 1.day)...(now_in_zone + 3.days)).to_a).to eq [band2, band3]
@@ -158,6 +165,7 @@ describe 'Queries with Range criteria' do
   end
 
   context 'Range<ActiveSupport::TimeWithZone> criteria vs Date field' do
+
     it 'returns objects within the range' do
       expect(Band.where(founded: (now_in_zone + 1.day)..(now_in_zone + 3.days)).to_a).to eq [band3, band4, band5]
       expect(Band.where(founded: (now_in_zone + 1.day)...(now_in_zone + 3.days)).to_a).to eq [band3, band4]
@@ -178,6 +186,7 @@ describe 'Queries with Range criteria' do
   end
 
   context 'Range<Date> criteria vs Date field' do
+
     it 'returns objects within the range' do
       expect(Band.where(founded: (today + 1.day)..(today + 3.days)).to_a).to eq [band2, band3, band4]
       expect(Band.where(founded: (today + 1.day)...(today + 3.days)).to_a).to eq [band2, band3]
@@ -198,6 +207,7 @@ describe 'Queries with Range criteria' do
   end
 
   context 'Range<Date> criteria vs Time field' do
+
     it 'returns objects within the range' do
       expect(Band.where(updated_at: (today + 1.day)..(today + 3.days)).to_a).to eq [band2, band3]
       expect(Band.where(updated_at: (today + 1.day)...(today + 3.days)).to_a).to eq [band2, band3]
@@ -218,6 +228,7 @@ describe 'Queries with Range criteria' do
   end
 
   context 'Range<Integer> criteria vs embedded Integer field' do
+
     it 'returns objects within the range' do
       expect(Band.where("labels.age" => 10..18).to_a).to eq [band5]
       expect(Band.where("labels.age" => 13...16).to_a).to eq []
@@ -272,7 +283,7 @@ describe 'Queries with Range criteria' do
   end
 
   context 'Range<Integer> criteria vs Array<Hash<Symbol, Integer>>' do
-    let!(:band6) { Band.create!(genres: [{ x: 12 }, { x: 16 }]) }
+    let!(:band6) { Band.create!(genres: [{x: 12}, {x: 16}]) }
 
     it 'returns objects within the range' do
       expect(Band.where("genres.x" => 10..18).to_a).to eq [band6]

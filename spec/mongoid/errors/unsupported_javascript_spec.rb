@@ -3,7 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Errors::UnsupportedJavascript do
+
   describe "#message" do
+
     let(:error) do
       described_class.new(Address, "this.street == null")
     end

@@ -5,6 +5,7 @@ module Mongoid
     module Aggregable
       # Contains behavior for aggregating values in memory.
       module Memory
+
         # Get all the aggregate values for the provided field.
         # Provided for interface consistency with Aggregable::Mongo.
         #

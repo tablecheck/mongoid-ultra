@@ -2,8 +2,10 @@
 
 module Mongoid
   module Config
+
     # Encapsulates logic for setting options.
     module Options
+
       # Get the defaults or initialize a new empty hash.
       #
       # @example Get the defaults.

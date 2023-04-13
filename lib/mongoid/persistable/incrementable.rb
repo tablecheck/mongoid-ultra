@@ -2,6 +2,7 @@
 
 module Mongoid
   module Persistable
+
     # Defines behavior for $inc operations.
     module Incrementable
       extend ActiveSupport::Concern

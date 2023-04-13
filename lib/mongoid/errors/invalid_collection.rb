@@ -2,6 +2,7 @@
 
 module Mongoid
   module Errors
+
     # This error is raised when trying to access a Mongo::Collection from an
     # embedded document.
     #

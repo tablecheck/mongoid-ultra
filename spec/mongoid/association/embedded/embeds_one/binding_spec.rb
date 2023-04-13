@@ -3,6 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Association::Embedded::EmbedsOne::Binding do
+
   let(:person) do
     Person.new
   end
@@ -16,11 +17,13 @@ describe Mongoid::Association::Embedded::EmbedsOne::Binding do
   end
 
   describe "#bind" do
+
     let(:binding) do
       described_class.new(person, target, association)
     end
 
     context "when the document is bindable" do
+
       before do
         binding.bind_one
       end
@@ -35,6 +38,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Binding do
     end
 
     context "when the document is not bindable" do
+
       before do
         target.namable = person
       end
@@ -47,11 +51,13 @@ describe Mongoid::Association::Embedded::EmbedsOne::Binding do
   end
 
   describe "#unbind" do
+
     let(:binding) do
       described_class.new(person, target, association)
     end
 
     context "when the document is unbindable" do
+
       before do
         binding.bind_one
         binding.unbind_one
@@ -63,6 +69,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Binding do
     end
 
     context "when the document is not unbindable" do
+
       it "does nothing" do
         expect(person).to receive(:name=).never
         binding.unbind_one

@@ -5,4 +5,5 @@ class Folder
 
   field :name, type: String
   has_many :folder_items
+
 end

@@ -3,8 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Stateful do
+
   describe "#new_record?" do
+
     context "when calling new on the document" do
+
       let(:person) do
         Person.new("_id" => BSON::ObjectId.new)
       end
@@ -15,6 +18,7 @@ describe Mongoid::Stateful do
     end
 
     context "when the object has been saved" do
+
       let(:person) do
         Person.instantiate("_id" => BSON::ObjectId.new)
       end
@@ -25,6 +29,7 @@ describe Mongoid::Stateful do
     end
 
     context "when the object has not been saved" do
+
       let(:person) do
         Person.new
       end
@@ -55,6 +60,7 @@ describe Mongoid::Stateful do
   end
 
   describe "#persisted?" do
+
     let(:person) do
       Person.new
     end
@@ -85,11 +91,13 @@ describe Mongoid::Stateful do
   end
 
   describe "destroyed?" do
+
     let(:person) do
       Person.new
     end
 
     context "when destroyed is true" do
+
       before do
         person.destroyed = true
       end
@@ -100,6 +108,7 @@ describe Mongoid::Stateful do
     end
 
     context "when destroyed is false" do
+
       before do
         person.destroyed = false
       end
@@ -110,6 +119,7 @@ describe Mongoid::Stateful do
     end
 
     context "when destroyed is nil" do
+
       before do
         person.destroyed = nil
       end
@@ -121,6 +131,7 @@ describe Mongoid::Stateful do
   end
 
   describe "#readonly?" do
+
     let(:document) do
       Band.new
     end
@@ -129,6 +140,7 @@ describe Mongoid::Stateful do
       config_override :legacy_readonly, true
 
       context "when the selected fields are set" do
+
         before do
           document.__selected_fields = { test: 1 }
         end
@@ -139,12 +151,14 @@ describe Mongoid::Stateful do
       end
 
       context "when no readonly has been set" do
+
         it "returns false" do
           expect(document).to_not be_readonly
         end
       end
 
       context "when the readonly! method is called" do
+
         let(:op) do
           document.readonly!
         end
@@ -161,6 +175,7 @@ describe Mongoid::Stateful do
       end
 
       context "when overriding readonly?" do
+
         let(:doc) { ReadonlyModel.create! }
 
         before do
@@ -194,6 +209,7 @@ describe Mongoid::Stateful do
       config_override :legacy_readonly, false
 
       context "when the selected fields are set" do
+
         before do
           document.__selected_fields = { test: 1 }
         end
@@ -204,6 +220,7 @@ describe Mongoid::Stateful do
       end
 
       context "when the readonly! method is called" do
+
         before do
           document.readonly!
         end
@@ -214,12 +231,14 @@ describe Mongoid::Stateful do
       end
 
       context "when no readonly has been set" do
+
         it "returns false" do
           expect(document).to_not be_readonly
         end
       end
 
       context "when overriding readonly?" do
+
         let(:doc) { ReadonlyModel.new }
 
         before do

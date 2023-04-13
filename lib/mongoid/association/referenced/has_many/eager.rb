@@ -4,8 +4,10 @@ module Mongoid
   module Association
     module Referenced
       class HasMany
+
         # Eager class for has_many associations.
         class Eager < Association::Eager
+
           private
 
           def preload

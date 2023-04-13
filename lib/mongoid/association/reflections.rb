@@ -2,6 +2,7 @@
 
 module Mongoid
   module Association
+
     # The reflections module provides convenience methods that can retrieve
     # useful information about associations.
     module Reflections
@@ -32,6 +33,7 @@ module Mongoid
       end
 
       module ClassMethods
+
         # Returns the association metadata for the supplied name.
         #
         # @example Find association metadata by name.

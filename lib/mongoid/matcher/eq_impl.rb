@@ -1,5 +1,6 @@
 module Mongoid
   module Matcher
+
     # This module is used by $eq and other operators that need to perform
     # the matching that $eq performs (for example, $ne which negates the result
     # of $eq). Unlike $eq this module takes an original operator as an
@@ -8,6 +9,7 @@ module Mongoid
     #
     # @api private
     module EqImpl
+
       # Returns whether a value satisfies an $eq (or similar) expression.
       #
       # @param [ true | false ] exists Not used.

@@ -4,6 +4,7 @@ require "spec_helper"
 require_relative './interceptable_spec_models'
 
 describe Mongoid::Interceptable do
+
   before do
     # The find and initialize callbacks I added were causing failures
     # because they were causing updates when we were asserting no updates
@@ -27,6 +28,7 @@ describe Mongoid::Interceptable do
   end
 
   describe ".included" do
+
     let(:klass) do
       TestClass
     end
@@ -81,18 +83,22 @@ describe Mongoid::Interceptable do
   end
 
   describe ".after_find" do
+
     let!(:player) do
       Player.create!
     end
 
     context "when the callback is on a root document" do
+
       context "when when the document is instantiated" do
+
         it "does not execute the callback" do
           expect(player.impressions).to eq(0)
         end
       end
 
       context "when the document is found via #find" do
+
         let(:from_db) do
           Player.find(player.id)
         end
@@ -103,6 +109,7 @@ describe Mongoid::Interceptable do
       end
 
       context "when the document is found in a criteria" do
+
         let(:from_db) do
           Player.where(id: player.id).first
         end
@@ -113,6 +120,7 @@ describe Mongoid::Interceptable do
       end
 
       context "when the document is reloaded" do
+
         let(:from_db) do
           Player.find(player.id)
         end
@@ -128,17 +136,20 @@ describe Mongoid::Interceptable do
     end
 
     context "when the callback is on an embedded document" do
+
       let!(:implant) do
         player.implants.create!
       end
 
       context "when when the document is instantiated" do
+
         it "does not execute the callback" do
           expect(implant.impressions).to eq(0)
         end
       end
 
       context "when the document is found via #find" do
+
         let(:from_db) do
           Player.find(player.id).implants.first
         end
@@ -149,6 +160,7 @@ describe Mongoid::Interceptable do
       end
 
       context "when the document is found in a criteria" do
+
         let(:from_db) do
           Player.find(player.id).implants.find(implant.id)
         end
@@ -161,6 +173,7 @@ describe Mongoid::Interceptable do
   end
 
   describe ".after_initialize" do
+
     let(:game) do
       Game.new
     end
@@ -170,29 +183,30 @@ describe Mongoid::Interceptable do
     end
 
     context 'when the document is embedded' do
+
       after do
         Book.destroy_all
       end
 
       let(:book) do
         book = Book.new({
-                          :pages => [
-                            {
-                              content: "Page 1",
-                              notes: [
-                                { message: "Page 1 / Note A" },
-                                { message: "Page 1 / Note B" }
-                              ]
-                            },
-                            {
-                              content: "Page 2",
-                              notes: [
-                                { message: "Page 2 / Note A" },
-                                { message: "Page 2 / Note B" }
-                              ]
-                            }
-                          ]
-                        })
+          :pages => [
+            {
+              content: "Page 1",
+              notes: [
+                { message: "Page 1 / Note A" },
+                { message: "Page 1 / Note B" }
+              ]
+            },
+            {
+              content: "Page 2",
+              notes: [
+                { message: "Page 2 / Note A" },
+                { message: "Page 2 / Note B" }
+              ]
+            }
+          ]
+        })
         book.id = '123'
         book.save!
         book
@@ -203,7 +217,7 @@ describe Mongoid::Interceptable do
       end
 
       before do
-        book.pages.each do |page|
+        book.pages.each do | page |
           page.notes.destroy_all
           page.notes.new(message: new_message)
           page.save!
@@ -225,6 +239,7 @@ describe Mongoid::Interceptable do
   end
 
   describe ".after_build" do
+
     let(:weapon) do
       Player.new(frags: 5).weapons.build
     end
@@ -259,11 +274,13 @@ describe Mongoid::Interceptable do
   end
 
   describe ".before_create" do
+
     let(:artist) do
       Artist.new(name: "Depeche Mode")
     end
 
     context "callback returns true" do
+
       before do
         expect(artist).to receive(:before_create_stub).once.and_return(true)
         artist.save!
@@ -275,6 +292,7 @@ describe Mongoid::Interceptable do
     end
 
     context "callback aborts the callback chain" do
+
       before do
         Artist.before_create(:before_create_fail_stub)
         expect(artist).to receive(:before_create_fail_stub).once.and_call_original
@@ -292,7 +310,9 @@ describe Mongoid::Interceptable do
   end
 
   describe ".before_save" do
+
     context "when creating" do
+
       let(:artist) do
         Artist.new(name: "Depeche Mode")
       end
@@ -302,6 +322,7 @@ describe Mongoid::Interceptable do
       end
 
       context "when the callback returns true" do
+
         before do
           expect(artist).to receive(:before_save_stub).once.and_return(true)
         end
@@ -312,6 +333,7 @@ describe Mongoid::Interceptable do
       end
 
       context "when callback halts the callback chain" do
+
         before do
           Artist.before_save(:before_save_fail_stub)
         end
@@ -328,6 +350,7 @@ describe Mongoid::Interceptable do
     end
 
     context "when updating" do
+
       let(:artist) do
         Artist.create!(name: "Depeche Mode").tap do |artist|
           artist.name = "The Mountain Goats"
@@ -339,6 +362,7 @@ describe Mongoid::Interceptable do
       end
 
       context "when the callback returns true" do
+
         before do
           expect(artist).to receive(:before_update_stub).once.and_return(true)
         end
@@ -349,6 +373,7 @@ describe Mongoid::Interceptable do
       end
 
       context "when the callback halts the callback chain" do
+
         before do
           Artist.before_update(:before_update_fail_stub)
         end
@@ -366,6 +391,7 @@ describe Mongoid::Interceptable do
   end
 
   describe ".before_destroy" do
+
     let(:artist) do
       Artist.create!(name: "Depeche Mode")
     end
@@ -379,6 +405,7 @@ describe Mongoid::Interceptable do
     end
 
     context "when the callback returns true" do
+
       before do
         expect(artist).to receive(:before_destroy_stub).once.and_return(true)
       end
@@ -389,6 +416,7 @@ describe Mongoid::Interceptable do
     end
 
     context "when the callback halts the callback chain" do
+
       before do
         Artist.before_destroy(:before_destroy_fail_stub)
       end
@@ -404,6 +432,7 @@ describe Mongoid::Interceptable do
     end
 
     context "when cascading callbacks" do
+
       let!(:moderat) do
         Band.create!(name: "Moderat")
       end
@@ -423,6 +452,7 @@ describe Mongoid::Interceptable do
   end
 
   describe "#run_after_callbacks" do
+
     let(:object) do
       TestClass.new
     end
@@ -441,6 +471,7 @@ describe Mongoid::Interceptable do
   end
 
   describe "#run_before_callbacks" do
+
     let(:object) do
       TestClass.new
     end
@@ -459,8 +490,11 @@ describe Mongoid::Interceptable do
   end
 
   context "when cascading callbacks" do
+
     context "when the parent has a custom callback" do
+
       context "when the child does not have the same callback defined" do
+
         let(:exhibition) do
           Exhibition.new
         end
@@ -470,9 +504,10 @@ describe Mongoid::Interceptable do
         end
 
         context "when running the callbacks directly" do
+
           before(:all) do
             Exhibition.define_model_callbacks(:rearrange)
-            Exhibition.after_rearrange {}
+            Exhibition.after_rearrange { }
           end
 
           after(:all) do
@@ -485,6 +520,7 @@ describe Mongoid::Interceptable do
         end
 
         context "when the callbacks get triggered by a destroy" do
+
           let(:band) do
             Band.new
           end
@@ -523,6 +559,7 @@ describe Mongoid::Interceptable do
     end
 
     context "when a document can exist in more than 1 level" do
+
       let(:band) do
         Band.new
       end
@@ -536,12 +573,14 @@ describe Mongoid::Interceptable do
       end
 
       context "when adding the document at multiple levels" do
+
         before do
           band.notes.push(note)
           record.notes.push(note)
         end
 
         context "when saving the root" do
+
           it "only executes the callbacks once for each embed" do
             expect(note).to receive(:update_saved).twice
             band.save!
@@ -551,6 +590,7 @@ describe Mongoid::Interceptable do
     end
 
     context "when cascading after initialize" do
+
       let!(:person) do
         Person.create!
       end
@@ -566,6 +606,7 @@ describe Mongoid::Interceptable do
     end
 
     context "when attempting to cascade on a referenced relation" do
+
       it "raises an error" do
         expect {
           Band.has_and_belongs_to_many :tags, cascade_callbacks: true
@@ -574,9 +615,13 @@ describe Mongoid::Interceptable do
     end
 
     context "when the documents are embedded one level" do
+
       describe "#after_create" do
+
         context "when the child is new" do
+
           context "when the parent is new" do
+
             let(:band) do
               Band.new(name: "Moderat")
             end
@@ -595,6 +640,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the parent is persisted" do
+
             let(:band) do
               Band.create!(name: "Moderat")
             end
@@ -614,6 +660,7 @@ describe Mongoid::Interceptable do
         end
 
         context "when the child is persisted" do
+
           let(:band) do
             Band.create!(name: "Moderat")
           end
@@ -634,8 +681,11 @@ describe Mongoid::Interceptable do
       end
 
       describe "#after_save" do
+
         context "when the child is new" do
+
           context "when the parent is new" do
+
             let(:band) do
               Band.new(name: "Moderat")
             end
@@ -654,6 +704,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the parent is persisted" do
+
             let(:band) do
               Band.create!(name: "Moderat")
             end
@@ -673,6 +724,7 @@ describe Mongoid::Interceptable do
         end
 
         context "when the child is persisted" do
+
           let(:band) do
             Band.create!(name: "Moderat")
           end
@@ -692,8 +744,11 @@ describe Mongoid::Interceptable do
       end
 
       describe "#after_update" do
+
         context "when the child is new" do
+
           context "when the parent is new" do
+
             let(:band) do
               Band.new(name: "Moderat")
             end
@@ -712,6 +767,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the parent is persisted" do
+
             let(:band) do
               Band.create!(name: "Moderat")
             end
@@ -731,11 +787,13 @@ describe Mongoid::Interceptable do
         end
 
         context "when the child is persisted" do
+
           let(:band) do
             Band.create!(name: "Moderat")
           end
 
           context "when the child is dirty" do
+
             let!(:label) do
               band.create_label(name: "Mute")
             end
@@ -751,6 +809,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the child is not dirty" do
+
             let!(:label) do
               band.build_label(name: "Mute")
             end
@@ -767,8 +826,11 @@ describe Mongoid::Interceptable do
       end
 
       describe "#after_validation" do
+
         context "when the child is new" do
+
           context "when the parent is new" do
+
             let(:band) do
               Band.new(name: "Moderat")
             end
@@ -787,6 +849,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the parent is persisted" do
+
             let(:band) do
               Band.create!(name: "Moderat")
             end
@@ -806,6 +869,7 @@ describe Mongoid::Interceptable do
         end
 
         context "when the child is persisted" do
+
           let(:band) do
             Band.create!(name: "Moderat")
           end
@@ -825,8 +889,11 @@ describe Mongoid::Interceptable do
       end
 
       describe "#before_create" do
+
         context "when the child is new" do
+
           context "when the parent is new" do
+
             let(:band) do
               Band.new(name: "Moderat")
             end
@@ -845,6 +912,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the parent is persisted" do
+
             let(:band) do
               Band.create!(name: "Moderat")
             end
@@ -864,6 +932,7 @@ describe Mongoid::Interceptable do
         end
 
         context "when the child is persisted" do
+
           let(:band) do
             Band.create!(name: "Moderat")
           end
@@ -884,8 +953,11 @@ describe Mongoid::Interceptable do
       end
 
       describe "#before_save" do
+
         context "when the child is new" do
+
           context "when the parent is new" do
+
             let(:band) do
               Band.new(name: "Moderat")
             end
@@ -908,6 +980,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the parent is persisted" do
+
             let(:band) do
               Band.create!(name: "Moderat")
             end
@@ -931,6 +1004,7 @@ describe Mongoid::Interceptable do
         end
 
         context "when the child is persisted" do
+
           let(:band) do
             Band.create!(name: "Moderat")
           end
@@ -953,6 +1027,7 @@ describe Mongoid::Interceptable do
         end
 
         context "when the child is created" do
+
           let!(:band) do
             Band.create!
           end
@@ -968,8 +1043,11 @@ describe Mongoid::Interceptable do
       end
 
       describe "#before_update" do
+
         context "when the child is new" do
+
           context "when the parent is new" do
+
             let(:band) do
               Band.new(name: "Moderat")
             end
@@ -988,6 +1066,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the parent is persisted" do
+
             let(:band) do
               Band.create!(name: "Moderat")
             end
@@ -1007,6 +1086,7 @@ describe Mongoid::Interceptable do
         end
 
         context "when the child is persisted" do
+
           let(:band) do
             Band.create!(name: "Moderat")
           end
@@ -1016,6 +1096,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the child is dirty" do
+
             before do
               record.name = "Nothing"
               band.save!
@@ -1031,6 +1112,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the child is not dirty" do
+
             before do
               band.save!
             end
@@ -1043,8 +1125,11 @@ describe Mongoid::Interceptable do
       end
 
       describe "#before_validation" do
+
         context "when the child is new" do
+
           context "when the parent is new" do
+
             let(:band) do
               Band.new(name: "Moderat")
             end
@@ -1067,6 +1152,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the parent is persisted" do
+
             let(:band) do
               Band.create!(name: "Moderat")
             end
@@ -1089,12 +1175,13 @@ describe Mongoid::Interceptable do
           end
 
           context 'when the parent is updated' do
+
             let(:band) do
               Band.create!(name: "Moderat")
             end
 
             before do
-              band.update(records: [{ name: 'Black on Both Sides' }])
+              band.update(records: [ { name: 'Black on Both Sides' }])
             end
 
             it 'executes the callback' do
@@ -1108,12 +1195,13 @@ describe Mongoid::Interceptable do
         end
 
         context 'when the parent is updated' do
+
           let(:band) do
             Band.create!(name: "Moderat")
           end
 
           before do
-            band.update(records: [{ name: 'Black on Both Sides' }])
+            band.update(records: [ { name: 'Black on Both Sides' }])
           end
 
           it 'executes the callback' do
@@ -1126,6 +1214,7 @@ describe Mongoid::Interceptable do
         end
 
         context "when the child is persisted" do
+
           let(:band) do
             Band.create!(name: "Moderat")
           end
@@ -1150,9 +1239,13 @@ describe Mongoid::Interceptable do
     end
 
     context "when the document is embedded multiple levels" do
+
       describe "#before_create" do
+
         context "when the child is new" do
+
           context "when the root is new" do
+
             let(:band) do
               Band.new(name: "Moderat")
             end
@@ -1175,6 +1268,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the root is persisted" do
+
             let(:band) do
               Band.create!(name: "Moderat")
             end
@@ -1198,6 +1292,7 @@ describe Mongoid::Interceptable do
         end
 
         context "when the child is persisted" do
+
           let(:band) do
             Band.create!(name: "Moderat")
           end
@@ -1222,8 +1317,11 @@ describe Mongoid::Interceptable do
       end
 
       describe "#before_save" do
+
         context "when the child is new" do
+
           context "when the root is new" do
+
             let(:band) do
               Band.new(name: "Moderat")
             end
@@ -1254,6 +1352,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the parent is persisted" do
+
             let(:band) do
               Band.create!(name: "Moderat")
             end
@@ -1285,6 +1384,7 @@ describe Mongoid::Interceptable do
         end
 
         context "when the child is persisted" do
+
           let(:band) do
             Band.create!(name: "Moderat")
           end
@@ -1316,8 +1416,11 @@ describe Mongoid::Interceptable do
       end
 
       describe "#before_update" do
+
         context "when the child is new" do
+
           context "when the parent is new" do
+
             let(:band) do
               Band.new(name: "Moderat")
             end
@@ -1340,6 +1443,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the parent is persisted" do
+
             let(:band) do
               Band.create!(name: "Moderat")
             end
@@ -1363,6 +1467,7 @@ describe Mongoid::Interceptable do
         end
 
         context "when the child is persisted" do
+
           let(:band) do
             Band.create!(name: "Moderat")
           end
@@ -1376,6 +1481,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the child is dirty" do
+
             before do
               track.name = "Rusty Nails"
               band.save!
@@ -1395,6 +1501,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the child is not dirty" do
+
             before do
               band.save!
             end
@@ -1407,7 +1514,9 @@ describe Mongoid::Interceptable do
       end
 
       describe '#after_destroy' do
+
         context 'when the parent is updated in a child after_destroy callback' do
+
           let!(:person) do
             Person.create!(ordered_posts: [OrderedPost.new])
           end
@@ -1424,8 +1533,11 @@ describe Mongoid::Interceptable do
       end
 
       describe "#before_validation" do
+
         context "when the child is new" do
+
           context "when the parent is new" do
+
             let(:band) do
               Band.new(name: "Moderat")
             end
@@ -1448,6 +1560,7 @@ describe Mongoid::Interceptable do
           end
 
           context "when the parent is persisted" do
+
             let(:band) do
               Band.create!(name: "Moderat")
             end
@@ -1471,6 +1584,7 @@ describe Mongoid::Interceptable do
         end
 
         context "when the child is persisted" do
+
           let(:band) do
             Band.create!(name: "Moderat")
           end
@@ -1496,6 +1610,7 @@ describe Mongoid::Interceptable do
   end
 
   context "callback on valid?" do
+
     it "goes in all validation callback in good order" do
       shin = ValidationCallback.new
       shin.valid?
@@ -1504,6 +1619,7 @@ describe Mongoid::Interceptable do
   end
 
   context "when creating child documents in callbacks" do
+
     let(:parent) do
       ParentDoc.new
     end
@@ -1519,6 +1635,7 @@ describe Mongoid::Interceptable do
   end
 
   context "when callbacks cancel persistence" do
+
     let(:address) do
       Address.new(street: "123 Sesame")
     end
@@ -1534,8 +1651,9 @@ describe Mongoid::Interceptable do
     end
 
     context "when creating a document" do
+
       let(:person) do
-        Person.new(mode: :prevent_save, title: "Associate", addresses: [address])
+        Person.new(mode: :prevent_save, title: "Associate", addresses: [ address ])
       end
 
       it "fails to save" do
@@ -1560,12 +1678,13 @@ describe Mongoid::Interceptable do
     end
 
     context "when updating a document" do
+
       let(:person) do
         Person.create!.tap do |person|
           person.attributes = {
             mode: :prevent_save,
             title: "Associate",
-            addresses: [address]
+            addresses: [ address ]
           }
         end
       end
@@ -1593,6 +1712,7 @@ describe Mongoid::Interceptable do
   end
 
   context "when loading a model multiple times" do
+
     before do
       load File.join(MODELS, "callback_test.rb")
       load File.join(MODELS, "callback_test.rb")
@@ -1603,6 +1723,7 @@ describe Mongoid::Interceptable do
     end
 
     context "when saving the document" do
+
       it "only executes the callbacks once" do
         expect(callback).to receive(:execute).once
         callback.save
@@ -1985,6 +2106,7 @@ describe Mongoid::Interceptable do
     end
 
     context "when using create methods" do
+
       context "when the child is an embeds_many association" do
         let!(:player) do
           Player.create!.tap do |player|
@@ -2094,6 +2216,7 @@ describe Mongoid::Interceptable do
     end
 
     context "when using build methods" do
+
       context "when the child is an embeds_many association" do
         let!(:player) do
           Player.create!.tap do |player|

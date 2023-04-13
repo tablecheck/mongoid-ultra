@@ -2,8 +2,10 @@
 
 module Mongoid
   module Extensions
+
     # Adds type-casting behavior to Float class.
     module Float
+
       # Converts the float into a time as the number of seconds since the epoch.
       #
       # @example Convert the float into a time.
@@ -25,6 +27,7 @@ module Mongoid
       end
 
       module ClassMethods
+
         # Turn the object from the ruby type we deal with to a Mongo friendly
         # type.
         #
@@ -36,7 +39,6 @@ module Mongoid
         # @return [ Float | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.blank?
-
           if object.is_a?(String)
             if object.numeric?
               object.to_f

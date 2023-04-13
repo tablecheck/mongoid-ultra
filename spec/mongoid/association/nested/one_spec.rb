@@ -3,12 +3,15 @@
 require "spec_helper"
 
 describe Mongoid::Association::Nested::One do
+
   let(:association) do
     Person.relations['name']
   end
 
   describe "#allow_destroy?" do
+
     context "when the option is provided" do
+
       let(:builder) do
         described_class.new(association, {}, allow_destroy: true)
       end
@@ -19,6 +22,7 @@ describe Mongoid::Association::Nested::One do
     end
 
     context "when the option is not provided" do
+
       let(:builder) do
         described_class.new(association, {}, {})
       end
@@ -30,13 +34,15 @@ describe Mongoid::Association::Nested::One do
   end
 
   describe "#build" do
+
     let(:person) do
       Person.new
     end
 
     context "when attributes are rejectable using a proc" do
+
       let(:options) do
-        { reject_if: ->(attrs) { attrs[:first_name].blank? } }
+        { reject_if: ->(attrs){ attrs[:first_name].blank? } }
       end
 
       let(:builder) do
@@ -53,6 +59,7 @@ describe Mongoid::Association::Nested::One do
     end
 
     context "when attributes are rejectable using a symbol" do
+
       let(:options) do
         { reject_if: :reject_if_name_is_blank }
       end
@@ -70,7 +77,10 @@ describe Mongoid::Association::Nested::One do
       end
     end
 
+
+
     context "when attributes are updatable" do
+
       let(:name) do
         person.build_name(last_name: "Ling")
       end
@@ -81,9 +91,9 @@ describe Mongoid::Association::Nested::One do
 
       let(:builder) do
         described_class.new(association, {
-                              _id: name.id,
-                              last_name: "Lang"
-                            }, options)
+          _id: name.id,
+          last_name: "Lang"
+        }, options)
       end
 
       before do
@@ -96,14 +106,15 @@ describe Mongoid::Association::Nested::One do
     end
 
     context "when attributes are replacable" do
+
       let(:options) do
         {}
       end
 
       let(:builder) do
         described_class.new(association, {
-                              last_name: "Lang"
-                            }, options)
+          last_name: "Lang"
+        }, options)
       end
 
       before do
@@ -116,6 +127,7 @@ describe Mongoid::Association::Nested::One do
     end
 
     context "when attributes are deletable" do
+
       let(:name) do
         person.build_name(last_name: "Ling")
       end
@@ -128,10 +140,10 @@ describe Mongoid::Association::Nested::One do
         context "#{id_field}" do
           let(:builder) do
             described_class.new(association, {
-                                  id_field => name.id,
-                                  last_name: "Lang",
-                                  _destroy: true
-                                }, options)
+              id_field => name.id,
+              last_name: "Lang",
+              _destroy: true
+            }, options)
           end
 
           before do
@@ -147,7 +159,9 @@ describe Mongoid::Association::Nested::One do
   end
 
   describe "#destroy" do
+
     context "when the attribute exists" do
+
       let(:builder) do
         described_class.new(association, { _destroy: true }, {})
       end
@@ -158,6 +172,7 @@ describe Mongoid::Association::Nested::One do
     end
 
     context "when the attribute does not exist" do
+
       let(:builder) do
         described_class.new(association, {}, {})
       end
@@ -169,12 +184,15 @@ describe Mongoid::Association::Nested::One do
   end
 
   describe "#reject?" do
+
     context "when the proc is provided" do
+
       let(:options) do
-        { reject_if: ->(attrs) { attrs[:first_name].blank? } }
+        { reject_if: ->(attrs){ attrs[:first_name].blank? } }
       end
 
       context "when the proc matches" do
+
         let(:builder) do
           described_class.new(association, {}, options)
         end
@@ -185,6 +203,7 @@ describe Mongoid::Association::Nested::One do
       end
 
       context "when the proc does not match" do
+
         let(:builder) do
           described_class.new(association, {}, options)
         end
@@ -196,6 +215,7 @@ describe Mongoid::Association::Nested::One do
     end
 
     context "when the proc is not provided" do
+
       let(:builder) do
         described_class.new(association, {}, {})
       end
@@ -207,7 +227,9 @@ describe Mongoid::Association::Nested::One do
   end
 
   describe "#update_only?" do
+
     context "when the option is provided" do
+
       let(:builder) do
         described_class.new(association, {}, update_only: true)
       end
@@ -218,6 +240,7 @@ describe Mongoid::Association::Nested::One do
     end
 
     context "when the option is not provided" do
+
       let(:builder) do
         described_class.new(association, {}, {})
       end

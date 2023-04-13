@@ -2,6 +2,7 @@
 
 module Mongoid
   module Validatable
+
     # Validates that the specified attributes do or do not match a certain
     # length.
     #

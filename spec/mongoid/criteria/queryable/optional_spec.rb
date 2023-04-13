@@ -3,39 +3,45 @@
 require "spec_helper"
 
 describe Mongoid::Criteria::Queryable::Optional do
+
   let(:query) do
     Mongoid::Query.new
   end
 
   shared_examples_for "a cloning option" do
+
     it "returns a cloned query" do
       expect(selection).to_not equal(query)
     end
   end
 
-  [:asc, :ascending].each do |method|
+  [ :asc, :ascending ].each do |method|
+
     describe "##{method}" do
+
       context "when using the official mongodb driver syntax" do
+
         context "when the query is aggregating" do
+
           let(:selection) do
             query.project(name: 1).send(method, :field_one, :field_two)
           end
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => 1, "field_two" => 1 } }
+              { sort: { "field_one" => 1, "field_two" => 1 }}
             )
           end
 
           it "adds the sort to the aggregation" do
             expect(selection.pipeline).to include(
-              { "$sort" => { "field_one" => 1, "field_two" => 1 } }
+              { "$sort" => { "field_one" => 1, "field_two" => 1 }}
             )
           end
 
           it "does not add multiple entries to the pipeline" do
             expect(selection.pipeline).to_not include(
-              { "$sort" => { "field_one" => 1 } }
+              { "$sort" => { "field_one" => 1 }}
             )
           end
 
@@ -43,13 +49,14 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided symbols" do
+
           let(:selection) do
             query.send(method, :field_one, :field_two)
           end
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => 1, "field_two" => 1 } }
+              { sort: { "field_one" => 1, "field_two" => 1 }}
             )
           end
 
@@ -57,13 +64,14 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided an array of symbols" do
+
           let(:selection) do
-            query.send(method, [:field_one, :field_two])
+            query.send(method, [ :field_one, :field_two ])
           end
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => 1, "field_two" => 1 } }
+              { sort: { "field_one" => 1, "field_two" => 1 }}
             )
           end
 
@@ -71,13 +79,14 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided strings" do
+
           let(:selection) do
             query.send(method, "field_one", "field_two")
           end
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => 1, "field_two" => 1 } }
+              { sort: { "field_one" => 1, "field_two" => 1 }}
             )
           end
 
@@ -85,13 +94,14 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided an array of strings" do
+
           let(:selection) do
-            query.send(method, ["field_one", "field_two"])
+            query.send(method, [ "field_one", "field_two" ])
           end
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => 1, "field_two" => 1 } }
+              { sort: { "field_one" => 1, "field_two" => 1 }}
             )
           end
 
@@ -99,6 +109,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided no options" do
+
           let(:selection) do
             query.send(method)
           end
@@ -115,6 +126,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided nil" do
+
           let(:selection) do
             query.send(method, nil)
           end
@@ -134,7 +146,9 @@ describe Mongoid::Criteria::Queryable::Optional do
   end
 
   describe "#batch_size" do
+
     context "when provided no options" do
+
       let(:selection) do
         query.batch_size
       end
@@ -147,6 +161,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided nil" do
+
       let(:selection) do
         query.batch_size(nil)
       end
@@ -159,6 +174,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided arguments" do
+
       let(:selection) do
         query.batch_size(500)
       end
@@ -171,29 +187,33 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
   end
 
-  [:desc, :descending].each do |method|
+  [ :desc, :descending ].each do |method|
+
     describe "##{method}" do
+
       context "when using the official mongodb driver syntax" do
+
         context "when the query is aggregating" do
+
           let(:selection) do
             query.project(name: 1).send(method, :field_one, :field_two)
           end
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => -1, "field_two" => -1 } }
+              { sort: { "field_one" => -1, "field_two" => -1 }}
             )
           end
 
           it "adds the sort to the aggregation" do
             expect(selection.pipeline).to include(
-              { "$sort" => { "field_one" => -1, "field_two" => -1 } }
+              { "$sort" => { "field_one" => -1, "field_two" => -1 }}
             )
           end
 
           it "does not add multiple entries to the pipeline" do
             expect(selection.pipeline).to_not include(
-              { "$sort" => { "field_one" => -1 } }
+              { "$sort" => { "field_one" => -1 }}
             )
           end
 
@@ -201,13 +221,14 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided symbols" do
+
           let(:selection) do
             query.send(method, :field_one, :field_two)
           end
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => -1, "field_two" => -1 } }
+              { sort: { "field_one" => -1, "field_two" => -1 }}
             )
           end
 
@@ -215,13 +236,14 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided an array of symbols" do
+
           let(:selection) do
-            query.send(method, [:field_one, :field_two])
+            query.send(method, [ :field_one, :field_two ])
           end
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => -1, "field_two" => -1 } }
+              { sort: { "field_one" => -1, "field_two" => -1 }}
             )
           end
 
@@ -229,13 +251,14 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided strings" do
+
           let(:selection) do
             query.send(method, "field_one", "field_two")
           end
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => -1, "field_two" => -1 } }
+              { sort: { "field_one" => -1, "field_two" => -1 }}
             )
           end
 
@@ -243,13 +266,14 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided an array of strings" do
+
           let(:selection) do
-            query.send(method, ["field_one", "field_two"])
+            query.send(method, [ "field_one", "field_two" ])
           end
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => -1, "field_two" => -1 } }
+              { sort: { "field_one" => -1, "field_two" => -1 }}
             )
           end
 
@@ -257,6 +281,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided no options" do
+
           let(:selection) do
             query.send(method)
           end
@@ -273,6 +298,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided nil" do
+
           let(:selection) do
             query.send(method, nil)
           end
@@ -292,7 +318,9 @@ describe Mongoid::Criteria::Queryable::Optional do
   end
 
   describe "#hint" do
+
     context "when provided no options" do
+
       let(:selection) do
         query.hint
       end
@@ -309,6 +337,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided nil" do
+
       let(:selection) do
         query.hint(nil)
       end
@@ -325,13 +354,15 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided arguments" do
+
       context "when the argument is a hash" do
+
         let(:selection) do
           query.hint("$natural" => 1)
         end
 
         it "adds the field options" do
-          expect(selection.options).to eq({ hint: { "$natural" => 1 } })
+          expect(selection.options).to eq({ hint: { "$natural" => 1 }})
         end
 
         it_behaves_like "a cloning option"
@@ -340,7 +371,9 @@ describe Mongoid::Criteria::Queryable::Optional do
   end
 
   describe "#limit" do
+
     context "when provided no options" do
+
       let(:selection) do
         query.limit
       end
@@ -357,6 +390,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided nil" do
+
       let(:selection) do
         query.limit(nil)
       end
@@ -373,6 +407,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when the query is aggregating" do
+
       let(:selection) do
         query.project(name: 1).limit(10)
       end
@@ -389,7 +424,9 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided arguments" do
+
       context "when the argument is an integer" do
+
         let(:selection) do
           query.limit(10)
         end
@@ -402,6 +439,7 @@ describe Mongoid::Criteria::Queryable::Optional do
       end
 
       context "when the argument is a float" do
+
         let(:selection) do
           query.limit(10.25)
         end
@@ -414,6 +452,7 @@ describe Mongoid::Criteria::Queryable::Optional do
       end
 
       context "when the argument is a string" do
+
         let(:selection) do
           query.limit("10")
         end
@@ -428,7 +467,9 @@ describe Mongoid::Criteria::Queryable::Optional do
   end
 
   describe "#max_time_ms" do
+
     context "when provided no options" do
+
       let(:selection) do
         query.max_time_ms
       end
@@ -445,6 +486,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided nil" do
+
       let(:selection) do
         query.max_time_ms(nil)
       end
@@ -461,6 +503,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided arguments" do
+
       let(:selection) do
         query.max_time_ms(500)
       end
@@ -474,6 +517,7 @@ describe Mongoid::Criteria::Queryable::Optional do
   end
 
   describe "#no_timeout" do
+
     let(:selection) do
       query.no_timeout
     end
@@ -486,7 +530,9 @@ describe Mongoid::Criteria::Queryable::Optional do
   end
 
   describe "#only" do
+
     context "when provided no options" do
+
       let(:selection) do
         query.only
       end
@@ -503,6 +549,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided nil" do
+
       let(:selection) do
         query.only(nil)
       end
@@ -519,14 +566,16 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided fields" do
+
       context "as several arguments" do
+
         let(:selection) do
           query.only(:first, :second)
         end
 
         it "adds the field options" do
           expect(selection.options).to eq(
-            { fields: { "first" => 1, "second" => 1 } }
+            { fields: { "first" => 1, "second" => 1 }}
           )
         end
 
@@ -534,13 +583,14 @@ describe Mongoid::Criteria::Queryable::Optional do
       end
 
       context "as one argument - array" do
+
         let(:selection) do
           query.only([:first, :second])
         end
 
         it "adds the field options" do
           expect(selection.options).to eq(
-            { fields: { "first" => 1, "second" => 1 } }
+            { fields: { "first" => 1, "second" => 1 }}
           )
         end
 
@@ -549,11 +599,12 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when #without was called first" do
+
       let(:selection) do
         query.without(:id).only(:first)
       end
 
-      it "adds both fields to option" do
+      it "adds both fields to option"  do
         expect(selection.options).to eq(
           { fields: { "id" => 0, "first" => 1 } }
         )
@@ -561,30 +612,35 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
   end
 
-  [:order, :order_by].each do |method|
+  [ :order, :order_by ].each do |method|
+
     describe "##{method}" do
+
       context "when using the official mongodb driver syntax" do
+
         context "when provided a hash" do
+
           context "when the query is aggregating" do
+
             let(:selection) do
               query.project(name: 1).send("#{method}", field_one: 1, field_two: -1)
             end
 
             it "adds the sorting criteria" do
               expect(selection.options).to eq(
-                { sort: { "field_one" => 1, "field_two" => -1 } }
+                { sort: { "field_one" => 1, "field_two" => -1 }}
               )
             end
 
             it "adds the sort to the aggregation" do
               expect(selection.pipeline).to include(
-                { "$sort" => { "field_one" => 1, "field_two" => -1 } }
+                { "$sort" => { "field_one" => 1, "field_two" => -1 }}
               )
             end
 
             it "does not add multiple entries to the pipeline" do
               expect(selection.pipeline).to_not include(
-                { "$sort" => { "field_one" => 1 } }
+                { "$sort" => { "field_one" => 1 }}
               )
             end
 
@@ -592,13 +648,14 @@ describe Mongoid::Criteria::Queryable::Optional do
           end
 
           context "when the hash has integer values" do
+
             let(:selection) do
               query.send("#{method}", field_one: 1, field_two: -1)
             end
 
             it "adds the sorting criteria" do
               expect(selection.options).to eq(
-                { sort: { "field_one" => 1, "field_two" => -1 } }
+                { sort: { "field_one" => 1, "field_two" => -1 }}
               )
             end
 
@@ -606,13 +663,14 @@ describe Mongoid::Criteria::Queryable::Optional do
           end
 
           context "when the hash has symbol values" do
+
             let(:selection) do
               query.send("#{method}", field_one: :asc, field_two: :desc)
             end
 
             it "adds the sorting criteria" do
               expect(selection.options).to eq(
-                { sort: { "field_one" => 1, "field_two" => -1 } }
+                { sort: { "field_one" => 1, "field_two" => -1 }}
               )
             end
 
@@ -620,13 +678,14 @@ describe Mongoid::Criteria::Queryable::Optional do
           end
 
           context "when the hash has string values" do
+
             let(:selection) do
               query.send("#{method}", field_one: "asc", field_two: "desc")
             end
 
             it "adds the sorting criteria" do
               expect(selection.options).to eq(
-                { sort: { "field_one" => 1, "field_two" => -1 } }
+                { sort: { "field_one" => 1, "field_two" => -1 }}
               )
             end
 
@@ -634,13 +693,14 @@ describe Mongoid::Criteria::Queryable::Optional do
           end
 
           context "when the hash has hash values" do
+
             let(:selection) do
-              query.send("#{method}", score: { "$meta" => "textScore" })
+              query.send("#{method}", score: { "$meta" => "textScore"})
             end
 
             it "adds the sorting criteria" do
               expect(selection.options).to eq(
-                { sort: { "score" => { "$meta" => "textScore" } } }
+                { sort: { "score" => { "$meta" => "textScore" } }}
               )
             end
 
@@ -649,15 +709,18 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided an array" do
+
           context "when the array is multi-dimensional" do
+
             context "when the arrays have integer values" do
+
               let(:selection) do
-                query.send("#{method}", [[:field_one, 1], [:field_two, -1]])
+                query.send("#{method}", [[ :field_one, 1 ],[ :field_two, -1 ]])
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 } }
+                  { sort: { "field_one" => 1, "field_two" => -1 }}
                 )
               end
 
@@ -665,13 +728,14 @@ describe Mongoid::Criteria::Queryable::Optional do
             end
 
             context "when the arrays have symbol values" do
+
               let(:selection) do
-                query.send("#{method}", [[:field_one, :asc], [:field_two, :desc]])
+                query.send("#{method}", [[ :field_one, :asc ],[ :field_two, :desc ]])
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 } }
+                  { sort: { "field_one" => 1, "field_two" => -1 }}
                 )
               end
 
@@ -679,13 +743,14 @@ describe Mongoid::Criteria::Queryable::Optional do
             end
 
             context "when the arrays have string values" do
+
               let(:selection) do
-                query.send("#{method}", [[:field_one, "asc"], [:field_two, "desc"]])
+                query.send("#{method}", [[ :field_one, "asc" ],[ :field_two, "desc" ]])
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 } }
+                  { sort: { "field_one" => 1, "field_two" => -1 }}
                 )
               end
 
@@ -694,13 +759,14 @@ describe Mongoid::Criteria::Queryable::Optional do
           end
 
           context "when the array is selectable keys" do
+
             let(:selection) do
-              query.send("#{method}", [:field_one.asc, :field_two.desc])
+              query.send("#{method}", [ :field_one.asc, :field_two.desc ])
             end
 
             it "adds the sorting criteria" do
               expect(selection.options).to eq(
-                { sort: { "field_one" => 1, "field_two" => -1 } }
+                { sort: { "field_one" => 1, "field_two" => -1 }}
               )
             end
 
@@ -709,15 +775,18 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided values" do
+
           context "when the values are arrays" do
+
             context "when the values have integer directions" do
+
               let(:selection) do
-                query.send("#{method}", [:field_one, 1], [:field_two, -1])
+                query.send("#{method}", [ :field_one, 1 ],[ :field_two, -1 ])
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 } }
+                  { sort: { "field_one" => 1, "field_two" => -1 }}
                 )
               end
 
@@ -725,13 +794,14 @@ describe Mongoid::Criteria::Queryable::Optional do
             end
 
             context "when the values have symbol directions" do
+
               let(:selection) do
-                query.send("#{method}", [:field_one, :asc], [:field_two, :desc])
+                query.send("#{method}", [ :field_one, :asc ],[ :field_two, :desc ])
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 } }
+                  { sort: { "field_one" => 1, "field_two" => -1 }}
                 )
               end
 
@@ -739,13 +809,14 @@ describe Mongoid::Criteria::Queryable::Optional do
             end
 
             context "when the values have string directions" do
+
               let(:selection) do
-                query.send("#{method}", [:field_one, "asc"], [:field_two, "desc"])
+                query.send("#{method}", [ :field_one, "asc" ],[ :field_two, "desc" ])
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 } }
+                  { sort: { "field_one" => 1, "field_two" => -1 }}
                 )
               end
 
@@ -754,13 +825,14 @@ describe Mongoid::Criteria::Queryable::Optional do
           end
 
           context "when the values are selectable keys" do
+
             let(:selection) do
               query.send("#{method}", :field_one.asc, :field_two.desc)
             end
 
             it "adds the sorting criteria" do
               expect(selection.options).to eq(
-                { sort: { "field_one" => 1, "field_two" => -1 } }
+                { sort: { "field_one" => 1, "field_two" => -1 }}
               )
             end
 
@@ -769,15 +841,18 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided a string" do
+
           context "when the direction is lowercase" do
+
             context "when abbreviated" do
+
               let(:selection) do
                 query.send("#{method}", "field_one asc, field_two desc")
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 } }
+                  { sort: { "field_one" => 1, "field_two" => -1 }}
                 )
               end
 
@@ -785,13 +860,14 @@ describe Mongoid::Criteria::Queryable::Optional do
             end
 
             context "when spelled out" do
+
               let(:selection) do
                 query.send("#{method}", "field_one ascending, field_two descending")
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 } }
+                  { sort: { "field_one" => 1, "field_two" => -1 }}
                 )
               end
 
@@ -800,14 +876,16 @@ describe Mongoid::Criteria::Queryable::Optional do
           end
 
           context "when the direction is uppercase" do
+
             context "when abbreviated" do
+
               let(:selection) do
                 query.send("#{method}", "field_one ASC, field_two DESC")
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 } }
+                  { sort: { "field_one" => 1, "field_two" => -1 }}
                 )
               end
 
@@ -815,13 +893,14 @@ describe Mongoid::Criteria::Queryable::Optional do
             end
 
             context "when spelled out" do
+
               let(:selection) do
                 query.send("#{method}", "field_one ASCENDING, field_two DESCENDING")
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 } }
+                  { sort: { "field_one" => 1, "field_two" => -1 }}
                 )
               end
 
@@ -831,6 +910,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided no options" do
+
           let(:selection) do
             query.order_by
           end
@@ -843,6 +923,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided nil" do
+
           let(:selection) do
             query.send("#{method}", nil)
           end
@@ -858,6 +939,7 @@ describe Mongoid::Criteria::Queryable::Optional do
   end
 
   describe "#reoder" do
+
     let(:selection) do
       query.order_by(field_one: 1, field_two: -1)
     end
@@ -875,9 +957,12 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
   end
 
-  [:skip, :offset].each do |method|
+  [ :skip, :offset ].each do |method|
+
     describe "\##{method}" do
+
       context "when provided no options" do
+
         let(:selection) do
           query.send(method)
         end
@@ -894,6 +979,7 @@ describe Mongoid::Criteria::Queryable::Optional do
       end
 
       context "when provided nil" do
+
         let(:selection) do
           query.send(method, nil)
         end
@@ -910,6 +996,7 @@ describe Mongoid::Criteria::Queryable::Optional do
       end
 
       context "when the query is aggregating" do
+
         let(:selection) do
           query.project(name: 1).skip(10)
         end
@@ -926,7 +1013,9 @@ describe Mongoid::Criteria::Queryable::Optional do
       end
 
       context "when provided arguments" do
+
         context "when provided an integer" do
+
           let(:selection) do
             query.send(method, 10)
           end
@@ -939,6 +1028,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided a float" do
+
           let(:selection) do
             query.send(method, 10.25)
           end
@@ -951,6 +1041,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         context "when provided a non number" do
+
           let(:selection) do
             query.send(method, "10")
           end
@@ -966,7 +1057,9 @@ describe Mongoid::Criteria::Queryable::Optional do
   end
 
   describe "#slice" do
+
     context "when provided no options" do
+
       let(:selection) do
         query.slice
       end
@@ -983,6 +1076,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided nil" do
+
       let(:selection) do
         query.slice(nil)
       end
@@ -999,13 +1093,14 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided a single argument" do
+
       let(:selection) do
         query.slice(:first => 5)
       end
 
       it "adds the field options" do
         expect(selection.options).to eq(
-          { fields: { "first" => { "$slice" => 5 } } }
+          { fields: { "first" => { "$slice" => 5 }}}
         )
       end
 
@@ -1013,35 +1108,38 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided a multiple arguments" do
+
       let(:selection) do
-        query.slice(:first => 5, :second => [0, 3])
+        query.slice(:first => 5, :second => [ 0, 3 ])
       end
 
       it "adds the field options" do
         expect(selection.options).to eq({ fields:
-          { "first" => { "$slice" => 5 }, "second" => { "$slice" => [0, 3] } } })
+          { "first" => { "$slice" => 5 }, "second" => { "$slice" => [ 0, 3 ] }}
+        })
       end
 
       it_behaves_like "a cloning option"
     end
 
     context "when existing field arguments exist" do
+
       let(:limited) do
         query.only(:name)
       end
 
       let(:selection) do
-        limited.slice(:first => 5, :second => [0, 3])
+        limited.slice(:first => 5, :second => [ 0, 3 ])
       end
 
       it "adds the field options" do
         expect(selection.options).to eq({
-                                          fields: {
-                                            "name" => 1,
-                                            "first" => { "$slice" => 5 },
-                                            "second" => { "$slice" => [0, 3] }
-                                          }
-                                        })
+          fields: {
+            "name" => 1,
+            "first" => { "$slice" => 5 },
+            "second" => { "$slice" => [ 0, 3 ] }
+          }
+        })
       end
 
       it_behaves_like "a cloning option"
@@ -1049,6 +1147,7 @@ describe Mongoid::Criteria::Queryable::Optional do
   end
 
   describe "#snapshot" do
+
     let(:selection) do
       query.snapshot
     end
@@ -1061,6 +1160,7 @@ describe Mongoid::Criteria::Queryable::Optional do
   end
 
   describe "#comment" do
+
     let(:selection) do
       query.comment('slow query')
     end
@@ -1073,6 +1173,7 @@ describe Mongoid::Criteria::Queryable::Optional do
   end
 
   describe "#cursor_type" do
+
     let(:selection) do
       query.cursor_type(:tailable)
     end
@@ -1085,19 +1186,22 @@ describe Mongoid::Criteria::Queryable::Optional do
   end
 
   describe "#collation" do
+
     let(:selection) do
       query.collation(locale: 'fr', strength: 2)
     end
 
     it "adds the collation option" do
-      expect(selection.options).to eq(collation: { 'locale' => 'fr', 'strength' => 2 })
+      expect(selection.options).to eq(collation: {'locale' => 'fr', 'strength' => 2})
     end
 
     it_behaves_like "a cloning option"
   end
 
   describe "#without" do
+
     context "when provided no options" do
+
       let(:selection) do
         query.without
       end
@@ -1114,6 +1218,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided nil" do
+
       let(:selection) do
         query.without(nil)
       end
@@ -1130,14 +1235,16 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     context "when provided fields" do
+
       context "as several arguments" do
+
         let(:selection) do
           query.without(:first, :second)
         end
 
         it "adds the field options" do
           expect(selection.options).to eq(
-            { fields: { "first" => 0, "second" => 0 } }
+            { fields: { "first" => 0, "second" => 0 }}
           )
         end
 
@@ -1145,13 +1252,14 @@ describe Mongoid::Criteria::Queryable::Optional do
       end
 
       context "as one argument - array" do
+
         let(:selection) do
           query.without([:first, :second])
         end
 
         it "adds the field options" do
           expect(selection.options).to eq(
-            { fields: { "first" => 0, "second" => 0 } }
+            { fields: { "first" => 0, "second" => 0 }}
           )
         end
 

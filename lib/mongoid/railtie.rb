@@ -5,8 +5,10 @@ require "rails/mongoid"
 
 module Rails
   module Mongoid
+
     # Hooks Mongoid into Rails 3 and higher.
     class Railtie < Rails::Railtie
+
       console do |app|
         if app.sandbox?
           require "mongoid/railties/console_sandbox"
@@ -112,8 +114,9 @@ module Rails
         end
 
         Mongo::Monitoring::Global.subscribe Mongo::Monitoring::COMMAND,
-                                            ::Mongoid::Railties::ControllerRuntime::Collector.new
+            ::Mongoid::Railties::ControllerRuntime::Collector.new
       end
+
     end
   end
 end

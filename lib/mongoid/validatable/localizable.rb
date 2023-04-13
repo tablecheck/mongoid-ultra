@@ -2,8 +2,10 @@
 
 module Mongoid
   module Validatable
+
     # Adds localization support to validations.
     module Localizable
+
       # Validates each for localized fields.
       #
       # @example Validate localized fields.

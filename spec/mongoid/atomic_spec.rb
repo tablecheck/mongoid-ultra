@@ -3,7 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Atomic do
+
   describe "#add_atomic_pull" do
+
     let!(:person) do
       Person.create!
     end
@@ -21,7 +23,7 @@ describe Mongoid::Atomic do
     end
 
     it "adds the document to the delayed atomic pulls" do
-      expect(person.delayed_atomic_pulls["addresses"]).to eq([address])
+      expect(person.delayed_atomic_pulls["addresses"]).to eq([ address ])
     end
 
     it "flags the document for destruction" do
@@ -30,6 +32,7 @@ describe Mongoid::Atomic do
   end
 
   describe "#add_atomic_unset" do
+
     let!(:person) do
       Person.new
     end
@@ -43,7 +46,7 @@ describe Mongoid::Atomic do
     end
 
     it "adds the document to the delayed atomic unsets" do
-      expect(person.delayed_atomic_unsets["name"]).to eq([name])
+      expect(person.delayed_atomic_unsets["name"]).to eq([ name ])
     end
 
     it "flags the document for destruction" do
@@ -52,21 +55,25 @@ describe Mongoid::Atomic do
   end
 
   describe "#atomic_updates" do
+
     context "when the document is persisted" do
+
       let(:person) do
         Person.create!
       end
 
       context "when the document is modified" do
+
         before do
           person.title = "Sir"
         end
 
         it "returns the atomic updates" do
-          expect(person.atomic_updates).to eq({ "$set" => { "title" => "Sir" } })
+          expect(person.atomic_updates).to eq({ "$set" => { "title" => "Sir" }})
         end
 
         context "when an embeds many child is added" do
+
           let!(:address) do
             person.addresses.build(street: "Oxford St")
           end
@@ -76,14 +83,15 @@ describe Mongoid::Atomic do
               {
                 "$set" => { "title" => "Sir" },
                 "$push" => { "addresses" => { "$each" => [
-                  { "_id" => "oxford-st", "street" => "Oxford St" }
-                ] } }
+                    { "_id" => "oxford-st", "street" => "Oxford St" }
+                  ] } }
               }
             )
           end
         end
 
         context "when an embeds one child is added" do
+
           let!(:name) do
             person.build_name(first_name: "Lionel")
           end
@@ -101,6 +109,7 @@ describe Mongoid::Atomic do
         end
 
         context "when an existing embeds many gets modified" do
+
           let!(:address) do
             person.addresses.create!(street: "Oxford St")
           end
@@ -110,22 +119,25 @@ describe Mongoid::Atomic do
           end
 
           context "when asking for the updates from the root" do
+
             it "returns the $set with correct position and modifications" do
               expect(person.atomic_updates).to eq(
-                { "$set" => { "title" => "Sir", "addresses.0.street" => "Bond St" } }
+                { "$set" => { "title" => "Sir", "addresses.0.street" => "Bond St" }}
               )
             end
           end
 
           context "when asking for the updates from the child" do
+
             it "returns the $set with correct position and modifications" do
               expect(address.atomic_updates).to eq(
-                { "$set" => { "addresses.0.street" => "Bond St" } }
+                { "$set" => { "addresses.0.street" => "Bond St" }}
               )
             end
           end
 
           context "when an existing 2nd level embedded child gets modified" do
+
             let!(:location) do
               address.locations.create!(name: "Home")
             end
@@ -135,45 +147,50 @@ describe Mongoid::Atomic do
             end
 
             context "when asking for the updates from the root" do
+
               it "returns the $set with correct positions and modifications" do
                 expect(person.atomic_updates).to eq(
                   { "$set" => {
                     "title" => "Sir",
                     "addresses.0.street" => "Bond St",
-                    "addresses.0.locations.0.name" => "Work"
-                  } }
+                    "addresses.0.locations.0.name" => "Work" }
+                  }
                 )
               end
             end
 
             context "when asking for the updates from the 1st level child" do
+
               it "returns the $set with correct positions and modifications" do
                 expect(address.atomic_updates).to eq(
                   { "$set" => {
                     "addresses.0.street" => "Bond St",
-                    "addresses.0.locations.0.name" => "Work"
-                  } }
+                    "addresses.0.locations.0.name" => "Work" }
+                  }
                 )
               end
             end
 
             context "when asking for the updates from the 2nd level child" do
+
               it "returns the $set with correct positions and modifications" do
                 expect(location.atomic_updates).to eq(
                   { "$set" => {
-                    "addresses.0.locations.0.name" => "Work"
-                  } }
+                    "addresses.0.locations.0.name" => "Work" }
+                  }
                 )
               end
             end
           end
 
           context "when a 2nd level embedded child gets added" do
+
             let!(:location) do
               address.locations.build(name: "Home")
             end
 
             context "when asking for the updates from the root" do
+
               it "returns the $set with correct positions and modifications" do
                 expect(person.atomic_updates).to eq(
                   {
@@ -192,6 +209,7 @@ describe Mongoid::Atomic do
             end
 
             context "when asking for the updates from the 1st level child" do
+
               it "returns the $set with correct positions and modifications" do
                 expect(address.atomic_updates).to eq(
                   {
@@ -210,6 +228,7 @@ describe Mongoid::Atomic do
           end
 
           context "when an embedded child gets unset" do
+
             before do
               person.attributes = { addresses: nil }
             end
@@ -220,13 +239,14 @@ describe Mongoid::Atomic do
 
             it "returns the $set for the first level and $unset for other." do
               expect(updates).to eq({
-                                      "$unset" => { "addresses" => true },
-                                      "$set" => { "title" => "Sir" }
-                                    })
+                "$unset" => { "addresses" => true },
+                "$set" => { "title" => "Sir" }
+              })
             end
           end
 
           context "when adding a new second level child" do
+
             let!(:new_address) do
               person.addresses.build(street: "Another")
             end
@@ -236,6 +256,7 @@ describe Mongoid::Atomic do
             end
 
             context "when asking for the updates from the root document" do
+
               it "returns the $set for 1st level and other for the 2nd level" do
                 expect(person.atomic_updates).to eq(
                   {
@@ -252,7 +273,7 @@ describe Mongoid::Atomic do
                             "_id" => location.id,
                             "name" => "Home"
                           ]
-                        }] }
+                        }]}
                       }
                     }
                   }
@@ -261,15 +282,17 @@ describe Mongoid::Atomic do
             end
 
             context "when asking for the updates from the 1st level document" do
+
               it "returns the $set for 1st level and other for the 2nd level" do
                 expect(address.atomic_updates).to eq(
-                  { "$set" => { "addresses.0.street" => "Bond St" } }
+                  { "$set" => { "addresses.0.street" => "Bond St" }}
                 )
               end
             end
           end
 
           context "when adding a new child beetween two existing and updating one of them" do
+
             let!(:new_address) do
               person.addresses.build(street: "Ipanema")
             end
@@ -300,7 +323,7 @@ describe Mongoid::Atomic do
                     }] }
                   },
                   conflicts: {
-                    "$set" => { "addresses.0.street" => "Bond St" }
+                    "$set" => { "addresses.0.street"=>"Bond St" }
                   }
                 }
               )
@@ -309,6 +332,7 @@ describe Mongoid::Atomic do
         end
 
         context "when adding new embedded docs at multiple levels" do
+
           let!(:address) do
             person.addresses.build(street: "Another")
           end
@@ -352,12 +376,12 @@ describe Mongoid::Atomic do
             pending 'https://jira.mongodb.org/browse/MONGOID-4982'
 
             expect(truck.atomic_updates).to eq({
-                                                 '$set' => { 'crates.0.volume' => 2 },
-                                                 '$push' => { 'crates.0.toys' => { '$each' => [crate.toys.first.attributes] } },
-                                                 conflicts: {
-                                                   '$push' => { 'crates' => { '$each' => [truck.crates.last.attributes] } },
-                                                 },
-                                               })
+              '$set' => {'crates.0.volume' => 2},
+              '$push' => {'crates.0.toys' => {'$each' => [crate.toys.first.attributes]}},
+              conflicts: {
+                '$push' => {'crates' => {'$each' => [truck.crates.last.attributes]}},
+              },
+            })
           end
         end
       end
@@ -373,15 +397,15 @@ describe Mongoid::Atomic do
 
       it "has the correct updates" do
         expect(account.atomic_updates).to eq({
-                                               "$push" => {
-                                                 "memberships" => {
-                                                   "$each" => [
-                                                     { "_id" => nil, "name" => "m1" },
-                                                     { "_id" => nil, "name" => "m2" }
-                                                   ]
-                                                 }
-                                               }
-                                             })
+          "$push" => {
+            "memberships" => {
+              "$each" => [
+                { "_id" => nil, "name" => "m1" },
+                { "_id" => nil, "name" => "m2" }
+              ]
+            }
+          }
+        })
       end
     end
   end

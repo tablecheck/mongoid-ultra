@@ -3,8 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Contextual::Aggregable::Mongo do
+
   describe "#aggregates" do
+
     context "when provided a single field" do
+
       let!(:depeche) do
         Band.create!(name: "Depeche Mode", likes: 1000, years: 1000)
       end
@@ -22,7 +25,9 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       end
 
       context "when aggregating on a field that exists" do
+
         context "when aggregating on an aliased field" do
+
           let(:aggregates) do
             context.aggregates(:years)
           end
@@ -49,6 +54,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
         end
 
         context "when more than 1 document is emitted" do
+
           let(:aggregates) do
             context.aggregates(:likes)
           end
@@ -75,6 +81,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
         end
 
         context "when only 1 document is emitted" do
+
           let(:criteria) do
             Band.where(name: "Depeche Mode")
           end
@@ -105,6 +112,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
         end
 
         context "when only 1 document is emitted because of sorting, skip and limit" do
+
           let(:criteria) do
             Band.desc(:name).skip(1).limit(1)
           end
@@ -136,6 +144,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       end
 
       context "when the field does not exist" do
+
         let(:aggregates) do
           context.aggregates(:non_existent)
         end
@@ -220,6 +229,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       end
 
       context "when there are no matching documents" do
+
         let(:criteria) do
           Band.where(name: "New Order")
         end
@@ -236,8 +246,11 @@ describe Mongoid::Contextual::Aggregable::Mongo do
   end
 
   describe "#avg" do
+
     context "when provided a single field" do
+
       context "when there are matching documents" do
+
         let!(:depeche) do
           Band.create!(name: "Depeche Mode", likes: 1000)
         end
@@ -264,6 +277,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       end
 
       context "when no documents match" do
+
         let!(:depeche) do
           Band.create!(name: "Depeche Mode", likes: 1000)
         end
@@ -288,7 +302,9 @@ describe Mongoid::Contextual::Aggregable::Mongo do
   end
 
   describe "#max" do
+
     context 'when the field does not exist in any document' do
+
       let!(:depeche) do
         Band.create!(name: "Depeche Mode", likes: 1000)
       end
@@ -311,6 +327,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
     end
 
     context "when provided a single field" do
+
       let!(:depeche) do
         Band.create!(name: "Depeche Mode", likes: 1000)
       end
@@ -328,6 +345,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       end
 
       context "when provided a symbol" do
+
         let(:max) do
           context.max(:likes)
         end
@@ -337,6 +355,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
         end
 
         context "when no documents match" do
+
           let(:criteria) do
             Band.where(name: "New Order")
           end
@@ -356,6 +375,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       end
 
       context "when provided a block" do
+
         let(:max) do
           context.max do |a, b|
             a.likes <=> b.likes
@@ -370,7 +390,9 @@ describe Mongoid::Contextual::Aggregable::Mongo do
   end
 
   describe "#min" do
+
     context "when provided a single field" do
+
       let!(:depeche) do
         Band.create!(name: "Depeche Mode", likes: 1000)
       end
@@ -388,6 +410,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       end
 
       context "when provided a symbol" do
+
         let(:min) do
           context.min(:likes)
         end
@@ -397,6 +420,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
         end
 
         context "when no documents match" do
+
           let(:criteria) do
             Band.where(name: "New Order")
           end
@@ -416,6 +440,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       end
 
       context "when provided a block" do
+
         let(:min) do
           context.min do |a, b|
             a.likes <=> b.likes
@@ -430,7 +455,9 @@ describe Mongoid::Contextual::Aggregable::Mongo do
   end
 
   describe "#sum" do
+
     context "when provided a single field" do
+
       let!(:depeche) do
         Band.create!(name: "Depeche Mode", likes: 1000)
       end
@@ -448,6 +475,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       end
 
       context "when provided a symbol" do
+
         let(:sum) do
           context.sum(:likes)
         end
@@ -457,6 +485,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
         end
 
         context "when no documents match" do
+
           let(:criteria) do
             Band.where(name: "New Order")
           end
@@ -476,6 +505,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       end
 
       context "when provided a block" do
+
         let(:sum) do
           context.sum(&:likes)
         end
@@ -490,9 +520,10 @@ describe Mongoid::Contextual::Aggregable::Mongo do
   describe '#pipeline' do
     let(:context) { Mongoid::Contextual::Mongo.new(criteria) }
     let(:pipeline) { context.send(:pipeline, :likes) }
-    subject(:stages) { pipeline.map { |s| s.keys.first } }
+    subject(:stages) { pipeline.map {|s| s.keys.first } }
 
     context "with sort" do
+
       context "without limit or skip" do
         let(:criteria) { Band.desc(:name) }
 
@@ -527,6 +558,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
     end
 
     context "without sort" do
+
       context "without limit or skip" do
         let(:criteria) { Band.all }
 

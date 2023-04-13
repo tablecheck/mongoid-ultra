@@ -7,6 +7,7 @@ require "mongoid/clients/options"
 require "mongoid/clients/sessions"
 
 module Mongoid
+
   # Mixin module included into Mongoid::Document which adds
   # database client connection functionality. Also contains
   # singleton class methods related to managing database clients.
@@ -17,6 +18,7 @@ module Mongoid
     include Sessions
 
     class << self
+
       # Clear all clients from the current thread.
       #
       # @example Clear all clients.
@@ -62,7 +64,6 @@ module Mongoid
       def with_name(name)
         name_as_symbol = name.to_sym
         return clients[name_as_symbol] if clients[name_as_symbol]
-
         CREATE_LOCK.synchronize do
           clients[name_as_symbol] ||= Clients::Factory.create(name)
         end

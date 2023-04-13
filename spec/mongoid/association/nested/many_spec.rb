@@ -3,6 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Association::Nested::Many do
+
   let(:association) do
     Person.relations['addresses']
   end
@@ -12,7 +13,9 @@ describe Mongoid::Association::Nested::Many do
   end
 
   describe "#allow_destroy?" do
+
     context "when the option is provided" do
+
       let(:builder) do
         described_class.new(association, {}, allow_destroy: true)
       end
@@ -23,6 +26,7 @@ describe Mongoid::Association::Nested::Many do
     end
 
     context "when the option is not provided" do
+
       let(:builder) do
         described_class.new(association, {}, {})
       end
@@ -34,6 +38,7 @@ describe Mongoid::Association::Nested::Many do
   end
 
   describe "#build" do
+
     let(:attributes) do
       {
         "foo" => { "street" => "Maybachufer" },
@@ -43,6 +48,7 @@ describe Mongoid::Association::Nested::Many do
     end
 
     context "when attributes are over limit" do
+
       let(:builder) do
         described_class.new(association, attributes, limit: 2)
       end
@@ -55,11 +61,12 @@ describe Mongoid::Association::Nested::Many do
     end
 
     context "when rejectable using a proc" do
+
       let(:builder) do
         described_class.new(
           association,
           attributes,
-          reject_if: ->(attrs) { attrs[:city].blank? }
+          reject_if: ->(attrs){ attrs[:city].blank? }
         )
       end
 
@@ -70,9 +77,11 @@ describe Mongoid::Association::Nested::Many do
       it "rejects the matching attributes" do
         expect(person.addresses).to be_empty
       end
+
     end
 
     context "when rejectable using a symbol" do
+
       let(:builder) do
         described_class.new(
           association,
@@ -88,9 +97,11 @@ describe Mongoid::Association::Nested::Many do
       it "rejects the matching attributes" do
         expect(person.addresses).to be_empty
       end
+
     end
 
     context "when ids are present" do
+
       let!(:address) do
         person.addresses.build(street: "Alexander Platz")
       end
@@ -113,6 +124,7 @@ describe Mongoid::Association::Nested::Many do
     end
 
     context "when ids are not present" do
+
       let(:attributes) do
         { "foo" => { "street" => "Maybachufer" } }
       end
@@ -132,6 +144,7 @@ describe Mongoid::Association::Nested::Many do
   end
 
   describe "#initialize" do
+
     let(:attributes) do
       {
         "4" => { "street" => "Maybachufer" },
@@ -145,17 +158,20 @@ describe Mongoid::Association::Nested::Many do
     end
 
     it "sorts the attributes" do
-      expect(builder.attributes.map { |e| e[0] }).to eq(["1", "2", "4"])
+      expect(builder.attributes.map { |e| e[0] }).to eq([ "1", "2", "4" ])
     end
   end
 
   describe "#reject?" do
+
     context "when the proc is provided" do
+
       let(:options) do
-        { reject_if: ->(attrs) { attrs[:first_name].blank? } }
+        { reject_if: ->(attrs){ attrs[:first_name].blank? } }
       end
 
       context "when the proc matches" do
+
         let(:builder) do
           described_class.new(association, {}, options)
         end
@@ -166,6 +182,7 @@ describe Mongoid::Association::Nested::Many do
       end
 
       context "when the proc does not match" do
+
         let(:builder) do
           described_class.new(association, {}, options)
         end
@@ -177,18 +194,21 @@ describe Mongoid::Association::Nested::Many do
     end
 
     context "when the proc is not provided" do
+
       let(:builder) do
         described_class.new(association, {}, {})
       end
 
       it "returns false" do
-        expect(builder.reject?(builder, { first_name: "Lang" })).to be false
+        expect(builder.reject?(builder,{ first_name: "Lang" })).to be false
       end
     end
   end
 
   describe "#update_only?" do
+
     context "when the option is provided" do
+
       let(:builder) do
         described_class.new(association, {}, update_only: true)
       end
@@ -199,6 +219,7 @@ describe Mongoid::Association::Nested::Many do
     end
 
     context "when the option is not provided" do
+
       let(:builder) do
         described_class.new(association, {}, {})
       end

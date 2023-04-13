@@ -2,10 +2,12 @@
 
 module Mongoid
   module Errors
+
     # Default parent Mongoid error for all custom errors. This handles the base
     # key for the translations and provides the convenience method for
     # translating the messages.
     class MongoidError < StandardError
+
       attr_reader :problem, :summary, :resolution
 
       BASE_KEY = "mongoid.errors.messages"
@@ -24,9 +26,10 @@ module Mongoid
         @summary_title = translate("summary_title", {})
         @resolution_title = translate("resolution_title", {})
 
-        "\n#{@problem_title}:\n  #{@problem}" +
-          "\n#{@summary_title}:\n  #{@summary}" +
-          "\n#{@resolution_title}:\n  #{@resolution}"
+
+        "\n#{@problem_title}:\n  #{@problem}"+
+        "\n#{@summary_title}:\n  #{@summary}"+
+        "\n#{@resolution_title}:\n  #{@resolution}"
       end
 
       private

@@ -3,11 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Indexable do
+
   after do
     Person.collection.drop
   end
 
   describe ".included" do
+
     let(:klass) do
       Class.new do
         include Mongoid::Indexable
@@ -24,7 +26,9 @@ describe Mongoid::Indexable do
   end
 
   describe ".remove_indexes" do
+
     context "when no database specific options exist" do
+
       let(:klass) do
         Person
       end
@@ -39,11 +43,12 @@ describe Mongoid::Indexable do
       end
 
       it "removes the indexes" do
-        expect(collection.indexes.reject { |doc| doc["name"] == "_id_" }).to be_empty
+        expect(collection.indexes.reject{ |doc| doc["name"] == "_id_" }).to be_empty
       end
     end
 
     context "when database specific options exist" do
+
       let(:klass) do
         Class.new do
           include Mongoid::Document
@@ -65,13 +70,15 @@ describe Mongoid::Indexable do
       end
 
       it "creates the indexes" do
-        expect(indexes.reject { |doc| doc["name"] == "_id_" }).to be_empty
+        expect(indexes.reject{ |doc| doc["name"] == "_id_" }).to be_empty
       end
     end
   end
 
   describe ".create_indexes" do
+
     context "when options are specified" do
+
       let(:klass) do
         Class.new do
           include Mongoid::Document
@@ -91,11 +98,12 @@ describe Mongoid::Indexable do
     end
 
     context "when a collation option is specified" do
+
       let(:klass) do
         Class.new do
           include Mongoid::Document
           store_in collection: "test_db_indexes"
-          index({ name: 1 }, { collation: { locale: 'en_US', strength: 2 } })
+          index({ name: 1 }, { collation: { locale: 'en_US', strength: 2 }})
         end
       end
 
@@ -119,7 +127,9 @@ describe Mongoid::Indexable do
   end
 
   describe ".add_indexes" do
+
     context "when indexes have not been added" do
+
       let(:klass) do
         Class.new do
           include Mongoid::Document
@@ -170,6 +180,7 @@ describe Mongoid::Indexable do
   end
 
   describe ".index" do
+
     let(:klass) do
       Class.new do
         include Mongoid::Document
@@ -190,6 +201,7 @@ describe Mongoid::Indexable do
     end
 
     context "when indexing a field that is aliased" do
+
       before do
         klass.index({ authentication_token: 1 }, unique: true)
       end
@@ -204,6 +216,7 @@ describe Mongoid::Indexable do
     end
 
     context "when indexing a field that is embedded" do
+
       before do
         klass.index({ 'addresses.house' => 1 }, unique: true)
       end
@@ -218,6 +231,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing unique options" do
+
       before do
         klass.index({ name: 1 }, unique: true)
       end
@@ -232,6 +246,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing a sparse option" do
+
       before do
         klass.index({ name: 1 }, sparse: true)
       end
@@ -246,6 +261,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing a name option" do
+
       before do
         klass.index({ name: 1 }, name: "index_name")
       end
@@ -260,6 +276,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing database option" do
+
       before do
         klass.index({ name: 1 }, database: "mongoid_index_alt")
       end
@@ -274,6 +291,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing a collation option" do
+
       before do
         klass.index({ name: 1 }, collation: { locale: 'en_US', strength: 2 })
       end
@@ -288,6 +306,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing a compound index" do
+
       before do
         klass.index({ name: 1, title: -1 })
       end
@@ -302,6 +321,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing multiple inverse compound indexes" do
+
       before do
         klass.index({ name: 1, title: -1 })
         klass.index({ title: -1, name: 1 })
@@ -321,6 +341,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing multiple compound indexes with different order" do
+
       before do
         klass.index({ name: 1, title: -1 })
         klass.index({ name: 1, title: 1 })
@@ -340,6 +361,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing a geospatial index" do
+
       before do
         klass.index({ location: "2d" }, { min: -200, max: 200, bits: 32 })
       end
@@ -354,6 +376,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing a geo haystack index with a bucket_size" do
+
       before do
         klass.index({ location: "geoHaystack" }, { min: -200, max: 200, bucket_size: 0.5 })
       end
@@ -368,6 +391,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing a geo haystack index with a bucket_size" do
+
       let(:message) do
         'The geoHaystack type is deprecated.'
       end
@@ -379,6 +403,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing a Spherical Geospatial index" do
+
       before do
         klass.index({ location: "2dsphere" })
       end
@@ -393,7 +418,9 @@ describe Mongoid::Indexable do
     end
 
     context "when providing a text index" do
+
       context "when the index is a single field" do
+
         before do
           klass.index({ description: "text" })
         end
@@ -408,6 +435,7 @@ describe Mongoid::Indexable do
       end
 
       context "when the index is multiple fields" do
+
         before do
           klass.index({ description: "text", name: "text" })
         end
@@ -422,6 +450,7 @@ describe Mongoid::Indexable do
       end
 
       context "when the index is all string fields" do
+
         before do
           klass.index({ "$**" => "text" })
         end
@@ -436,6 +465,7 @@ describe Mongoid::Indexable do
       end
 
       context "when providing a default language" do
+
         before do
           klass.index({ description: "text" }, default_language: "english")
         end
@@ -450,6 +480,7 @@ describe Mongoid::Indexable do
       end
 
       context "when providing a name" do
+
         before do
           klass.index({ description: "text" }, name: "text_index")
         end
@@ -465,6 +496,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing a hashed index" do
+
       before do
         klass.index({ a: "hashed" })
       end
@@ -479,6 +511,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing a text index" do
+
       before do
         klass.index({ content: "text" })
       end
@@ -493,6 +526,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing a compound text index" do
+
       before do
         klass.index({ content: "text", title: "text" }, { weights: { content: 1, title: 2 } })
       end
@@ -507,6 +541,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing an expire_after_seconds option" do
+
       before do
         klass.index({ name: 1 }, { expire_after_seconds: 3600 })
       end
@@ -521,7 +556,9 @@ describe Mongoid::Indexable do
     end
 
     context "when using partial_filter_expression option" do
+
       context 'when not using an alias' do
+
         before do
           klass.index({ authentication_token: 1 }, partial_filter_expression: { username: { '$exists' => true } })
         end
@@ -536,6 +573,7 @@ describe Mongoid::Indexable do
       end
 
       context 'when using an alias via field :as option' do
+
         before do
           klass.index({ authentication_token: 1 }, partial_filter_expression: { authentication_token: { '$exists' => true } })
         end
@@ -550,6 +588,7 @@ describe Mongoid::Indexable do
       end
 
       context 'when using an alias via alias_attribute' do
+
         before do
           klass.index({ u: 1 }, partial_filter_expression: { u: { '$exists' => true } })
         end
@@ -564,6 +603,7 @@ describe Mongoid::Indexable do
       end
 
       context 'when using an embedded field' do
+
         before do
           klass.index({ authentication_token: 1 }, partial_filter_expression: { 'addresses.house' => { '$exists' => true } })
         end
@@ -721,7 +761,9 @@ describe Mongoid::Indexable do
     end
 
     context "when using weights option" do
+
       context 'when not using aliases' do
+
         before do
           klass.index({ authentication_token: 1 }, weights: { a: 1, username: 2 })
         end
@@ -736,6 +778,7 @@ describe Mongoid::Indexable do
       end
 
       context 'when using aliases via field :as option' do
+
         before do
           klass.index({ authentication_token: 1 }, weights: { 'addresses.house' => 1, authentication_token: 2 })
         end
@@ -750,6 +793,7 @@ describe Mongoid::Indexable do
       end
 
       context 'when using aliases via alias_attribute' do
+
         before do
           klass.index({ u: 1 }, weights: { 'addresses.n' => 1, u: 2 })
         end
@@ -765,7 +809,9 @@ describe Mongoid::Indexable do
     end
 
     context "when using wildcard indexes" do
+
       context 'when not using an alias' do
+
         before do
           klass.index({ '$**': 1 }, wildcard_projection: { _id: 1, username: 0 })
         end
@@ -784,6 +830,7 @@ describe Mongoid::Indexable do
       end
 
       context 'when using an alias via field :as option' do
+
         before do
           klass.index({ 'addresses.$**': 1 }, wildcard_projection: { 'addresses.house' => 1 })
         end
@@ -802,6 +849,7 @@ describe Mongoid::Indexable do
       end
 
       context 'when using aliases via alias_attribute' do
+
         before do
           klass.index({ 'addresses.$**': 1 }, wildcard_projection: { 'addresses.n' => 1 })
         end
@@ -821,6 +869,7 @@ describe Mongoid::Indexable do
     end
 
     context "when providing an invalid option" do
+
       it "raises an error" do
         expect {
           klass.index({ name: 1 }, { invalid: true })
@@ -829,7 +878,9 @@ describe Mongoid::Indexable do
     end
 
     context "when providing an invalid spec" do
+
       context "when the spec is not a hash" do
+
         it "raises an error" do
           expect {
             klass.index(:name)
@@ -838,6 +889,7 @@ describe Mongoid::Indexable do
       end
 
       context "when the spec key is invalid" do
+
         it "raises an error" do
           expect {
             klass.index({ name: "something" })

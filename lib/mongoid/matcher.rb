@@ -1,9 +1,11 @@
 module Mongoid
+
   # Utility module containing methods which assist in performing
   # in-memory matching of documents with MQL query expressions.
   #
   # @api private
   module Matcher
+
     # Extracts field values in the document at the specified key.
     #
     # The document can be a Hash or a model instance.

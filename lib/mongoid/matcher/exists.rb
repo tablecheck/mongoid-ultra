@@ -1,11 +1,13 @@
 module Mongoid
   module Matcher
+
     # In-memory matcher for $exists expression.
     #
     # @see https://www.mongodb.com/docs/manual/reference/operator/query/exists/
     #
     # @api private
     module Exists
+
       # Returns whether an $exists expression is satisfied.
       #
       # @param [ true | false ] exists Whether the value exists.

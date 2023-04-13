@@ -1,21 +1,23 @@
 require "spec_helper"
 
 describe "StringifiedSymbol fields" do
+
   before do
     Order.destroy_all
   end
 
   context "when querying the database" do
+
     let!(:document) do
       Order.create!(saved_status: :test)
     end
 
     let(:string_query) do
-      { 'saved_status' => { '$eq' => 'test' } }
+      {'saved_status' => {'$eq' => 'test'}}
     end
 
     let(:symbol_query) do
-      { 'saved_status' => { '$eq' => :test } }
+      {'saved_status' => {'$eq' => :test}}
     end
 
     it "can be queried with a string" do
@@ -61,7 +63,7 @@ describe "StringifiedSymbol fields" do
   end
 
   let(:query) do
-    { 'saved_status' => { '$eq' => 'test' } }
+    {'saved_status' => {'$eq' => 'test'}}
   end
 
   let!(:document1) do
@@ -73,6 +75,7 @@ describe "StringifiedSymbol fields" do
   end
 
   context "when inserting document" do
+
     it "sends the value as a string" do
       Order.create!(saved_status: :test)
       event = insert_events.first
@@ -96,6 +99,7 @@ describe "StringifiedSymbol fields" do
   end
 
   context "when finding document" do
+
     it "receives the value as a symbol" do
       event = find_events.first
       expect(document2.saved_status).to eq(:test)
@@ -103,6 +107,7 @@ describe "StringifiedSymbol fields" do
   end
 
   context "when reading a BSON Symbol field" do
+
     before do
       client["orders"].insert_one(saved_status: BSON::Symbol::Raw.new("test"), _id: 12)
     end
@@ -121,6 +126,7 @@ describe "StringifiedSymbol fields" do
   end
 
   context "when value is nil" do
+
     before do
       client["orders"].insert_one(saved_status: nil, _id: 15)
     end
@@ -131,6 +137,7 @@ describe "StringifiedSymbol fields" do
   end
 
   context "when writing nil" do
+
     before do
       client["orders"].insert_one(saved_status: "hello", _id: 16)
     end
@@ -145,6 +152,7 @@ describe "StringifiedSymbol fields" do
   end
 
   context "when reading an integer" do
+
     before do
       client["orders"].insert_one(saved_status: 42, _id: 13)
     end
@@ -179,9 +187,11 @@ describe "StringifiedSymbol fields" do
       expect(event.command["updates"].first["u"]["$set"]["saved_status"]).to eq("[3, 4, 5]")
     end
   end
-
-  context "when StringifiedSymbol is embedded" do
+  
+  context "when StringifiedSymbol is embedded" do 
+    
     describe "When the embedded field is not unique" do
+      
       it "should be invalid" do
         order = Order.new
         order.purchased_items.build(item_id: :foo)

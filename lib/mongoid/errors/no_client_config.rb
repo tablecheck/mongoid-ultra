@@ -2,9 +2,11 @@
 
 module Mongoid
   module Errors
+
     # This error is raised when attempting to create a new client that does
     # not have a named configuration.
     class NoClientConfig < MongoidError
+
       # Create the new error.
       #
       # @example Create the error.

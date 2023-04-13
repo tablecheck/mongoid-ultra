@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 describe 'Queries with Mongoid::RawValue criteria' do
-  before { Time.zone = 'UTC' }
+  before { Time.zone = 'UTC'}
   let(:now_utc) { Time.utc(2020, 1, 1, 16, 0, 0, 0) }
   let(:today) { Date.new(2020, 1, 1) }
 
   let(:labels) do
-    [Label.new(age: 12), Label.new(age: 16)]
+    [ Label.new(age: 12), Label.new(age: 16) ]
   end
 
   let!(:band1) { Band.create!(name: '1', likes: 0, rating: 0.9, sales: BigDecimal('90'), decibels: 20..80, founded: today, updated: now_utc) }
@@ -30,21 +30,22 @@ describe 'Queries with Mongoid::RawValue criteria' do
   end
 
   context 'Mongoid::RawValue<String> criteria' do
+
     context 'Integer field' do
       it 'does not match objects' do
         expect(Band.where(likes: Mongoid::RawValue('1')).to_a).to eq [band6]
       end
-
+  
       it 'matches objects without raw value' do
         expect(Band.where(likes: '1').to_a).to eq [band2, band3]
       end
     end
-
+  
     context 'Float field' do
       it 'does not match objects' do
         expect(Band.where(rating: Mongoid::RawValue('3.1')).to_a).to eq [band6]
       end
-
+  
       it 'matches objects with value stored as Float' do
         expect(Band.where(rating: '3.1').to_a).to eq [band4, band5]
       end
@@ -59,22 +60,22 @@ describe 'Queries with Mongoid::RawValue criteria' do
         expect(Band.where(sales: '310').to_a).to eq [band4, band5]
       end
     end
-
+  
     context 'String field' do
       it 'matches objects' do
         expect(Band.where(name: Mongoid::RawValue('3')).to_a).to eq [band3, band4]
       end
-
+  
       it 'matches objects without raw value' do
         expect(Band.where(name: '3').to_a).to eq [band3, band4]
       end
     end
-
+  
     context 'Range field' do
       it 'does not match objects with raw value' do
         expect(Band.where(decibels: Mongoid::RawValue('90')).to_a).to eq [band6]
       end
-
+  
       it 'matches objects without raw value because String cannot be evolved to Range' do
         expect(Band.where(decibels: '90').to_a).to eq [band6]
       end
@@ -102,6 +103,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
   end
 
   context 'Mongoid::RawValue<Integer>' do
+
     context 'Integer field' do
       it 'matches objects with raw value' do
         expect(Band.where(likes: Mongoid::RawValue(1)).to_a).to eq [band2, band3]
@@ -176,6 +178,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
   end
 
   context 'Mongoid::RawValue<Float>' do
+
     context 'Integer field' do
       it 'does not match objects with raw value' do
         expect(Band.where(likes: Mongoid::RawValue(1.0)).to_a).to eq [band2, band3]
@@ -248,6 +251,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
   end
 
   context 'Mongoid::RawValue<BigDecimal>' do
+
     context 'Integer field' do
       it 'does not match objects with raw value' do
         expect(Band.where(likes: Mongoid::RawValue(BigDecimal('1'))).to_a).to eq [band2, band3]
@@ -324,6 +328,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
   end
 
   context 'Mongoid::RawValue<Range>' do
+
     context 'Integer field' do
       it 'raises a BSON error with raw value' do
         expect { Band.where(likes: Mongoid::RawValue(0..2)).to_a }.to raise_error BSON::Error::UnserializableClass

@@ -14,64 +14,71 @@ class FieldWithSerializer
 end
 
 describe Mongoid::Criteria::Queryable::Selectable do
+
   let(:query) do
     Mongoid::Query.new("id" => "_id")
   end
 
   shared_examples_for 'supports merge strategies' do
+
     context 'when the field is not aliased' do
+
       context "when the strategy is not set" do
+
         let(:selection) do
-          query.send(query_method, first: [1, 2]).send(query_method, first: [3, 4])
+          query.send(query_method, first: [ 1, 2 ]).send(query_method, first: [ 3, 4 ])
         end
 
         it "combines the conditions with $and" do
           expect(selection.selector).to eq({
-                                             "first" => { operator => [1, 2] },
-                                             '$and' => [{ 'first' => { operator => [3, 4] } }],
-                                           })
+            "first" => { operator => [ 1, 2 ] },
+            '$and' => [{'first' => {operator => [3, 4]}}],
+          })
         end
 
         it_behaves_like "returns a cloned query"
       end
 
       context "when the strategy is intersect" do
+
         let(:selection) do
-          query.send(query_method, first: [1, 2]).intersect.send(query_method, first: [2, 3])
+          query.send(query_method, first: [ 1, 2 ]).intersect.send(query_method, first: [ 2, 3 ])
         end
 
         it "intersects the conditions" do
           expect(selection.selector).to eq({
-                                             "first" => { operator => [2] }
-                                           })
+            "first" => { operator => [ 2 ] }
+          })
         end
 
         it_behaves_like "returns a cloned query"
       end
 
       context "when the strategy is override" do
+
         let(:selection) do
-          query.send(query_method, first: [1, 2]).override.send(query_method, first: [3, 4])
+          query.send(query_method, first: [ 1, 2 ]).override.send(query_method, first: [ 3, 4 ])
         end
 
         it "overwrites the first condition" do
           expect(selection.selector).to eq({
-                                             "first" => { operator => [3, 4] }
-                                           })
+            "first" => { operator => [ 3, 4 ] }
+          })
         end
 
         it_behaves_like "returns a cloned query"
       end
 
       context "when the strategy is union" do
+
         let(:selection) do
-          query.send(query_method, first: [1, 2]).union.send(query_method, first: [3, 4])
+          query.send(query_method, first: [ 1, 2 ]).union.send(query_method, first: [ 3, 4 ])
         end
 
         it "unions the conditions" do
           expect(selection.selector).to eq({
-                                             "first" => { operator => [1, 2, 3, 4] }
-                                           })
+            "first" => { operator => [ 1, 2, 3, 4 ] }
+          })
         end
 
         it_behaves_like "returns a cloned query"
@@ -79,58 +86,63 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context 'when the field is aliased' do
+
       context "when the strategy is not set" do
+
         let(:selection) do
-          query.send(query_method, id: [1, 2]).send(query_method, _id: [3, 4])
+          query.send(query_method, id: [ 1, 2 ]).send(query_method, _id: [ 3, 4 ])
         end
 
         it "combines the conditions with $and" do
           expect(selection.selector).to eq({
-                                             "_id" => { operator => [1, 2] },
-                                             '$and' => [{ '_id' => { operator => [3, 4] } }],
-                                           })
+            "_id" => { operator => [ 1, 2 ] },
+            '$and' => [{'_id' => {operator => [3, 4]}}],
+          })
         end
 
         it_behaves_like "returns a cloned query"
       end
 
       context "when the strategy is intersect" do
+
         let(:selection) do
-          query.send(query_method, id: [1, 2]).intersect.send(query_method, _id: [2, 3])
+          query.send(query_method, id: [ 1, 2 ]).intersect.send(query_method, _id: [ 2, 3 ])
         end
 
         it "intersects the conditions" do
           expect(selection.selector).to eq({
-                                             "_id" => { operator => [2] }
-                                           })
+            "_id" => { operator => [ 2 ] }
+          })
         end
 
         it_behaves_like "returns a cloned query"
       end
 
       context "when the strategy is override" do
+
         let(:selection) do
-          query.send(query_method, _id: [1, 2]).override.send(query_method, id: [3, 4])
+          query.send(query_method, _id: [ 1, 2 ]).override.send(query_method, id: [ 3, 4 ])
         end
 
         it "overwrites the first condition" do
           expect(selection.selector).to eq({
-                                             "_id" => { operator => [3, 4] }
-                                           })
+            "_id" => { operator => [ 3, 4 ] }
+          })
         end
 
         it_behaves_like "returns a cloned query"
       end
 
       context "when the strategy is union" do
+
         let(:selection) do
-          query.send(query_method, _id: [1, 2]).union.send(query_method, id: [3, 4])
+          query.send(query_method, _id: [ 1, 2 ]).union.send(query_method, id: [ 3, 4 ])
         end
 
         it "unions the conditions" do
           expect(selection.selector).to eq({
-                                             "_id" => { operator => [1, 2, 3, 4] }
-                                           })
+            "_id" => { operator => [ 1, 2, 3, 4 ] }
+          })
         end
 
         it_behaves_like "returns a cloned query"
@@ -138,34 +150,38 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context 'when the field uses a serializer' do
+
       let(:query) do
         Mongoid::Query.new({}, { "field" => FieldWithSerializer.new })
       end
 
+
       context "when the strategy is not set" do
+
         let(:selection) do
-          query.send(query_method, field: ['1', '2']).send(query_method, field: ['3', '4'])
+          query.send(query_method, field: [ '1', '2' ]).send(query_method, field: [ '3', '4' ])
         end
 
         it "combines the conditions with $and" do
           expect(selection.selector).to eq({
-                                             "field" => { operator => [1, 2] },
-                                             '$and' => [{ 'field' => { operator => [3, 4] } }],
-                                           })
+            "field" => { operator => [ 1, 2 ] },
+            '$and' => [{'field' => {operator => [3, 4]}}],
+          })
         end
 
         it_behaves_like "returns a cloned query"
       end
 
       context "when the strategy is set" do
+
         let(:selection) do
-          query.send(query_method, field: ['1', '2']).intersect.send(query_method, field: ['2', '3'])
+          query.send(query_method, field: [ '1', '2' ]).intersect.send(query_method, field: [ '2', '3' ])
         end
 
         it "intersects the conditions" do
           expect(selection.selector).to eq({
-                                             "field" => { operator => [2] }
-                                           })
+            "field" => { operator => [ 2 ] }
+          })
         end
 
         it_behaves_like "returns a cloned query"
@@ -173,61 +189,72 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context 'when operator value is a Range' do
+
       context "when there is no existing condition and strategy is not specified" do
+
         let(:selection) do
           query.send(query_method, foo: 2..4)
         end
 
         it 'expands range to array' do
           expect(selection.selector).to eq({
-                                             "foo" => { operator => [2, 3, 4] }
-                                           })
+            "foo" => { operator => [ 2, 3, 4 ] }
+          })
+
         end
       end
 
       context "when there is no existing condition and strategy is specified" do
+
         let(:selection) do
           query.union.send(query_method, foo: 2..4)
         end
 
         it 'expands range to array' do
           expect(selection.selector).to eq({
-                                             "foo" => { operator => [2, 3, 4] }
-                                           })
+            "foo" => { operator => [ 2, 3, 4 ] }
+          })
+
         end
       end
 
       context "when existing condition has Array value" do
+
         let(:selection) do
-          query.send(query_method, foo: [1, 2]).union.send(query_method, foo: 2..4)
+          query.send(query_method, foo: [ 1, 2 ]).union.send(query_method, foo: 2..4)
         end
 
         it 'expands range to array' do
           expect(selection.selector).to eq({
-                                             "foo" => { operator => [1, 2, 3, 4] }
-                                           })
+            "foo" => { operator => [ 1, 2, 3, 4 ] }
+          })
+
         end
       end
 
       context "when existing condition has Range value" do
+
         let(:selection) do
           query.send(query_method, foo: 1..2).union.send(query_method, foo: 2..4)
         end
 
         it 'expands range to array' do
           expect(selection.selector).to eq({
-                                             "foo" => { operator => [1, 2, 3, 4] }
-                                           })
+            "foo" => { operator => [ 1, 2, 3, 4 ] }
+          })
+
         end
       end
     end
   end
 
   describe "#all" do
+
     let(:query_method) { :all }
     let(:operator) { '$all' }
 
     context "when provided no criterion" do
+
       let(:selection) do
         query.all
       end
@@ -248,16 +275,19 @@ describe Mongoid::Criteria::Queryable::Selectable do
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a single criterion" do
+
       context "when no serializers are provided" do
+
         context "when providing an array" do
+
           let(:selection) do
-            query.all(field: [1, 2])
+            query.all(field: [ 1, 2 ])
           end
 
           it "adds the $all selector" do
             expect(selection.selector).to eq({
-                                               "field" => { "$all" => [1, 2] }
-                                             })
+              "field" => { "$all" => [ 1, 2 ] }
+            })
           end
 
           it "returns a cloned query" do
@@ -266,14 +296,15 @@ describe Mongoid::Criteria::Queryable::Selectable do
         end
 
         context "when providing a single value" do
+
           let(:selection) do
             query.all(field: 1)
           end
 
           it "adds the $all selector with wrapped value" do
             expect(selection.selector).to eq({
-                                               "field" => { "$all" => [1] }
-                                             })
+              "field" => { "$all" => [ 1 ] }
+            })
           end
 
           it "returns a cloned query" do
@@ -283,12 +314,12 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when serializers are provided" do
+
         before(:all) do
           class Field
             def evolve(object)
               Integer.evolve(object)
             end
-
             def localized?
               false
             end
@@ -304,14 +335,15 @@ describe Mongoid::Criteria::Queryable::Selectable do
         end
 
         context "when providing an array" do
+
           let(:selection) do
-            query.all(field: ["1", "2"])
+            query.all(field: [ "1", "2" ])
           end
 
           it "adds the $all selector" do
             expect(selection.selector).to eq({
-                                               "field" => { "$all" => [1, 2] }
-                                             })
+              "field" => { "$all" => [ 1, 2 ] }
+            })
           end
 
           it "returns a cloned query" do
@@ -320,14 +352,15 @@ describe Mongoid::Criteria::Queryable::Selectable do
         end
 
         context "when providing a single value" do
+
           let(:selection) do
             query.all(field: "1")
           end
 
           it "adds the $all selector with wrapped value" do
             expect(selection.selector).to eq({
-                                               "field" => { "$all" => [1] }
-                                             })
+              "field" => { "$all" => [ 1 ] }
+            })
           end
 
           it "returns a cloned query" do
@@ -338,16 +371,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when provided multiple criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
-          query.all(first: [1, 2], second: [3, 4])
+          query.all(first: [ 1, 2 ], second: [ 3, 4 ])
         end
 
         it "adds the $all selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$all" => [1, 2] },
-                                             "second" => { "$all" => [3, 4] }
-                                           })
+            "first" => { "$all" => [ 1, 2 ] },
+            "second" => { "$all" => [ 3, 4 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -357,16 +392,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining the criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
-          query.all(first: [1, 2]).all(second: [3, 4])
+          query.all(first: [ 1, 2 ]).all(second: [ 3, 4 ])
         end
 
         it "adds the $all selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$all" => [1, 2] },
-                                             "second" => { "$all" => [3, 4] }
-                                           })
+            "first" => { "$all" => [ 1, 2 ] },
+            "second" => { "$all" => [ 3, 4 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -375,26 +412,29 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when the criterion are on the same field" do
+
         it_behaves_like 'supports merge strategies'
       end
     end
   end
 
   describe "#between" do
+
     let(:query_method) { :between }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a single range" do
+
       let(:selection) do
         query.between(field: 1..10)
       end
 
       it "adds the $gte and $lte selectors" do
         expect(selection.selector).to eq({
-                                           "field" => { "$gte" => 1, "$lte" => 10 }
-                                         })
+          "field" => { "$gte" => 1, "$lte" => 10 }
+        })
       end
 
       it "returns a cloned query" do
@@ -403,16 +443,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when provided multiple ranges" do
+
       context "when the ranges are on different fields" do
+
         let(:selection) do
           query.between(field: 1..10, key: 5..7)
         end
 
         it "adds the $gte and $lte selectors" do
           expect(selection.selector).to eq({
-                                             "field" => { "$gte" => 1, "$lte" => 10 },
-                                             "key" => { "$gte" => 5, "$lte" => 7 }
-                                           })
+            "field" => { "$gte" => 1, "$lte" => 10 },
+            "key" => { "$gte" => 5, "$lte" => 7 }
+          })
         end
 
         it "returns a cloned query" do
@@ -423,21 +465,24 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#elem_match" do
+
     let(:query_method) { :elem_match }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a criterion" do
+
       context "when there are no nested complex keys" do
+
         let(:selection) do
           query.elem_match(users: { name: "value" })
         end
 
         it "adds the $elemMatch expression" do
           expect(selection.selector).to eq({
-                                             "users" => { "$elemMatch" => { "name" => "value" } }
-                                           })
+            "users" => { "$elemMatch" => { "name" => "value" }}
+          })
         end
 
         it "returns a cloned query" do
@@ -446,6 +491,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when there are nested complex keys" do
+
         let(:time) do
           Time.now
         end
@@ -456,8 +502,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $elemMatch expression" do
           expect(selection.selector).to eq({
-                                             "users" => { "$elemMatch" => { "time" => { "$gt" => time } } }
-                                           })
+            "users" => { "$elemMatch" => { "time" => { "$gt" => time }}}
+          })
         end
 
         it "returns a cloned query" do
@@ -467,7 +513,9 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when providing multiple criteria" do
+
       context "when the fields differ" do
+
         let(:selection) do
           query.elem_match(
             users: { name: "value" },
@@ -477,9 +525,9 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $elemMatch expression" do
           expect(selection.selector).to eq({
-                                             "users" => { "$elemMatch" => { "name" => "value" } },
-                                             "comments" => { "$elemMatch" => { "text" => "value" } }
-                                           })
+            "users" => { "$elemMatch" => { "name" => "value" }},
+            "comments" => { "$elemMatch" => { "text" => "value" }}
+          })
         end
 
         it "returns a cloned query" do
@@ -489,18 +537,20 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining multiple criteria" do
+
       context "when the fields differ" do
+
         let(:selection) do
-          query
-            .elem_match(users: { name: "value" })
-            .elem_match(comments: { text: "value" })
+          query.
+            elem_match(users: { name: "value" }).
+            elem_match(comments: { text: "value" })
         end
 
         it "adds the $elemMatch expression" do
           expect(selection.selector).to eq({
-                                             "users" => { "$elemMatch" => { "name" => "value" } },
-                                             "comments" => { "$elemMatch" => { "text" => "value" } }
-                                           })
+            "users" => { "$elemMatch" => { "name" => "value" }},
+            "comments" => { "$elemMatch" => { "text" => "value" }}
+          })
         end
 
         it "returns a cloned query" do
@@ -509,17 +559,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when the fields are the same" do
+
         let(:selection) do
-          query
-            .elem_match(users: { name: "value" })
-            .elem_match(users: { state: "new" })
+          query.
+            elem_match(users: { name: "value" }).
+            elem_match(users: { state: "new" })
         end
 
         it "adds an $elemMatch expression" do
           expect(selection.selector).to eq({
-                                             "users" => { "$elemMatch" => { "name" => "value" } },
-                                             "$and" => [{ "users" => { "$elemMatch" => { "state" => "new" } } }],
-                                           })
+            "users" => { "$elemMatch" => { "name" => "value" } },
+            "$and" => [ { "users" => { "$elemMatch" => { "state" => "new" } } } ],
+          })
         end
 
         it "returns a cloned query" do
@@ -530,21 +581,24 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#exists" do
+
     let(:query_method) { :exists }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a criterion" do
+
       context "when provided a boolean" do
+
         let(:selection) do
           query.exists(users: true)
         end
 
         it "adds the $exists expression" do
           expect(selection.selector).to eq({
-                                             "users" => { "$exists" => true }
-                                           })
+            "users" => { "$exists" => true }
+          })
         end
 
         it "returns a cloned query" do
@@ -553,14 +607,15 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when provided a string" do
+
         let(:selection) do
           query.exists(users: "yes")
         end
 
         it "adds the $exists expression" do
           expect(selection.selector).to eq({
-                                             "users" => { "$exists" => true }
-                                           })
+            "users" => { "$exists" => true }
+          })
         end
 
         it "returns a cloned query" do
@@ -570,8 +625,11 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when providing multiple criteria" do
+
       context "when the fields differ" do
+
         context "when providing boolean values" do
+
           let(:selection) do
             query.exists(
               users: true,
@@ -581,9 +639,9 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           it "adds the $exists expression" do
             expect(selection.selector).to eq({
-                                               "users" => { "$exists" => true },
-                                               "comments" => { "$exists" => true }
-                                             })
+              "users" => { "$exists" => true },
+              "comments" => { "$exists" => true }
+            })
           end
 
           it "returns a cloned query" do
@@ -592,6 +650,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         end
 
         context "when providing string values" do
+
           let(:selection) do
             query.exists(
               users: "y",
@@ -601,9 +660,9 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           it "adds the $exists expression" do
             expect(selection.selector).to eq({
-                                               "users" => { "$exists" => true },
-                                               "comments" => { "$exists" => true }
-                                             })
+              "users" => { "$exists" => true },
+              "comments" => { "$exists" => true }
+            })
           end
 
           it "returns a cloned query" do
@@ -614,18 +673,20 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining multiple criteria" do
+
       context "when the fields differ" do
+
         let(:selection) do
-          query
-            .exists(users: true)
-            .exists(comments: true)
+          query.
+            exists(users: true).
+            exists(comments: true)
         end
 
         it "adds the $exists expression" do
           expect(selection.selector).to eq({
-                                             "users" => { "$exists" => true },
-                                             "comments" => { "$exists" => true }
-                                           })
+            "users" => { "$exists" => true },
+            "comments" => { "$exists" => true }
+          })
         end
 
         it "returns a cloned query" do
@@ -636,108 +697,114 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#geo_spatial" do
+
     let(:query_method) { :geo_spatial }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a criterion" do
+
       context "when the geometry is a point intersection" do
+
         let(:selection) do
-          query.geo_spatial(:location.intersects_point => [1, 10])
+          query.geo_spatial(:location.intersects_point => [ 1, 10 ])
         end
 
         it "adds the $geoIntersects expression" do
           expect(selection.selector).to eq({
-                                             "location" => {
-                                               "$geoIntersects" => {
-                                                 "$geometry" => {
-                                                   "type" => "Point",
-                                                   "coordinates" => [1, 10]
-                                                 }
-                                               }
-                                             }
-                                           })
+            "location" => {
+              "$geoIntersects" => {
+                "$geometry" => {
+                  "type" => "Point",
+                  "coordinates" => [ 1, 10 ]
+                }
+              }
+            }
+          })
         end
 
         it_behaves_like "returns a cloned query"
       end
 
       context "when the geometry is a line intersection" do
+
         let(:selection) do
-          query.geo_spatial(:location.intersects_line => [[1, 10], [2, 10]])
+          query.geo_spatial(:location.intersects_line => [[ 1, 10 ], [ 2, 10 ]])
         end
 
         it "adds the $geoIntersects expression" do
           expect(selection.selector).to eq({
-                                             "location" => {
-                                               "$geoIntersects" => {
-                                                 "$geometry" => {
-                                                   "type" => "LineString",
-                                                   "coordinates" => [[1, 10], [2, 10]]
-                                                 }
-                                               }
-                                             }
-                                           })
+            "location" => {
+              "$geoIntersects" => {
+                "$geometry" => {
+                  "type" => "LineString",
+                  "coordinates" => [[ 1, 10 ], [ 2, 10 ]]
+                }
+              }
+            }
+          })
         end
 
         it_behaves_like "returns a cloned query"
       end
 
       context "when the geometry is a polygon intersection" do
+
         let(:selection) do
-          query.geo_spatial(:location.intersects_polygon => [[[1, 10], [2, 10], [1, 10]]])
+          query.geo_spatial(:location.intersects_polygon => [[[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]]])
         end
 
         it "adds the $geoIntersects expression" do
           expect(selection.selector).to eq({
-                                             "location" => {
-                                               "$geoIntersects" => {
-                                                 "$geometry" => {
-                                                   "type" => "Polygon",
-                                                   "coordinates" => [[[1, 10], [2, 10], [1, 10]]]
-                                                 }
-                                               }
-                                             }
-                                           })
+            "location" => {
+              "$geoIntersects" => {
+                "$geometry" => {
+                  "type" => "Polygon",
+                  "coordinates" => [[[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]]]
+                }
+              }
+            }
+          })
         end
 
         it_behaves_like "returns a cloned query"
       end
 
       context "when the geometry is within a polygon" do
+
         let(:selection) do
-          query.geo_spatial(:location.within_polygon => [[[1, 10], [2, 10], [1, 10]]])
+          query.geo_spatial(:location.within_polygon => [[[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]]])
         end
 
         it "adds the $geoIntersects expression" do
           expect(selection.selector).to eq({
-                                             "location" => {
-                                               "$geoWithin" => {
-                                                 "$geometry" => {
-                                                   "type" => "Polygon",
-                                                   "coordinates" => [[[1, 10], [2, 10], [1, 10]]]
-                                                 }
-                                               }
-                                             }
-                                           })
+            "location" => {
+              "$geoWithin" => {
+                "$geometry" => {
+                  "type" => "Polygon",
+                  "coordinates" => [[[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]]]
+                }
+              }
+            }
+          })
         end
 
         context "when used with the $box operator ($geoWithin query) " do
           let(:selection) do
-            query.geo_spatial(:location.within_box => [[1, 10], [2, 10]])
+            query.geo_spatial(:location.within_box => [[ 1, 10 ], [ 2, 10 ]])
           end
 
           it "adds the $geoIntersects expression" do
             expect(selection.selector).to eq({
-                                               "location" => {
-                                                 "$geoWithin" => {
-                                                   "$box" => [
-                                                     [1, 10], [2, 10]
-                                                   ]
-                                                 }
-                                               }
-                                             })
+              "location" => {
+                "$geoWithin" => {
+                  "$box" => [
+                    [ 1, 10 ], [ 2, 10 ]
+                  ]
+                }
+              }
+            })
           end
         end
 
@@ -747,20 +814,22 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#gt" do
+
     let(:query_method) { :gt }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a single criterion" do
+
       let(:selection) do
         query.gt(field: 10)
       end
 
       it "adds the $gt selector" do
         expect(selection.selector).to eq({
-                                           "field" => { "$gt" => 10 }
-                                         })
+          "field" => { "$gt" => 10 }
+        })
       end
 
       it "returns a cloned query" do
@@ -769,16 +838,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when provided multiple criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
           query.gt(first: 10, second: 15)
         end
 
         it "adds the $gt selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$gt" => 10 },
-                                             "second" => { "$gt" => 15 }
-                                           })
+            "first" => { "$gt" => 10 },
+            "second" => { "$gt" => 15 }
+          })
         end
 
         it "returns a cloned query" do
@@ -788,16 +859,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining the criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
           query.gt(first: 10).gt(second: 15)
         end
 
         it "adds the $gt selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$gt" => 10 },
-                                             "second" => { "$gt" => 15 }
-                                           })
+            "first" => { "$gt" => 10 },
+            "second" => { "$gt" => 15 }
+          })
         end
 
         it "returns a cloned query" do
@@ -806,15 +879,16 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when the criterion are on the same field" do
+
         let(:selection) do
           query.gt(first: 10).gt(first: 15)
         end
 
         it "adds a second $gt selector" do
           expect(selection.selector).to eq({
-                                             "first" => { "$gt" => 10 },
-                                             "$and" => [{ "first" => { "$gt" => 15 } }]
-                                           })
+            "first" => { "$gt" => 10 },
+            "$and" => [{ "first" => { "$gt" => 15 } }]
+            })
         end
 
         it "returns a cloned query" do
@@ -825,20 +899,22 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#gte" do
+
     let(:query_method) { :gte }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a single criterion" do
+
       let(:selection) do
         query.gte(field: 10)
       end
 
       it "adds the $gte selector" do
         expect(selection.selector).to eq({
-                                           "field" => { "$gte" => 10 }
-                                         })
+          "field" => { "$gte" => 10 }
+        })
       end
 
       it "returns a cloned query" do
@@ -847,16 +923,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when provided multiple criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
           query.gte(first: 10, second: 15)
         end
 
         it "adds the $gte selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$gte" => 10 },
-                                             "second" => { "$gte" => 15 }
-                                           })
+            "first" => { "$gte" => 10 },
+            "second" => { "$gte" => 15 }
+          })
         end
 
         it "returns a cloned query" do
@@ -866,16 +944,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining the criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
           query.gte(first: 10).gte(second: 15)
         end
 
         it "adds the $gte selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$gte" => 10 },
-                                             "second" => { "$gte" => 15 }
-                                           })
+            "first" => { "$gte" => 10 },
+            "second" => { "$gte" => 15 }
+          })
         end
 
         it "returns a cloned query" do
@@ -884,15 +964,16 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when the criterion are on the same field" do
+
         let(:selection) do
           query.gte(first: 10).gte(first: 15)
         end
 
         it "adds a second $gte selector" do
           expect(selection.selector).to eq({
-                                             "first" => { "$gte" => 10 },
-                                             "$and" => [{ "first" => { "$gte" => 15 } }]
-                                           })
+            "first" =>  { "$gte" => 10 },
+            "$and" => [ { "first" => { "$gte" => 15 } } ]
+          })
         end
 
         it "returns a cloned query" do
@@ -903,6 +984,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#in" do
+
     let(:query_method) { :in }
     let(:operator) { '$in' }
 
@@ -910,15 +992,17 @@ describe Mongoid::Criteria::Queryable::Selectable do
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a single criterion" do
+
       context "when providing an array" do
+
         let(:selection) do
-          query.in(field: [1, 2])
+          query.in(field: [ 1, 2 ])
         end
 
         it "adds the $in selector" do
           expect(selection.selector).to eq({
-                                             "field" => { "$in" => [1, 2] }
-                                           })
+            "field" =>  { "$in" => [ 1, 2 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -927,14 +1011,15 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when providing a single value" do
+
         let(:selection) do
           query.in(field: 1)
         end
 
         it "adds the $in selector with wrapped value" do
           expect(selection.selector).to eq({
-                                             "field" => { "$in" => [1] }
-                                           })
+            "field" =>  { "$in" => [ 1 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -944,16 +1029,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when provided multiple criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
-          query.in(first: [1, 2], second: 3..4)
+          query.in(first: [ 1, 2 ], second: 3..4)
         end
 
         it "adds the $in selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$in" => [1, 2] },
-                                             "second" => { "$in" => [3, 4] }
-                                           })
+            "first" =>  { "$in" => [ 1, 2 ] },
+            "second" =>  { "$in" => [ 3, 4 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -963,16 +1050,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining the criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
-          query.in(first: [1, 2]).in(second: [3, 4])
+          query.in(first: [ 1, 2 ]).in(second: [ 3, 4 ])
         end
 
         it "adds the $in selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$in" => [1, 2] },
-                                             "second" => { "$in" => [3, 4] }
-                                           })
+            "first" =>  { "$in" => [ 1, 2 ] },
+            "second" =>  { "$in" => [ 3, 4 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -981,26 +1070,29 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when the criterion are on the same field" do
+
         it_behaves_like 'supports merge strategies'
       end
     end
   end
 
   describe "#lt" do
+
     let(:query_method) { :lt }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a single criterion" do
+
       let(:selection) do
         query.lt(field: 10)
       end
 
       it "adds the $lt selector" do
         expect(selection.selector).to eq({
-                                           "field" => { "$lt" => 10 }
-                                         })
+          "field" =>  { "$lt" => 10 }
+        })
       end
 
       it "returns a cloned query" do
@@ -1009,16 +1101,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when provided multiple criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
           query.lt(first: 10, second: 15)
         end
 
         it "adds the $lt selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$lt" => 10 },
-                                             "second" => { "$lt" => 15 }
-                                           })
+            "first" =>  { "$lt" => 10 },
+            "second" =>  { "$lt" => 15 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1028,16 +1122,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining the criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
           query.lt(first: 10).lt(second: 15)
         end
 
         it "adds the $lt selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$lt" => 10 },
-                                             "second" => { "$lt" => 15 }
-                                           })
+            "first" =>  { "$lt" => 10 },
+            "second" =>  { "$lt" => 15 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1046,15 +1142,16 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when the criterion are on the same field" do
+
         let(:selection) do
           query.lt(first: 10).lt(first: 15)
         end
 
         it "adds a second $lt selector" do
           expect(selection.selector).to eq({
-                                             "first" => { "$lt" => 10 },
-                                             "$and" => [{ "first" => { "$lt" => 15 } }]
-                                           })
+            "first" =>  { "$lt" => 10 },
+            "$and" => [ { "first" => { "$lt" => 15 } } ]
+          })
         end
 
         it "returns a cloned query" do
@@ -1065,20 +1162,22 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#lte" do
+
     let(:query_method) { :lte }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a single criterion" do
+
       let(:selection) do
         query.lte(field: 10)
       end
 
       it "adds the $lte selector" do
         expect(selection.selector).to eq({
-                                           "field" => { "$lte" => 10 }
-                                         })
+          "field" =>  { "$lte" => 10 }
+        })
       end
 
       it "returns a cloned query" do
@@ -1087,16 +1186,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when provided multiple criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
           query.lte(first: 10, second: 15)
         end
 
         it "adds the $lte selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$lte" => 10 },
-                                             "second" => { "$lte" => 15 }
-                                           })
+            "first" =>  { "$lte" => 10 },
+            "second" =>  { "$lte" => 15 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1106,16 +1207,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining the criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
           query.lte(first: 10).lte(second: 15)
         end
 
         it "adds the $lte selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$lte" => 10 },
-                                             "second" => { "$lte" => 15 }
-                                           })
+            "first" =>  { "$lte" => 10 },
+            "second" =>  { "$lte" => 15 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1124,15 +1227,16 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when the criterion are on the same field" do
+
         let(:selection) do
           query.lte(first: 10).lte(first: 15)
         end
 
         it "adds a second $lte selector" do
           expect(selection.selector).to eq({
-                                             "first" => { "$lte" => 10 },
-                                             "$and" => [{ "first" => { "$lte" => 15 } }]
-                                           })
+            "first" =>  { "$lte" => 10 },
+            "$and" => [ { "first" => { "$lte" => 15 } } ]
+          })
         end
 
         it "returns a cloned query" do
@@ -1143,21 +1247,24 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#max_distance" do
+
     let(:query_method) { :max_distance }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a criterion" do
+
       context "when a $near criterion exists on the same field" do
+
         let(:selection) do
-          query.near(location: [1, 1]).max_distance(location: 50)
+          query.near(location: [ 1, 1 ]).max_distance(location: 50)
         end
 
         it "adds the $maxDistance expression" do
           expect(selection.selector).to eq({
-                                             "location" => { "$near" => [1, 1], "$maxDistance" => 50 }
-                                           })
+            "location" =>  { "$near" => [ 1, 1 ], "$maxDistance" => 50 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1168,20 +1275,22 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#mod" do
+
     let(:query_method) { :mod }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a criterion" do
+
       let(:selection) do
-        query.mod(value: [10, 1])
+        query.mod(value: [ 10, 1 ])
       end
 
       it "adds the $mod expression" do
         expect(selection.selector).to eq({
-                                           "value" => { "$mod" => [10, 1] }
-                                         })
+          "value" =>  { "$mod" => [ 10, 1 ] }
+        })
       end
 
       it "returns a cloned query" do
@@ -1190,19 +1299,21 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when providing multiple criteria" do
+
       context "when the fields differ" do
+
         let(:selection) do
           query.mod(
-            value: [10, 1],
-            comments: [10, 1]
+            value: [ 10, 1 ],
+            comments: [ 10, 1 ]
           )
         end
 
         it "adds the $mod expression" do
           expect(selection.selector).to eq({
-                                             "value" => { "$mod" => [10, 1] },
-                                             "comments" => { "$mod" => [10, 1] }
-                                           })
+            "value" =>  { "$mod" => [ 10, 1 ] },
+            "comments" =>  { "$mod" => [ 10, 1 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -1212,18 +1323,20 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining multiple criteria" do
+
       context "when the fields differ" do
+
         let(:selection) do
-          query
-            .mod(value: [10, 1])
-            .mod(result: [10, 1])
+          query.
+            mod(value: [ 10, 1 ]).
+            mod(result: [ 10, 1 ])
         end
 
         it "adds the $mod expression" do
           expect(selection.selector).to eq({
-                                             "value" => { "$mod" => [10, 1] },
-                                             "result" => { "$mod" => [10, 1] }
-                                           })
+            "value" =>  { "$mod" => [ 10, 1 ] },
+            "result" =>  { "$mod" => [ 10, 1 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -1234,20 +1347,22 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#ne" do
+
     let(:query_method) { :ne }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a criterion" do
+
       let(:selection) do
         query.ne(value: 10)
       end
 
       it "adds the $ne expression" do
         expect(selection.selector).to eq({
-                                           "value" => { "$ne" => 10 }
-                                         })
+          "value" =>  { "$ne" => 10 }
+        })
       end
 
       it "returns a cloned query" do
@@ -1256,7 +1371,9 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when providing multiple criteria" do
+
       context "when the fields differ" do
+
         let(:selection) do
           query.ne(
             value: 10,
@@ -1266,9 +1383,9 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $ne expression" do
           expect(selection.selector).to eq({
-                                             "value" => { "$ne" => 10 },
-                                             "comments" => { "$ne" => 10 }
-                                           })
+            "value" =>  { "$ne" => 10 },
+            "comments" =>  { "$ne" => 10 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1278,18 +1395,20 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining multiple criteria" do
+
       context "when the fields differ" do
+
         let(:selection) do
-          query
-            .ne(value: 10)
-            .ne(result: 10)
+          query.
+            ne(value: 10).
+            ne(result: 10)
         end
 
         it "adds the $ne expression" do
           expect(selection.selector).to eq({
-                                             "value" => { "$ne" => 10 },
-                                             "result" => { "$ne" => 10 }
-                                           })
+            "value" =>  { "$ne" => 10 },
+            "result" =>  { "$ne" => 10 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1300,20 +1419,22 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#near" do
+
     let(:query_method) { :near }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a criterion" do
+
       let(:selection) do
-        query.near(location: [20, 21])
+        query.near(location: [ 20, 21 ])
       end
 
       it "adds the $near expression" do
         expect(selection.selector).to eq({
-                                           "location" => { "$near" => [20, 21] }
-                                         })
+          "location" =>  { "$near" => [ 20, 21 ] }
+        })
       end
 
       it "returns a cloned query" do
@@ -1322,19 +1443,21 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when providing multiple criteria" do
+
       context "when the fields differ" do
+
         let(:selection) do
           query.near(
-            location: [20, 21],
-            comments: [20, 21]
+            location: [ 20, 21 ],
+            comments: [ 20, 21 ]
           )
         end
 
         it "adds the $near expression" do
           expect(selection.selector).to eq({
-                                             "location" => { "$near" => [20, 21] },
-                                             "comments" => { "$near" => [20, 21] }
-                                           })
+            "location" =>  { "$near" => [ 20, 21 ] },
+            "comments" =>  { "$near" => [ 20, 21 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -1344,18 +1467,20 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining multiple criteria" do
+
       context "when the fields differ" do
+
         let(:selection) do
-          query
-            .near(location: [20, 21])
-            .near(comments: [20, 21])
+          query.
+            near(location: [ 20, 21 ]).
+            near(comments: [ 20, 21 ])
         end
 
         it "adds the $near expression" do
           expect(selection.selector).to eq({
-                                             "location" => { "$near" => [20, 21] },
-                                             "comments" => { "$near" => [20, 21] }
-                                           })
+            "location" =>  { "$near" => [ 20, 21 ] },
+            "comments" =>  { "$near" => [ 20, 21 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -1366,20 +1491,22 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#near_sphere" do
+
     let(:query_method) { :near_sphere }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a criterion" do
+
       let(:selection) do
-        query.near_sphere(location: [20, 21])
+        query.near_sphere(location: [ 20, 21 ])
       end
 
       it "adds the $nearSphere expression" do
         expect(selection.selector).to eq({
-                                           "location" => { "$nearSphere" => [20, 21] }
-                                         })
+          "location" =>  { "$nearSphere" => [ 20, 21 ] }
+        })
       end
 
       it "returns a cloned query" do
@@ -1388,19 +1515,21 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when providing multiple criteria" do
+
       context "when the fields differ" do
+
         let(:selection) do
           query.near_sphere(
-            location: [20, 21],
-            comments: [20, 21]
+            location: [ 20, 21 ],
+            comments: [ 20, 21 ]
           )
         end
 
         it "adds the $nearSphere expression" do
           expect(selection.selector).to eq({
-                                             "location" => { "$nearSphere" => [20, 21] },
-                                             "comments" => { "$nearSphere" => [20, 21] }
-                                           })
+            "location" =>  { "$nearSphere" => [ 20, 21 ] },
+            "comments" =>  { "$nearSphere" => [ 20, 21 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -1410,18 +1539,20 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining multiple criteria" do
+
       context "when the fields differ" do
+
         let(:selection) do
-          query
-            .near_sphere(location: [20, 21])
-            .near_sphere(comments: [20, 21])
+          query.
+            near_sphere(location: [ 20, 21 ]).
+            near_sphere(comments: [ 20, 21 ])
         end
 
         it "adds the $nearSphere expression" do
           expect(selection.selector).to eq({
-                                             "location" => { "$nearSphere" => [20, 21] },
-                                             "comments" => { "$nearSphere" => [20, 21] }
-                                           })
+            "location" =>  { "$nearSphere" => [ 20, 21 ] },
+            "comments" =>  { "$nearSphere" => [ 20, 21 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -1432,6 +1563,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#nin" do
+
     let(:query_method) { :nin }
     let(:operator) { '$nin' }
 
@@ -1439,15 +1571,17 @@ describe Mongoid::Criteria::Queryable::Selectable do
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a single criterion" do
+
       context "when providing an array" do
+
         let(:selection) do
-          query.nin(field: [1, 2])
+          query.nin(field: [ 1, 2 ])
         end
 
         it "adds the $nin selector" do
           expect(selection.selector).to eq({
-                                             "field" => { "$nin" => [1, 2] }
-                                           })
+            "field" =>  { "$nin" => [ 1, 2 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -1456,14 +1590,15 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when providing a single value" do
+
         let(:selection) do
           query.nin(field: 1)
         end
 
         it "adds the $nin selector with wrapped value" do
           expect(selection.selector).to eq({
-                                             "field" => { "$nin" => [1] }
-                                           })
+            "field" =>  { "$nin" => [ 1 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -1473,16 +1608,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when provided multiple criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
-          query.nin(first: [1, 2], second: [3, 4])
+          query.nin(first: [ 1, 2 ], second: [ 3, 4 ])
         end
 
         it "adds the $nin selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$nin" => [1, 2] },
-                                             "second" => { "$nin" => [3, 4] }
-                                           })
+            "first" =>  { "$nin" => [ 1, 2 ] },
+            "second" =>  { "$nin" => [ 3, 4 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -1492,16 +1629,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining the criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
-          query.nin(first: [1, 2]).nin(second: [3, 4])
+          query.nin(first: [ 1, 2 ]).nin(second: [ 3, 4 ])
         end
 
         it "adds the $nin selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$nin" => [1, 2] },
-                                             "second" => { "$nin" => [3, 4] }
-                                           })
+            "first" => { "$nin" => [ 1, 2 ] },
+            "second" => { "$nin" => [ 3, 4 ] }
+          })
         end
 
         it "returns a cloned query" do
@@ -1510,27 +1649,31 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when the criterion are on the same field" do
+
         it_behaves_like 'supports merge strategies'
       end
     end
   end
 
   describe "#with_size" do
+
     let(:query_method) { :with_size }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a single criterion" do
+
       context "when provided an integer" do
+
         let(:selection) do
           query.with_size(field: 10)
         end
 
         it "adds the $size selector" do
           expect(selection.selector).to eq({
-                                             "field" => { "$size" => 10 }
-                                           })
+            "field" => { "$size" => 10 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1539,14 +1682,15 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when provided a string" do
+
         let(:selection) do
           query.with_size(field: "10")
         end
 
         it "adds the $size selector with an integer" do
           expect(selection.selector).to eq({
-                                             "field" => { "$size" => 10 }
-                                           })
+            "field" => { "$size" => 10 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1556,17 +1700,20 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when provided multiple criterion" do
+
       context "when the criterion are for different fields" do
+
         context "when provided integers" do
+
           let(:selection) do
             query.with_size(first: 10, second: 15)
           end
 
           it "adds the $size selectors" do
             expect(selection.selector).to eq({
-                                               "first" => { "$size" => 10 },
-                                               "second" => { "$size" => 15 }
-                                             })
+              "first" => { "$size" => 10 },
+              "second" => { "$size" => 15 }
+            })
           end
 
           it "returns a cloned query" do
@@ -1575,15 +1722,16 @@ describe Mongoid::Criteria::Queryable::Selectable do
         end
 
         context "when provided strings" do
+
           let(:selection) do
             query.with_size(first: "10", second: "15")
           end
 
           it "adds the $size selectors" do
             expect(selection.selector).to eq({
-                                               "first" => { "$size" => 10 },
-                                               "second" => { "$size" => 15 }
-                                             })
+              "first" => { "$size" => 10 },
+              "second" => { "$size" => 15 }
+            })
           end
 
           it "returns a cloned query" do
@@ -1594,16 +1742,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining the criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
           query.with_size(first: 10).with_size(second: 15)
         end
 
         it "adds the $size selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$size" => 10 },
-                                             "second" => { "$size" => 15 }
-                                           })
+            "first" => { "$size" => 10 },
+            "second" => { "$size" => 15 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1612,14 +1762,15 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when the criterion are on the same field" do
+
         let(:selection) do
           query.with_size(first: 10).with_size(first: 15)
         end
 
         it "overwrites the first $size selector" do
           expect(selection.selector).to eq({
-                                             "first" => { "$size" => 15 }
-                                           })
+            "first" => { "$size" => 15 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1630,21 +1781,24 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#with_type" do
+
     let(:query_method) { :with_type }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
 
     context "when provided a single criterion" do
+
       context "when provided an integer" do
+
         let(:selection) do
           query.with_type(field: 10)
         end
 
         it "adds the $type selector" do
           expect(selection.selector).to eq({
-                                             "field" => { "$type" => 10 }
-                                           })
+            "field" => { "$type" => 10 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1653,14 +1807,15 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when provided a string" do
+
         let(:selection) do
           query.with_type(field: "10")
         end
 
         it "adds the $type selector" do
           expect(selection.selector).to eq({
-                                             "field" => { "$type" => 10 }
-                                           })
+            "field" => { "$type" => 10 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1670,16 +1825,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when provided multiple criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
           query.with_type(first: 10, second: 15)
         end
 
         it "adds the $type selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$type" => 10 },
-                                             "second" => { "$type" => 15 }
-                                           })
+            "first" => { "$type" => 10 },
+            "second" => { "$type" => 15 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1689,16 +1846,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context "when chaining the criterion" do
+
       context "when the criterion are for different fields" do
+
         let(:selection) do
           query.with_type(first: 10).with_type(second: 15)
         end
 
         it "adds the $type selectors" do
           expect(selection.selector).to eq({
-                                             "first" => { "$type" => 10 },
-                                             "second" => { "$type" => 15 }
-                                           })
+            "first" => { "$type" => 10 },
+            "second" => { "$type" => 15 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1707,14 +1866,15 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when the criterion are on the same field" do
+
         let(:selection) do
           query.with_type(first: 10).with_type(first: 15)
         end
 
         it "overwrites the first $type selector" do
           expect(selection.selector).to eq({
-                                             "first" => { "$type" => 15 }
-                                           })
+            "first" => { "$type" => 15 }
+          })
         end
 
         it "returns a cloned query" do
@@ -1725,13 +1885,15 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "#text_search" do
+
     context "when providing a search string" do
+
       let(:selection) do
         query.text_search("testing")
       end
 
       it "constructs a text search document" do
-        expect(selection.selector).to eq({ '$text' => { '$search' => "testing" } })
+        expect(selection.selector).to eq({ '$text' => { '$search' => "testing" }})
       end
 
       it "returns the cloned selectable" do
@@ -1739,6 +1901,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when providing text search options" do
+
         let(:selection) do
           query.text_search("essais", { :$language => "fr" })
         end
@@ -1767,15 +1930,18 @@ describe Mongoid::Criteria::Queryable::Selectable do
       it 'merges conditions' do
         expect(Mongoid.logger).to receive(:warn)
         expect(selection.selector).to eq('$and' => [
-                                           { '$text' => { '$search' => 'one' } }
-                                         ],
-                                         '$text' => { '$search' => 'two' },)
+            {'$text' => {'$search' => 'one'}}
+          ],
+          '$text' => {'$search' => 'two'},
+        )
       end
     end
   end
 
   describe Symbol do
+
     describe "#all" do
+
       let(:key) do
         :field.all
       end
@@ -1794,6 +1960,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     describe "#elem_match" do
+
       let(:key) do
         :field.elem_match
       end
@@ -1812,6 +1979,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     describe "#exists" do
+
       let(:key) do
         :field.exists
       end
@@ -1830,6 +1998,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     describe "#gt" do
+
       let(:key) do
         :field.gt
       end
@@ -1848,6 +2017,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     describe "#gte" do
+
       let(:key) do
         :field.gte
       end
@@ -1866,6 +2036,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     describe "#in" do
+
       let(:key) do
         :field.in
       end
@@ -1884,6 +2055,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     describe "#lt" do
+
       let(:key) do
         :field.lt
       end
@@ -1902,6 +2074,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     describe "#lte" do
+
       let(:key) do
         :field.lte
       end
@@ -1920,6 +2093,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     describe "#mod" do
+
       let(:key) do
         :field.mod
       end
@@ -1938,6 +2112,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     describe "#ne" do
+
       let(:key) do
         :field.ne
       end
@@ -1956,6 +2131,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     describe "#near" do
+
       let(:key) do
         :field.near
       end
@@ -1974,6 +2150,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     describe "#near_sphere" do
+
       let(:key) do
         :field.near_sphere
       end
@@ -1992,6 +2169,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     describe "#nin" do
+
       let(:key) do
         :field.nin
       end
@@ -2010,6 +2188,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     describe "#not" do
+
       let(:key) do
         :field.not
       end
@@ -2025,9 +2204,11 @@ describe Mongoid::Criteria::Queryable::Selectable do
       it "sets the operator as $not" do
         expect(key.operator).to eq("$not")
       end
+
     end
 
     describe "#with_size" do
+
       let(:key) do
         :field.with_size
       end
@@ -2046,6 +2227,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     describe "#with_type" do
+
       let(:key) do
         :field.with_type
       end
@@ -2065,8 +2247,11 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   context "when using multiple strategies on the same field" do
+
     context "when using the strategies via methods" do
+
       context "when different operators are specified" do
+
         let(:selection) do
           query.gt(field: 5).lt(field: 10).ne(field: 7)
         end
@@ -2079,18 +2264,21 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       context "when the same operator is specified" do
+
         let(:selection) do
           query.where(field: 5).where(field: 10)
         end
 
         it "combines conditions" do
-          expect(selection.selector).to eq("field" => 5, '$and' => [{ 'field' => 10 }])
+          expect(selection.selector).to eq("field" => 5, '$and' => [{'field' => 10}] )
         end
       end
     end
 
     context "when using the strategies via #where" do
+
       context "when using complex keys with different operators" do
+
         let(:selection) do
           query.where(:field.gt => 5, :field.lt => 10, :field.ne => 7)
         end
@@ -2105,7 +2293,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "chained operators" do
-    [:eq, :elem_match, :gt, :gte, :lt, :lte, :mod, :ne, :near, :near_sphere].each do |meth|
+    [ :eq, :elem_match, :gt, :gte, :lt, :lte, :mod, :ne, :near, :near_sphere ].each do |meth|
+
       context "when chaining the #{meth} method when using the same field" do
         let(:op) do
           {
@@ -2123,14 +2312,14 @@ describe Mongoid::Criteria::Queryable::Selectable do
         end
 
         let(:criteria) do
-          Band.send(meth, { views: 1 }).send(meth, { views: 2 })
+          Band.send(meth, {views: 1}).send(meth, {views:2})
         end
 
         it "is and-ed with the previous operators" do
           expect(criteria.selector).to eq({
-                                            "views" => { op => 1 },
-                                            "$and" => [{ "views" => { op => 2 } }]
-                                          })
+            "views" => { op => 1 },
+            "$and" => [{ "views" => { op => 2 } }]
+          })
         end
       end
     end

@@ -3,6 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::RawValue do
+
   describe "::()" do
     subject { Mongoid::RawValue(raw_value).raw_value }
 

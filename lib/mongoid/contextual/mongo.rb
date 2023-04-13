@@ -10,6 +10,7 @@ require "mongoid/association/eager_loadable"
 
 module Mongoid
   module Contextual
+
     # Context object used for performing bulk query and persistence
     # operations on documents which are persisted in the database and
     # have not been loaded into application memory.
@@ -22,17 +23,18 @@ module Mongoid
       include Queryable
 
       # Options constant.
-      OPTIONS = [:hint,
-                 :limit,
-                 :skip,
-                 :sort,
-                 :batch_size,
-                 :max_time_ms,
-                 :snapshot,
-                 :comment,
-                 :read,
-                 :cursor_type,
-                 :collation].freeze
+      OPTIONS = [ :hint,
+                  :limit,
+                  :skip,
+                  :sort,
+                  :batch_size,
+                  :max_time_ms,
+                  :snapshot,
+                  :comment,
+                  :read,
+                  :cursor_type,
+                  :collation
+                ].freeze
 
       # @attribute [r] view The Mongo collection view.
       attr_reader :view
@@ -58,7 +60,6 @@ module Mongoid
       # @return [ Integer ] The number of matches.
       def count(options = {}, &block)
         return super(&block) if block_given?
-
         view.count_documents(options)
       end
 
@@ -169,7 +170,6 @@ module Mongoid
       #   Always false if passed nil or false.
       def exists?(id_or_conditions = :none)
         return false if self.view.limit == 0
-
         case id_or_conditions
         when :none then !!(view.projection(_id: 1).limit(1).first)
         when nil, false then false
@@ -452,10 +452,10 @@ module Mongoid
         collection.aggregate(pipeline).each_with_object({}) do |doc, tallies|
           val = doc["_id"]
           key = if val.is_a?(Array)
-                  val.map { |v| demongoize_with_field(fld, v, is_translation) }
-                else
-                  demongoize_with_field(fld, val, is_translation)
-                end
+            val.map { |v| demongoize_with_field(fld, v, is_translation) }
+          else
+            demongoize_with_field(fld, val, is_translation)
+          end
 
           # The only time where a key will already exist in the tallies hash
           # is when the values are stored differently in the database, but
@@ -792,7 +792,6 @@ module Mongoid
       # @return [ true | false ] If the update succeeded.
       def update_documents(attributes, method = :update_one, opts = {})
         return false unless attributes
-
         attributes = Hash[attributes.map { |k, v| [klass.database_field_name(k.to_s), v] }]
         view.send(method, attributes.__consolidate__(klass), opts)
       end
@@ -842,7 +841,7 @@ module Mongoid
       # @api private
       def inverse_sorting
         sort = view.sort || { _id: 1 }
-        Hash[sort.map { |k, v| [k, -1 * v] }]
+        Hash[sort.map{|k, v| [k, -1*v]}]
       end
 
       # Get the documents the context should iterate.
@@ -863,7 +862,6 @@ module Mongoid
           end
         else
           return view unless eager_loadable?
-
           docs = view.map do |doc|
             Factory.from_db(klass, doc, criteria)
           end

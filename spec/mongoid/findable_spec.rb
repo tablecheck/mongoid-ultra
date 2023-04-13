@@ -3,18 +3,21 @@
 require "spec_helper"
 
 describe Mongoid::Findable do
+
   describe ".distinct" do
+
     before do
       Band.create!(name: "Tool")
       Band.create!(name: "Photek")
     end
 
     it "returns the distinct values for the field" do
-      expect(Band.distinct(:name).sort).to eq(["Photek", "Tool"])
+      expect(Band.distinct(:name).sort).to eq([ "Photek", "Tool" ])
     end
   end
 
   describe ".each" do
+
     let!(:band) do
       Band.create!
     end
@@ -27,6 +30,7 @@ describe Mongoid::Findable do
   end
 
   describe ".each_with_index" do
+
     let!(:band) do
       Band.create!
     end
@@ -39,6 +43,7 @@ describe Mongoid::Findable do
   end
 
   describe ".find_one_and_update" do
+
     let!(:person) do
       Person.create!(title: "Senior")
     end
@@ -49,7 +54,9 @@ describe Mongoid::Findable do
   end
 
   describe ".find_by" do
+
     context "when collection is a embeds_many" do
+
       let(:person) do
         Person.create!(title: "sir")
       end
@@ -59,12 +66,14 @@ describe Mongoid::Findable do
       end
 
       context "when the document is found" do
+
         it "returns the document" do
           expect(person.messages.find_by(body: 'foo')).to eq(message)
         end
       end
 
       context "when the document is not found" do
+
         context "when raising a not found error" do
           config_override :raise_not_found_error, true
 
@@ -86,17 +95,20 @@ describe Mongoid::Findable do
     end
 
     context "when the document is found" do
+
       let!(:person) do
         Person.create!(title: "sir")
       end
 
       context "when no block is provided" do
+
         it "returns the document" do
           expect(Person.find_by(title: "sir")).to eq(person)
         end
       end
 
       context "when a block is provided" do
+
         let(:result) do
           Person.find_by(title: "sir") do |peep|
             peep.age = 50
@@ -110,6 +122,7 @@ describe Mongoid::Findable do
     end
 
     context "when the document is not found" do
+
       context "when raising a not found error" do
         config_override :raise_not_found_error, true
 
@@ -124,12 +137,14 @@ describe Mongoid::Findable do
         config_override :raise_not_found_error, false
 
         context "when no block is provided" do
+
           it "returns nil" do
             expect(Person.find_by(ssn: "333-22-1111")).to be_nil
           end
         end
 
         context "when a block is provided" do
+
           let(:result) do
             Person.find_by(ssn: "333-22-1111") do |peep|
               peep.age = 50
@@ -145,18 +160,22 @@ describe Mongoid::Findable do
   end
 
   describe "find_by!" do
+
     context "when the document is found" do
+
       let!(:person) do
         Person.create!(title: "sir")
       end
 
       context "when no block is provided" do
+
         it "returns the document" do
           expect(Person.find_by!(title: "sir")).to eq(person)
         end
       end
 
       context "when a block is provided" do
+
         let(:result) do
           Person.find_by!(title: "sir") do |peep|
             peep.age = 50
@@ -170,6 +189,7 @@ describe Mongoid::Findable do
     end
 
     context "when the document is not found" do
+
       it "raises an error" do
         expect {
           Person.find_by!(ssn: "333-22-1111")
@@ -178,8 +198,10 @@ describe Mongoid::Findable do
     end
   end
 
-  [:first, :one].each do |method|
+  [ :first, :one ].each do |method|
+
     describe "##{method}" do
+
       let!(:person1) do
         Person.create!
       end
@@ -193,7 +215,7 @@ describe Mongoid::Findable do
       end
 
       it "passes the limit through" do
-        expect(Person.send(method, 1)).to eq([person1])
+        expect(Person.send(method, 1)).to eq([ person1 ])
       end
 
       it "returns nil when no documents are found" do
@@ -236,7 +258,7 @@ describe Mongoid::Findable do
     end
 
     it "passes the limit through" do
-      expect(Person.last(1)).to eq([person2])
+      expect(Person.last(1)).to eq([ person2 ])
     end
 
     it "returns nil when no documents are found" do
@@ -589,7 +611,9 @@ describe Mongoid::Findable do
   end
 
   describe ".first_or_create" do
+
     context "when the document is found" do
+
       let!(:person) do
         Person.create!
       end
@@ -600,7 +624,9 @@ describe Mongoid::Findable do
     end
 
     context "when the document is not found" do
+
       context "when providing a document" do
+
         let!(:person) do
           Person.create!
         end
@@ -615,6 +641,7 @@ describe Mongoid::Findable do
       end
 
       context "when not providing a block" do
+
         let!(:person) do
           Person.first_or_create(title: "Senorita")
         end
@@ -629,6 +656,7 @@ describe Mongoid::Findable do
       end
 
       context "when providing a block" do
+
         let!(:person) do
           Person.first_or_create(title: "Senorita") do |person|
             person.pets = true
@@ -651,7 +679,9 @@ describe Mongoid::Findable do
   end
 
   describe ".first_or_initialize" do
+
     context "when the document is found" do
+
       let!(:person) do
         Person.create!
       end
@@ -662,7 +692,9 @@ describe Mongoid::Findable do
     end
 
     context "when the document is not found" do
+
       context "when providing a document" do
+
         let!(:person) do
           Person.create!
         end
@@ -681,6 +713,7 @@ describe Mongoid::Findable do
       end
 
       context "when not providing a block" do
+
         before do
           Person.delete_all
         end
@@ -699,6 +732,7 @@ describe Mongoid::Findable do
       end
 
       context "when providing a block" do
+
         let!(:person) do
           Person.first_or_initialize(title: "Senorita") do |person|
             person.pets = true
@@ -721,11 +755,13 @@ describe Mongoid::Findable do
   end
 
   describe ".none" do
+
     let!(:depeche) do
       Band.create!(name: "Depeche Mode", likes: 3)
     end
 
     context "when not chaining any criteria" do
+
       it "returns no records" do
         expect(Band.none).to be_empty
       end
@@ -752,6 +788,7 @@ describe Mongoid::Findable do
     end
 
     context "when chaining criteria after the none" do
+
       let(:criteria) do
         Band.none.where(name: "Depeche Mode")
       end
@@ -783,6 +820,7 @@ describe Mongoid::Findable do
   end
 
   describe ".pluck" do
+
     let!(:depeche) do
       Band.create!(name: "Depeche Mode", likes: 3)
     end
@@ -796,16 +834,18 @@ describe Mongoid::Findable do
     end
 
     context "when field values exist" do
+
       let(:plucked) do
         Band.pluck(:name)
       end
 
       it "returns the field values" do
-        expect(plucked).to eq(["Depeche Mode", "Tool", "Photek"])
+        expect(plucked).to eq([ "Depeche Mode", "Tool", "Photek" ])
       end
     end
 
     context "when field values do not exist" do
+
       let(:plucked) do
         Band.pluck(:follows)
       end
@@ -849,7 +889,9 @@ describe Mongoid::Findable do
   end
 
   Mongoid::Criteria::Queryable::Selectable.forwardables.each do |method|
+
     describe "##{method}" do
+
       it "forwards the #{method} to the criteria" do
         expect(Band).to respond_to(method)
       end

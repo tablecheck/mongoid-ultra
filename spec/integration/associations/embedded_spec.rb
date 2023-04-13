@@ -125,6 +125,7 @@ describe 'embedded associations' do
     end
 
     context 'embeds_one' do
+
       shared_examples 'is set' do
         it 'is set' do
           parent.child = child_cls.new
@@ -148,6 +149,7 @@ describe 'embedded associations' do
     end
 
     context 'embeds_many' do
+
       let(:child) { parent.legislators.new }
 
       shared_examples 'is set' do
@@ -276,10 +278,10 @@ describe 'embedded associations' do
   context 'when modifying an embedded document & removing another embedded document' do
     let(:user) do
       EmmUser.create!(orders: [
-                        EmmOrder.new(sku: 0, amount: 0),
-                        EmmOrder.new(sku: 1, amount: 1),
-                        EmmOrder.new(sku: 2, amount: 2),
-                      ])
+        EmmOrder.new(sku: 0, amount: 0),
+        EmmOrder.new(sku: 1, amount: 1),
+        EmmOrder.new(sku: 2, amount: 2),
+      ])
     end
 
     context 'when modifying first and removing second' do
@@ -289,8 +291,8 @@ describe 'embedded associations' do
         user.save!
         user.reload
 
-        expect(user.orders.map do |order|
-          [order.sku, order.amount]
+        expect(user.orders.map do
+          |order| [order.sku, order.amount]
         end).to eq([[1, 10], [2, 2]])
       end
     end
@@ -302,8 +304,8 @@ describe 'embedded associations' do
         user.save!
         user.reload
 
-        expect(user.orders.map do |order|
-          [order.sku, order.amount]
+        expect(user.orders.map do
+          |order| [order.sku, order.amount]
         end).to eq([[1, 1], [2, 20]])
       end
     end
@@ -312,10 +314,10 @@ describe 'embedded associations' do
   context 'when modifying a nested embedded document & removing another nested embedded document' do
     let(:user) do
       EmmUser.create!(orders: [
-                        EmmOrder.new(sku: 0, surcharges: [EmmSurcharge.new(amount: 0)]),
-                        EmmOrder.new(sku: 1, surcharges: [EmmSurcharge.new(amount: 1)]),
-                        EmmOrder.new(sku: 2, surcharges: [EmmSurcharge.new(amount: 2)]),
-                      ])
+        EmmOrder.new(sku: 0, surcharges: [EmmSurcharge.new(amount: 0)]),
+        EmmOrder.new(sku: 1, surcharges: [EmmSurcharge.new(amount: 1)]),
+        EmmOrder.new(sku: 2, surcharges: [EmmSurcharge.new(amount: 2)]),
+      ])
     end
 
     context 'when modifying first and removing second' do
@@ -327,8 +329,8 @@ describe 'embedded associations' do
         user.save!
         user.reload
 
-        expect(user.orders.map do |order|
-          [order.sku, order.surcharges.first.amount]
+        expect(user.orders.map do
+          |order| [order.sku, order.surcharges.first.amount]
         end).to eq([[1, 10], [2, 2]])
       end
     end
@@ -340,8 +342,8 @@ describe 'embedded associations' do
         user.save!
         user.reload
 
-        expect(user.orders.map do |order|
-          [order.sku, order.surcharges.first.amount]
+        expect(user.orders.map do
+          |order| [order.sku, order.surcharges.first.amount]
         end).to eq([[1, 1], [2, 20]])
       end
     end

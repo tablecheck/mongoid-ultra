@@ -3,13 +3,17 @@
 require "spec_helper"
 
 describe Mongoid::Criteria do
+
   describe "#only" do
+
     let!(:band) do
       Band.create!(name: "Depeche Mode", likes: 3, views: 10)
     end
 
     context "when not using inheritance" do
+
       context "when passing splat args" do
+
         let(:criteria) do
           Band.only(:_id)
         end
@@ -26,6 +30,7 @@ describe Mongoid::Criteria do
       end
 
       context "when not including id" do
+
         let(:criteria) do
           Band.only(:name)
         end
@@ -38,8 +43,9 @@ describe Mongoid::Criteria do
       end
 
       context "when passing an array" do
+
         let(:criteria) do
-          Band.only([:name, :likes])
+          Band.only([ :name, :likes ])
         end
 
         it "includes the limited fields" do
@@ -58,6 +64,7 @@ describe Mongoid::Criteria do
       end
 
       context "when instantiating a class of another type inside the iteration" do
+
         let(:criteria) do
           Band.only(:name)
         end
@@ -70,6 +77,7 @@ describe Mongoid::Criteria do
       end
 
       context "when instantiating a document not in the result set" do
+
         let(:criteria) do
           Band.only(:name)
         end
@@ -82,6 +90,7 @@ describe Mongoid::Criteria do
       end
 
       context "when nesting a criteria within a criteria" do
+
         let(:criteria) do
           Band.only(:name)
         end
@@ -131,7 +140,9 @@ describe Mongoid::Criteria do
     end
 
     context "when limiting to embedded documents" do
+
       context "when the embedded documents are aliased" do
+
         let(:criteria) do
           Person.only(:phones)
         end
@@ -154,6 +165,7 @@ describe Mongoid::Criteria do
       end
 
       context 'when entire field is included' do
+
         let(:dictionary) do
           Dictionary.only(:description).first
         end
@@ -171,6 +183,7 @@ describe Mongoid::Criteria do
       end
 
       context 'when a specific locale is included' do
+
         let(:dictionary) do
           Dictionary.only(:'description.de').first
         end
@@ -189,6 +202,7 @@ describe Mongoid::Criteria do
       end
 
       context 'when entire field is excluded' do
+
         let(:dictionary) do
           Dictionary.without(:description).first
         end
@@ -198,11 +212,12 @@ describe Mongoid::Criteria do
         end
 
         it 'raises an Mongoid::Errors::AttributeNotLoaded when attempting to access the field' do
-          expect { dictionary.description }.to raise_error Mongoid::Errors::AttributeNotLoaded
+          expect{dictionary.description}.to raise_error Mongoid::Errors::AttributeNotLoaded
         end
       end
 
       context 'when a specific locale is excluded' do
+
         let(:dictionary) do
           Dictionary.without(:'description.de').first
         end
@@ -222,10 +237,11 @@ describe Mongoid::Criteria do
     end
 
     context 'when restricting to id' do
+
       context 'when id is aliased to _id' do
         shared_examples 'requests _id field' do
           it 'requests _id field' do
-            expect(criteria.options[:fields]).to eq({ '_id' => 1 })
+            expect(criteria.options[:fields]).to eq({'_id' => 1})
           end
         end
 
@@ -245,7 +261,7 @@ describe Mongoid::Criteria do
           end
 
           it 'requests content field and _id field' do
-            expect(criteria.options[:fields]).to eq({ '_id' => 1, 'name' => 1 })
+            expect(criteria.options[:fields]).to eq({'_id' => 1, 'name' => 1})
           end
         end
       end
@@ -253,13 +269,13 @@ describe Mongoid::Criteria do
       context 'when id is not aliased to _id' do
         shared_examples 'requests _id field' do
           it 'requests _id field' do
-            expect(criteria.options[:fields]).to eq({ '_id' => 1 })
+            expect(criteria.options[:fields]).to eq({'_id' => 1})
           end
         end
 
         shared_examples 'requests id field and _id field' do
           it 'requests id field and _id field' do
-            expect(criteria.options[:fields]).to eq({ '_id' => 1, 'id' => 1 })
+            expect(criteria.options[:fields]).to eq({'_id' => 1, 'id' => 1})
           end
         end
 
@@ -287,12 +303,15 @@ describe Mongoid::Criteria do
   end
 
   describe "#without" do
+
     let!(:person) do
       Person.create!(username: "davinci", age: 50, pets: false)
     end
 
     context "when omitting to embedded documents" do
+
       context "when the embedded documents are aliased" do
+
         let(:criteria) do
           Person.without(:phones)
         end
@@ -304,6 +323,7 @@ describe Mongoid::Criteria do
     end
 
     context "when excluding id fields" do
+
       shared_examples 'does not raise error' do
         it "does not raise error" do
           expect {
@@ -324,7 +344,7 @@ describe Mongoid::Criteria do
 
       shared_examples 'unprojects id' do
         it 'does not unproject _id' do
-          expect(criteria.options[:fields]).to eq({ 'id' => 0 })
+          expect(criteria.options[:fields]).to eq({'id' => 0})
         end
 
         let(:instance) { criteria.first }

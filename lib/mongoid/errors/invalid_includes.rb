@@ -2,9 +2,11 @@
 
 module Mongoid
   module Errors
+
     # This error is raised when an invalid value is passed to an eager
     # loading query.
     class InvalidIncludes < MongoidError
+
       # Initialize the error.
       #
       # @example Initialize the error.

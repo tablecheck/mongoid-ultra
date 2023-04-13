@@ -3,7 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Timestamps::Timeless do
+
   describe "#timeless" do
+
     before(:all) do
       class Chicken
         include Mongoid::Document
@@ -28,6 +30,7 @@ describe Mongoid::Timestamps::Timeless do
     end
 
     context "when timeless is used on one instance and then not used on another instance" do
+
       let!(:first_instance) do
         egg = Egg.create!
         egg.timeless.save!
@@ -44,7 +47,9 @@ describe Mongoid::Timestamps::Timeless do
     end
 
     context "when others persist in the scope of the chain" do
+
       context "when the root executes normally" do
+
         let!(:chicken) do
           Chicken.create!
         end
@@ -59,6 +64,7 @@ describe Mongoid::Timestamps::Timeless do
       end
 
       context "when the root executes timeless" do
+
         let!(:chicken) do
           Chicken.timeless.create!
         end
@@ -74,7 +80,9 @@ describe Mongoid::Timestamps::Timeless do
     end
 
     context "when used as a proxy method" do
+
       context "when used on the document instance" do
+
         let(:document) do
           Dokument.new
         end
@@ -96,6 +104,7 @@ describe Mongoid::Timestamps::Timeless do
         end
 
         context "when subsequently persisting" do
+
           before do
             document.update_attribute(:title, "Sir")
           end
@@ -107,6 +116,7 @@ describe Mongoid::Timestamps::Timeless do
       end
 
       context "when used on the class" do
+
         let!(:document) do
           Dokument.timeless.create!
         end
@@ -124,6 +134,7 @@ describe Mongoid::Timestamps::Timeless do
         end
 
         context "when subsequently persisting" do
+
           before do
             document.update_attribute(:title, "Sir")
           end

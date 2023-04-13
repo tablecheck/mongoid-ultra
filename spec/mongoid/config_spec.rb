@@ -4,6 +4,7 @@ require "spec_helper"
 require "support/feature_sandbox"
 
 describe Mongoid::Config do
+
   after do
     Mongoid.configure do |config|
       config.load_configuration(CONFIG)
@@ -11,17 +12,20 @@ describe Mongoid::Config do
   end
 
   describe "#configured?" do
+
     after do
       described_class.connect_to(database_id, read: :primary)
     end
 
     context "when a default client config exists" do
+
       context "when a default database is configured" do
+
         let(:config) do
           {
             default: {
               database: database_id,
-              hosts: ["127.0.0.1:27017"]
+              hosts: [ "127.0.0.1:27017" ]
             }
           }
         end
@@ -37,6 +41,7 @@ describe Mongoid::Config do
     end
 
     context "when no default client config exists" do
+
       before do
         described_class.clients.clear
       end
@@ -48,7 +53,9 @@ describe Mongoid::Config do
   end
 
   describe "#destructive_fields" do
+
     Mongoid::Composable.prohibited_methods.each do |method|
+
       it "contains #{method}" do
         expect(described_class.destructive_fields).to include(method)
       end
@@ -56,6 +63,7 @@ describe Mongoid::Config do
   end
 
   context "when the log level is not set in the configuration" do
+
     before do
       Mongoid.configure do |config|
         config.load_configuration(CONFIG)
@@ -72,6 +80,7 @@ describe Mongoid::Config do
   end
 
   context 'when the belongs_to_required_by_default option is not set in the config' do
+
     before do
       Mongoid::Config.reset
       Mongoid.configure do |config|
@@ -85,6 +94,7 @@ describe Mongoid::Config do
   end
 
   context 'when the belongs_to_required_by_default option is set in the config' do
+
     before do
       Mongoid.configure do |config|
         config.load_configuration(conf)
@@ -92,6 +102,7 @@ describe Mongoid::Config do
     end
 
     context 'when the value is set to true' do
+
       let(:conf) do
         CONFIG.merge(options: { belongs_to_required_by_default: true })
       end
@@ -102,6 +113,7 @@ describe Mongoid::Config do
     end
 
     context 'when the value is set to false' do
+
       let(:conf) do
         CONFIG.merge(options: { belongs_to_required_by_default: false })
       end
@@ -120,6 +132,7 @@ describe Mongoid::Config do
   end
 
   context 'when the app_name is set in the config' do
+
     let(:conf) do
       CONFIG.merge(options: { app_name: 'admin-reporting' })
     end
@@ -136,6 +149,7 @@ describe Mongoid::Config do
   end
 
   context 'when the app_name is not set in the config' do
+
     before do
       Mongoid::Config.reset
       Mongoid.configure do |config|
@@ -163,7 +177,7 @@ describe Mongoid::Config do
     context 'is set in the config' do
       it 'sets the value' do
         Mongoid::Config.reset
-        configuration = CONFIG.merge(options: { discriminator_key: "test" })
+        configuration = CONFIG.merge(options: {discriminator_key: "test"})
 
         Mongoid.configure { |config| config.load_configuration(configuration) }
 
@@ -187,6 +201,7 @@ describe Mongoid::Config do
     end
 
     context "when it is not set in the config" do
+
       let(:conf) { CONFIG }
 
       it "it is set to its default" do
@@ -195,6 +210,7 @@ describe Mongoid::Config do
     end
 
     context 'when the value is :immediate' do
+
       let(:conf) do
         CONFIG.merge(options: { option => :immediate })
       end
@@ -205,6 +221,7 @@ describe Mongoid::Config do
     end
 
     context 'when the value is :global_thread_pool' do
+
       let(:conf) do
         CONFIG.merge(options: { option => :global_thread_pool })
       end
@@ -226,6 +243,7 @@ describe Mongoid::Config do
     end
 
     context "when it is not set in the config" do
+
       let(:conf) { CONFIG }
 
       it "it is set to its default" do
@@ -234,6 +252,7 @@ describe Mongoid::Config do
     end
 
     context 'when the value is set to a number' do
+
       let(:conf) do
         CONFIG.merge(options: { option => 5 })
       end
@@ -245,6 +264,7 @@ describe Mongoid::Config do
   end
 
   shared_examples "a config option" do
+
     before do
       Mongoid::Config.reset
       Mongoid.configure do |config|
@@ -253,6 +273,7 @@ describe Mongoid::Config do
     end
 
     context 'when the value is false' do
+
       let(:conf) do
         CONFIG.merge(options: { option => false })
       end
@@ -263,6 +284,7 @@ describe Mongoid::Config do
     end
 
     context 'when the value is true' do
+
       let(:conf) do
         CONFIG.merge(options: { option => true })
       end
@@ -273,6 +295,7 @@ describe Mongoid::Config do
     end
 
     context "when it is not set in the config" do
+
       let(:conf) { CONFIG }
 
       it "it is set to its default" do
@@ -296,13 +319,15 @@ describe Mongoid::Config do
   end
 
   describe "#load!" do
+
     let(:file) do
       File.join(File.dirname(__FILE__), "..", "config", "mongoid.yml")
     end
 
     context "when existing clients exist in the configuration" do
+
       let(:client) do
-        Mongo::Client.new(["127.0.0.1:27017"])
+        Mongo::Client.new([ "127.0.0.1:27017" ])
       end
 
       before do
@@ -320,6 +345,7 @@ describe Mongoid::Config do
     end
 
     context "when the log level is set in the configuration" do
+
       before do
         described_class.load!(file, :test)
       end
@@ -333,6 +359,7 @@ describe Mongoid::Config do
       end
 
       context "when in a Rails environment" do
+
         around do |example|
           FeatureSandbox.quarantine do
             require "support/rails_mock"
@@ -354,6 +381,7 @@ describe Mongoid::Config do
     end
 
     context "when provided an environment" do
+
       before do
         described_class.load!(file, :test)
       end
@@ -392,6 +420,7 @@ describe Mongoid::Config do
     end
 
     context "when provided an environment with driver options" do
+
       before do
         described_class.load!(file, :test)
       end
@@ -410,6 +439,7 @@ describe Mongoid::Config do
     end
 
     context "when provided an environment with a nil driver option" do
+
       before do
         described_class.load!(file, :test_nil)
       end
@@ -424,6 +454,7 @@ describe Mongoid::Config do
     end
 
     context "when the rack environment is set" do
+
       before do
         ENV["RACK_ENV"] = "test"
       end
@@ -434,6 +465,7 @@ describe Mongoid::Config do
       end
 
       context "when mongoid options are provided" do
+
         before do
           described_class.load!(file)
         end
@@ -468,7 +500,9 @@ describe Mongoid::Config do
       end
 
       context "when client configurations are provided" do
+
         context "when a default is provided" do
+
           before do
             described_class.load!(file, :test_with_max_staleness)
           end
@@ -484,6 +518,7 @@ describe Mongoid::Config do
           end
 
           context "when the default has options" do
+
             let(:options) do
               default["options"]
             end
@@ -514,22 +549,21 @@ describe Mongoid::Config do
           {
             auto_encryption_options: {
               'key_vault_namespace' => 'admin.datakeys',
-              'kms_providers' => { 'local' => { 'key' => 'z7iYiYKLuYymEWtk4kfny1ESBwwFdA58qMqff96A8ghiOcIK75lJGPUIocku8LOFjQuEgeIP4xlln3s7r93FV9J5sAE7zg8U' } },
-              'schema_map' => { 'blog_development.comments' => {
+              'kms_providers' => {'local' => {'key' => 'z7iYiYKLuYymEWtk4kfny1ESBwwFdA58qMqff96A8ghiOcIK75lJGPUIocku8LOFjQuEgeIP4xlln3s7r93FV9J5sAE7zg8U'}},
+              'schema_map' => {'blog_development.comments' => {
                 'bsonType' => 'object',
                 'properties' => {
-                  'message' => { 'encrypt' => {
+                  'message' => {'encrypt' => {
                     'algorithm' => 'AEAD_AES_256_CBC_HMAC_SHA_512-Deterministic',
                     'bsonType' => 'string',
                     'keyId' => [BSON::Binary.new("G\xF0 5\xCC@HX\xA2%b\x97\xA9a\xA8\xE7", :uuid)],
-                  } },
+                  }},
                 },
-              } }
-            },
+              }}},
             database: 'mongoid_test',
             platform: "mongoid-#{Mongoid::VERSION}",
             wrapping_libraries: [
-              { 'name' => 'Mongoid', 'version' => Mongoid::VERSION },
+              {'name' => 'Mongoid', 'version' => Mongoid::VERSION},
             ]
           }
         )
@@ -540,7 +574,9 @@ describe Mongoid::Config do
   end
 
   describe "#options=" do
+
     context "when there are no options" do
+
       before do
         described_class.options = nil
       end
@@ -551,6 +587,7 @@ describe Mongoid::Config do
     end
 
     context "when provided a non-existent option" do
+
       it "raises an error" do
         expect {
           described_class.options = { bad_option: true }
@@ -571,7 +608,9 @@ describe Mongoid::Config do
   end
 
   describe "#clients=" do
+
     context "when no clients configuration exists" do
+
       it "raises an error" do
         expect {
           described_class.send(:clients=, nil)
@@ -580,6 +619,7 @@ describe Mongoid::Config do
     end
 
     context "when no default client exists" do
+
       it "raises an error" do
         expect {
           described_class.send(:clients=, {})
@@ -588,9 +628,11 @@ describe Mongoid::Config do
     end
 
     context "when a default client exists" do
+
       context "when no hosts are provided" do
+
         let(:clients) do
-          { "default" => { database: database_id } }
+          { "default" => { database: database_id }}
         end
 
         it "raises an error" do
@@ -601,8 +643,9 @@ describe Mongoid::Config do
       end
 
       context "when no database is provided" do
+
         let(:clients) do
-          { "default" => { hosts: ["127.0.0.1:27017"] } }
+          { "default" => { hosts: [ "127.0.0.1:27017" ] }}
         end
 
         it "raises an error" do
@@ -613,9 +656,11 @@ describe Mongoid::Config do
       end
 
       context "when a uri and standard options are provided" do
+
         let(:clients) do
           { "default" =>
-            { hosts: ["127.0.0.1:27017"], uri: "mongodb://127.0.0.1:27017" } }
+            { hosts: [ "127.0.0.1:27017" ], uri: "mongodb://127.0.0.1:27017" }
+          }
         end
 
         it "raises an error" do
@@ -657,6 +702,7 @@ describe Mongoid::Config do
   end
 
   describe "#purge!" do
+
     it 'deletes models' do
       House.create!(name: '1', model: 'Big')
       expect(House.count).to eq(1)
@@ -676,6 +722,7 @@ describe Mongoid::Config do
   end
 
   describe "#truncate!" do
+
     it 'deletes models' do
       House.create!(name: '1', model: 'Big')
       expect(House.count).to eq(1)
@@ -695,9 +742,9 @@ describe Mongoid::Config do
 
     it 'does not drop indexes' do
       User.create_indexes
-      expect(User.collection.indexes.map { |i| i['name'] }).to eq %w[_id_ name_1]
+      expect(User.collection.indexes.map {|i| i['name'] }).to eq %w[_id_ name_1]
       Mongoid.truncate!
-      expect(User.collection.indexes.map { |i| i['name'] }).to eq %w[_id_ name_1]
+      expect(User.collection.indexes.map {|i| i['name'] }).to eq %w[_id_ name_1]
     end
   end
 
@@ -761,7 +808,9 @@ describe Mongoid::Config do
 
   describe 'deprecations' do
     {}.each do |option, default|
+
       context ":#{option} option" do
+
         before do
           Mongoid::Warnings.class_eval do
             instance_variable_set(:"@#{option}_deprecated", false)

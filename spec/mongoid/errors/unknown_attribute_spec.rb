@@ -3,7 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Errors::UnknownAttribute do
+
   describe "#message" do
+
     let(:error) do
       described_class.new(Person, :gender)
     end

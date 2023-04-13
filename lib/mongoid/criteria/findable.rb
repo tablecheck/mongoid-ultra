@@ -2,9 +2,11 @@
 
 module Mongoid
   class Criteria
+
     # Mixin module included in Mongoid::Criteria which adds the ability
     # to find document by id.
     module Findable
+
       # Execute the criteria or raise an error if no documents found.
       #
       # @example Execute or raise
@@ -56,7 +58,7 @@ module Mongoid
       def for_ids(ids)
         ids = mongoize_ids(ids)
         if ids.size > 1
-          send(id_finder, { _id: { "$in" => ids } })
+          send(id_finder, { _id: { "$in" => ids }})
         else
           send(id_finder, { _id: ids.first })
         end
@@ -73,7 +75,6 @@ module Mongoid
       # @return [ Array<Mongoid::Document> ] The found documents.
       def multiple_from_db(ids)
         return entries if embedded?
-
         ids = mongoize_ids(ids)
         ids.empty? ? [] : from_database(ids)
       end

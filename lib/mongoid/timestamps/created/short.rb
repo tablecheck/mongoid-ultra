@@ -3,6 +3,7 @@
 module Mongoid
   module Timestamps
     module Created
+
       # Adds a created_at timestamp to the document, but it is stored as c_at
       # with a created_at alias.
       module Short

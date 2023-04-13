@@ -3,6 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Config::Introspection do
+
   context "CONFIG_RB_PATH" do
     it "refers to an actual source file" do
       expect(File.exist?(Mongoid::Config::Introspection::CONFIG_RB_PATH)).to be true
@@ -60,8 +61,7 @@ describe Mongoid::Config::Introspection do
   describe Mongoid::Config::Introspection::Option do
     let(:option) do
       Mongoid::Config::Introspection::Option.new(
-        "name", "default", "   # line 1\n    # line 2\n"
-      )
+        "name", "default", "   # line 1\n    # line 2\n")
     end
 
     context ".from_captures" do
@@ -99,8 +99,7 @@ describe Mongoid::Config::Introspection do
     context "#deprecated?" do
       let(:deprecated_option) do
         Mongoid::Config::Introspection::Option.new(
-          "name", "default", "# this\n# is (Deprecated), yo\n"
-        )
+          "name", "default", "# this\n# is (Deprecated), yo\n")
       end
 
       it "is not deprecated by default" do
@@ -112,4 +111,5 @@ describe Mongoid::Config::Introspection do
       end
     end
   end
+
 end

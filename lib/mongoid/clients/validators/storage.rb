@@ -3,12 +3,13 @@
 module Mongoid
   module Clients
     module Validators
+
       # Validates the options passed to :store_in.
       module Storage
         extend self
 
         # The valid options for storage.
-        VALID_OPTIONS = [:collection, :collection_options, :database, :client].freeze
+        VALID_OPTIONS = [ :collection, :collection_options, :database, :client ].freeze
 
         # Validate the options provided to :store_in.
         #
@@ -35,7 +36,6 @@ module Mongoid
         # @return [ true | false ] If all keys are valid.
         def valid_keys?(options)
           return false unless options.is_a?(::Hash)
-
           options.keys.all? do |key|
             VALID_OPTIONS.include?(key)
           end

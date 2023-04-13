@@ -3,11 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Criteria::Queryable::Mergeable do
+
   let(:query) do
     Mongoid::Query.new
   end
 
   describe "#intersect" do
+
     before do
       query.intersect
     end
@@ -18,6 +20,7 @@ describe Mongoid::Criteria::Queryable::Mergeable do
   end
 
   describe "#override" do
+
     before do
       query.override
     end
@@ -28,6 +31,7 @@ describe Mongoid::Criteria::Queryable::Mergeable do
   end
 
   describe "#union" do
+
     before do
       query.union
     end
@@ -39,7 +43,7 @@ describe Mongoid::Criteria::Queryable::Mergeable do
 
   describe '#_mongoid_expand_keys' do
     it 'expands simple keys' do
-      expect(query.send(:_mongoid_expand_keys, { a: 1 })).to eq({ 'a' => 1 })
+      expect(query.send(:_mongoid_expand_keys, {a: 1})).to eq({'a' => 1})
     end
 
     let(:gt) do
@@ -55,13 +59,12 @@ describe Mongoid::Criteria::Queryable::Mergeable do
     end
 
     it 'expands Key instances' do
-      expect(query.send(:_mongoid_expand_keys, { gt => 42 })).to eq({ 'age' => { '$gt' => 42 } })
+      expect(query.send(:_mongoid_expand_keys, {gt => 42})).to eq({'age' => {'$gt' => 42}})
     end
 
     it 'expands multiple Key instances on the same field' do
-      expect(query.send(:_mongoid_expand_keys, { gt => 42, lt => 50 })).to eq({
-                                                                                'age' => { '$gt' => 42, '$lt' => 50 }
-                                                                              })
+      expect(query.send(:_mongoid_expand_keys, {gt => 42, lt => 50})).to eq({
+        'age' => {'$gt' => 42, '$lt' => 50}})
     end
 
     context 'given implicit equality and Key instance on the same field' do
@@ -69,17 +72,15 @@ describe Mongoid::Criteria::Queryable::Mergeable do
         context "for non-regular expression value #{value}" do
           context 'implicit equality then Key instance' do
             it 'expands implicit equality with $eq and combines with Key operator' do
-              expect(query.send(:_mongoid_expand_keys, { 'age' => value, lt => 50 })).to eq({
-                                                                                              'age' => { '$eq' => value, '$lt' => 50 }
-                                                                                            })
+              expect(query.send(:_mongoid_expand_keys, {'age' => value, lt => 50})).to eq({
+                'age' => {'$eq' => value, '$lt' => 50}})
             end
           end
 
           context 'symbol operator then implicit equality' do
             it 'expands implicit equality with $eq and combines with Key operator' do
-              expect(query.send(:_mongoid_expand_keys, { gt => 42, 'age' => value })).to eq({
-                                                                                              'age' => { '$gt' => 42, '$eq' => value }
-                                                                                            })
+              expect(query.send(:_mongoid_expand_keys, {gt => 42, 'age' => value})).to eq({
+                'age' => {'$gt' => 42, '$eq' => value}})
             end
           end
         end
@@ -91,17 +92,15 @@ describe Mongoid::Criteria::Queryable::Mergeable do
         context "for regular expression value #{value}" do
           context 'implicit equality then Key instance' do
             it 'expands implicit equality with $eq and combines with Key operator' do
-              expect(query.send(:_mongoid_expand_keys, { 'age' => value, lt => 50 })).to eq({
-                                                                                              'age' => { '$regex' => value, '$lt' => 50 }
-                                                                                            })
+              expect(query.send(:_mongoid_expand_keys, {'age' => value, lt => 50})).to eq({
+                'age' => {'$regex' => value, '$lt' => 50}})
             end
           end
 
           context 'Key instance then implicit equality' do
             it 'expands implicit equality with $eq and combines with Key operator' do
-              expect(query.send(:_mongoid_expand_keys, { gt => 50, 'age' => value })).to eq({
-                                                                                              'age' => { '$gt' => 50, '$regex' => value }
-                                                                                            })
+              expect(query.send(:_mongoid_expand_keys, {gt => 50, 'age' => value})).to eq({
+                'age' => {'$gt' => 50, '$regex' => value}})
             end
           end
         end
@@ -109,7 +108,7 @@ describe Mongoid::Criteria::Queryable::Mergeable do
     end
 
     it 'Ruby does not allow same symbol operator with different values' do
-      expect({ gt => 42, gtp => 50 }).to eq({ gtp => 50 })
+      expect({gt => 42, gtp => 50}).to eq({gtp => 50})
     end
 
     let(:expanded) do
@@ -118,14 +117,15 @@ describe Mongoid::Criteria::Queryable::Mergeable do
 
     context 'field name => value' do
       shared_examples_for 'expands' do
+
         it 'expands' do
-          expect(expanded).to eq({ 'foo' => 'bar' })
+          expect(expanded).to eq({'foo' => 'bar'})
         end
       end
 
       context 'string key' do
         let(:condition) do
-          { 'foo' => 'bar' }
+          {'foo' => 'bar'}
         end
 
         it_behaves_like 'expands'
@@ -133,7 +133,7 @@ describe Mongoid::Criteria::Queryable::Mergeable do
 
       context 'symbol key' do
         let(:condition) do
-          { foo: 'bar' }
+          {foo: 'bar'}
         end
 
         it_behaves_like 'expands'
@@ -146,24 +146,25 @@ describe Mongoid::Criteria::Queryable::Mergeable do
       end
 
       let(:condition) do
-        { key => 'bar' }
+        {key => 'bar'}
       end
 
       it 'expands' do
-        expect(expanded).to eq({ 'foo' => { '$gt' => 'bar' } })
+        expect(expanded).to eq({'foo' => {'$gt' => 'bar'}})
       end
     end
 
     context 'operator => operator value expression' do
       shared_examples_for 'expands' do
+
         it 'expands' do
-          expect(expanded).to eq({ 'foo' => { '$in' => ['bar'] } })
+          expect(expanded).to eq({'foo' => {'$in' => ['bar']}})
         end
       end
 
       context 'string key' do
         let(:condition) do
-          { foo: { '$in' => %w(bar) } }
+          {foo: {'$in' => %w(bar)}}
         end
 
         it_behaves_like 'expands'
@@ -171,7 +172,7 @@ describe Mongoid::Criteria::Queryable::Mergeable do
 
       context 'symbol key' do
         let(:condition) do
-          { foo: { :$in => %w(bar) } }
+          {foo: {:$in => %w(bar)}}
         end
 
         it_behaves_like 'expands'

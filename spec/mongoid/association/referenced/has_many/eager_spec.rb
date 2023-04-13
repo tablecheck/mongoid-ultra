@@ -4,7 +4,9 @@ require "spec_helper"
 require_relative '../has_many_models'
 
 describe Mongoid::Association::Referenced::HasMany::Eager do
+
   describe ".grouped_docs" do
+
     let(:docs) do
       Person.all.to_a
     end
@@ -33,6 +35,7 @@ describe Mongoid::Association::Referenced::HasMany::Eager do
   end
 
   describe ".set_on_parent" do
+
     let(:docs) do
       Person.all.to_a
     end
@@ -77,6 +80,7 @@ describe Mongoid::Association::Referenced::HasMany::Eager do
   end
 
   describe ".includes" do
+
     let(:person) do
       Person.create!
     end
@@ -92,7 +96,8 @@ describe Mongoid::Association::Referenced::HasMany::Eager do
       end
 
       it "queries twice" do
-        expect_query(2) do
+
+         expect_query(2) do
           Person.all.includes(:drugs).each do |person|
             expect(person.drugs.entries).to_not be_empty
           end
@@ -115,6 +120,7 @@ describe Mongoid::Association::Referenced::HasMany::Eager do
       require_no_multi_shard
 
       context "when the eager load has returned documents" do
+
         let!(:post) do
           person.posts.create!(title: "testing")
         end
@@ -147,6 +153,7 @@ describe Mongoid::Association::Referenced::HasMany::Eager do
       end
 
       context "when the eager load has not returned documents" do
+
         before { person }
 
         let!(:eager) do
@@ -175,6 +182,7 @@ describe Mongoid::Association::Referenced::HasMany::Eager do
       end
 
       context "when the eager load has not returned documents for some" do
+
         let!(:person_one) do
           person
         end
@@ -201,6 +209,7 @@ describe Mongoid::Association::Referenced::HasMany::Eager do
       end
 
       context "when the child has a default scope" do
+
         let(:criteria) do
           Exhibitor.where(:status.ne => "removed")
         end
@@ -218,7 +227,7 @@ describe Mongoid::Association::Referenced::HasMany::Eager do
         end
 
         before do
-          Exhibitor.default_scope -> { criteria }
+          Exhibitor.default_scope ->{ criteria }
           exhibition = Exhibition.create!
           exhibition.exhibitors << exhibitorPresent
           exhibition.exhibitors << exhibitorRemoved
@@ -231,13 +240,14 @@ describe Mongoid::Association::Referenced::HasMany::Eager do
 
         it "does not send another query when the children are accessed" do
           expect_query(0) do
-            expect(exhibitionIncludesExhibitors.exhibitors).to eq([exhibitorPresent])
+            expect(exhibitionIncludesExhibitors.exhibitors).to eq( [exhibitorPresent] )
           end
         end
       end
     end
 
     context "when the relation is polymorphic" do
+
       let!(:movie) do
         Movie.create!(name: "Bladerunner")
       end

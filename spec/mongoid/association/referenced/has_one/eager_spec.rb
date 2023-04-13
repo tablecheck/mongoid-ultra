@@ -4,7 +4,9 @@ require "spec_helper"
 require_relative '../has_one_models'
 
 describe Mongoid::Association::Referenced::HasOne::Eager do
+
   describe ".grouped_doc" do
+
     let(:person) do
       Person.create!
     end
@@ -33,6 +35,7 @@ describe Mongoid::Association::Referenced::HasOne::Eager do
   end
 
   describe ".set_on_parent" do
+
     let(:person) do
       Person.create!
     end
@@ -77,6 +80,7 @@ describe Mongoid::Association::Referenced::HasOne::Eager do
   end
 
   describe ".includes" do
+
     let(:person) do
       Person.create!
     end
@@ -92,7 +96,9 @@ describe Mongoid::Association::Referenced::HasOne::Eager do
       require_no_multi_shard
 
       it "queries twice" do
+
         expect_query(2) do
+
           Person.all.includes(:cat).each do |person|
             expect(person.cat).to_not be_nil
           end
@@ -106,7 +112,9 @@ describe Mongoid::Association::Referenced::HasOne::Eager do
       require_no_multi_shard
 
       it "queries 3 times" do
+
         expect_query(3) do
+
           Person.all.includes(:cat, :account).each do |person|
             expect(person.cat).to_not be_nil
           end
@@ -115,6 +123,7 @@ describe Mongoid::Association::Referenced::HasOne::Eager do
     end
 
     context "when the relation is not polymorphic" do
+
       let!(:game) do
         person.create_game(name: "Tron")
       end
@@ -142,6 +151,7 @@ describe Mongoid::Association::Referenced::HasOne::Eager do
     end
 
     context "when the relation is polymorphic" do
+
       let!(:book) do
         Book.create!(name: "Game of Thrones")
       end

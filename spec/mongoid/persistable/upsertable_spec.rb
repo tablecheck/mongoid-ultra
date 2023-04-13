@@ -3,13 +3,17 @@
 require "spec_helper"
 
 describe Mongoid::Persistable::Upsertable do
+
   describe "#upsert" do
+
     context "when the document validates on upsert" do
+
       let(:account) do
         Account.new(name: "testing")
       end
 
       context "when the document is not valid in the upsert context" do
+
         before do
           account.upsert
         end
@@ -25,11 +29,13 @@ describe Mongoid::Persistable::Upsertable do
     end
 
     context "when the document is new" do
+
       let!(:existing) do
         Band.create!(name: "Photek")
       end
 
       context "when a matching document exists in the db" do
+
         let(:updated) do
           Band.new(name: "Tool") do |band|
             band.id = existing.id
@@ -93,6 +99,7 @@ describe Mongoid::Persistable::Upsertable do
       end
 
       context "when no matching document exists in the db" do
+
         let(:insert) do
           Band.new(name: "Tool")
         end
@@ -116,11 +123,13 @@ describe Mongoid::Persistable::Upsertable do
     end
 
     context "when the document is not new" do
+
       let!(:existing) do
         Band.create!(name: "Photek")
       end
 
       context "when updating fields outside of the id" do
+
         before do
           existing.name = "Depeche Mode"
         end
@@ -172,6 +181,7 @@ describe Mongoid::Persistable::Upsertable do
     end
 
     context "when the document is readonly" do
+
       context "when legacy_readonly is true" do
         config_override :legacy_readonly, true
 

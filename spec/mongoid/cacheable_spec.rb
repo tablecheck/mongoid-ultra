@@ -3,7 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Cacheable do
+
   describe ".included" do
+
     let(:klass) do
       Class.new do
         include Mongoid::Cacheable
@@ -20,23 +22,28 @@ describe Mongoid::Cacheable do
   end
 
   describe "#cache_key" do
+
     let(:document) do
       Dokument.new
     end
 
     context "when the document is new" do
+
       it "has a new key name" do
         expect(document.cache_key).to eq("dokuments/new")
       end
     end
 
     context "when persisted" do
+
       before do
         document.save!
       end
 
       context "with updated_at" do
+
         context "with the default cache_timestamp_format" do
+
           let!(:updated_at) do
             document.updated_at.utc.to_formatted_s(:nsec)
           end
@@ -47,6 +54,7 @@ describe Mongoid::Cacheable do
         end
 
         context "with a different cache_timestamp_format" do
+
           before do
             Dokument.cache_timestamp_format = :number
           end
@@ -66,6 +74,7 @@ describe Mongoid::Cacheable do
       end
 
       context "without updated_at, with Timestamps" do
+
         before do
           document.updated_at = nil
         end
@@ -77,6 +86,7 @@ describe Mongoid::Cacheable do
     end
 
     context "when model dont have Timestamps" do
+
       let(:artist) do
         Artist.create!
       end
@@ -87,6 +97,7 @@ describe Mongoid::Cacheable do
     end
 
     context "when model has Short Timestamps" do
+
       let(:agent) do
         ShortAgent.create!
       end

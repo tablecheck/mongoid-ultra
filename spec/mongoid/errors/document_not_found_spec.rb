@@ -3,8 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Errors::DocumentNotFound do
+
   describe "#message" do
+
     context "when providing an id" do
+
       let(:error) do
         described_class.new(Person, 1, 1)
       end
@@ -29,8 +32,9 @@ describe Mongoid::Errors::DocumentNotFound do
     end
 
     context "when providing ids" do
+
       let(:error) do
-        described_class.new(Person, [1, 2, 3], [1])
+        described_class.new(Person, [ 1, 2, 3 ], [ 1 ])
       end
 
       it "contains the problem in the message" do
@@ -53,6 +57,7 @@ describe Mongoid::Errors::DocumentNotFound do
     end
 
     context "when providing attributes" do
+
       let(:error) do
         described_class.new(Person, { name: "syd" }, nil)
       end
@@ -77,6 +82,7 @@ describe Mongoid::Errors::DocumentNotFound do
     end
 
     context "when providing an _id and a shard key" do
+
       let(:id) { BSON::ObjectId.new }
       let(:doc) { { _id: id, a: "syd" } }
       let(:error) do
@@ -103,6 +109,7 @@ describe Mongoid::Errors::DocumentNotFound do
     end
 
     context "when providing an id in a hash without a shard key" do
+
       let(:error) do
         described_class.new(Person, 1, { _id: 1 })
       end
@@ -152,6 +159,7 @@ describe Mongoid::Errors::DocumentNotFound do
   end
 
   describe "#params" do
+
     let(:error) do
       described_class.new(Person, 1, 1)
     end
@@ -162,6 +170,7 @@ describe Mongoid::Errors::DocumentNotFound do
   end
 
   describe "#klass" do
+
     let(:error) do
       described_class.new(Person, 1, 1)
     end

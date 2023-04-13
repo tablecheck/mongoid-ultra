@@ -17,7 +17,9 @@ describe "Dots and Dollars" do
   let!(:user) { DADMUser.create! }
 
   describe "accessing the fields" do
+
     context "when using the field getters" do
+
       context "on dotted fields" do
         it "gets the right value" do
           expect(user.send(:"first.last")).to eq("Neil.Shweky")
@@ -38,6 +40,7 @@ describe "Dots and Dollars" do
     end
 
     context "when using the read_attribute" do
+
       context "on dotted fields" do
         it "gets the right value" do
           expect(user.read_attribute("first.last")).to eq("Neil.Shweky")
@@ -58,6 +61,7 @@ describe "Dots and Dollars" do
     end
 
     context "when using the field setters" do
+
       context "on dotted fields" do
         it "raises an error" do
           expect do
@@ -84,6 +88,7 @@ describe "Dots and Dollars" do
     end
 
     context "when updating via write_attribute" do
+
       context "on dotted fields" do
         it "raises an error" do
           expect do
@@ -110,6 +115,7 @@ describe "Dots and Dollars" do
     end
 
     context "when updating via update_attribute" do
+
       context "on dotted fields" do
         it "raises an error" do
           expect do
@@ -136,6 +142,7 @@ describe "Dots and Dollars" do
     end
 
     context "when updating via update_attributes!" do
+
       context "on dotted fields" do
         it "raises an error" do
           expect do
@@ -162,6 +169,7 @@ describe "Dots and Dollars" do
     end
 
     context "when updating via []=" do
+
       context "on dotted fields" do
         it "raises an error" do
           expect do
@@ -188,6 +196,7 @@ describe "Dots and Dollars" do
     end
 
     context "when updating via remove_attribute" do
+
       context "on dotted fields" do
         it "raises an error" do
           expect do
@@ -215,7 +224,9 @@ describe "Dots and Dollars" do
   end
 
   describe "persisting to the db" do
+
     context "when saving to the db" do
+
       let(:user) { DADMUser.new }
 
       it "the save succeeds" do
@@ -226,6 +237,7 @@ describe "Dots and Dollars" do
     end
 
     context "when retrieving it from the db" do
+
       let(:from_db) { DADMUser.first }
 
       it "has the fields populated correctly" do
@@ -237,7 +249,9 @@ describe "Dots and Dollars" do
   end
 
   describe "querying that field" do
+
     context "when attempting to query a dotted field" do
+
       let(:queried) do
         DADMUser.where("first.last": "Neil.Shweky").first
       end
@@ -248,6 +262,7 @@ describe "Dots and Dollars" do
     end
 
     context "when attempting to query a dollared field" do
+
       let(:queried) do
         DADMUser.where("$_amount": 0).first
       end
