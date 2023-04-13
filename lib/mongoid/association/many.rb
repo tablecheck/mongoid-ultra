@@ -2,7 +2,6 @@
 
 module Mongoid
   module Association
-
     # This is the superclass for all many to one and many to many association
     # proxies.
     class Many < Association::Proxy

@@ -2,10 +2,8 @@
 
 module Mongoid
   module Config
-
     # Encapsulates logic for loading defaults.
     module Defaults
-
       # Load the defaults for the feature flags in the given Mongoid version.
       # Note that this method will load the *new* functionality introduced in
       # the given Mongoid version.

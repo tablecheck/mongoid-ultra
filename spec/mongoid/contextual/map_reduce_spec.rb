@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::Contextual::MapReduce do
-
   let(:map) do
     %Q{
     function() {
@@ -43,18 +42,16 @@ describe Mongoid::Contextual::MapReduce do
   end
 
   describe "#command" do
-
     let(:base_command) do
       {
-          mapreduce: "bands",
-          map: map,
-          reduce: reduce,
-          query: {}
+        mapreduce: "bands",
+        map: map,
+        reduce: reduce,
+        query: {}
       }
     end
 
     context "with sort" do
-
       let(:criteria) do
         Band.order_by(name: -1)
       end
@@ -65,7 +62,6 @@ describe Mongoid::Contextual::MapReduce do
     end
 
     context "with limit" do
-
       let(:criteria) do
         Band.limit(10)
       end
@@ -89,18 +85,16 @@ describe Mongoid::Contextual::MapReduce do
 
     it "returns the map/reduce counts" do
       expect(counts).to eq({
-        "input" => 2,
-        "emit" => 2,
-        "reduce" => 0,
-        "output" => 2
-      })
+                             "input" => 2,
+                             "emit" => 2,
+                             "reduce" => 0,
+                             "output" => 2
+                           })
     end
   end
 
   describe "#each" do
-
     context "when the map/reduce is inline" do
-
       let(:results) do
         map_reduce.out(inline: 1)
       end
@@ -108,22 +102,21 @@ describe Mongoid::Contextual::MapReduce do
       it "iterates over the results" do
         ordered_results = results.entries.sort_by { |doc| doc['_id'] }
         expect(ordered_results.entries).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }},
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
-        ])
+                                                { "_id" => "Depeche Mode", "value" => { "likes" => 200 } },
+                                                { "_id" => "Tool", "value" => { "likes" => 100 } }
+                                              ])
       end
     end
 
     context "when the map/reduce is a collection" do
-
       let(:results) do
         map_reduce.out(replace: "mr-output")
       end
 
       let(:expected_results) do
         [
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }},
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } },
+          { "_id" => "Tool", "value" => { "likes" => 100 } }
         ]
       end
 
@@ -138,9 +131,7 @@ describe Mongoid::Contextual::MapReduce do
     end
 
     context "when no output is provided" do
-
       context "when the results are iterated" do
-
         it "raises an error" do
           expect {
             map_reduce.entries
@@ -160,7 +151,6 @@ describe Mongoid::Contextual::MapReduce do
     end
 
     context "when no results are returned" do
-
       let(:results) do
         map_reduce.out(replace: "mr-output-two")
       end
@@ -175,7 +165,6 @@ describe Mongoid::Contextual::MapReduce do
     end
 
     context "when there is a collation on the criteria" do
-
       let(:map) do
         %Q{
          function() {
@@ -213,9 +202,7 @@ describe Mongoid::Contextual::MapReduce do
   end
 
   describe "#empty?" do
-
     context "when the map/reduce has results" do
-
       let(:results) do
         map_reduce.out(inline: 1)
       end
@@ -226,7 +213,6 @@ describe Mongoid::Contextual::MapReduce do
     end
 
     context "when the map/reduce has no results" do
-
       let(:criteria) do
         Band.where(name: "Pet Shop Boys")
       end
@@ -242,7 +228,6 @@ describe Mongoid::Contextual::MapReduce do
   end
 
   describe "#finalize" do
-
     let(:finalized) do
       map_reduce.finalize("testing")
     end
@@ -265,7 +250,6 @@ describe Mongoid::Contextual::MapReduce do
   end
 
   describe "#js_mode" do
-
     let(:results) do
       map_reduce.out(inline: 1).js_mode
     end
@@ -276,9 +260,7 @@ describe Mongoid::Contextual::MapReduce do
   end
 
   describe "#out" do
-
     context "when providing inline" do
-
       let(:out) do
         map_reduce.out(inline: 1)
       end
@@ -289,9 +271,7 @@ describe Mongoid::Contextual::MapReduce do
     end
 
     context "when not providing inline" do
-
       context "when the value is a symbol" do
-
         let(:out) do
           map_reduce.out(replace: :test)
         end
@@ -316,13 +296,11 @@ describe Mongoid::Contextual::MapReduce do
   end
 
   describe "#raw" do
-
     let(:client) do
       collection.database.client
     end
 
     context "when not specifying an out" do
-
       it "raises a NoMapReduceOutput error" do
         expect {
           map_reduce.raw
@@ -331,7 +309,6 @@ describe Mongoid::Contextual::MapReduce do
     end
 
     context "when providing replace" do
-
       let(:replace_map_reduce) do
         map_reduce.out(replace: 'output-collection')
       end
@@ -347,7 +324,6 @@ describe Mongoid::Contextual::MapReduce do
         end
 
         it "uses the read preference" do
-
           expect {
             replace_map_reduce.raw
           }.to raise_exception(Mongo::Error::OperationFailure)
@@ -369,7 +345,6 @@ describe Mongoid::Contextual::MapReduce do
   end
 
   describe "#scope" do
-
     let(:finalize) do
       %Q{
       function(key, value) {
@@ -400,7 +375,6 @@ describe Mongoid::Contextual::MapReduce do
   end
 
   describe "#execute" do
-
     let(:execution_results) do
       map_reduce.out(inline: 1).execute
     end
@@ -411,7 +385,6 @@ describe Mongoid::Contextual::MapReduce do
   end
 
   describe "#inspect" do
-
     let(:criteria) do
       Band.where(name: "Depeche Mode")
     end

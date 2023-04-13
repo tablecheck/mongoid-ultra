@@ -3,7 +3,6 @@
 module Mongoid
   class Criteria
     module Queryable
-
       # Key objects represent specifications for building query expressions
       # utilizing MongoDB selectors.
       #
@@ -58,7 +57,6 @@ module Mongoid
       # MongoDB query expression required to obtain the key's condition,
       # given the value.
       class Key
-
         # @return [ String | Symbol ] The name of the field.
         attr_reader :name
 
@@ -85,6 +83,7 @@ module Mongoid
         # @return [ true | false ] If the objects are equal.
         def ==(other)
           return false unless other.is_a?(Key)
+
           name == other.name && operator == other.operator && expanded == other.expanded
         end
         alias :eql? :==
@@ -148,13 +147,13 @@ module Mongoid
           end
 
           if expanded
-            expr = {expanded => expr}
+            expr = { expanded => expr }
           end
 
-          expr = {operator => expr}
+          expr = { operator => expr }
 
           if negating && operator != '$not'
-            expr = {'$not' => expr}
+            expr = { '$not' => expr }
           end
 
           expr

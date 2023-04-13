@@ -3,11 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Errors::Validations do
-
   describe "#message" do
-
     let(:errors) do
-      double(full_messages: [ "Error 1", "Error 2" ], empty?: false)
+      double(full_messages: ["Error 1", "Error 2"], empty?: false)
     end
 
     let(:document) do

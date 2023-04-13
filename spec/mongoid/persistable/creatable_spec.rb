@@ -3,13 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Persistable::Creatable do
-
   describe ".create" do
-
     context "when provided an array of attributes" do
-
       context "when no block is passed" do
-
         let(:people) do
           Person.create([{ title: "sir" }, { title: "madam" }])
         end
@@ -32,7 +28,6 @@ describe Mongoid::Persistable::Creatable do
       end
 
       context "when no block is passed" do
-
         let(:people) do
           Person.create([{ title: "sir" }, { title: "madam" }]) do |person|
             person.age = 36
@@ -66,7 +61,6 @@ describe Mongoid::Persistable::Creatable do
     end
 
     context "when providing attributes" do
-
       let(:person) do
         Person.create(title: "Sensei")
       end
@@ -80,7 +74,6 @@ describe Mongoid::Persistable::Creatable do
       end
 
       context "when creating an embedded document" do
-
         let(:address) do
           Address.create(addressable: person)
         end
@@ -91,7 +84,6 @@ describe Mongoid::Persistable::Creatable do
       end
 
       context "when creating an embedded document with store_as option" do
-
         let(:user) do
           User.create
         end
@@ -125,7 +117,6 @@ describe Mongoid::Persistable::Creatable do
     end
 
     context "when passing in a block" do
-
       let(:person) do
         Person.create do |peep|
           peep.ssn = "666-66-6666"
@@ -152,7 +143,7 @@ describe Mongoid::Persistable::Creatable do
         end
 
         let(:attributes) do
-          collection.find({ name: "Test"}).first
+          collection.find({ name: "Test" }).first
         end
 
         it "persists the versions" do
@@ -186,7 +177,7 @@ describe Mongoid::Persistable::Creatable do
         end
 
         let(:attributes) do
-          collection.find({ name: "Test"}).first
+          collection.find({ name: "Test" }).first
         end
 
         it "persists the new discriminator key" do
@@ -214,7 +205,7 @@ describe Mongoid::Persistable::Creatable do
         end
 
         let(:attributes) do
-          collection.find({ name: "Test"}).first
+          collection.find({ name: "Test" }).first
         end
 
         it "persists the new discriminator key" do
@@ -224,7 +215,6 @@ describe Mongoid::Persistable::Creatable do
     end
 
     context "when the document is a subclass of a subclass" do
-
       let!(:firefox) do
         Firefox.create(version: 2, name: "Testy")
       end
@@ -267,7 +257,6 @@ describe Mongoid::Persistable::Creatable do
     end
 
     context "when the document is subclassed" do
-
       let!(:firefox) do
         Firefox.create(name: "firefox")
       end
@@ -277,7 +266,6 @@ describe Mongoid::Persistable::Creatable do
       end
 
       context "when querying for parent documents" do
-
         let(:canvas) do
           Canvas.where(name: "firefox").first
         end
@@ -289,7 +277,6 @@ describe Mongoid::Persistable::Creatable do
     end
 
     context "when document is a subclass and its parent is an embedded document" do
-
       let!(:canvas) do
         Canvas.create(name: "canvas")
       end
@@ -310,7 +297,6 @@ describe Mongoid::Persistable::Creatable do
     end
 
     context "when creating references_many documents from a parent association" do
-
       let!(:container) do
         ShippingContainer.create
       end
@@ -320,79 +306,73 @@ describe Mongoid::Persistable::Creatable do
       end
 
       it "does not bleed relations from one subclass to another" do
-        expect(Truck.relations.keys).to eq(%w/ shipping_container driver crates seats bed /)
-        expect(Car.relations.keys).to eq(%w/ shipping_container driver crates seats /)
+        expect(Truck.relations.keys).to eq(%w/shipping_container driver crates seats bed/)
+        expect(Car.relations.keys).to eq(%w/shipping_container driver crates seats/)
       end
 
       context "when appending new documents" do
-
         before do
           container.vehicles << Car.new
           container.vehicles << Truck.new
         end
 
         it "allows STI from << using model.new" do
-          expect(container.vehicles.map(&:class)).to eq([ Car, Truck ])
+          expect(container.vehicles.map(&:class)).to eq([Car, Truck])
         end
       end
 
       context "when appending persisted documents" do
-
         before do
           container.vehicles << Car.create
           container.vehicles << Truck.create
         end
 
         it "allows STI from << using model.create" do
-          expect(container.vehicles.map(&:class)).to eq([ Car, Truck ])
+          expect(container.vehicles.map(&:class)).to eq([Car, Truck])
         end
       end
 
       context "when building related documents" do
-
         before do
           container.vehicles.build({}, Car).save!
           container.vehicles.build({}, Truck).save!
         end
 
         it "allows STI from the build call" do
-          expect(container.vehicles.map(&:class)).to eq([ Car, Truck ])
+          expect(container.vehicles.map(&:class)).to eq([Car, Truck])
         end
       end
 
       context "when building with a type attribute" do
-
         before do
           container.vehicles.build({ "_type" => "Car" })
           container.vehicles.build({ "_type" => "Truck" })
         end
 
         it "respects the _type attribute from the build call" do
-          expect(container.vehicles.map(&:class)).to eq([ Car, Truck ])
+          expect(container.vehicles.map(&:class)).to eq([Car, Truck])
         end
       end
 
       context "when creating related documents" do
-
         before do
           container.vehicles.create({}, Car)
           container.vehicles.create({}, Truck)
         end
 
         it "allows STI from the create call" do
-          expect(container.vehicles.map(&:class)).to eq([ Car, Truck ])
+          expect(container.vehicles.map(&:class)).to eq([Car, Truck])
         end
       end
 
       context "when creating with a type attribute" do
-
         before do
           container.vehicles.create({ "_type" => "Car" })
           container.vehicles.create({ "_type" => "Truck" })
         end
 
         it "respects the _type attribute from the create call" do
-          expect(container.vehicles.map(&:class)).to eq([ Car, Truck ])
+          expect(container.vehicles.map(&:class)).to eq([Car, Truck])
         end
       end
 
@@ -403,11 +383,11 @@ describe Mongoid::Persistable::Creatable do
           end
 
           it "initializes the given type document" do
-            expect(container.vehicles.map(&:class)).to eq([ Car ])
+            expect(container.vehicles.map(&:class)).to eq([Car])
           end
 
           it "initializes with the given attributes" do
-            expect(container.vehicles.map(&:driver)).to eq([ driver ])
+            expect(container.vehicles.map(&:driver)).to eq([driver])
           end
 
           it "initializes with a type field that equals the class" do
@@ -424,11 +404,11 @@ describe Mongoid::Persistable::Creatable do
           end
 
           it "initializes the given type document" do
-            expect(container.vehicles.map(&:class)).to eq([ Car ])
+            expect(container.vehicles.map(&:class)).to eq([Car])
           end
 
           it "initializes with the given attributes" do
-            expect(container.vehicles.map(&:driver)).to eq([ driver ])
+            expect(container.vehicles.map(&:driver)).to eq([driver])
           end
 
           it "initializes with a dkey field that equals the class" do
@@ -440,17 +420,16 @@ describe Mongoid::Persistable::Creatable do
       end
 
       context "#find_or_create_by" do
-
         before do
           container.vehicles.find_or_create_by({ driver_id: driver.id }, Car)
         end
 
         it "creates the given type document" do
-          expect(container.vehicles.map(&:class)).to eq([ Car ])
+          expect(container.vehicles.map(&:class)).to eq([Car])
         end
 
         it "creates with the given attributes" do
-          expect(container.vehicles.map(&:driver)).to eq([ driver ])
+          expect(container.vehicles.map(&:driver)).to eq([driver])
         end
 
         it "creates the correct number of documents" do
@@ -458,7 +437,6 @@ describe Mongoid::Persistable::Creatable do
         end
 
         context "when executing with a found document" do
-
           before do
             container.vehicles.find_or_create_by({ driver_id: driver.id }, Car)
           end
@@ -469,7 +447,6 @@ describe Mongoid::Persistable::Creatable do
         end
 
         context "when executing with an additional new document" do
-
           before do
             container.vehicles.find_or_create_by({ driver_id: driver.id }, Truck)
           end
@@ -480,7 +457,6 @@ describe Mongoid::Persistable::Creatable do
         end
 
         context 'when searching by a Time value' do
-
           let!(:account) do
             Account.create!(name: 'test', period_started_at: Time.now.utc)
           end
@@ -500,17 +476,16 @@ describe Mongoid::Persistable::Creatable do
       end
 
       context "#find_or_create_by!" do
-
         before do
           container.vehicles.find_or_create_by!({ driver_id: driver.id }, Car)
         end
 
         it "creates the given type document" do
-          expect(container.vehicles.map(&:class)).to eq([ Car ])
+          expect(container.vehicles.map(&:class)).to eq([Car])
         end
 
         it "creates with the given attributes" do
-          expect(container.vehicles.map(&:driver)).to eq([ driver ])
+          expect(container.vehicles.map(&:driver)).to eq([driver])
         end
 
         it "creates the correct number of documents" do
@@ -518,7 +493,6 @@ describe Mongoid::Persistable::Creatable do
         end
 
         context "when executing with a found document" do
-
           before do
             container.vehicles.find_or_create_by!({ driver_id: driver.id }, Car)
           end
@@ -529,7 +503,6 @@ describe Mongoid::Persistable::Creatable do
         end
 
         context "when executing with an additional new document" do
-
           before do
             container.vehicles.find_or_create_by!({ driver_id: driver.id }, Truck)
           end
@@ -543,11 +516,8 @@ describe Mongoid::Persistable::Creatable do
   end
 
   describe ".create!" do
-
     context "when provided an array of attributes" do
-
       context "when no block is passed" do
-
         let(:people) do
           Person.create!([{ title: "sir" }, { title: "madam" }])
         end
@@ -570,7 +540,6 @@ describe Mongoid::Persistable::Creatable do
       end
 
       context "when no block is passed" do
-
         let(:people) do
           Person.create!([{ title: "sir" }, { title: "madam" }]) do |person|
             person.age = 36
@@ -604,9 +573,7 @@ describe Mongoid::Persistable::Creatable do
     end
 
     context "inserting with a field that is not unique" do
-
       context "when a unique index exists" do
-
         before do
           Person.index({ ssn: 1 }, { unique: true })
           Person.create_indexes
@@ -625,7 +592,6 @@ describe Mongoid::Persistable::Creatable do
     end
 
     context "when passing in a block" do
-
       let(:person) do
         Person.create! do |peep|
           peep.ssn = "666-66-6666"
@@ -642,7 +608,6 @@ describe Mongoid::Persistable::Creatable do
     end
 
     context "when setting the composite key" do
-
       let(:account) do
         Account.create!(name: "Hello")
       end
@@ -653,7 +618,6 @@ describe Mongoid::Persistable::Creatable do
     end
 
     context "when a callback aborts the chain" do
-
       it "raises a callback error" do
         expect { Oscar.create! }.to raise_error(Mongoid::Errors::Callback)
       end

@@ -3,11 +3,8 @@
 require "spec_helper"
 
 describe Mongoid::Extensions::Array do
-
   describe "#__evolve_object_id__" do
-
     context "when provided an array of strings" do
-
       let(:object_id) do
         BSON::ObjectId.new
       end
@@ -17,7 +14,7 @@ describe Mongoid::Extensions::Array do
       end
 
       let(:array) do
-        [ object_id.to_s, other ]
+        [object_id.to_s, other]
       end
 
       let(:evolved) do
@@ -25,7 +22,7 @@ describe Mongoid::Extensions::Array do
       end
 
       it "converts the convertible ones to object ids" do
-        expect(evolved).to eq([ object_id, other ])
+        expect(evolved).to eq([object_id, other])
       end
 
       it "returns the same instance" do
@@ -34,13 +31,12 @@ describe Mongoid::Extensions::Array do
     end
 
     context "when provided an array of object ids" do
-
       let(:object_id) do
         BSON::ObjectId.new
       end
 
       let(:array) do
-        [ object_id ]
+        [object_id]
       end
 
       let(:evolved) do
@@ -57,13 +53,12 @@ describe Mongoid::Extensions::Array do
     end
 
     context "when some values are nil" do
-
       let(:object_id) do
         BSON::ObjectId.new
       end
 
       let(:array) do
-        [ object_id, nil ]
+        [object_id, nil]
       end
 
       let(:evolved) do
@@ -71,7 +66,7 @@ describe Mongoid::Extensions::Array do
       end
 
       it "returns the array with the nils" do
-        expect(evolved).to eq([ object_id, nil ])
+        expect(evolved).to eq([object_id, nil])
       end
 
       it "returns the same instance" do
@@ -80,13 +75,12 @@ describe Mongoid::Extensions::Array do
     end
 
     context "when some values are empty strings" do
-
       let(:object_id) do
         BSON::ObjectId.new
       end
 
       let(:array) do
-        [ object_id, "" ]
+        [object_id, ""]
       end
 
       let(:evolved) do
@@ -94,7 +88,7 @@ describe Mongoid::Extensions::Array do
       end
 
       it "returns the array with the empty strings" do
-        expect(evolved).to eq([ object_id, "" ])
+        expect(evolved).to eq([object_id, ""])
       end
 
       it "returns the same instance" do
@@ -104,9 +98,7 @@ describe Mongoid::Extensions::Array do
   end
 
   describe "#__mongoize_object_id__" do
-
     context "when provided an array of strings" do
-
       let(:object_id) do
         BSON::ObjectId.new
       end
@@ -116,7 +108,7 @@ describe Mongoid::Extensions::Array do
       end
 
       let(:array) do
-        [ object_id.to_s, other ]
+        [object_id.to_s, other]
       end
 
       let(:mongoized) do
@@ -124,7 +116,7 @@ describe Mongoid::Extensions::Array do
       end
 
       it "converts the convertible ones to object ids" do
-        expect(mongoized).to eq([ object_id, other ])
+        expect(mongoized).to eq([object_id, other])
       end
 
       it "returns the same instance" do
@@ -133,13 +125,12 @@ describe Mongoid::Extensions::Array do
     end
 
     context "when provided an array of object ids" do
-
       let(:object_id) do
         BSON::ObjectId.new
       end
 
       let(:array) do
-        [ object_id ]
+        [object_id]
       end
 
       let(:mongoized) do
@@ -156,13 +147,12 @@ describe Mongoid::Extensions::Array do
     end
 
     context "when some values are nil" do
-
       let(:object_id) do
         BSON::ObjectId.new
       end
 
       let(:array) do
-        [ object_id, nil ]
+        [object_id, nil]
       end
 
       let(:mongoized) do
@@ -170,7 +160,7 @@ describe Mongoid::Extensions::Array do
       end
 
       it "returns the array without the nils" do
-        expect(mongoized).to eq([ object_id ])
+        expect(mongoized).to eq([object_id])
       end
 
       it "returns the same instance" do
@@ -179,13 +169,12 @@ describe Mongoid::Extensions::Array do
     end
 
     context "when some values are empty strings" do
-
       let(:object_id) do
         BSON::ObjectId.new
       end
 
       let(:array) do
-        [ object_id, "" ]
+        [object_id, ""]
       end
 
       let(:mongoized) do
@@ -193,7 +182,7 @@ describe Mongoid::Extensions::Array do
       end
 
       it "returns the array without the empty strings" do
-        expect(mongoized).to eq([ object_id ])
+        expect(mongoized).to eq([object_id])
       end
 
       it "returns the same instance" do
@@ -203,15 +192,12 @@ describe Mongoid::Extensions::Array do
   end
 
   describe ".__mongoize_fk__" do
-
     context "when the related model uses object ids" do
-
       let(:association) do
         Person.relations["preferences"]
       end
 
       context "when provided an object id" do
-
         let(:object_id) do
           BSON::ObjectId.new
         end
@@ -221,29 +207,26 @@ describe Mongoid::Extensions::Array do
         end
 
         it "returns the object id as an array" do
-          expect(fk).to eq([ object_id ])
+          expect(fk).to eq([object_id])
         end
       end
 
       context "when provided a object ids" do
-
         let(:object_id) do
           BSON::ObjectId.new
         end
 
         let(:fk) do
-          Array.__mongoize_fk__(association, [ object_id ])
+          Array.__mongoize_fk__(association, [object_id])
         end
 
         it "returns the object ids" do
-          expect(fk).to eq([ object_id ])
+          expect(fk).to eq([object_id])
         end
       end
 
       context "when provided a string" do
-
         context "when the string is a legal object id" do
-
           let(:object_id) do
             BSON::ObjectId.new
           end
@@ -253,12 +236,11 @@ describe Mongoid::Extensions::Array do
           end
 
           it "returns the object id in an array" do
-            expect(fk).to eq([ object_id ])
+            expect(fk).to eq([object_id])
           end
         end
 
         context "when the string is not a legal object id" do
-
           let(:string) do
             "blah"
           end
@@ -268,12 +250,11 @@ describe Mongoid::Extensions::Array do
           end
 
           it "returns the string in an array" do
-            expect(fk).to eq([ string ])
+            expect(fk).to eq([string])
           end
         end
 
         context "when the string is blank" do
-
           let(:fk) do
             Array.__mongoize_fk__(association, "")
           end
@@ -285,7 +266,6 @@ describe Mongoid::Extensions::Array do
       end
 
       context "when provided nil" do
-
         let(:fk) do
           Array.__mongoize_fk__(association, nil)
         end
@@ -296,41 +276,37 @@ describe Mongoid::Extensions::Array do
       end
 
       context "when provided an array of strings" do
-
         context "when the strings are legal object ids" do
-
           let(:object_id) do
             BSON::ObjectId.new
           end
 
           let(:fk) do
-            Array.__mongoize_fk__(association, [ object_id.to_s ])
+            Array.__mongoize_fk__(association, [object_id.to_s])
           end
 
           it "returns the object id in an array" do
-            expect(fk).to eq([ object_id ])
+            expect(fk).to eq([object_id])
           end
         end
 
         context "when the strings are not legal object ids" do
-
           let(:string) do
             "blah"
           end
 
           let(:fk) do
-            Array.__mongoize_fk__(association, [ string ])
+            Array.__mongoize_fk__(association, [string])
           end
 
           it "returns the string in an array" do
-            expect(fk).to eq([ string ])
+            expect(fk).to eq([string])
           end
         end
 
         context "when the strings are blank" do
-
           let(:fk) do
-            Array.__mongoize_fk__(association, [ "", "" ])
+            Array.__mongoize_fk__(association, ["", ""])
           end
 
           it "returns an empty array" do
@@ -340,9 +316,8 @@ describe Mongoid::Extensions::Array do
       end
 
       context "when provided nils" do
-
         let(:fk) do
-          Array.__mongoize_fk__(association, [ nil, nil, nil ])
+          Array.__mongoize_fk__(association, [nil, nil, nil])
         end
 
         it "returns an empty array" do
@@ -353,9 +328,8 @@ describe Mongoid::Extensions::Array do
   end
 
   describe "#__mongoize_time__" do
-
     let(:array) do
-      [ 2010, 11, 19, 00, 24, 49.123457 ]
+      [2010, 11, 19, 00, 24, 49.123457]
     end
 
     let(:mongoized) do
@@ -378,13 +352,10 @@ describe Mongoid::Extensions::Array do
   end
 
   describe "#blank_criteria?" do
-
     context "when the array has an empty _id criteria" do
-
       context "when only the id criteria is in the array" do
-
         let(:array) do
-          [{ "_id" => { "$in" => [] }}]
+          [{ "_id" => { "$in" => [] } }]
         end
 
         it "is false" do
@@ -393,9 +364,8 @@ describe Mongoid::Extensions::Array do
       end
 
       context "when the id criteria is in the array with others" do
-
         let(:array) do
-          [{ "_id" => "test" }, { "_id" => { "$in" => [] }}]
+          [{ "_id" => "test" }, { "_id" => { "$in" => [] } }]
         end
 
         it "is false" do
@@ -406,9 +376,7 @@ describe Mongoid::Extensions::Array do
   end
 
   describe "#delete_one" do
-
     context "when the object doesn't exist" do
-
       let(:array) do
         []
       end
@@ -423,9 +391,8 @@ describe Mongoid::Extensions::Array do
     end
 
     context "when the object exists once" do
-
       let(:array) do
-        [ "1", "2" ]
+        ["1", "2"]
       end
 
       let!(:deleted) do
@@ -433,7 +400,7 @@ describe Mongoid::Extensions::Array do
       end
 
       it "deletes the object" do
-        expect(array).to eq([ "2" ])
+        expect(array).to eq(["2"])
       end
 
       it "returns the object" do
@@ -442,9 +409,8 @@ describe Mongoid::Extensions::Array do
     end
 
     context "when the object exists more than once" do
-
       let(:array) do
-        [ "1", "2", "1" ]
+        ["1", "2", "1"]
       end
 
       let!(:deleted) do
@@ -452,7 +418,7 @@ describe Mongoid::Extensions::Array do
       end
 
       it "deletes the first object" do
-        expect(array).to eq([ "2", "1" ])
+        expect(array).to eq(["2", "1"])
       end
 
       it "returns the object" do
@@ -462,9 +428,8 @@ describe Mongoid::Extensions::Array do
   end
 
   describe ".demongoize" do
-
     let(:array) do
-      [ 1, 2, 3 ]
+      [1, 2, 3]
     end
 
     it "returns the array" do
@@ -473,13 +438,12 @@ describe Mongoid::Extensions::Array do
   end
 
   describe ".mongoize" do
-
     let(:date) do
       Date.new(2012, 1, 1)
     end
 
     let(:input) do
-      [ date ]
+      [date]
     end
 
     let(:mongoized) do
@@ -496,7 +460,7 @@ describe Mongoid::Extensions::Array do
 
     context "when passing in a set" do
       let(:input) do
-        [ date ].to_set
+        [date].to_set
       end
 
       it "mongoizes to an array" do
@@ -510,13 +474,12 @@ describe Mongoid::Extensions::Array do
   end
 
   describe "#mongoize" do
-
     let(:date) do
       Date.new(2012, 1, 1)
     end
 
     let(:array) do
-      [ date ]
+      [date]
     end
 
     let(:mongoized) do
@@ -533,11 +496,9 @@ describe Mongoid::Extensions::Array do
   end
 
   describe "#multi_arged?" do
-
     context "when there are multiple elements" do
-
       let(:array) do
-        [ 1, 2, 3 ]
+        [1, 2, 3]
       end
 
       it "returns true" do
@@ -546,11 +507,9 @@ describe Mongoid::Extensions::Array do
     end
 
     context "when there is one element" do
-
       context "when the element is a non enumerable" do
-
         let(:array) do
-          [ 1 ]
+          [1]
         end
 
         it "returns false" do
@@ -559,9 +518,8 @@ describe Mongoid::Extensions::Array do
       end
 
       context "when the element is resizable Hash instance" do
-
         let(:array) do
-          [{'key' => 'value'}]
+          [{ 'key' => 'value' }]
         end
 
         it "returns false" do
@@ -570,9 +528,8 @@ describe Mongoid::Extensions::Array do
       end
 
       context "when the element is array of resizable Hash instances" do
-
         let(:array) do
-          [[{'key1' => 'value2'},{'key1' => 'value2'}]]
+          [[{ 'key1' => 'value2' }, { 'key1' => 'value2' }]]
         end
 
         it "returns true" do
@@ -581,9 +538,8 @@ describe Mongoid::Extensions::Array do
       end
 
       context "when the element is an array" do
-
         let(:array) do
-          [[ 1 ]]
+          [[1]]
         end
 
         it "returns true" do
@@ -592,9 +548,8 @@ describe Mongoid::Extensions::Array do
       end
 
       context "when the element is a range" do
-
         let(:array) do
-          [ 1..2 ]
+          [1..2]
         end
 
         it "returns true" do
@@ -605,14 +560,12 @@ describe Mongoid::Extensions::Array do
   end
 
   describe ".resizable?" do
-
     it "returns true" do
       expect(Array).to be_resizable
     end
   end
 
   describe "#resiable?" do
-
     it "returns true" do
       expect([]).to be_resizable
     end

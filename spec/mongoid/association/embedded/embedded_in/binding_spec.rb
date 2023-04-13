@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
-
   let(:person) do
     Person.new
   end
@@ -29,15 +28,12 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
   end
 
   describe "#bind_one" do
-
     context "when the child of an embeds one" do
-
       let(:binding) do
         described_class.new(name, person, name_association)
       end
 
       context "when the document is bindable" do
-
         before do
           binding.bind_one
         end
@@ -52,7 +48,6 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
       end
 
       context "when the document is not bindable" do
-
         before do
           person.name = name
         end
@@ -66,15 +61,12 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
     end
 
     context "when the child of an embeds many" do
-
       let(:binding) do
         described_class.new(address, person, address_association)
       end
 
       context "when the document is bindable" do
-
         context "when the base has no association" do
-
           before do
             binding.bind_one
           end
@@ -89,7 +81,6 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
         end
 
         context "when the base has an association" do
-
           before do
             address._association = person_association
           end
@@ -102,9 +93,8 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
       end
 
       context "when the document is not bindable" do
-
         before do
-          person.addresses = [ address ]
+          person.addresses = [address]
         end
 
         it "does nothing" do
@@ -116,15 +106,12 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
   end
 
   describe "#unbind_one" do
-
     context "when the child of an embeds one" do
-
       let(:binding) do
         described_class.new(name, person, name_association)
       end
 
       context "when the document is unbindable" do
-
         before do
           binding.bind_one
           binding.unbind_one
@@ -136,7 +123,6 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
       end
 
       context "when the document is not unbindable" do
-
         it "does nothing" do
           expect(name).to receive(:namable=).never
           binding.unbind_one
@@ -145,13 +131,11 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
     end
 
     context "when the child of an embeds many" do
-
       let(:binding) do
         described_class.new(address, person, address_association)
       end
 
       context "when the document is unbindable" do
-
         before do
           binding.bind_one
           binding.unbind_one
@@ -163,7 +147,6 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
       end
 
       context "when the document is not unbindable" do
-
         it "does nothing" do
           expect(address).to receive(:addressable=).never
           binding.unbind_one

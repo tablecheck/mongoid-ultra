@@ -4,10 +4,8 @@ module Mongoid
   class Criteria
     module Queryable
       module Extensions
-
         # Adds query type-casting behavior to Numeric module and its children.
         module Numeric
-
           # Evolve the numeric value into a mongo friendly date, aka UTC time at
           # midnight.
           #
@@ -31,7 +29,6 @@ module Mongoid
           end
 
           module ClassMethods
-
             # Get the object as a numeric.
             #
             # @api private

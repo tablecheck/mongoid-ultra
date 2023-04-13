@@ -6,10 +6,8 @@ require "mongoid/atomic/paths/embedded/many"
 module Mongoid
   module Atomic
     module Paths
-
       # Common functionality between the two different embedded paths.
       module Embedded
-
         attr_reader :delete_modifier, :document, :insert_modifier, :parent
 
         # Get the path to the document in the hierarchy.

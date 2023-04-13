@@ -4,10 +4,8 @@ module Mongoid
   module Association
     module Referenced
       class HasMany
-
         # The Builder behavior for has_many associations.
         module Buildable
-
           # This method either takes an _id or an object and queries for the
           # inverse side using the id or sets the object.
           #
@@ -23,6 +21,7 @@ module Mongoid
           def build(base, object, type = nil, selected_fields = nil)
             return (object || []) unless query?(object)
             return [] if object.is_a?(Array)
+
             query_criteria(object, base)
           end
 

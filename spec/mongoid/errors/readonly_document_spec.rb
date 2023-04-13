@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Errors::ReadonlyDocument do
-
   describe "#message" do
-
     let(:error) do
       described_class.new(Band)
     end

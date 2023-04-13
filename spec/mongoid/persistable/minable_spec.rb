@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Persistable::Minable do
-
   describe "#set_min" do
-
     shared_examples_for 'a min-able interface' do
       context "when the document is a root document" do
         let(:initial_name) { "Manhattan Transfer" }
@@ -16,21 +14,22 @@ describe Mongoid::Persistable::Minable do
           Band.create!(
             name: initial_name,
             member_count: initial_members,
-            founded: initial_founded)
+            founded: initial_founded
+          )
         end
 
         shared_examples_for "a min-able root document" do
           before do
             band.send(min_method,
-              name: given_name,
-              member_count: given_members,
-              founded: given_founded)
+                      name: given_name,
+                      member_count: given_members,
+                      founded: given_founded)
           end
 
           it 'sets the fields to smaller of current vs. given' do
-            expect(band.reload.name).to eq [ initial_name, given_name ].min
-            expect(band.member_count).to eq [ initial_members, given_members ].min
-            expect(band.founded).to eq [ initial_founded, given_founded ].min
+            expect(band.reload.name).to eq [initial_name, given_name].min
+            expect(band.member_count).to eq [initial_members, given_members].min
+            expect(band.founded).to eq [initial_founded, given_founded].min
           end
 
           it "resets dirty changes" do
@@ -73,21 +72,22 @@ describe Mongoid::Persistable::Minable do
           person.addresses.create!(
             city: initial_city,
             number: initial_number,
-            end_date: initial_end_date)
+            end_date: initial_end_date
+          )
         end
 
         shared_examples_for "a min-able embedded document" do
           before do
             address.send(min_method,
-              city: given_city,
-              number: given_number,
-              end_date: given_end_date)
+                         city: given_city,
+                         number: given_number,
+                         end_date: given_end_date)
           end
 
           it 'sets the fields to smaller of current vs. given' do
-            expect(address.reload.city).to eq [ initial_city, given_city ].min
-            expect(address.number).to eq [ initial_number, given_number ].min
-            expect(address.end_date).to eq [ initial_end_date, given_end_date ].min
+            expect(address.reload.city).to eq [initial_city, given_city].min
+            expect(address.number).to eq [initial_number, given_number].min
+            expect(address.end_date).to eq [initial_end_date, given_end_date].min
           end
 
           it "resets dirty changes" do

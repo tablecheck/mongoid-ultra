@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Extensions::Time do
-
   describe ".demongoize" do
-
     let!(:time) do
       Time.local(2010, 11, 19)
     end
@@ -14,7 +12,6 @@ describe Mongoid::Extensions::Time do
       config_override :use_utc, false
 
       context "when the local time is not observing daylight saving" do
-
         let(:time) do
           Time.utc(2010, 11, 19)
         end
@@ -27,7 +24,6 @@ describe Mongoid::Extensions::Time do
       end
 
       context "when the local time is observing daylight saving" do
-
         let(:time) do
           Time.utc(2010, 9, 19)
         end
@@ -38,7 +34,6 @@ describe Mongoid::Extensions::Time do
       end
 
       context "when we have a time close to midnight" do
-
         let(:time) do
           Time.local(2010, 11, 19, 0, 30).utc
         end
@@ -52,21 +47,18 @@ describe Mongoid::Extensions::Time do
         time_zone_override "Stockholm"
 
         context "when demongoizing a Time" do
-
           it "returns an ActiveSupport::TimeWithZone" do
             expect(Time.demongoize(time).class).to eq(ActiveSupport::TimeWithZone)
           end
         end
 
         context "when demongoizing a Date" do
-
           it "returns an ActiveSupport::TimeWithZone" do
             expect(Time.demongoize(Date.today).class).to eq(ActiveSupport::TimeWithZone)
           end
         end
 
         context "when the local time is not observing daylight saving" do
-
           let(:new_time) do
             Time.utc(2010, 11, 19, 12)
           end
@@ -79,7 +71,6 @@ describe Mongoid::Extensions::Time do
         end
 
         context "when the local time is observing daylight saving" do
-
           let(:new_time) do
             Time.utc(2010, 9, 19, 12)
           end
@@ -92,7 +83,6 @@ describe Mongoid::Extensions::Time do
         end
 
         context "when we have a time close to midnight" do
-
           let(:new_time) do
             Time.utc(2010, 11, 19, 0, 30)
           end
@@ -135,21 +125,18 @@ describe Mongoid::Extensions::Time do
     end
 
     context "when time is nil" do
-
       it "returns nil" do
         expect(Time.demongoize(nil)).to be_nil
       end
     end
 
     context "when the value is uncastable" do
-
       it "returns nil" do
         expect(Time.demongoize("bogus")).to be_nil
       end
     end
 
     context "when the value is a BSON::Timestamp" do
-
       it "returns the timestamp as a Time" do
         expect(Time.demongoize(BSON::Timestamp.new(1000, 1)))
           .to eq Time.at(1000)
@@ -157,7 +144,6 @@ describe Mongoid::Extensions::Time do
     end
 
     context "when the value is a string" do
-
       context "when use_utc is false" do
         config_override :use_utc, false
 
@@ -165,7 +151,6 @@ describe Mongoid::Extensions::Time do
           include_context 'setting ActiveSupport time zone'
 
           context "when the string is a valid time with time zone" do
-
             let(:string) do
               # JST is +0900
               "2010-11-19 00:24:49.123457 +1100"
@@ -186,7 +171,6 @@ describe Mongoid::Extensions::Time do
           end
 
           context "when the string is a valid time without time zone" do
-
             let(:string) do
               "2010-11-19 00:24:49.123457"
             end
@@ -206,7 +190,6 @@ describe Mongoid::Extensions::Time do
           end
 
           context "when the string is a valid time without time" do
-
             let(:string) do
               "2010-11-19"
             end
@@ -225,7 +208,6 @@ describe Mongoid::Extensions::Time do
           end
 
           context "when the string is an invalid time" do
-
             let(:string) do
               "bogus"
             end
@@ -244,7 +226,6 @@ describe Mongoid::Extensions::Time do
           include_context 'setting ActiveSupport time zone'
 
           context "when the string is a valid time with time zone" do
-
             let(:string) do
               # JST is +0900
               "2010-11-19 00:24:49.123457 +1100"
@@ -265,7 +246,6 @@ describe Mongoid::Extensions::Time do
           end
 
           context "when the string is a valid time without time zone" do
-
             let(:string) do
               "2010-11-19 00:24:49.123457"
             end
@@ -285,7 +265,6 @@ describe Mongoid::Extensions::Time do
           end
 
           context "when the string is a valid time without time" do
-
             let(:string) do
               "2010-11-19"
             end
@@ -304,7 +283,6 @@ describe Mongoid::Extensions::Time do
           end
 
           context "when the string is an invalid time" do
-
             let(:string) do
               "bogus"
             end
@@ -319,20 +297,17 @@ describe Mongoid::Extensions::Time do
   end
 
   describe ".mongoize" do
-
     let!(:time) do
       Time.local(2010, 11, 19)
     end
 
     context "when given nil" do
-
       it "returns nil" do
         expect(Time.mongoize(nil)).to be_nil
       end
     end
 
     context "when string is empty" do
-
       let(:mongoized) do
         Time.mongoize("")
       end
@@ -343,7 +318,6 @@ describe Mongoid::Extensions::Time do
     end
 
     context "when the value is a string" do
-
       context "when use_utc is false" do
         config_override :use_utc, false
 
@@ -351,7 +325,6 @@ describe Mongoid::Extensions::Time do
           include_context 'setting ActiveSupport time zone'
 
           context "when the string is a valid time with time zone" do
-
             let(:string) do
               # JST is +0900
               "2010-11-19 00:24:49.123457 +1100"
@@ -371,7 +344,6 @@ describe Mongoid::Extensions::Time do
           end
 
           context "when the string is a valid time without time zone" do
-
             let(:string) do
               "2010-11-19 00:24:49.123457"
             end
@@ -390,7 +362,6 @@ describe Mongoid::Extensions::Time do
           end
 
           context "when the string is a valid time without time" do
-
             let(:string) do
               "2010-11-19"
             end
@@ -407,7 +378,6 @@ describe Mongoid::Extensions::Time do
           end
 
           context "when the string is an invalid time" do
-
             let(:string) do
               "bogus"
             end
@@ -426,7 +396,6 @@ describe Mongoid::Extensions::Time do
           include_context 'setting ActiveSupport time zone'
 
           context "when the string is a valid time with time zone" do
-
             let(:string) do
               # JST is +0900
               "2010-11-19 00:24:49.123457 +1100"
@@ -446,7 +415,6 @@ describe Mongoid::Extensions::Time do
           end
 
           context "when the string is a valid time without time zone" do
-
             let(:string) do
               "2010-11-19 00:24:49.123457"
             end
@@ -465,7 +433,6 @@ describe Mongoid::Extensions::Time do
           end
 
           context "when the string is a valid time without time" do
-
             let(:string) do
               "2010-11-19"
             end
@@ -482,7 +449,6 @@ describe Mongoid::Extensions::Time do
           end
 
           context "when the string is an invalid time" do
-
             let(:string) do
               "bogus"
             end
@@ -496,7 +462,6 @@ describe Mongoid::Extensions::Time do
     end
 
     context "when given a DateTime" do
-
       let!(:time) do
         DateTime.now
       end
@@ -565,7 +530,6 @@ describe Mongoid::Extensions::Time do
     end
 
     context "when given a Time" do
-
       it "converts to a utc time" do
         expect(Time.mongoize(time).utc_offset).to eq(0)
       end
@@ -588,7 +552,6 @@ describe Mongoid::Extensions::Time do
     end
 
     context "when given an ActiveSupport::TimeWithZone" do
-
       before do
         1.hour.ago
       end
@@ -601,7 +564,6 @@ describe Mongoid::Extensions::Time do
     end
 
     context "when given a Date" do
-
       let(:date) do
         Date.today
       end
@@ -628,9 +590,8 @@ describe Mongoid::Extensions::Time do
     end
 
     context "when given an array" do
-
       let(:array) do
-        [ 2010, 11, 19, 00, 24, 49 ]
+        [2010, 11, 19, 00, 24, 49]
       end
 
       it "returns a time" do
@@ -650,7 +611,6 @@ describe Mongoid::Extensions::Time do
   end
 
   describe "#mongoize" do
-
     let!(:time) do
       Time.local(2010, 11, 19)
     end
@@ -685,7 +645,6 @@ describe Mongoid::Extensions::Time do
   end
 
   describe "__mongoize_time__" do
-
     let(:time) do
       Time.at(1543331265.123457)
     end

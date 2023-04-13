@@ -4,10 +4,8 @@ module Mongoid
   class Criteria
     module Queryable
       module Extensions
-
         # Adds query type-casting behavior to Hash class.
         module Hash
-
           # Add an object to a hash using the merge strategies.
           #
           # @example Add an object to a hash.

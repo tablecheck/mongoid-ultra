@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
-
   describe "#===" do
-
     let(:base) do
       Person.new
     end
@@ -23,7 +21,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
     end
 
     context "when the proxied document is same class" do
-
       it "returns true" do
         expect((relation === Name.new)).to be true
       end
@@ -31,11 +28,8 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
   end
 
   describe "#=" do
-
     context "when the relation is not cyclic" do
-
       context "when the parent is a new record" do
-
         let(:person) do
           Person.new
         end
@@ -65,7 +59,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         end
 
         context "with overwritten getter" do
-
           before do
             person.name = nil
             def person.name_with_default
@@ -85,7 +78,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       end
 
       context "when the parent is not a new record" do
-
         let(:person) do
           Person.create!
         end
@@ -95,7 +87,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         end
 
         context "when setting with a hash" do
-
           before do
             person.name = {}
           end
@@ -121,7 +112,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           end
 
           context "when replacing a relation with a hash" do
-
             before do
               person.name = {}
             end
@@ -133,7 +123,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         end
 
         context "when setting to the same document" do
-
           before do
             person.name = name
             person.name = person.name
@@ -149,7 +138,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         end
 
         context "when setting directly" do
-
           before do
             person.name = name
           end
@@ -171,7 +159,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           end
 
           context "when replacing an existing document" do
-
             let(:pet_owner) do
               PetOwner.create!
             end
@@ -204,7 +191,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         end
 
         context 'when the original document does not need to be unset because it will be replaced by the $set' do
-
           let!(:pet_owner) do
             PetOwner.create!(pet: pet_one)
           end
@@ -227,7 +213,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         end
 
         context "when setting via the parent attributes" do
-
           before do
             person.attributes = { name: name }
           end
@@ -244,9 +229,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
     end
 
     context "when the relation is cyclic" do
-
       context "when the parent is a new record" do
-
         let(:parent_shelf) do
           Shelf.new
         end
@@ -277,7 +260,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       end
 
       context "when the parent is not a new record" do
-
         let(:parent_shelf) do
           Shelf.create!
         end
@@ -309,7 +291,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
     end
 
     context "when setting a new document multiple times in a row" do
-
       let(:parent) do
         Parent.create!
       end
@@ -327,11 +308,8 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
   end
 
   describe "#= nil" do
-
     context "when the relation is not cyclic" do
-
       context "when the parent is a new record" do
-
         let(:person) do
           Person.new
         end
@@ -355,7 +333,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       end
 
       context "when the inverse is already nil" do
-
         let(:person) do
           Person.new
         end
@@ -370,7 +347,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       end
 
       context "when the parent is persisted" do
-
         let(:person) do
           Person.create!
         end
@@ -380,7 +356,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         end
 
         context "when setting directly" do
-
           before do
             person.name = name
             person.name = nil
@@ -400,7 +375,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         end
 
         context "when setting via parent attributes" do
-
           before do
             person.name = name
             person.attributes = { name: nil }
@@ -418,9 +392,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
     end
 
     context "when the relation is cyclic" do
-
       context "when the parent is a new record" do
-
         let(:parent_shelf) do
           Shelf.new
         end
@@ -444,7 +416,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       end
 
       context "when the inverse is already nil" do
-
         let(:parent_shelf) do
           Shelf.new
         end
@@ -459,7 +430,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       end
 
       context "when the documents are not new records" do
-
         let(:parent_shelf) do
           Shelf.create!
         end
@@ -489,15 +459,10 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
   end
 
   describe "#build_#\{name}" do
-
     context "when the relation is not cyclic" do
-
       context "when the parent is a new record" do
-
         context "when not providing any attributes" do
-
           context "when building once" do
-
             let(:person) do
               Person.new
             end
@@ -524,7 +489,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           end
 
           context "when building twice" do
-
             let(:person) do
               Person.new
             end
@@ -553,7 +517,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         end
 
         context "when passing nil as the attributes" do
-
           let(:person) do
             Person.new
           end
@@ -580,7 +543,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         end
 
         context "when providing attributes" do
-
           let(:person) do
             Person.new
           end
@@ -608,7 +570,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       end
 
       context "when the parent is not a new record" do
-
         let(:person) do
           Person.create!
         end
@@ -624,9 +585,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
     end
 
     context "when the relation is cyclic" do
-
       context "when the parent is a new record" do
-
         let(:parent_shelf) do
           Shelf.new
         end
@@ -653,7 +612,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       end
 
       context "when the parent is not a new record" do
-
         let(:parent_shelf) do
           Shelf.create!
         end
@@ -670,11 +628,8 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
   end
 
   describe "#create_#\{name}" do
-
     context "when the parent is a new record" do
-
       context "when not providing any attributes" do
-
         let(:person) do
           Person.new
         end
@@ -701,7 +656,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       end
 
       context "when passing nil as the attributes" do
-
         let(:person) do
           Person.new
         end
@@ -728,7 +682,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       end
 
       context "when providing attributes" do
-
         let(:person) do
           Person.new
         end
@@ -755,7 +708,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       end
 
       context "when the parent is not a new record" do
-
         let(:person) do
           Person.create!
         end
@@ -772,11 +724,8 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
   end
 
   describe "when the relationship is polymorphic" do
-
     context "when updating an aliased embedded document" do
-
       context "when the embedded document inherits its relationship" do
-
         let(:courier_job) do
           CourierJob.create!
         end
@@ -809,14 +758,12 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
   end
 
   describe ".embedded?" do
-
     it "returns true" do
       expect(described_class).to be_embedded
     end
   end
 
   describe "#respond_to?" do
-
     let(:person) do
       Person.new
     end
@@ -830,9 +777,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
     end
 
     Mongoid::Document.public_instance_methods(true).each do |method|
-
       context "when checking #{method}" do
-
         it "returns true" do
           expect(document.respond_to?(method)).to be true
         end
@@ -845,42 +790,39 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
   end
 
   context "when the embedded document has an array field" do
-
     let!(:person) do
       Person.create!
     end
 
     let!(:name) do
       person.create_name(
-          first_name: "Syd",
-          last_name: "Vicious",
-          aliases: nil
+        first_name: "Syd",
+        last_name: "Vicious",
+        aliases: nil
       )
     end
 
     context "when saving the array on a persisted document" do
-
       let(:from_db) do
         Person.find(person.id).name
       end
 
       before do
-        from_db.aliases = [ "Syd", "Sydney" ]
+        from_db.aliases = ["Syd", "Sydney"]
         from_db.save!
       end
 
       it "sets the values of the array" do
-        expect(from_db.aliases).to eq([ "Syd", "Sydney" ])
+        expect(from_db.aliases).to eq(["Syd", "Sydney"])
       end
 
       it "persists the array" do
-        expect(Person.find(person.id).name.aliases).to eq([ "Syd", "Sydney" ])
+        expect(Person.find(person.id).name.aliases).to eq(["Syd", "Sydney"])
       end
     end
   end
 
   context "when embedding a many under a one" do
-
     let!(:person) do
       Person.create!
     end
@@ -890,13 +832,11 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
     end
 
     context "when the documents are reloaded from the database" do
-
       let(:from_db) do
         Person.first
       end
 
       context "when adding a new many" do
-
         let(:name) do
           from_db.name
         end
@@ -906,7 +846,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         end
 
         context "when saving the root" do
-
           before do
             from_db.save!
           end
@@ -920,7 +859,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
   end
 
   context "when embedding a one under a many" do
-
     let!(:person) do
       Person.create!
     end
@@ -934,10 +872,9 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
     end
 
     context "when a parent was removed outside of mongoid" do
-
       before do
         person.collection.find(_id: person.id).update_one(
-            "$pull" => { "addresses" => { _id: address_one.id }}
+          "$pull" => { "addresses" => { _id: address_one.id } }
         )
       end
 
@@ -946,7 +883,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       end
 
       context "when adding a child" do
-
         let(:code) do
           Code.new
         end
@@ -963,19 +899,17 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
   end
 
   context "when embedded documents are stored without ids" do
-
     let!(:band) do
       Band.create!(name: "Moderat")
     end
 
     before do
-      band.collection.
-          find(_id: band.id).
-          update_one("$set" => { label: { _id: BSON::ObjectId.new, name: "Mute" }})
+      band.collection
+          .find(_id: band.id)
+          .update_one("$set" => { label: { _id: BSON::ObjectId.new, name: "Mute" } })
     end
 
     context "when loading the documents" do
-
       before do
         band.reload
       end
@@ -993,7 +927,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       end
 
       context "when subsequently updating the documents" do
-
         before do
           label.update_attribute(:name, "Interscope")
         end
@@ -1010,7 +943,6 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
   end
 
   context "when parent validation of child is set to false" do
-
     let(:building) do
       building = Building.create!
       building.building_address = BuildingAddress.new

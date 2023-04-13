@@ -4,10 +4,8 @@ module Mongoid
   module Association
     module Referenced
       class BelongsTo
-
         # The Builder behavior for belongs_to associations.
         module Buildable
-
           # This method either takes an _id or an object and queries for the
           # inverse side using the id or sets the object.
           #
@@ -22,6 +20,7 @@ module Mongoid
           # @return [ Mongoid::Document ] A single document.
           def build(base, object, type = nil, selected_fields = nil)
             return object unless query?(object)
+
             execute_query(object, type)
           end
 

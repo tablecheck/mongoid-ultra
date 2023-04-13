@@ -2,10 +2,8 @@
 
 module Mongoid
   module Extensions
-
     # Adds type-casting behavior to FalseClass.
     module FalseClass
-
       # Get the value of the object as a mongo friendly sort value.
       #
       # @example Get the object as sort criteria.
@@ -28,6 +26,7 @@ module Mongoid
         if other == Mongoid::Boolean || other.class == Mongoid::Boolean
           return true
         end
+
         super(other)
       end
     end

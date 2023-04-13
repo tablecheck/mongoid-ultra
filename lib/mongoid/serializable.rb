@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Mongoid
-
   # This module provides the extra behavior for including associations in JSON
   # and XML serialization.
   module Serializable
@@ -10,7 +9,6 @@ module Mongoid
     # We need to redefine where the JSON configuration is getting defined,
     # similar to +ActiveRecord+.
     included do
-
       class << self
         # Note that this intentionally only delegates :include_root_in_json
         # and not :include_root_in_json? - delegating the latter produces

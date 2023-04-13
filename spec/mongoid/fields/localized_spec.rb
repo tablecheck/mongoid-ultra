@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Fields::Localized do
-
   context "when no default is provided" do
-
     let(:field) do
       described_class.new(:description, localize: true, type: String)
     end
@@ -16,9 +14,7 @@ describe Mongoid::Fields::Localized do
   end
 
   context "when a default is provided" do
-
     context "when the type is a string" do
-
       let(:field) do
         described_class.new(
           :description,
@@ -34,7 +30,6 @@ describe Mongoid::Fields::Localized do
     end
 
     context "when the type is not a string" do
-
       let(:field) do
         described_class.new(
           :description,
@@ -51,15 +46,12 @@ describe Mongoid::Fields::Localized do
   end
 
   describe "#demongoize" do
-
     context "when the type is a string" do
-
       let(:field) do
         described_class.new(:description, localize: true, type: String)
       end
 
       context "when the field is nil" do
-
         let(:value) do
           field.demongoize(nil)
         end
@@ -70,7 +62,6 @@ describe Mongoid::Fields::Localized do
       end
 
       context "when no locale is defined" do
-
         let(:value) do
           field.demongoize({ "en" => "This is a test" })
         end
@@ -88,7 +79,6 @@ describe Mongoid::Fields::Localized do
         end
 
         context "when the value exists" do
-
           let(:value) do
             field.demongoize({ "de" => "This is a test" })
           end
@@ -99,7 +89,6 @@ describe Mongoid::Fields::Localized do
         end
 
         context "when key is a symbol" do
-
           let(:value) do
             field.demongoize({ :de => "This is a test" })
           end
@@ -109,9 +98,7 @@ describe Mongoid::Fields::Localized do
           end
         end
 
-
         context "passing a bogus value" do
-
           let(:value) do
             field.demongoize("bogus")
           end
@@ -122,7 +109,6 @@ describe Mongoid::Fields::Localized do
         end
 
         context "when the value does not exist" do
-
           context "when not using fallbacks" do
             without_i18n_fallbacks
 
@@ -139,13 +125,11 @@ describe Mongoid::Fields::Localized do
             with_i18n_fallbacks
 
             context "when fallbacks are defined" do
-
               before do
-                ::I18n.fallbacks[:de] = [ :de, :en, :es ]
+                ::I18n.fallbacks[:de] = [:de, :en, :es]
               end
 
               context "when the first fallback translation exists" do
-
                 let(:value) do
                   field.demongoize({ "en" => "testing" })
                 end
@@ -156,7 +140,6 @@ describe Mongoid::Fields::Localized do
               end
 
               context "when the fallback translation exists and is a symbol" do
-
                 let(:value) do
                   field.demongoize({ :es => "testing" })
                 end
@@ -167,7 +150,6 @@ describe Mongoid::Fields::Localized do
               end
 
               context "when another fallback translation exists" do
-
                 let(:value) do
                   field.demongoize({ "es" => "pruebas" })
                 end
@@ -178,7 +160,6 @@ describe Mongoid::Fields::Localized do
               end
 
               context "when the fallback translation does not exist" do
-
                 let(:value) do
                   field.demongoize({ "fr" => "oui" })
                 end
@@ -190,9 +171,8 @@ describe Mongoid::Fields::Localized do
             end
 
             context "when no fallbacks are defined" do
-
               before do
-                ::I18n.fallbacks[:de] = [ :de ]
+                ::I18n.fallbacks[:de] = [:de]
               end
 
               let(:value) do
@@ -205,9 +185,8 @@ describe Mongoid::Fields::Localized do
             end
 
             context 'when fallbacks are empty' do
-
               before do
-                ::I18n.fallbacks[:de] = [ ]
+                ::I18n.fallbacks[:de] = []
               end
 
               let(:value) do
@@ -224,7 +203,6 @@ describe Mongoid::Fields::Localized do
     end
 
     context "when no type is provided" do
-
       let(:field) do
         described_class.new(:description, localize: true)
       end
@@ -239,13 +217,11 @@ describe Mongoid::Fields::Localized do
     end
 
     context "when the type is not a string" do
-
       let(:field) do
         described_class.new(:description, localize: true, type: Integer)
       end
 
       context "when the field is nil" do
-
         let(:value) do
           field.demongoize(nil)
         end
@@ -256,7 +232,6 @@ describe Mongoid::Fields::Localized do
       end
 
       context "when no locale is defined" do
-
         let(:value) do
           field.demongoize({ "en" => 100 })
         end
@@ -274,7 +249,6 @@ describe Mongoid::Fields::Localized do
         end
 
         context "when the value exists" do
-
           let(:value) do
             field.demongoize({ "de" => 100 })
           end
@@ -285,9 +259,7 @@ describe Mongoid::Fields::Localized do
         end
 
         context "when the value does not exist" do
-
           context "when not using fallbacks" do
-
             let(:value) do
               field.demongoize({ "en" => 100 })
             end
@@ -304,13 +276,11 @@ describe Mongoid::Fields::Localized do
               with_default_i18n_configs
 
               before do
-                ::I18n.fallbacks[:de] = [ :de, :en, :es ]
+                ::I18n.fallbacks[:de] = [:de, :en, :es]
               end
 
               context 'when fallbacks are enabled' do
-
                 context "when the first fallback translation exists" do
-
                   let(:value) do
                     field.demongoize({ "en" => 1 })
                   end
@@ -321,7 +291,6 @@ describe Mongoid::Fields::Localized do
                 end
 
                 context "when another fallback translation exists" do
-
                   let(:value) do
                     field.demongoize({ "es" => 100 })
                   end
@@ -332,7 +301,6 @@ describe Mongoid::Fields::Localized do
                 end
 
                 context "when the fallback translation does not exist" do
-
                   let(:value) do
                     field.demongoize({ "fr" => 50 })
                   end
@@ -344,7 +312,6 @@ describe Mongoid::Fields::Localized do
               end
 
               context 'when fallbacks are disabled' do
-
                 let(:field) do
                   described_class.new(:description, localize: true, type: Integer, fallbacks: false)
                 end
@@ -363,7 +330,7 @@ describe Mongoid::Fields::Localized do
               with_default_i18n_configs
 
               before do
-                ::I18n.fallbacks[:de] = [ :de ]
+                ::I18n.fallbacks[:de] = [:de]
               end
 
               let(:value) do
@@ -381,15 +348,12 @@ describe Mongoid::Fields::Localized do
   end
 
   describe "#mongoize" do
-
     context "when the type is a string" do
-
       let(:field) do
         described_class.new(:description, localize: true, type: String)
       end
 
       context "when no locale is defined" do
-
         let(:value) do
           field.mongoize("This is a test")
         end
@@ -417,13 +381,11 @@ describe Mongoid::Fields::Localized do
     end
 
     context "when the type is not a string" do
-
       let(:field) do
         described_class.new(:description, localize: true, type: Integer)
       end
 
       context "when no locale is defined" do
-
         let(:value) do
           field.mongoize("100")
         end
@@ -457,7 +419,6 @@ describe Mongoid::Fields::Localized do
         end
 
         context "when the value is false" do
-
           let(:field) do
             described_class.new(:boolean_value, localize: true, type: Mongoid::Boolean)
           end
@@ -472,13 +433,12 @@ describe Mongoid::Fields::Localized do
         end
 
         context "when the value is true" do
-
           let(:field) do
             described_class.new(:boolean_value, localize: true, type: Mongoid::Boolean)
           end
 
           let(:value) do
-            field.demongoize({"de" => true})
+            field.demongoize({ "de" => true })
           end
 
           it "returns the boolean value from the set locale" do
@@ -490,7 +450,6 @@ describe Mongoid::Fields::Localized do
           with_i18n_fallbacks
 
           context "when the lookup does not need to use fallbacks" do
-
             context "when the value is false" do
               with_default_i18n_configs
 
@@ -503,7 +462,7 @@ describe Mongoid::Fields::Localized do
               end
 
               let(:value) do
-                field.demongoize({"de" => false})
+                field.demongoize({ "de" => false })
               end
 
               it "returns the boolean value from the set locale" do
@@ -523,7 +482,7 @@ describe Mongoid::Fields::Localized do
               end
 
               let(:value) do
-                field.demongoize({"de" => true})
+                field.demongoize({ "de" => true })
               end
 
               it "returns the boolean value from the set locale" do
@@ -537,13 +496,11 @@ describe Mongoid::Fields::Localized do
   end
 
   describe "localize: :present" do
-
     let(:field) do
       described_class.new(:description, localize: :present, type: String)
     end
 
     context "when setting the localize to present" do
-
       it "is localized?" do
         expect(field.localized?).to be true
       end
@@ -554,7 +511,6 @@ describe Mongoid::Fields::Localized do
     end
 
     context "when localize is not localize_present" do
-
       let(:field) do
         described_class.new(:description, localize: true, type: String)
       end

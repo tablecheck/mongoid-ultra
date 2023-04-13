@@ -3,11 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Errors::NoClientDatabase do
-
   describe "#message" do
-
     let(:error) do
-      described_class.new(:analytics, { hosts: [ "127.0.0.1:27017" ] })
+      described_class.new(:analytics, { hosts: ["127.0.0.1:27017"] })
     end
 
     it "contains the problem in the message" do

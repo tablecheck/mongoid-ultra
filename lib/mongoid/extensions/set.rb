@@ -2,10 +2,8 @@
 
 module Mongoid
   module Extensions
-
     # Adds type-casting behavior to Set class.
     module Set
-
       # Turn the object from the ruby type we deal with to a Mongo friendly
       # type.
       #
@@ -18,7 +16,6 @@ module Mongoid
       end
 
       module ClassMethods
-
         # Convert the object from its mongo friendly ruby type to this type.
         #
         # @example Demongoize the object.
@@ -45,6 +42,7 @@ module Mongoid
         # @return [ Array | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.nil?
+
           case object
           when ::Set then ::Array.mongoize(object.to_a).uniq
           when ::Array then ::Array.mongoize(object).uniq

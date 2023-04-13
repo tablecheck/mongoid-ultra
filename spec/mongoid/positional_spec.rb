@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Positional do
-
   describe "#positionally" do
-
     let(:positionable) do
       Class.new do
         include Mongoid::Positional
@@ -20,15 +18,13 @@ describe Mongoid::Positional do
           "children.0.children.1.children.3.field" => "value"
         },
         "$push" => {
-          "children.0.children.1.children.3.fields" => { '$each' => [ "value", "value" ] }
+          "children.0.children.1.children.3.fields" => { '$each' => ["value", "value"] }
         }
       }
     end
 
     context "when a child has an embeds many under an embeds one" do
-
       context "when selector does not include the embeds one" do
-
         let(:selector) do
           { "_id" => 1, "child._id" => 2 }
         end
@@ -52,7 +48,6 @@ describe Mongoid::Positional do
       end
 
       context "when selector includes the embeds one" do
-
         let(:selector) do
           { "_id" => 1, "child._id" => 2, "child.children._id" => 3 }
         end
@@ -86,7 +81,6 @@ describe Mongoid::Positional do
     end
 
     context "when the selector has only 1 pair" do
-
       let(:selector) do
         { "_id" => 1 }
       end
@@ -101,9 +95,7 @@ describe Mongoid::Positional do
     end
 
     context "when the selector has 2 pairs" do
-
       context "when the second pair has an id" do
-
         let(:selector) do
           { "_id" => 1, "children._id" => 2 }
         end
@@ -116,7 +108,7 @@ describe Mongoid::Positional do
               "children.0.children.1.children.3.field" => "value"
             },
             "$push" => {
-              "children.0.children.1.children.3.fields" => { '$each' => [ "value", "value" ] }
+              "children.0.children.1.children.3.fields" => { '$each' => ["value", "value"] }
             }
           }
         end
@@ -131,7 +123,6 @@ describe Mongoid::Positional do
       end
 
       context "when the second pair has no id" do
-
         let(:selector) do
           { "_id" => 1, "children._id" => nil }
         end
@@ -144,7 +135,7 @@ describe Mongoid::Positional do
               "children.0.children.1.children.3.field" => "value"
             },
             "$push" => {
-              "children.0.children.1.children.3.fields" => { '$each' => [ "value", "value" ] }
+              "children.0.children.1.children.3.fields" => { '$each' => ["value", "value"] }
             }
           }
         end
@@ -160,7 +151,6 @@ describe Mongoid::Positional do
     end
 
     context "when the selector has 3 pairs" do
-
       let(:selector) do
         { "_id" => 1, "children._id" => 2, "children.0.children._id" => 3 }
       end
@@ -173,7 +163,7 @@ describe Mongoid::Positional do
             "children.0.children.1.children.3.field" => "value"
           },
           "$push" => {
-            "children.0.children.1.children.3.fields" => { '$each' => [ "value", "value" ] }
+            "children.0.children.1.children.3.fields" => { '$each' => ["value", "value"] }
           }
         }
       end
@@ -188,7 +178,6 @@ describe Mongoid::Positional do
     end
 
     context "when the selector has 4 pairs" do
-
       let(:selector) do
         {
           "_id" => 1,
@@ -206,7 +195,7 @@ describe Mongoid::Positional do
             "children.0.children.1.children.3.field" => "value"
           },
           "$push" => {
-            "children.0.children.1.children.3.fields" => { '$each' => [ "value", "value" ] }
+            "children.0.children.1.children.3.fields" => { '$each' => ["value", "value"] }
           }
         }
       end

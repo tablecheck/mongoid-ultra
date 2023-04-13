@@ -3,7 +3,6 @@
 module Mongoid
   module Timestamps
     module Updated
-
       # Adds an updated_at timestamp to the document, but it is stored as u_at
       # with an updated_at alias.
       module Short

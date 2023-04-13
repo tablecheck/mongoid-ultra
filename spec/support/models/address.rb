@@ -3,7 +3,7 @@
 class Address
   include Mongoid::Document
 
-  field :_id, type: String, overwrite: true, default: ->{ street.try(:parameterize) }
+  field :_id, type: String, overwrite: true, default: -> { street.try(:parameterize) }
 
   attr_accessor :mode
 
@@ -36,6 +36,7 @@ class Address
     def extension
       "Testing"
     end
+
     def doctor?
       title == "Dr"
     end
@@ -47,10 +48,10 @@ class Address
   belongs_to :account
   belongs_to :band
 
-  scope :without_postcode, ->{ where(postcode: nil) }
-  scope :ordered, ->{ order_by(state: 1) }
-  scope :without_postcode_ordered, ->{ without_postcode.ordered }
-  scope :rodeo, ->{ where(street: "Rodeo Dr") } do
+  scope :without_postcode, -> { where(postcode: nil) }
+  scope :ordered, -> { order_by(state: 1) }
+  scope :without_postcode_ordered, -> { without_postcode.ordered }
+  scope :rodeo, -> { where(street: "Rodeo Dr") } do
     def mansion?
       all? { |address| address.street == "Rodeo Dr" }
     end

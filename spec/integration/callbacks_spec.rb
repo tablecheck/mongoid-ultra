@@ -5,7 +5,6 @@ require_relative './callbacks_models'
 
 describe 'callbacks integration tests' do
   context 'when modifying attributes in a callback' do
-
     context 'when creating top-level document' do
       context 'top level document' do
         let(:instance) do
@@ -73,8 +72,8 @@ describe 'callbacks integration tests' do
         context 'set as attributes on parent' do
           let(:instance) do
             Galaxy.create!(stars: [
-              planets: [{}],
-            ])
+                             planets: [{}],
+                           ])
           end
 
           include_examples 'persists the attribute value'
@@ -334,7 +333,6 @@ describe 'callbacks integration tests' do
   end
 
   context "when reloading has_and_belongs_to_many after_save and after_remove callbacks" do
-
     let(:architect) { Architect.create }
 
     let(:b1) { Building.create }
@@ -393,10 +391,10 @@ describe 'callbacks integration tests' do
       person.title = updated_title
       person.save!
       expect(person.after_save_vals).to eq([
-        # Field values are nil before create
-        [nil, nil],
-        [title, age]
-        ])
+                                             # Field values are nil before create
+                                             [nil, nil],
+                                             [title, age]
+                                           ])
     end
   end
 

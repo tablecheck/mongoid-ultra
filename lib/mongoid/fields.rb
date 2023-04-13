@@ -7,7 +7,6 @@ require "mongoid/fields/localized"
 require "mongoid/fields/validators"
 
 module Mongoid
-
   # This module defines behavior for fields.
   module Fields
     extend ActiveSupport::Concern
@@ -41,12 +40,12 @@ module Mongoid
     # This does not include aliases of _id field.
     #
     # @api private
-    IDS = [ :_id, '_id', ].freeze
+    IDS = [:_id, '_id',].freeze
 
     # BSON classes that are not supported as field types
     #
     # @api private
-    INVALID_BSON_CLASSES = [ BSON::Decimal128, BSON::Int32, BSON::Int64 ].freeze
+    INVALID_BSON_CLASSES = [BSON::Decimal128, BSON::Int32, BSON::Int64].freeze
 
     module ClassMethods
       # Returns the list of id fields for this model class, as both strings
@@ -110,7 +109,7 @@ module Mongoid
             res.push(key)
 
             if klass.fields.key?(fn)
-              res.push(ar.drop(i+1).join('.')) unless i == ar.length - 1
+              res.push(ar.drop(i + 1).join('.')) unless i == ar.length - 1
               break
             elsif klass.relations.key?(fn)
               klass = klass.relations[key].klass
@@ -135,7 +134,7 @@ module Mongoid
 
       field(
         :_id,
-        default: ->{ BSON::ObjectId.new },
+        default: -> { BSON::ObjectId.new },
         pre_processed: true,
         type: BSON::ObjectId
       )
@@ -274,7 +273,6 @@ module Mongoid
     end
 
     class << self
-
       # Stores the provided block to be run when the option name specified is
       # defined on a field.
       #
@@ -408,6 +406,7 @@ module Mongoid
       # @api private
       def database_field_name(name, relations, aliased_fields, aliased_associations)
         return nil unless name.present?
+
         key = name.to_s
         segment, remaining = key.split('.', 2)
 
@@ -434,7 +433,6 @@ module Mongoid
     end
 
     module ClassMethods
-
       # Returns an array of names for the attributes available on this object.
       #
       # Provides the field names in an ORM-agnostic way. Rails v3.1+ uses this
@@ -798,6 +796,7 @@ module Mongoid
         return Fields::Localized.new(name, opts) if options[:localize]
         return Fields::ForeignKey.new(name, opts) if options[:identity]
         return Fields::Encrypted.new(name, opts) if options[:encrypt]
+
         Fields::Standard.new(name, opts)
       end
 
@@ -828,6 +827,7 @@ module Mongoid
             Mongoid.logger.warn(warn_message)
           end
         end
+
         result
       end
 

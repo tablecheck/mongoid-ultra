@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 module Mongoid
-
   # Utility functions for Mongoid.
   #
   # @api private
   module Utils
-
     # This function should be used if you need to measure time.
     # @example Calculate elapsed time.
     #   starting = Utils.monotonic_time

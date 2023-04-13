@@ -2,11 +2,9 @@
 
 module Mongoid
   module Errors
-
     # This exception is raised when a bad value is attempted to be converted to
     # a date or time.
     class InvalidTime < MongoidError
-
       # Create the new invalid date error.
       #
       # @example Create the new invalid date error.

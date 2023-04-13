@@ -12,17 +12,16 @@ describe 'TimeWithZone in queries' do
     let!(:book_later)   { Book.create!(updated_at: now_in_zone + 20.minutes, dynamic_time: now_in_zone + 20.minutes).reload }
 
     context 'Mongo driver static field' do
-
       let(:view_lt) do
-        Book.collection.find(updated_at: {'$lt' => query_time + 10.minutes})
+        Book.collection.find(updated_at: { '$lt' => query_time + 10.minutes })
       end
 
       let(:view_gt) do
-        Book.collection.find(updated_at: {'$gt' => query_time - 10.minutes})
+        Book.collection.find(updated_at: { '$gt' => query_time - 10.minutes })
       end
 
       let(:view_range) do
-        Book.collection.find(updated_at: {'$gt' => query_time - 10.minutes, '$lt' => query_time + 10.minutes})
+        Book.collection.find(updated_at: { '$gt' => query_time - 10.minutes, '$lt' => query_time + 10.minutes })
       end
 
       it 'finds the document' do
@@ -33,17 +32,16 @@ describe 'TimeWithZone in queries' do
     end
 
     context 'Mongo driver dynamic field' do
-
       let(:view_lt) do
-        Book.collection.find(dynamic_time: {'$lt' => query_time + 10.minutes})
+        Book.collection.find(dynamic_time: { '$lt' => query_time + 10.minutes })
       end
 
       let(:view_gt) do
-        Book.collection.find(dynamic_time: {'$gt' => query_time - 10.minutes})
+        Book.collection.find(dynamic_time: { '$gt' => query_time - 10.minutes })
       end
 
       let(:view_range) do
-        Book.collection.find(dynamic_time: {'$gt' => query_time - 10.minutes, '$lt' => query_time + 10.minutes})
+        Book.collection.find(dynamic_time: { '$gt' => query_time - 10.minutes, '$lt' => query_time + 10.minutes })
       end
 
       it 'finds the document' do
@@ -54,7 +52,6 @@ describe 'TimeWithZone in queries' do
     end
 
     context 'Mongoid static field' do
-
       let(:view_lt) do
         Book.all.lt(updated_at: query_time + 10.minutes)
       end
@@ -75,7 +72,6 @@ describe 'TimeWithZone in queries' do
     end
 
     context 'Mongoid dynamic field' do
-
       let(:view_lt) do
         Book.all.lt(dynamic_time: query_time + 10.minutes)
       end

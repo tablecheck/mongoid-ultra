@@ -5,9 +5,7 @@ require_relative '../has_many_models'
 require_relative '../has_one_models'
 
 describe Mongoid::Association::Referenced::BelongsTo::Eager do
-
   describe ".grouped_docs" do
-
     let(:docs) do
       Post.all.to_a
     end
@@ -36,7 +34,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
   end
 
   describe ".set_on_parent" do
-
     let(:docs) do
       Post.all.to_a
     end
@@ -68,7 +65,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
   end
 
   describe ".includes" do
-
     let(:person) do
       Person.create!
     end
@@ -83,7 +79,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
       require_no_multi_shard
 
       it "queries twice" do
-
         expect_query(2) do
           Account.all.includes(:person).each do |account|
             expect(account.person).to_not be_nil
@@ -102,7 +97,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
       end
 
       context "when the eager load has returned documents" do
-
         let!(:post) do
           person.posts.create!(title: "testing")
         end
@@ -127,7 +121,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
       end
 
       context "when the eager load has not returned documents" do
-
         let!(:post) do
           Post.create!(title: "testing")
         end
@@ -145,9 +138,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
     end
 
     context "when the association is polymorphic" do
-
       context "without namespaces" do
-
         let!(:stand_alone_rating) do
           Rating.create!(value: 7)
         end
@@ -173,7 +164,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
         end
 
         context "when the eager load has returned documents" do
-
           before do
             bar_rating
             movie_rating
@@ -198,7 +188,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
         end
 
         context "when the eager load has not returned documents" do
-
           before { eager }
 
           it "does not set anything on the parent" do
@@ -212,7 +201,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
       end
 
       context "with namespaces" do
-
         let!(:stand_alone_review) do
           Publication::Review.create!(summary: "awful")
         end
@@ -238,7 +226,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
         end
 
         context "when the eager load has returned documents" do
-
           before do
             encyclopedia_review
             pull_request_review
@@ -263,7 +250,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
         end
 
         context "when the eager load has not returned documents" do
-
           before { eager }
 
           it "does not set anything on the parent" do
@@ -283,7 +269,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
 
         let!(:reviewable_review) do
           Publication::Review.create!(summary: "awful",
-            reviewable: reviewable)
+                                      reviewable: reviewable)
         end
 
         let(:reviewer) do
@@ -292,7 +278,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
 
         let!(:reviewer_review) do
           Publication::Review.create!(summary: "okay",
-            reviewer: reviewer)
+                                      reviewer: reviewer)
         end
 
         let(:template) do
@@ -301,7 +287,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
 
         let!(:template_review) do
           Publication::Review.create!(summary: "Looks good to me",
-            template: template)
+                                      template: template)
         end
 
         let(:eager) do
@@ -328,10 +314,9 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
       end
 
       context 'when eager loading an association that has type but not value set' do
-
         let!(:reviewer_review) do
           Publication::Review.create!(summary: "okay",
-            reviewer_type: 'Dog')
+                                      reviewer_type: 'Dog')
         end
 
         let(:eager) do
@@ -345,7 +330,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
     end
 
     context "when the association has scope" do
-
       context 'when inverse of has_many' do
         let!(:trainer1) { HmmTrainer.create!(name: 'Dave') }
         let!(:trainer2) { HmmTrainer.create!(name: 'Ash') }
@@ -380,7 +364,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
     end
 
     context "when setting the foreign key id directly" do
-
       it "works" do
         id = BSON::ObjectId.new
         game = Game.new(:person_id => id)

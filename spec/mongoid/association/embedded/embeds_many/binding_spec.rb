@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::Association::Embedded::EmbedsMany::Binding do
-
   let(:person) do
     Person.new
   end
@@ -13,7 +12,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Binding do
   end
 
   let(:target) do
-    [ address ]
+    [address]
   end
 
   let(:association) do
@@ -21,13 +20,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Binding do
   end
 
   describe "#bind_one" do
-
     let(:binding) do
       described_class.new(person, target, association)
     end
 
     context "when the document is bindable" do
-
       let(:address_two) do
         Address.new
       end
@@ -46,7 +43,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Binding do
     end
 
     context "when the document is not bindable" do
-
       it "does nothing" do
         expect(person.addresses).to receive(:<<).never
         binding.bind_one(address)

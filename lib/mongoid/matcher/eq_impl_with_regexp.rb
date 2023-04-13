@@ -1,12 +1,10 @@
 module Mongoid
   module Matcher
-
     # This is an internal equality implementation that performs exact
     # comparisons and regular expression matches.
     #
     # @api private
     module EqImplWithRegexp
-
       # Returns whether a value satisfies an $eq (or similar) expression,
       # performing a regular expression match if the condition is a regular
       # expression.

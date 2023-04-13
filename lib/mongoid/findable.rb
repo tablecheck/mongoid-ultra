@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Mongoid
-
   # This module defines the finder methods that hang off the document at the
   # class level.
   module Findable
@@ -15,65 +14,64 @@ module Mongoid
     # These are methods defined on the criteria that should also be accessible
     # directly from the class level.
     def_delegators :with_default_scope,
-      :aggregates,
-      :avg,
-      :create_with,
-      :distinct,
-      :each,
-      :each_with_index,
-      :extras,
-      :fifth,
-      :fifth!,
-      :find_one_and_delete,
-      :find_one_and_replace,
-      :find_one_and_update,
-      :find_or_create_by,
-      :find_or_create_by!,
-      :find_or_initialize_by,
-      :first!,
-      :first_or_create,
-      :first_or_create!,
-      :first_or_initialize,
-      :for_js,
-      :fourth,
-      :fourth!,
-      :includes,
-      :last!,
-      :map_reduce,
-      :max,
-      :min,
-      :none,
-      :pick,
-      :pluck,
-      :pluck_each,
-      :read,
-      :second,
-      :second!,
-      :second_to_last,
-      :second_to_last!,
-      :sum,
-      :take,
-      :take!,
-      :tally,
-      :text_search,
-      :third,
-      :third!,
-      :third_to_last,
-      :third_to_last!,
-      :update,
-      :update_all,
-
-    # Returns a count of records in the database.
-    # If you want to specify conditions use where.
-    #
-    # @example Get the count of matching documents.
-    #   Person.count
-    #   Person.where(title: "Sir").count
-    #
-    # @return [ Integer ] The number of matching documents.
-    def count
-      with_default_scope.count
-    end
+                   :aggregates,
+                   :avg,
+                   :create_with,
+                   :distinct,
+                   :each,
+                   :each_with_index,
+                   :extras,
+                   :fifth,
+                   :fifth!,
+                   :find_one_and_delete,
+                   :find_one_and_replace,
+                   :find_one_and_update,
+                   :find_or_create_by,
+                   :find_or_create_by!,
+                   :find_or_initialize_by,
+                   :first!,
+                   :first_or_create,
+                   :first_or_create!,
+                   :first_or_initialize,
+                   :for_js,
+                   :fourth,
+                   :fourth!,
+                   :includes,
+                   :last!,
+                   :map_reduce,
+                   :max,
+                   :min,
+                   :none,
+                   :pick,
+                   :pluck,
+                   :pluck_each,
+                   :read,
+                   :second,
+                   :second!,
+                   :second_to_last,
+                   :second_to_last!,
+                   :sum,
+                   :take,
+                   :take!,
+                   :tally,
+                   :text_search,
+                   :third,
+                   :third!,
+                   :third_to_last,
+                   :third_to_last!,
+                   :update,
+                   :update_all,
+                   # Returns a count of records in the database.
+                   # If you want to specify conditions use where.
+                   #
+                   # @example Get the count of matching documents.
+                   #   Person.count
+                   #   Person.where(title: "Sir").count
+                   #
+                   # @return [ Integer ] The number of matching documents.
+                   def count
+                     with_default_scope.count
+                   end
 
     # Returns an estimated count of records in the database.
     #
@@ -193,6 +191,7 @@ module Mongoid
       if result.nil? && Mongoid.raise_not_found_error
         raise(Errors::DocumentNotFound.new(self, attrs))
       end
+
       yield(result) if result && block_given?
       result
     end
@@ -211,6 +210,7 @@ module Mongoid
     def find_by!(attrs = {})
       result = where(attrs).find_first
       raise(Errors::DocumentNotFound.new(self, attrs)) unless result
+
       yield(result) if result && block_given?
       result
     end

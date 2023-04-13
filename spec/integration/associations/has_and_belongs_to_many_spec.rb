@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe 'has_and_belongs_to_many associations' do
-
   context 'when an anonymous class defines a has_and_belongs_to_many association' do
     let(:klass) do
       Class.new do

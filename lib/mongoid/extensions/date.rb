@@ -2,10 +2,8 @@
 
 module Mongoid
   module Extensions
-
     # Adds type-casting behavior to Date class.
     module Date
-
       # Convert the date into a time.
       #
       # @example Convert the date to a time.
@@ -31,7 +29,6 @@ module Mongoid
       end
 
       module ClassMethods
-
         # Convert the object from its mongo friendly ruby type to this type.
         #
         # @example Demongoize the object.
@@ -42,6 +39,7 @@ module Mongoid
         # @return [ Date | nil ] The object as a date or nil.
         def demongoize(object)
           return if object.nil?
+
           if object.is_a?(String)
             object = begin
               object.__mongoize_time__
@@ -66,6 +64,7 @@ module Mongoid
         # @return [ Time | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.blank?
+
           begin
             if object.is_a?(String)
               # https://jira.mongodb.org/browse/MONGOID-4460

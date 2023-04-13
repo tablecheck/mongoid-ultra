@@ -5,7 +5,6 @@ require "mongoid/indexable/validators/options"
 require "ostruct"
 
 module Mongoid
-
   # Encapsulates behavior around defining indexes.
   module Indexable
     extend ActiveSupport::Concern
@@ -16,7 +15,6 @@ module Mongoid
     end
 
     module ClassMethods
-
       # Send the actual index creation comments to the MongoDB driver
       #
       # @example Create the indexes for the class.

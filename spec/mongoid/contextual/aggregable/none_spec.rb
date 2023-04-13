@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::Contextual::Aggregable::None do
-
   before do
     Band.create!(name: "Depeche Mode")
   end

@@ -4,7 +4,6 @@ require "mongoid/atomic/modifiers"
 require "mongoid/atomic/paths"
 
 module Mongoid
-
   # This module contains the logic for supporting atomic operations against the
   # database.
   module Atomic
@@ -21,7 +20,6 @@ module Mongoid
     ]
 
     included do
-
       # When MongoDB finally fully implements the positional operator, we can
       # get rid of all indexing related code in Mongoid.
       attr_accessor :_index
@@ -201,7 +199,7 @@ module Mongoid
           path ||= doc.flag_as_destroyed
           doc._id
         end
-        pulls[path] = { "_id" => { "$in" => ids }} and path = nil
+        pulls[path] = { "_id" => { "$in" => ids } } and path = nil
       end
       pulls
     end

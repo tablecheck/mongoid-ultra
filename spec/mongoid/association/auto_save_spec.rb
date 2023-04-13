@@ -5,9 +5,7 @@ require_relative './referenced/has_many_models'
 require_relative './referenced/has_one_models'
 
 describe Mongoid::Association::Referenced::AutoSave do
-
   describe ".auto_save" do
-
     before(:all) do
       Person.has_many :drugs, validate: false, autosave: true
       Person.has_one :account, validate: false, autosave: true
@@ -22,9 +20,7 @@ describe Mongoid::Association::Referenced::AutoSave do
     end
 
     context "when the option is not provided" do
-
       context 'has_many' do
-
         let(:parent) do
           HmmSchool.new
         end
@@ -38,7 +34,6 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
 
         context "when saving the parent document" do
-
           before do
             expect(parent.associations[:students].options[:autosave]).to be_falsy
 
@@ -52,7 +47,6 @@ describe Mongoid::Association::Referenced::AutoSave do
       end
 
       context 'has_one' do
-
         let(:parent) do
           HomCollege.new
         end
@@ -66,7 +60,6 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
 
         context "when saving the parent document" do
-
           before do
             expect(parent.associations[:accreditation].options[:autosave]).to be_falsy
 
@@ -81,9 +74,7 @@ describe Mongoid::Association::Referenced::AutoSave do
     end
 
     context "when the option is true" do
-
       context "when the relation has already had the autosave callback added" do
-
         before do
           Person.has_many :drugs, validate: false, autosave: true
         end
@@ -100,15 +91,12 @@ describe Mongoid::Association::Referenced::AutoSave do
       end
 
       context "when the relation is a references many" do
-
         let(:drug) do
           Drug.new(name: "Percocet")
         end
 
         context "when saving a new parent document" do
-
           context 'when persistence options are not set on the parent' do
-
             before do
               Person.has_many :drugs, validate: false, autosave: true
             end
@@ -124,7 +112,6 @@ describe Mongoid::Association::Referenced::AutoSave do
           end
 
           context 'when persistence options are set on the parent' do
-
             let(:other_database) do
               :other
             end
@@ -154,7 +141,6 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
 
         context "when saving an existing parent document" do
-
           before do
             person.save!
             person.drugs << drug
@@ -167,7 +153,6 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
 
         context "when not updating the document" do
-
           let(:from_db) do
             Person.find person.id
           end
@@ -185,13 +170,11 @@ describe Mongoid::Association::Referenced::AutoSave do
       end
 
       context "when the relation is a references one" do
-
         let(:account) do
           Account.new(name: "Testing")
         end
 
         context "when saving a new parent document" do
-
           before do
             person.account = account
             person.save!
@@ -207,7 +190,6 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
 
         context "when saving an existing parent document" do
-
           before do
             person.save!
             person.account = account
@@ -224,7 +206,6 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
 
         context "when updating the child" do
-
           before do
             person.account = account
             person.save!
@@ -233,7 +214,7 @@ describe Mongoid::Association::Referenced::AutoSave do
           it "sends one insert" do
             account.name = "account"
             expect_query(1) do
-              person.with(write: {w:0}) do |_person|
+              person.with(write: { w: 0 }) do |_person|
                 _person.save!
               end
             end
@@ -241,7 +222,6 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
 
         context "when not updating the document" do
-
           let(:from_db) do
             Person.find person.id
           end
@@ -259,7 +239,6 @@ describe Mongoid::Association::Referenced::AutoSave do
       end
 
       context "when the relation is a referenced in" do
-
         let(:ghost) do
           Ghost.new(name: "Slimer")
         end
@@ -269,7 +248,6 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
 
         context "when saving a new parent document" do
-
           before do
             ghost.movie = movie
             ghost.save!
@@ -281,7 +259,6 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
 
         context "when saving an existing parent document" do
-
           before do
             ghost.save!
             ghost.movie = movie
@@ -295,7 +272,6 @@ describe Mongoid::Association::Referenced::AutoSave do
       end
 
       context "when it has two relations with autosaves" do
-
         let!(:person) do
           Person.create!(drugs: [percocet], account: account)
         end
@@ -313,7 +289,6 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
 
         context "when updating one document" do
-
           let(:placebo) do
             Drug.new(name: "Placebo")
           end
@@ -333,7 +308,6 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
 
         context "when updating none document" do
-
           before do
             from_db.save!
           end
@@ -349,7 +323,6 @@ describe Mongoid::Association::Referenced::AutoSave do
       end
 
       context 'when the autosave should be cascaded' do
-
         before do
           class King
             include Mongoid::Document

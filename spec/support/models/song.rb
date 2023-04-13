@@ -6,5 +6,4 @@ class Song
   embedded_in :artist
 
   attr_accessor :before_add_called
-
 end

@@ -3,22 +3,19 @@
 require "spec_helper"
 
 describe Mongoid::Attributes::Readonly do
-
   before do
     Person.attr_readonly(*attributes)
   end
 
   after do
     Person.readonly_attributes.reject! do |a|
-      [ attributes ].flatten.include?(a.to_sym) ||
-        [ attributes ].flatten.include?(Person.aliased_fields.key(a).to_sym)
+      [attributes].flatten.include?(a.to_sym) ||
+        [attributes].flatten.include?(Person.aliased_fields.key(a).to_sym)
     end
   end
 
   describe ".attr_readonly" do
-
     context "when providing a single field" do
-
       let(:attributes) do
         :title
       end
@@ -29,7 +26,6 @@ describe Mongoid::Attributes::Readonly do
     end
 
     context "when providing a field alias" do
-
       let(:attributes) do
         :aliased_timestamp
       end
@@ -40,9 +36,8 @@ describe Mongoid::Attributes::Readonly do
     end
 
     context "when providing multiple fields" do
-
       let(:attributes) do
-        [ :title, :terms ]
+        [:title, :terms]
       end
 
       it "adds the fields to readonly attributes" do
@@ -51,9 +46,8 @@ describe Mongoid::Attributes::Readonly do
     end
 
     context "when creating a new document with a readonly field" do
-
       let(:attributes) do
-        [ :title, :terms, :aliased_timestamp ]
+        [:title, :terms, :aliased_timestamp]
       end
 
       let(:person) do
@@ -86,9 +80,8 @@ describe Mongoid::Attributes::Readonly do
     end
 
     context "when updating an existing readonly field" do
-
       let(:attributes) do
-        [ :title, :terms, :score, :aliased_timestamp ]
+        [:title, :terms, :score, :aliased_timestamp]
       end
 
       let(:person) do
@@ -96,7 +89,6 @@ describe Mongoid::Attributes::Readonly do
       end
 
       context "when updating via the setter" do
-
         it "does not update the first field" do
           person.title = 'mr'
           person.save!
@@ -111,9 +103,7 @@ describe Mongoid::Attributes::Readonly do
       end
 
       context "when updating via inc" do
-
         context 'with single field operation' do
-
           it "updates the field" do
             person.inc(score: 1)
             person.save!
@@ -122,7 +112,6 @@ describe Mongoid::Attributes::Readonly do
         end
 
         context 'with multiple fields operation' do
-
           it "updates the fields" do
             person.inc(score: 1, age: 1)
             person.save!
@@ -133,9 +122,7 @@ describe Mongoid::Attributes::Readonly do
       end
 
       context "when updating via bit" do
-
         context 'with single field operation' do
-
           it "does the update" do
             person.bit(score: { or: 13 })
             person.save!
@@ -144,9 +131,8 @@ describe Mongoid::Attributes::Readonly do
         end
 
         context 'with multiple fields operation' do
-
           it "updates the attribute" do
-            person.bit(age: {and: 13}, score: {or: 13})
+            person.bit(age: { and: 13 }, score: { or: 13 })
             person.save!
             expect(person.reload.score).to eq(13)
             expect(person.reload.age).to eq(4)
@@ -155,7 +141,6 @@ describe Mongoid::Attributes::Readonly do
       end
 
       context "when updating via []=" do
-
         it "does not update the first field" do
           person[:title] = "mr"
           person.save!
@@ -170,7 +155,6 @@ describe Mongoid::Attributes::Readonly do
       end
 
       context "when updating via write_attribute" do
-
         it "does not update the first field" do
           person.write_attribute(:title, "mr")
           person.save!
@@ -185,7 +169,6 @@ describe Mongoid::Attributes::Readonly do
       end
 
       context "when updating via update_attributes" do
-
         it "does not update the first field" do
           person.update_attributes!(title: "mr", aliased_timestamp: Time.at(43))
           person.save!
@@ -200,7 +183,6 @@ describe Mongoid::Attributes::Readonly do
       end
 
       context "when updating via update_attributes!" do
-
         it "does not update the first field" do
           person.update_attributes!(title: "mr", aliased_timestamp: Time.at(43))
           person.save!
@@ -215,7 +197,6 @@ describe Mongoid::Attributes::Readonly do
       end
 
       context "when updating via update_attribute" do
-
         it "raises an error" do
           expect {
             person.update_attribute(:title, "mr")
@@ -224,7 +205,6 @@ describe Mongoid::Attributes::Readonly do
       end
 
       context "when updating via remove_attribute" do
-
         it "raises an error" do
           expect {
             person.remove_attribute(:title)
@@ -234,13 +214,11 @@ describe Mongoid::Attributes::Readonly do
     end
 
     context 'when a foreign_key is defined as readonly' do
-
       let(:attributes) do
         :mother_id
       end
 
       context 'when the relation exists' do
-
         let(:mother) do
           Person.create!
         end
@@ -256,7 +234,6 @@ describe Mongoid::Attributes::Readonly do
       end
 
       context 'when the relation does not exist' do
-
         let(:child) do
           Person.create!
         end
@@ -265,7 +242,6 @@ describe Mongoid::Attributes::Readonly do
           expect(child.mother).to be_nil
         end
       end
-
     end
   end
 end

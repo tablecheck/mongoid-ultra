@@ -2,11 +2,9 @@
 
 module Mongoid
   class Criteria
-
     # Mixin module for Mongoid::Criteria which adds custom
     # Marshal.dump functionality.
     module Marshalable
-
       # Provides the data needed to Marshal.dump a criteria.
       #
       # @example Dump the criteria.
@@ -17,7 +15,7 @@ module Mongoid
       #
       # @return [ Array<Object> ] The dumped data.
       def marshal_dump
-        data = [ klass, :mongo, inclusions, documents, strategy, negating ]
+        data = [klass, :mongo, inclusions, documents, strategy, negating]
         data.push(scoping_options).push(dump_hash(:selector)).push(dump_hash(:options))
       end
 

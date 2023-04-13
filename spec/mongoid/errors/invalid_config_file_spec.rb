@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Errors::InvalidConfigFile do
-
   describe "#message" do
-
     let(:error) do
       described_class.new('/my/path')
     end

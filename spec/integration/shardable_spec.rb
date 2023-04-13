@@ -107,7 +107,6 @@ describe 'Sharding helpers' do
         stats = model_cls.collection.database.command(collStats: model_cls.collection.name).first
         expect(stats[:sharded]).to be false
       end
-
     end
 
     context 'when models have no sharded configuration' do

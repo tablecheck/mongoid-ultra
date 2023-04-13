@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::Document do
-
   let(:klass) do
     Person
   end

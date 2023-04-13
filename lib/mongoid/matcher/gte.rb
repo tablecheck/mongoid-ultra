@@ -1,13 +1,11 @@
 module Mongoid
   module Matcher
-
     # In-memory matcher for $gte expression.
     #
     # @see https://www.mongodb.com/docs/manual/reference/operator/query/gte/
     #
     # @api private
     module Gte
-
       # Returns whether a value satisfies a $gte expression.
       #
       # @param [ true | false ] exists Whether the value exists.

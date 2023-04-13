@@ -3,10 +3,8 @@
 module Mongoid
   class Criteria
     module Queryable
-
       # This is a smart hash for use with options and selectors.
       class Smash < Hash
-
         # @attribute [r] aliases The aliases.
         attr_reader :aliases
 
@@ -102,7 +100,7 @@ module Mongoid
         def storage_pair(key)
           field = key.to_s
           name = Fields.database_field_name(field, associations, aliases, aliased_associations)
-          [ name, get_serializer(name) ]
+          [name, get_serializer(name)]
         end
 
         private

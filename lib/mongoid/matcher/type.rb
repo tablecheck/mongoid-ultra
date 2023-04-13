@@ -1,13 +1,11 @@
 module Mongoid
   module Matcher
-
     # In-memory matcher for $type expression.
     #
     # @see https://www.mongodb.com/docs/manual/reference/operator/query/type/
     #
     # @api private
     module Type
-
       # Returns whether a value satisfies a $type expression.
       #
       # @param [ true | false ] exists Whether the value exists.
@@ -20,13 +18,13 @@ module Mongoid
       # @api private
       module_function def matches?(exists, value, condition)
         conditions = case condition
-        when Array
-          condition
-        when Integer
-          [condition]
-        else
-          raise Errors::InvalidQuery, "Unknown $type argument: #{condition}"
-        end
+                     when Array
+                       condition
+                     when Integer
+                       [condition]
+                     else
+                       raise Errors::InvalidQuery, "Unknown $type argument: #{condition}"
+                     end
         conditions.each do |condition|
           if one_matches?(exists, value, condition)
             return true
@@ -95,16 +93,16 @@ module Mongoid
           BSON::CodeWithScope === value
         when 16
           # 32-bit int
-          BSON::Int32 === value || Integer === value && (-2**32..2**32-1).include?(value)
+          BSON::Int32 === value || Integer === value && (-2**32..2**32 - 1).include?(value)
         when 17
           # Timestamp
           BSON::Timestamp === value
         when 18
           # Long
           BSON::Int64 === value ||
-            Integer === value &&
-              (-2**64..2**64-1).include?(value) &&
-              !(-2**32..2**32-1).include?(value)
+          Integer === value &&
+          (-2**64..2**64 - 1).include?(value) &&
+          !(-2**32..2**32 - 1).include?(value)
         when 19
           # Decimal
           BSON::Decimal128 === value

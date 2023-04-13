@@ -3,17 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Association::Accessors do
-
   describe "\#{getter}?" do
-
     let(:person) do
       Person.create!
     end
 
     context "when the association is a has one" do
-
       context "when the association exists" do
-
         let!(:game) do
           person.build_game
         end
@@ -24,16 +20,13 @@ describe Mongoid::Association::Accessors do
       end
 
       context "when the association does not exist" do
-
         context "when not autobuilding" do
-
           it "returns false" do
             expect(person).to_not have_game
           end
         end
 
         context "when autobuilding" do
-
           it "returns false" do
             expect(person).to_not have_book
           end
@@ -42,9 +35,7 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when the association is a has many" do
-
       context "when the association has documents" do
-
         let!(:post) do
           person.posts.build
         end
@@ -55,7 +46,6 @@ describe Mongoid::Association::Accessors do
       end
 
       context "when the association does not have documents" do
-
         it "returns false" do
           expect(person).to_not have_posts
         end
@@ -63,9 +53,7 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when the association is a has and belongs to many" do
-
       context "when the association has documents" do
-
         let!(:preference) do
           person.preferences.build
         end
@@ -76,7 +64,6 @@ describe Mongoid::Association::Accessors do
       end
 
       context "when the association does not have documents" do
-
         it "returns false" do
           expect(person).to_not have_preferences
         end
@@ -84,9 +71,7 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when the association is a belongs to" do
-
       context "when the association is named next" do
-
         let(:user) do
           User.create!
         end
@@ -97,7 +82,6 @@ describe Mongoid::Association::Accessors do
       end
 
       context "when the association exists" do
-
         let!(:game) do
           person.build_game
         end
@@ -108,9 +92,7 @@ describe Mongoid::Association::Accessors do
       end
 
       context "when the association does not exist" do
-
         context "when the association does not autobuild" do
-
           let(:game) do
             Game.new
           end
@@ -121,7 +103,6 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when the association autobuilds" do
-
           let(:book) do
             Book.new
           end
@@ -134,9 +115,7 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when the association is an embeds one" do
-
       context "when the association exists" do
-
         let!(:name) do
           person.build_name
         end
@@ -147,16 +126,13 @@ describe Mongoid::Association::Accessors do
       end
 
       context "when the association does not exist" do
-
         context "when the association does not autobuild" do
-
           it "returns false" do
             expect(person).to_not have_name
           end
         end
 
         context "when the association autobuilds" do
-
           let(:person) do
             Person.new
           end
@@ -181,9 +157,7 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when the association is an embeds many" do
-
       context "when the association has documents" do
-
         let!(:address) do
           person.addresses.build
         end
@@ -194,7 +168,6 @@ describe Mongoid::Association::Accessors do
       end
 
       context "when the association does not have documents" do
-
         it "returns false" do
           expect(person).to_not have_addresses
         end
@@ -202,9 +175,7 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when the association is an embedded in" do
-
       context "when the association exists" do
-
         let!(:name) do
           person.build_name
         end
@@ -215,9 +186,7 @@ describe Mongoid::Association::Accessors do
       end
 
       context "when the association does not exist" do
-
         context "when the association does not autobuild" do
-
           let(:name) do
             Name.new
           end
@@ -228,7 +197,6 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when the association autobuilds" do
-
           let(:passport) do
             Passport.new
           end
@@ -242,17 +210,13 @@ describe Mongoid::Association::Accessors do
   end
 
   describe "\#{getter}" do
-
     let(:person) do
       Person.new
     end
 
     context "when autobuilding the association" do
-
       context "when the association is an embeds one" do
-
         context "when the association does not exist" do
-
           let!(:passport) do
             person.passport
           end
@@ -267,7 +231,6 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when the association exists" do
-
           let!(:passport) do
             person.build_passport(number: "123123321")
           end
@@ -275,18 +238,15 @@ describe Mongoid::Association::Accessors do
           it "does not build a new document" do
             expect(person.passport).to eq(passport)
           end
-
         end
       end
 
       context "when the association is an embedded in" do
-
         let(:passport) do
           Passport.new
         end
 
         context "when the association does not exist" do
-
           let(:person) do
             passport.person
           end
@@ -297,7 +257,6 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when the association exists" do
-
           let!(:person) do
             passport.build_person(title: "sir")
           end
@@ -309,9 +268,7 @@ describe Mongoid::Association::Accessors do
       end
 
       context "when the association is a has one" do
-
         context "when the association does not exist" do
-
           let(:book) do
             person.book
           end
@@ -322,7 +279,6 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when the association exists" do
-
           let!(:book) do
             person.build_book(title: "art of war")
           end
@@ -334,13 +290,11 @@ describe Mongoid::Association::Accessors do
       end
 
       context "when the association is a belongs to" do
-
         let(:book) do
           Book.new
         end
 
         context "when the association does not exist" do
-
           let(:person) do
             book.person
           end
@@ -351,7 +305,6 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when the association exists" do
-
           let!(:person) do
             book.build_person(title: "sir")
           end
@@ -364,13 +317,11 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when the association is not polymorphic" do
-
       let(:person) do
         Person.create!
       end
 
       context "when the association is a many to many" do
-
         let!(:preference) do
           Preference.create!(name: "Setting")
         end
@@ -380,13 +331,12 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when reloading the association directly" do
-
           let(:preferences) do
             person.preferences(true)
           end
 
           it "reloads the correct documents" do
-            expect(preferences).to eq([ preference ])
+            expect(preferences).to eq([preference])
           end
 
           it "reloads a new instance" do
@@ -395,13 +345,12 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when reloading via the base document" do
-
           let(:preferences) do
             person.reload.preferences
           end
 
           it "reloads the correct documents" do
-            expect(preferences).to eq([ preference ])
+            expect(preferences).to eq([preference])
           end
 
           it "reloads a new instance" do
@@ -410,19 +359,17 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when performing a fresh find on the base" do
-
           let(:preferences) do
             Person.find(person.id).preferences
           end
 
           it "reloads the correct documents" do
-            expect(preferences).to eq([ preference ])
+            expect(preferences).to eq([preference])
           end
         end
       end
 
       context "when the association is a many to one" do
-
         let!(:post) do
           Post.create!(title: "First!")
         end
@@ -432,13 +379,12 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when reloading the association directly" do
-
           let(:posts) do
             person.posts(true)
           end
 
           it "reloads the correct documents" do
-            expect(posts).to eq([ post ])
+            expect(posts).to eq([post])
           end
 
           it "reloads a new instance" do
@@ -447,13 +393,12 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when reloading via the base document" do
-
           let(:posts) do
             person.reload.posts
           end
 
           it "reloads the correct documents" do
-            expect(posts).to eq([ post ])
+            expect(posts).to eq([post])
           end
 
           it "reloads a new instance" do
@@ -462,19 +407,17 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when performing a fresh find on the base" do
-
           let(:posts) do
             Person.find(person.id).posts
           end
 
           it "reloads the correct documents" do
-            expect(posts).to eq([ post ])
+            expect(posts).to eq([post])
           end
         end
       end
 
       context "when the association is a references one" do
-
         let!(:game) do
           Game.create!(name: "Centipeded")
         end
@@ -484,7 +427,6 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when reloading the association directly" do
-
           let(:reloaded_game) do
             person.game(true)
           end
@@ -499,7 +441,6 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when reloading via the base document" do
-
           let(:reloaded_game) do
             person.reload.game
           end
@@ -514,7 +455,6 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when performing a fresh find on the base" do
-
           let(:reloaded_game) do
             Person.find(person.id).game
           end
@@ -527,9 +467,7 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when the association is polymorphic" do
-
       context "when there's a single references many/one" do
-
         let!(:movie) do
           Movie.create!(title: "Inception")
         end
@@ -547,7 +485,6 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when accessing a referenced in" do
-
           let!(:rating) do
             Rating.where(value: 10).first
           end
@@ -558,18 +495,16 @@ describe Mongoid::Association::Accessors do
         end
 
         context "when accessing a references many" do
-
           let(:ratings) do
             Movie.first.ratings
           end
 
           it "returns the correct documents" do
-            expect(ratings).to eq([ movie_rating ])
+            expect(ratings).to eq([movie_rating])
           end
         end
 
         context "when accessing a references one" do
-
           let!(:rating) do
             Book.find(book.id).rating
           end
@@ -583,7 +518,6 @@ describe Mongoid::Association::Accessors do
 
     context 'when projecting' do
       context 'embeds_one' do
-
         let!(:person) do
           Person.create!(passport: Passport.new(number: "123123321", country: "USA"))
         end
@@ -665,11 +599,10 @@ describe Mongoid::Association::Accessors do
       end
 
       context 'embeds_many' do
-
         let!(:person) do
           Person.create!(phone_numbers: [
-            Phone.new(number: '111-111-1111', landline: true),
-          ])
+                           Phone.new(number: '111-111-1111', landline: true),
+                         ])
         end
 
         context 'when the record is queried with the embedded association projected' do
@@ -704,7 +637,6 @@ describe Mongoid::Association::Accessors do
         end
 
         context 'when projecting association and a field in association' do
-
           shared_examples 'is prohibited on 4.4+ server' do
             context '4.4 server and higher' do
               min_server_version '4.4'
@@ -730,7 +662,6 @@ describe Mongoid::Association::Accessors do
                   persisted_person.phone_numbers.first.landline
                 end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'landline' on Phone which was not loaded/)
               end
-
             end
 
             include_examples 'is prohibited on 4.4+ server'
@@ -757,15 +688,12 @@ describe Mongoid::Association::Accessors do
   end
 
   context "when setting associations to empty values" do
-
     context "when the document is a referenced in" do
-
       let(:post) do
         Post.new
       end
 
       context "when setting the association directly" do
-
         before do
           post.person = ""
         end
@@ -776,7 +704,6 @@ describe Mongoid::Association::Accessors do
       end
 
       context "when setting the foreign key" do
-
         before do
           post.person_id = ""
         end
@@ -788,13 +715,11 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when the document is a references one" do
-
       let(:person) do
         Person.new
       end
 
       context "when setting the association directly" do
-
         before do
           person.game = ""
         end
@@ -805,7 +730,6 @@ describe Mongoid::Association::Accessors do
       end
 
       context "when setting the foreign key" do
-
         let(:game) do
           Game.new
         end
@@ -821,13 +745,11 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when the document is a references many" do
-
       let(:person) do
         Person.new
       end
 
       context "when setting the foreign key" do
-
         let(:post) do
           Post.new
         end
@@ -842,13 +764,12 @@ describe Mongoid::Association::Accessors do
       end
 
       context "when setting the _ids accessor" do
-
         let(:post) do
           Post.create!
         end
 
         before do
-          person.post_ids = [ "" ]
+          person.post_ids = [""]
         end
 
         it "ignore blank values" do
@@ -858,15 +779,13 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when the document is a references many to many" do
-
       let(:person) do
         Person.new
       end
 
       context "when setting the foreign key" do
-
         before do
-          person.preference_ids = [ "", "" ]
+          person.preference_ids = ["", ""]
         end
 
         it "does not add them" do
@@ -916,7 +835,6 @@ describe Mongoid::Association::Accessors do
   end
 
   context "when setting association foreign keys" do
-
     let(:game) do
       Game.new
     end
@@ -926,7 +844,6 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when value is an empty string" do
-
       before do
         game.person_id = ""
         game.save!
@@ -938,7 +855,6 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when value is a populated string" do
-
       before do
         game.person_id = person.id.to_s
         game.save!
@@ -950,7 +866,6 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when value is a ObjectID" do
-
       before do
         game.person_id = person.id
         game.save!
@@ -962,7 +877,6 @@ describe Mongoid::Association::Accessors do
     end
 
     context "when setting ids multiple times on the association itself" do
-
       before do
         game.person = person.id
         game.person = person.id
@@ -979,13 +893,11 @@ describe Mongoid::Association::Accessors do
   end
 
   context 'when setting the association more than once' do
-
     let(:person) do
       Person.create!
     end
 
     context 'when the association is a references one' do
-
       let(:game) do
         Game.create!
       end
@@ -1001,7 +913,6 @@ describe Mongoid::Association::Accessors do
     end
 
     context 'when the association is a references many' do
-
       let!(:preference) do
         Preference.create!(name: "Setting")
       end
@@ -1016,7 +927,6 @@ describe Mongoid::Association::Accessors do
     end
 
     context 'when the association is an embeds one' do
-
       let!(:name) do
         Name.new
       end
@@ -1032,7 +942,6 @@ describe Mongoid::Association::Accessors do
     end
 
     context 'when the association is an embeds many' do
-
       let!(:address) do
         Address.new
       end

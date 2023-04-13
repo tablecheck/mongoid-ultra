@@ -4,7 +4,6 @@ module Mongoid
   module Association
     module Embedded
       class EmbedsOne
-
         # Builder class for embeds_one associations.
         module Buildable
           include Threaded::Lifecycle

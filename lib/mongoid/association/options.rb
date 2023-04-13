@@ -2,10 +2,8 @@
 
 module Mongoid
   module Association
-
     # Options context used for all association types.
     module Options
-
       # Returns the name of the parent to a polymorphic child.
       #
       # @return [ String | Symbol ] The name.

@@ -4,15 +4,12 @@ require "spec_helper"
 require_relative "./includable_spec_models.rb"
 
 describe Mongoid::Criteria::Includable do
-
   describe "#includes" do
-
     let!(:person) do
       Person.create!(age: 1)
     end
 
     context "when providing a name that is not a relation" do
-
       it "raises an error" do
         expect {
           Person.includes(:members)
@@ -21,9 +18,8 @@ describe Mongoid::Criteria::Includable do
     end
 
     context "when providing one association" do
-
       let!(:user) do
-        User.create!(posts: [ post1 ])
+        User.create!(posts: [post1])
       end
 
       let!(:post1) do
@@ -39,14 +35,13 @@ describe Mongoid::Criteria::Includable do
       end
 
       it "includes the related objects" do
-        expect(result.posts).to eq([ post1 ])
+        expect(result.posts).to eq([post1])
       end
     end
 
     context "when providing a list of associations" do
-
       let!(:user) do
-        User.create!(posts: [ post1 ], descriptions: [ description1 ])
+        User.create!(posts: [post1], descriptions: [description1])
       end
 
       let!(:post1) do
@@ -66,20 +61,19 @@ describe Mongoid::Criteria::Includable do
       end
 
       it "includes the related objects" do
-        expect(result.posts).to eq([ post1 ])
-        expect(result.descriptions).to eq([ description1 ])
+        expect(result.posts).to eq([post1])
+        expect(result.descriptions).to eq([description1])
       end
     end
 
     context "when providing a nested association" do
-
       let!(:user) do
         User.create!
       end
 
       before do
-        p = Post.create!(alerts: [ Alert.create! ])
-        user.posts = [ p ]
+        p = Post.create!(alerts: [Alert.create!])
+        user.posts = [p]
         user.save!
       end
 
@@ -98,7 +92,6 @@ describe Mongoid::Criteria::Includable do
     end
 
     context "when providing a deeply nested association" do
-
       let!(:user) do
         User.create!
       end
@@ -113,7 +106,6 @@ describe Mongoid::Criteria::Includable do
     end
 
     context "when the models are inherited" do
-
       before(:all) do
         class A
           include Mongoid::Document
@@ -136,7 +128,6 @@ describe Mongoid::Criteria::Includable do
       end
 
       context "when the includes is on the subclass" do
-
         let!(:c_one) do
           C.create!
         end
@@ -168,9 +159,7 @@ describe Mongoid::Criteria::Includable do
     end
 
     context "when the models are inherited from another one model" do
-
       context "when the relation is a has_one" do
-
         before(:all) do
           class A
             include Mongoid::Document
@@ -199,7 +188,6 @@ describe Mongoid::Criteria::Includable do
         end
 
         context "when the includes is on the several relations" do
-
           let!(:d_one) do
             D.create!
           end
@@ -241,7 +229,6 @@ describe Mongoid::Criteria::Includable do
       end
 
       context "when the relation is a has_many" do
-
         before(:all) do
           class A
             include Mongoid::Document
@@ -270,7 +257,6 @@ describe Mongoid::Criteria::Includable do
         end
 
         context "when the includes is on the several relations" do
-
           let!(:d_one) do
             D.create!
           end
@@ -313,7 +299,6 @@ describe Mongoid::Criteria::Includable do
     end
 
     context "when including the same association multiple times" do
-
       let(:criteria) do
         Person.all.includes(:posts, :posts).includes(:posts)
       end
@@ -323,12 +308,11 @@ describe Mongoid::Criteria::Includable do
       end
 
       it "does not duplicate the association in the inclusions" do
-        expect(criteria.inclusions).to eq([ association ])
+        expect(criteria.inclusions).to eq([association])
       end
     end
 
     context "when mapping the results more than once" do
-
       let!(:post) do
         person.posts.create!(title: "one")
       end
@@ -348,9 +332,7 @@ describe Mongoid::Criteria::Includable do
     end
 
     context "when including a belongs to relation" do
-
       context "when the criteria is from the root" do
-
         let!(:person_two) do
           Person.create!(age: 2)
         end
@@ -364,7 +346,6 @@ describe Mongoid::Criteria::Includable do
         end
 
         context "when calling first" do
-
           let(:criteria) do
             Post.includes(:person)
           end
@@ -385,7 +366,6 @@ describe Mongoid::Criteria::Includable do
         end
 
         context "when calling last" do
-
           let!(:criteria) do
             Post.asc(:_id).includes(:person)
           end
@@ -407,7 +387,6 @@ describe Mongoid::Criteria::Includable do
       end
 
       context "when the criteria is from an embedded relation" do
-
         let(:peep) do
           Person.create!
         end
@@ -436,7 +415,6 @@ describe Mongoid::Criteria::Includable do
         end
 
         context "when calling first" do
-
           let(:criteria) do
             peep.reload.addresses.includes(:band)
           end
@@ -461,7 +439,6 @@ describe Mongoid::Criteria::Includable do
         end
 
         context "when calling last" do
-
           let(:criteria) do
             peep.reload.addresses.includes(:band)
           end
@@ -486,7 +463,6 @@ describe Mongoid::Criteria::Includable do
         end
 
         context "when iterating all documents" do
-
           let(:criteria) do
             peep.reload.addresses.includes(:band)
           end
@@ -512,16 +488,15 @@ describe Mongoid::Criteria::Includable do
           end
 
           it "returns the documents" do
-            expect(documents).to eq([ address_one, address_two ])
+            expect(documents).to eq([address_one, address_two])
           end
         end
       end
     end
 
     context "when providing inclusions to the default scope" do
-
       before do
-        Person.default_scope(->{ Person.includes(:posts) })
+        Person.default_scope(-> { Person.includes(:posts) })
       end
 
       after do
@@ -537,7 +512,6 @@ describe Mongoid::Criteria::Includable do
       end
 
       context "when the criteria has no options" do
-
         let!(:criteria) do
           Person.asc(:age).all
         end
@@ -547,7 +521,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+          expect(documents).to eq([person])
         end
 
         it "eager loads the first document" do
@@ -563,7 +537,6 @@ describe Mongoid::Criteria::Includable do
         end
 
         context "when executing the query twice" do
-
           let!(:new_criteria) do
             Person.where(id: person.id)
           end
@@ -587,7 +560,6 @@ describe Mongoid::Criteria::Includable do
       end
 
       context "when calling first on the criteria" do
-
         let(:criteria) do
           Person.asc(:age).all
         end
@@ -614,7 +586,6 @@ describe Mongoid::Criteria::Includable do
       end
 
       context "when calling last on the criteria" do
-
         let(:criteria) do
           Person.asc(:age).all
         end
@@ -649,7 +620,6 @@ describe Mongoid::Criteria::Includable do
       end
 
       context "when the criteria has limiting options" do
-
         let!(:person_two) do
           Person.create!
         end
@@ -667,7 +637,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(criteria).to eq([ person ])
+          expect(criteria).to eq([person])
         end
 
         it "eager loads the first document" do
@@ -685,7 +655,6 @@ describe Mongoid::Criteria::Includable do
     end
 
     context "when including a has and belongs to many" do
-
       let!(:preference_one) do
         person.preferences.create!(name: "one")
       end
@@ -695,9 +664,8 @@ describe Mongoid::Criteria::Includable do
       end
 
       context "when one of the related items is deleted" do
-
         before do
-          person.preferences = [ preference_one, preference_two ]
+          person.preferences = [preference_one, preference_two]
           preference_two.delete
         end
 
@@ -706,12 +674,11 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "only loads the existing related items" do
-          expect(criteria.entries.first.preferences).to eq([ preference_one ])
+          expect(criteria.entries.first.preferences).to eq([preference_one])
         end
       end
 
       context "when the criteria has no options" do
-
         let!(:criteria) do
           Person.asc(:age).includes(:preferences)
         end
@@ -721,7 +688,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+          expect(documents).to eq([person])
         end
 
         it "eager loads the first document" do
@@ -738,7 +705,6 @@ describe Mongoid::Criteria::Includable do
       end
 
       context "when calling first on the criteria" do
-
         let!(:criteria) do
           Person.asc(:age).includes(:preferences)
         end
@@ -765,7 +731,6 @@ describe Mongoid::Criteria::Includable do
       end
 
       context "when calling last on the criteria" do
-
         let!(:criteria) do
           Person.asc(:age).includes(:preferences)
         end
@@ -793,7 +758,6 @@ describe Mongoid::Criteria::Includable do
     end
 
     context "when including a has many" do
-
       let!(:post_one) do
         person.posts.create!(title: "one")
       end
@@ -803,7 +767,6 @@ describe Mongoid::Criteria::Includable do
       end
 
       context "when the criteria has no options" do
-
         let!(:criteria) do
           Person.asc(:age).includes(:posts)
         end
@@ -813,7 +776,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+          expect(documents).to eq([person])
         end
 
         it "eager loads the first document" do
@@ -830,7 +793,6 @@ describe Mongoid::Criteria::Includable do
       end
 
       context "when calling first on the criteria" do
-
         let!(:criteria) do
           Person.asc(:age).includes(:posts)
         end
@@ -844,19 +806,17 @@ describe Mongoid::Criteria::Includable do
         end
 
         context "when subsequently getting all documents" do
-
           let!(:documents) do
             criteria.entries
           end
 
           it "returns the correct documents" do
-            expect(documents).to eq([ person ])
+            expect(documents).to eq([person])
           end
         end
       end
 
       context "when calling last on the criteria" do
-
         let!(:criteria) do
           Person.asc(:age).includes(:posts)
         end
@@ -870,19 +830,17 @@ describe Mongoid::Criteria::Includable do
         end
 
         context "when subsequently getting all documents" do
-
           let!(:documents) do
             criteria.entries
           end
 
           it "returns the correct documents" do
-            expect(documents).to eq([ person ])
+            expect(documents).to eq([person])
           end
         end
       end
 
       context "when the criteria has limiting options" do
-
         let!(:person_two) do
           Person.create!
         end
@@ -900,7 +858,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         before do
-          expect(context).to receive(:eager_load).with([ person ]).once.and_call_original
+          expect(context).to receive(:eager_load).with([person]).once.and_call_original
         end
 
         let!(:documents) do
@@ -908,13 +866,12 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+          expect(documents).to eq([person])
         end
       end
     end
 
     context "when including a has one" do
-
       let!(:game_one) do
         person.create_game(name: "one")
       end
@@ -924,7 +881,6 @@ describe Mongoid::Criteria::Includable do
       end
 
       context "when the criteria has no options" do
-
         let!(:criteria) do
           Person.asc(:age).includes(:game)
         end
@@ -934,7 +890,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         before do
-          expect(context).to receive(:eager_load).with([ person ]).once.and_call_original
+          expect(context).to receive(:eager_load).with([person]).once.and_call_original
         end
 
         let!(:documents) do
@@ -942,12 +898,11 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+          expect(documents).to eq([person])
         end
       end
 
       context "when the criteria has limiting options" do
-
         let!(:person_two) do
           Person.create!(age: 2)
         end
@@ -965,7 +920,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         before do
-          expect(context).to receive(:eager_load).with([ person ]).once.and_call_original
+          expect(context).to receive(:eager_load).with([person]).once.and_call_original
         end
 
         let!(:documents) do
@@ -973,13 +928,12 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+          expect(documents).to eq([person])
         end
       end
     end
 
     context "when including a belongs to" do
-
       let(:person_two) do
         Person.create!(age: 2)
       end
@@ -993,7 +947,6 @@ describe Mongoid::Criteria::Includable do
       end
 
       context "when providing no options" do
-
         let!(:criteria) do
           Game.includes(:person)
         end
@@ -1011,12 +964,11 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(criteria).to eq([ game_one, game_two ])
+          expect(criteria).to eq([game_one, game_two])
         end
       end
 
       context "when the criteria has limiting options" do
-
         let!(:criteria) do
           Game.where(id: game_one.id).includes(:person).asc(:_id).limit(1)
         end
@@ -1026,7 +978,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         before do
-          expect(context).to receive(:eager_load).with([ game_one ]).once.and_call_original
+          expect(context).to receive(:eager_load).with([game_one]).once.and_call_original
         end
 
         let!(:documents) do
@@ -1034,13 +986,12 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(documents).to eq([ game_one ])
+          expect(documents).to eq([game_one])
         end
       end
     end
 
     context "when including multiples in the same criteria" do
-
       let!(:post_one) do
         person.posts.create!(title: "one")
       end
@@ -1074,12 +1025,11 @@ describe Mongoid::Criteria::Includable do
       end
 
       it "returns the correct documents" do
-        expect(criteria).to eq([ person ])
+        expect(criteria).to eq([person])
       end
     end
 
     context "when including nested referenced associations" do
-
       context "when using a has_one association" do
         before(:all) do
           class A
@@ -1284,21 +1234,20 @@ describe Mongoid::Criteria::Includable do
     end
 
     context "when using a has_many association" do
-
       let!(:user) do
         IncUser.create!(posts: posts, comments: user_comments)
       end
 
       let!(:posts) do
-        [ IncPost.create!(comments: post_comments) ]
+        [IncPost.create!(comments: post_comments)]
       end
 
       let!(:user_comments) do
-        2.times.map{ IncComment.create! }
+        2.times.map { IncComment.create! }
       end
 
       let!(:post_comments) do
-        2.times.map{ IncComment.create! }
+        2.times.map { IncComment.create! }
       end
 
       context "when including the same class twice" do
@@ -1364,7 +1313,6 @@ describe Mongoid::Criteria::Includable do
   end
 
   describe "#inclusions" do
-
     let(:criteria) do
       Band.includes(:records)
     end
@@ -1374,12 +1322,11 @@ describe Mongoid::Criteria::Includable do
     end
 
     it "returns the inclusions" do
-      expect(criteria.inclusions).to eq([ association ])
+      expect(criteria.inclusions).to eq([association])
     end
   end
 
   describe "#inclusions=" do
-
     let(:criteria) do
       Band.all
     end
@@ -1389,11 +1336,11 @@ describe Mongoid::Criteria::Includable do
     end
 
     before do
-      criteria.inclusions = [ association ]
+      criteria.inclusions = [association]
     end
 
     it "sets the inclusions" do
-      expect(criteria.inclusions).to eq([ association ])
+      expect(criteria.inclusions).to eq([association])
     end
   end
 
@@ -1463,12 +1410,11 @@ describe Mongoid::Criteria::Includable do
     end
 
     context "when including an association and using each twice on a criteria" do
-
       let(:criteria) { IncPost.all.includes(:person) }
 
       before do
         p = IncPerson.create!(name: "name")
-        4.times { IncPost.create!(person: p)}
+        4.times { IncPost.create!(person: p) }
         criteria
         expect_query(2, skip_if_sharded: true) do
           criteria.each(&:person)

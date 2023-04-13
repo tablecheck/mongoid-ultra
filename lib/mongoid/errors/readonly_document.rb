@@ -2,11 +2,9 @@
 
 module Mongoid
   module Errors
-
     # Raised when attempting to persist a document that was loaded from the
     # database with partial fields.
     class ReadonlyDocument < MongoidError
-
       # Instantiate the exception.
       #
       # @example Create the error.

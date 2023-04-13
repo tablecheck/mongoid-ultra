@@ -2,7 +2,6 @@
 
 module Mongoid
   module Attributes
-
     # This module contains the behavior for dynamic attributes.
     module Dynamic
       extend ActiveSupport::Concern
@@ -121,6 +120,7 @@ module Mongoid
       def method_missing(name, *args)
         attr = name.to_s
         return super unless attributes.has_key?(attr.reader)
+
         if attr.writer?
           getter = attr.reader
           define_dynamic_writer(getter)

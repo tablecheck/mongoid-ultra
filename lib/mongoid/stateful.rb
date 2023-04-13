@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
 module Mongoid
-
   # Mixin module included into Mongoid::Document which adds behavior for
   # getting the various lifecycle states a document can transition through.
   module Stateful
-
     attr_writer :destroyed, :flagged_for_destroy, :previously_new_record
 
     # Sets whether the document has been persisted to the database.

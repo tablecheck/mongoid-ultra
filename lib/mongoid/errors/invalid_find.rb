@@ -2,10 +2,8 @@
 
 module Mongoid
   module Errors
-
     # Raised when invalid arguments are passed to #find.
     class InvalidFind < MongoidError
-
       # Create the new invalid find error.
       #
       # @example Create the error.

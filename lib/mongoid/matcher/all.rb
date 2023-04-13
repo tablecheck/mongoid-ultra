@@ -1,13 +1,11 @@
 module Mongoid
   module Matcher
-
     # In-memory matcher for $all expression.
     #
     # @see https://www.mongodb.com/docs/manual/reference/operator/query/all/
     #
     # @api private
     module All
-
       # Returns whether a value satisfies an $all expression.
       #
       # @param [ true | false ] exists Not used.

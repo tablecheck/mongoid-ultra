@@ -3,13 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Association::Referenced::HasOne::Buildable do
-
   let(:base) do
     double(new_record?: false)
   end
 
   describe "#build" do
-
     let(:document) do
       association.build(base, object)
     end
@@ -23,7 +21,6 @@ describe Mongoid::Association::Referenced::HasOne::Buildable do
     end
 
     context "when provided an id" do
-
       let!(:account) do
         Account.create!(person_id: object, name: 'banking', balance: 200)
       end
@@ -42,7 +39,6 @@ describe Mongoid::Association::Referenced::HasOne::Buildable do
     end
 
     context "when scope is specified" do
-
       let!(:account) do
         Account.create!(person_id: object, name: 'banking', balance: 200)
       end
@@ -53,7 +49,7 @@ describe Mongoid::Association::Referenced::HasOne::Buildable do
 
       let(:options) do
         {
-            scope: -> { gt(balance: 100) }
+          scope: -> { gt(balance: 100) }
         }
       end
 
@@ -63,14 +59,12 @@ describe Mongoid::Association::Referenced::HasOne::Buildable do
       end
 
       context "when document satisfies scope" do
-
         it "sets the document" do
           expect(document).to eq(account)
         end
       end
 
       context "when document does not satisfy scope" do
-
         let!(:account) do
           Account.create!(person_id: object, name: 'banking', balance: 50)
         end
@@ -82,7 +76,6 @@ describe Mongoid::Association::Referenced::HasOne::Buildable do
     end
 
     context "when provided a object" do
-
       let(:object) do
         Account.new
       end
@@ -92,7 +85,6 @@ describe Mongoid::Association::Referenced::HasOne::Buildable do
       end
 
       context 'when the object is already associated with another object' do
-
         let(:original_person) do
           Person.new
         end
@@ -116,7 +108,6 @@ describe Mongoid::Association::Referenced::HasOne::Buildable do
     end
 
     context "when the document is not found" do
-
       let(:object) do
         BSON::ObjectId.new
       end
@@ -127,7 +118,6 @@ describe Mongoid::Association::Referenced::HasOne::Buildable do
     end
 
     context "when the document is persisted" do
-
       let(:person) do
         Person.create!
       end
@@ -142,7 +132,6 @@ describe Mongoid::Association::Referenced::HasOne::Buildable do
     end
 
     context "when the document have a non standard pk" do
-
       let(:person) do
         Person.create!
       end

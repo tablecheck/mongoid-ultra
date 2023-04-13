@@ -7,7 +7,6 @@ require 'mongoid/association/embedded/embedded_in/proxy'
 module Mongoid
   module Association
     module Embedded
-
       # The EmbeddedIn type association.
       class EmbeddedIn
         include Relatable
@@ -18,10 +17,10 @@ module Mongoid
         #
         # @return [ Array<Symbol> ] The extra valid options.
         ASSOCIATION_OPTIONS = [
-            :autobuild,
-            :cyclic,
-            :polymorphic,
-            :touch,
+          :autobuild,
+          :cyclic,
+          :polymorphic,
+          :touch,
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -109,16 +108,16 @@ module Mongoid
         end
 
         def relation_complements
-          @relation_complements ||= [ Embedded::EmbedsMany,
-                                      Embedded::EmbedsOne ].freeze
+          @relation_complements ||= [Embedded::EmbedsMany,
+                                     Embedded::EmbedsOne].freeze
         end
 
         def polymorphic_inverses(other = nil)
           if other
             matches = other.relations.values.select do |rel|
               relation_complements.include?(rel.class) &&
-                  rel.as == name &&
-                  rel.relation_class_name == inverse_class_name
+                rel.as == name &&
+                rel.relation_class_name == inverse_class_name
             end
 
             matches.map { |m| m.name }
@@ -128,11 +127,12 @@ module Mongoid
         def determine_inverses(other)
           matches = (other || relation_class).relations.values.select do |rel|
             relation_complements.include?(rel.class) &&
-                rel.relation_class_name == inverse_class_name
+              rel.relation_class_name == inverse_class_name
           end
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
+
           matches.collect { |m| m.name } unless matches.blank?
         end
       end

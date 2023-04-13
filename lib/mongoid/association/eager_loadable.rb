@@ -4,10 +4,8 @@ require "mongoid/association/eager"
 
 module Mongoid
   module Association
-
     # This module defines the eager loading behavior for criteria.
     module EagerLoadable
-
       # Indicates whether the criteria has association
       # inclusions which should be eager loaded.
       #
@@ -39,7 +37,7 @@ module Mongoid
       def preload(associations, docs)
         assoc_map = associations.group_by(&:inverse_class_name)
         docs_map = {}
-        queue = [ klass.to_s ]
+        queue = [klass.to_s]
 
         while klass = queue.shift
           if as = assoc_map.delete(klass)
@@ -51,7 +49,7 @@ module Mongoid
               # we will include documents from the documents passed to this method.
               ds = docs
               if assoc.parent_inclusions.length > 0
-                ds = assoc.parent_inclusions.map{ |p| docs_map[p].to_a }.flatten
+                ds = assoc.parent_inclusions.map { |p| docs_map[p].to_a }.flatten
               end
 
               res = assoc.relation.eager_loader([assoc], ds).run

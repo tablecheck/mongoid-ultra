@@ -3,7 +3,6 @@
 require "spec_helper"
 
 describe Mongoid::Atomic::Paths::Embedded::Many do
-
   let(:person) do
     Person.new
   end
@@ -25,37 +24,31 @@ describe Mongoid::Atomic::Paths::Embedded::Many do
   end
 
   describe "#delete_modifier" do
-
     it "returns $pull" do
       expect(many.delete_modifier).to eq("$pull")
     end
   end
 
   describe "#document" do
-
     it "returns the document" do
       expect(many.document).to eq(address)
     end
   end
 
   describe "#insert_modifier" do
-
     it "returns $push" do
       expect(many.insert_modifier).to eq("$push")
     end
   end
 
   describe "#path" do
-
     context "when the document is embedded one level" do
-
       it "returns the name of the relation" do
         expect(many.path).to eq("addresses")
       end
     end
 
     context "when the document is embedded multiple levels" do
-
       let(:location) do
         Location.new(name: "home")
       end
@@ -75,9 +68,7 @@ describe Mongoid::Atomic::Paths::Embedded::Many do
   end
 
   describe "#position" do
-
     context "when the document is embedded one level" do
-
       context "with a relation with :store_as option" do
         let(:many) do
           described_class.new(phone)
@@ -97,7 +88,6 @@ describe Mongoid::Atomic::Paths::Embedded::Many do
     end
 
     context "when the document is embedded multiple levels" do
-
       let(:location) do
         Location.new(name: "home")
       end

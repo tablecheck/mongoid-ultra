@@ -3,17 +3,15 @@
 require "spec_helper"
 
 describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
-
   let(:base) do
     double
   end
 
   let(:options) do
-    { }
+    {}
   end
 
   describe "#build" do
-
     let(:documents) do
       association.build(base, object)
     end
@@ -23,9 +21,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
     end
 
     context "when passed an array of documents" do
-
       let(:object) do
-        [ Address.new(city: "London") ]
+        [Address.new(city: "London")]
       end
 
       it "returns an array of documents" do
@@ -34,7 +31,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
     end
 
     context "when the array is empty" do
-
       let(:object) do
         []
       end
@@ -45,7 +41,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
     end
 
     context "when passed nil" do
-
       let(:object) do
         nil
       end
@@ -56,9 +51,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
     end
 
     context "when no type is in the object" do
-
       let(:object) do
-        [ { "city" => "London" }, { "city" => "Shanghai" } ]
+        [{ "city" => "London" }, { "city" => "Shanghai" }]
       end
 
       it "returns an array of documents" do
@@ -76,15 +70,14 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
     end
 
     context "when a type is in the object" do
-
       let(:association) do
         Mongoid::Association::Embedded::EmbedsMany.new(Person, :shapes)
       end
 
       let(:object) do
         [
-            { "_type" => "Circle", "radius" => 100 },
-            { "_type" => "Square", "width" => 50 }
+          { "_type" => "Circle", "radius" => 100 },
+          { "_type" => "Square", "width" => 50 }
         ]
       end
 
@@ -105,9 +98,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
   end
 
   context 'when the object is already associated with another object' do
-
     context "when using <<" do
-
       let(:person1) do
         Person.new
       end
@@ -132,7 +123,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
     end
 
     context "when using concat" do
-
       let(:person1) do
         Person.new
       end
@@ -157,7 +147,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
     end
 
     context "when using =" do
-
       let(:person1) do
         Person.new
       end
@@ -170,12 +159,12 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
         Appointment.new
       end
 
-      let(:apts) { [ appointment ] }
+      let(:apts) { [appointment] }
 
       before do
         person1.appointments = apts
         person2.appointments = apts
-        expect(apts).to eq([ appointment ])
+        expect(apts).to eq([appointment])
       end
 
       it 'clears the object of its previous association' do
@@ -185,7 +174,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
     end
 
     context "when using = on the same document twice" do
-
       let(:person1) do
         Person.new
       end
@@ -202,16 +190,16 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
         Appointment.new
       end
 
-      let(:apts) { [ appointment1, appointment2 ] }
+      let(:apts) { [appointment1, appointment2] }
 
       before do
         person1.appointments = apts
         person1.appointments = person1.appointments.reverse
-        expect(apts).to eq([ appointment1, appointment2  ])
+        expect(apts).to eq([appointment1, appointment2])
       end
 
       it 'clears the object of its previous association' do
-        expect(person1.appointments).to eq([ appointment2, appointment1 ])
+        expect(person1.appointments).to eq([appointment2, appointment1])
       end
     end
   end

@@ -1,13 +1,11 @@
 module Mongoid
   module Matcher
-
     # In-memory matcher for $size expression.
     #
     # @see https://www.mongodb.com/docs/manual/reference/operator/query/size/
     #
     # @api private
     module Size
-
       # Returns whether a value satisfies a $size expression.
       #
       # @param [ true | false ] exists Not used.

@@ -7,7 +7,7 @@ module Mongoid
     BUILD = 'build'.freeze
     LOAD = 'load'.freeze
     CREATE = 'create'.freeze
-    
+
     # This module contains convenience methods for document lifecycle that
     # resides on thread locals.
     module Lifecycle
@@ -128,7 +128,6 @@ module Mongoid
       end
 
       module ClassMethods
-
         # Execute a block in creating mode.
         #
         # @example Execute in creating mode.
@@ -143,7 +142,6 @@ module Mongoid
         ensure
           Threaded.exit_execution(CREATE)
         end
-
       end
     end
   end

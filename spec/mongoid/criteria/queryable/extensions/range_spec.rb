@@ -3,16 +3,13 @@
 require "spec_helper"
 
 describe Range do
-
   describe "#__array__" do
-
     it "returns the range as an array" do
-      expect((1..3).__array__).to eq([ 1, 2, 3 ])
+      expect((1..3).__array__).to eq([1, 2, 3])
     end
   end
 
   describe "#__evolve_date__" do
-
     subject(:evolved) { (min..max).__evolve_date__ }
 
     context "when the range are dates" do
@@ -103,7 +100,6 @@ describe Range do
   end
 
   describe "#__evolve_time__" do
-
     subject(:evolved) do
       (min..max).__evolve_time__
     end
@@ -211,7 +207,6 @@ describe Range do
 
   shared_examples_for "evolve_range" do
     context "when provided a range" do
-
       context "when the range is inclusive" do
         let(:range) { 1..3 }
 

@@ -95,10 +95,10 @@ CONFIG = {
   options: {
     belongs_to_required_by_default: false,
     log_level: if SpecConfig.instance.client_debug?
-      :debug
-    else
-      :info
-    end,
+                 :debug
+               else
+                 :info
+               end,
   }
 }
 
@@ -108,7 +108,7 @@ Mongoid.configure do |config|
 end
 
 # Autoload every model for the test suite that sits in spec/support/models.
-Dir[ File.join(MODELS, "*.rb") ].sort.each do |file|
+Dir[File.join(MODELS, "*.rb")].sort.each do |file|
   name = File.basename(file, ".rb")
   autoload name.camelize.to_sym, name
 end
@@ -125,7 +125,6 @@ ActiveSupport::Inflector.inflections do |inflect|
 end
 
 I18n.config.enforce_available_locales = false
-
 
 if %w(yes true 1).include?((ENV['TEST_I18N_FALLBACKS'] || '').downcase)
   require "i18n/backend/fallbacks"
@@ -188,7 +187,6 @@ end
 
 # A subscriber to be used with the Ruby driver for testing.
 class EventSubscriber
-
   # The started events.
   attr_reader :started_events
 

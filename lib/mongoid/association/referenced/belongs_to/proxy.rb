@@ -4,7 +4,6 @@ module Mongoid
   module Association
     module Referenced
       class BelongsTo
-
         # Transparent proxy for belong_to associations.
         # An instance of this class is returned when calling the
         # association getter method on the subject document.
@@ -84,6 +83,7 @@ module Mongoid
           # @return [ Mongoid::Document ] The document.
           def normalize(replacement)
             return replacement if replacement.is_a?(Document)
+
             _association.build(klass, replacement)
           end
 
@@ -98,7 +98,6 @@ module Mongoid
           end
 
           class << self
-
             # Get the Eager object for this type of association.
             #
             # @example Get the eager loader object

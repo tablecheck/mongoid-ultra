@@ -2,7 +2,6 @@
 
 module Mongoid
   module Clients
-
     # Factory used to create database clients.
     module Factory
       extend self
@@ -23,8 +22,10 @@ module Mongoid
       # @return [ Mongo::Client ] The new client.
       def create(name = nil)
         return default unless name
+
         config = Mongoid.clients[name]
         raise Errors::NoClientConfig.new(name) unless config
+
         create_client(config)
       end
 
@@ -55,6 +56,7 @@ module Mongoid
       # @return [ Mongo::Client ] The client.
       def create_client(configuration)
         raise Errors::NoClientsConfig.new unless configuration
+
         config = configuration.dup
         uri = config.delete(:uri)
         database = config.delete(:database)
@@ -104,13 +106,13 @@ module Mongoid
         options[:app_name] = Mongoid::Config.app_name if Mongoid::Config.app_name
         if (driver_version <=> [2, 13]) >= 0
           wrap_lib = if options[:wrapping_libraries]
-            [MONGOID_WRAPPING_LIBRARY] + options[:wrapping_libraries]
-          else
-            [MONGOID_WRAPPING_LIBRARY]
-          end
+                       [MONGOID_WRAPPING_LIBRARY] + options[:wrapping_libraries]
+                     else
+                       [MONGOID_WRAPPING_LIBRARY]
+                     end
           options[:wrapping_libraries] = wrap_lib
         end
-        options.reject{ |k, _v| k == :hosts }.to_hash.symbolize_keys!
+        options.reject { |k, _v| k == :hosts }.to_hash.symbolize_keys!
       end
     end
   end

@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Errors::UnsavedDocument do
-
   describe "#message" do
-
     let(:base) do
       Person.new
     end

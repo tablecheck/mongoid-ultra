@@ -5,7 +5,6 @@ require 'spec_helper'
 # This file serves as a record of server query behavior.
 
 describe 'Server queries' do
-
   context 'scalar operator on scalar field' do
     let!(:document) do
       Survey.create!(
@@ -16,7 +15,7 @@ describe 'Server queries' do
     end
 
     let(:query) do
-      {'questions.answers.position' => {'$gt' => 2}}
+      { 'questions.answers.position' => { '$gt' => 2 } }
     end
 
     it 'finds' do
@@ -37,7 +36,7 @@ describe 'Server queries' do
 
     context '$eq with scalar on array field' do
       let(:query) do
-        {'questions.answers.position' => {'$eq' => 3}}
+        { 'questions.answers.position' => { '$eq' => 3 } }
       end
 
       it 'finds' do
@@ -48,7 +47,7 @@ describe 'Server queries' do
     context '$ne with scalar on array field' do
       context 'same value as array item' do
         let(:query) do
-          {'questions.answers.position' => {'$ne' => 3}}
+          { 'questions.answers.position' => { '$ne' => 3 } }
         end
 
         it 'matches array and does not find' do
@@ -58,7 +57,7 @@ describe 'Server queries' do
 
       context 'different value from array items' do
         let(:query) do
-          {'questions.answers.position' => {'$ne' => 2}}
+          { 'questions.answers.position' => { '$ne' => 2 } }
         end
 
         it 'finds' do
@@ -69,7 +68,7 @@ describe 'Server queries' do
 
     context '$gt on array field' do
       let(:query) do
-        {'questions.answers.position' => {'$gt' => 2}}
+        { 'questions.answers.position' => { '$gt' => 2 } }
       end
 
       it 'finds' do
@@ -90,7 +89,7 @@ describe 'Server queries' do
       end
 
       let(:query) do
-        {'questions.answers.position' => {'$in' => [3]}}
+        { 'questions.answers.position' => { '$in' => [3] } }
       end
 
       it 'does not find' do
@@ -110,7 +109,7 @@ describe 'Server queries' do
       end
 
       let(:query) do
-        {'questions.answers.position' => {'$in' => [3]}}
+        { 'questions.answers.position' => { '$in' => [3] } }
       end
 
       it 'finds' do
@@ -130,7 +129,7 @@ describe 'Server queries' do
       end
 
       let(:query) do
-        {'questions.answers.position' => {'$in' => [3]}}
+        { 'questions.answers.position' => { '$in' => [3] } }
       end
 
       it 'finds' do

@@ -2,10 +2,8 @@
 
 module Mongoid
   module Extensions
-
     # Adds type-casting behavior to BSON::Binary class.
     module Binary
-
       # Turn the object from the ruby type we deal with to a Mongo friendly
       # type.
       #
@@ -18,7 +16,6 @@ module Mongoid
       end
 
       module ClassMethods
-
         # Mongoize an object of any type to how it's stored in the db.
         #
         # @example Mongoize the object.
@@ -29,6 +26,7 @@ module Mongoid
         # @return [ BSON::Binary | nil ] A Binary representing the object or nil.
         def mongoize(object)
           return if object.nil?
+
           case object
           when BSON::Binary then object
           when String, Symbol then BSON::Binary.new(object.to_s)

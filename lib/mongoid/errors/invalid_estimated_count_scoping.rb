@@ -2,11 +2,9 @@
 
 module Mongoid
   module Errors
-
     # This error is raised when trying to call estimated_count
     # on a model with a default scope.
     class InvalidEstimatedCountScoping < MongoidError
-
       # Creates the exception.
       #
       # @param [ String ] class_name The name of the criteria

@@ -2,10 +2,8 @@
 
 module Mongoid
   module Errors
-
     # Raised when no inverse_of definition can be found when needed.
     class InverseNotFound < MongoidError
-
       # Create then new error.
       #
       # @example Create the new error.

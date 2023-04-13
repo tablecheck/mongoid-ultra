@@ -3,9 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Errors::InverseNotFound do
-
   describe "#message" do
-
     let(:error) do
       described_class.new("Town", :citizens, "Person", :town_id)
     end

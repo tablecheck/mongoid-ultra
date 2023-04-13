@@ -4,10 +4,8 @@ module Mongoid
   class Criteria
     module Queryable
       module Extensions
-
         # Adds query type-casting behavior to Object class.
         module Object
-
           # Combine the two objects using the add strategy.
           #
           # @example Add the object to the array.
@@ -17,7 +15,7 @@ module Mongoid
           #
           # @return [ Object ] The result of the add.
           def __add__(object)
-            (object == self) ? self : [ self, object ].flatten.uniq
+            (object == self) ? self : [self, object].flatten.uniq
           end
 
           # Merge this object into the provided array.
@@ -108,7 +106,7 @@ module Mongoid
           #
           # @return [ Array ] The wrapped object.
           def __array__
-            [ self ]
+            [self]
           end
 
           # Get the object as expanded.
@@ -132,7 +130,6 @@ module Mongoid
           end
 
           module ClassMethods
-
             # Evolve the object.
             #
             # @note This is here for API compatibility.
@@ -161,9 +158,10 @@ module Mongoid
             # @return [ Object ] The evolved object.
             def __evolve__(object)
               return nil if object.nil?
+
               case object
               when ::Array
-                object.map{ |obj| evolve(obj) }
+                object.map { |obj| evolve(obj) }
               when ::Range
                 object.__evolve_range__
               else

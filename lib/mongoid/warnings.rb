@@ -1,15 +1,12 @@
 # frozen_string_literal: true
 
 module Mongoid
-
   # Encapsulates behavior around logging and caching warnings so they are only
   # logged once.
   #
   # @api private
   module Warnings
-
     class << self
-
       # Define a warning message method for the given id.
       #
       # @param [ Symbol ] id The warning identifier.

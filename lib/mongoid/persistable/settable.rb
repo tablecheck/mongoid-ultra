@@ -2,7 +2,6 @@
 
 module Mongoid
   module Persistable
-
     # Defines behavior for $set operations.
     module Settable
       extend ActiveSupport::Concern
@@ -47,7 +46,6 @@ module Mongoid
       def set(setters)
         prepare_atomic_operation do |ops|
           process_atomic_operations(setters) do |field, value|
-
             field_seq = field.to_s.split('.')
             field = field_seq.shift
             if field_seq.length > 0

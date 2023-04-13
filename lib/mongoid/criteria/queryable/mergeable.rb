@@ -3,10 +3,8 @@
 module Mongoid
   class Criteria
     module Queryable
-
       # Contains behavior for merging existing selection with new selection.
       module Mergeable
-
         # @attribute [rw] strategy The name of the current strategy.
         attr_accessor :strategy
 
@@ -104,7 +102,7 @@ module Mongoid
         # @return [ Mergeable ] The new mergeable.
         def __expanded__(criterion, outer, inner)
           selection(criterion) do |selector, field, value|
-            selector.store(field, { outer => { inner => value }})
+            selector.store(field, { outer => { inner => value } })
           end
         end
 
@@ -161,6 +159,7 @@ module Mongoid
             sel = query.selector
             criteria.flatten.each do |expr|
               next unless expr
+
               result_criteria = sel[operator] || []
               if expr.is_a?(Selectable)
                 expr = expr.selector
@@ -277,7 +276,7 @@ module Mongoid
                     else
                       raise NotImplementedError, 'Ruby does not allow same symbol operator with different values'
                       result['$and'] ||= []
-                      result['$and'] << {k => v}
+                      result['$and'] << { k => v }
                     end
                   else
                     # The new value is a simple value.
@@ -286,11 +285,11 @@ module Mongoid
                     # https://www.mongodb.com/docs/manual/reference/operator/query/eq/#std-label-eq-usage-examples
                     # for the description of relevant server behavior.
                     op = case v
-                    when Regexp, BSON::Regexp::Raw
-                      '$regex'
-                    else
-                      '$eq'
-                    end
+                         when Regexp, BSON::Regexp::Raw
+                           '$regex'
+                         else
+                           '$eq'
+                         end
                     # If there isn't an $eq/$regex operator already in the
                     # query, transform the new value into an operator
                     # expression and add it to the existing hash. Otherwise
@@ -298,7 +297,7 @@ module Mongoid
                     if existing.key?(op)
                       raise NotImplementedError, 'Ruby does not allow same symbol operator with different values'
                       result['$and'] ||= []
-                      result['$and'] << {k => v}
+                      result['$and'] << { k => v }
                     else
                       existing.update(op => v)
                     end
@@ -307,17 +306,17 @@ module Mongoid
                   # Existing value is a simple value.
                   # See the notes above about transformations to $eq/$regex.
                   op = case existing
-                  when Regexp, BSON::Regexp::Raw
-                    '$regex'
-                  else
-                    '$eq'
-                  end
+                       when Regexp, BSON::Regexp::Raw
+                         '$regex'
+                       else
+                         '$eq'
+                       end
                   if v.is_a?(Hash) && !v.key?(op)
-                    result[k] = {op => existing}.update(v)
+                    result[k] = { op => existing }.update(v)
                   else
                     raise NotImplementedError, 'Ruby does not allow same symbol operator with different values'
                     result['$and'] ||= []
-                    result['$and'] << {k => v}
+                    result['$and'] << { k => v }
                   end
                 end
               else

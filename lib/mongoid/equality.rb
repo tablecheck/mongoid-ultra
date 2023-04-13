@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Mongoid
-
   # This module contains the behavior of Mongoid's clone/dup of documents.
   module Equality
     # Leave the current contents of this module outside of InstanceMethods
@@ -31,7 +30,7 @@ module Mongoid
     # @return [ true | false ] True if the ids are equal, false if not.
     def ==(other)
       self.class == other.class &&
-          attributes["_id"] == other.attributes["_id"]
+        attributes["_id"] == other.attributes["_id"]
     end
 
     # Delegates to ==. Used when needing checks in hashes.

@@ -3,7 +3,6 @@
 module Mongoid
   module Config
     module Validators
-
       # Validator for configuration options.
       module Option
         extend self

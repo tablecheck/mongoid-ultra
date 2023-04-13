@@ -2,7 +2,6 @@
 
 module Mongoid
   module Config
-
     # Encapsulates logic for getting environment information.
     module Environment
       extend self
@@ -30,6 +29,7 @@ module Mongoid
         if defined?(::Sinatra)
           return ::Sinatra::Base.environment.to_s
         end
+
         ENV["RACK_ENV"] || ENV["MONGOID_ENV"] or raise Errors::NoEnvironment
       end
 
@@ -66,10 +66,10 @@ module Mongoid
 
         result = ERB.new(contents).result
         data = if RUBY_VERSION < '2.6'
-          YAML.safe_load(result, permitted_classes, [], true)
-        else
-          YAML.safe_load(result, permitted_classes: permitted_classes, aliases: true)
-        end
+                 YAML.safe_load(result, permitted_classes, [], true)
+               else
+                 YAML.safe_load(result, permitted_classes: permitted_classes, aliases: true)
+               end
 
         unless data.is_a?(Hash)
           raise Mongoid::Errors::InvalidConfigFile.new(path)

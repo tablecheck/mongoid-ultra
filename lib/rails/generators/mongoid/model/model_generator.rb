@@ -4,10 +4,8 @@ require "rails/generators/mongoid_generator"
 
 module Mongoid
   module Generators
-
     # Generator class for Mongoid model files.
     class ModelGenerator < Base
-
       desc "Creates a Mongoid model"
       argument :attributes, type: :array, default: [], banner: "field:type field:type"
 

@@ -2,11 +2,9 @@
 
 module Mongoid
   module Errors
-
     # Raised when invalid query is passed to an embedded matcher, or an
     # invalid query fragment is passed to the query builder (Criteria object).
     class InvalidQuery < MongoidError
-
       # Create the new invalid query error.
       #
       # @api private
@@ -27,10 +25,10 @@ module Mongoid
 
         if expr.length > 103
           expr = if expr =~ /\A<#((?:.|\n)*)>\z/
-            "<##{expr.slice(0, 97)}...>"
-          else
-            expr.slice(0, 100) + '...'
-          end
+                   "<##{expr.slice(0, 97)}...>"
+                 else
+                   expr.slice(0, 100) + '...'
+                 end
         end
 
         expr
