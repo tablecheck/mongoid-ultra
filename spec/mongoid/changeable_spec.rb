@@ -2049,8 +2049,8 @@ describe Mongoid::Changeable do
 
       it "does not retain the changes until after all callbacks" do
         acolyte.update_attribute(:status, "testing")
-        expect(acolyte.changed_in_before_callback).to eq({"status"=>[nil, "testing"]})
-        expect(acolyte.changed_in_after_callback).to eq({  })
+        expect(acolyte.changed_in_before_callback).to eq({"status" => [nil, "testing"]})
+        expect(acolyte.changed_in_after_callback).to eq({ })
       end
     end
 

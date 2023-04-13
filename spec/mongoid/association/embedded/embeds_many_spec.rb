@@ -795,7 +795,8 @@ describe Mongoid::Association::Embedded::EmbedsMany do
 
       it 'returns the extension' do
         expect(association.extension).to eq(
-          "#{embeds_many_class.name}::#{embeds_many_class.name}#{name.to_s.camelize}RelationExtension".constantize)
+          "#{embeds_many_class.name}::#{embeds_many_class.name}#{name.to_s.camelize}RelationExtension".constantize
+        )
       end
     end
 

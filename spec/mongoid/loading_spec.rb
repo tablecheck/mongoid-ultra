@@ -10,7 +10,8 @@ describe Mongoid::Loadable do
       File.join(
         File.dirname(__FILE__),
         "../support/models/sandbox"
-      ))
+      )
+    )
   end
 
   let(:app_models_root) { File.join(model_root, "app/models") }

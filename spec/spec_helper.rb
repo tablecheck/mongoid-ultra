@@ -95,10 +95,10 @@ CONFIG = {
   options: {
     belongs_to_required_by_default: false,
     log_level: if SpecConfig.instance.client_debug?
-      :debug
-    else
-      :info
-    end,
+                 :debug
+               else
+                 :info
+               end,
   }
 }
 

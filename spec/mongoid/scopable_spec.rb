@@ -895,7 +895,7 @@ describe Mongoid::Scopable do
     context "when working with a subclass" do
 
       before do
-        Shape.scope(:located_at, ->(x,y) {Shape.where(x: x, y: y)})
+        Shape.scope(:located_at, ->(x, y) {Shape.where(x: x, y: y)})
         Circle.scope(:with_radius, ->(r) {Circle.where(radius: r)})
       end
 
@@ -916,7 +916,7 @@ describe Mongoid::Scopable do
       end
 
       let(:circle_located_at) do
-        Circle.located_at(0,0)
+        Circle.located_at(0, 0)
       end
 
       let(:circle_scope_keys) do
@@ -1218,7 +1218,7 @@ describe Mongoid::Scopable do
     context "when using #current_scope" do
 
       it "pops the criteria off the stack" do
-        Band.with_scope(criteria) do;end
+        Band.with_scope(criteria) { }
         expect(Mongoid::Threaded.current_scope).to be_nil
       end
     end
@@ -1226,7 +1226,7 @@ describe Mongoid::Scopable do
     context "when using #current_scope(klass)" do
 
       it "pops the criteria off the stack" do
-        Band.with_scope(criteria) do;end
+        Band.with_scope(criteria) { }
         expect(Mongoid::Threaded.current_scope(Band)).to be_nil
       end
     end

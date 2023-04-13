@@ -97,7 +97,7 @@ describe Mongoid::Association::Referenced::HasMany::Eager do
 
       it "queries twice" do
 
-         expect_query(2) do
+        expect_query(2) do
           Person.all.includes(:drugs).each do |person|
             expect(person.drugs.entries).to_not be_empty
           end
