@@ -19,7 +19,7 @@ Layout:
   Enabled: true
 
 Layout/LineLength:
-  Enabled: true
+  Enabled: false
   Exclude:
     - 'spec/**/*'
 
