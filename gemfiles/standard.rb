@@ -27,7 +27,8 @@ def standard_dependencies
     end
   end
 
-  platform :x64_mingw do
+  # If platform :windows fails, please update your Bundler version
+  platform :windows do
     gem 'tzinfo-data'
     gem 'wdm'
   end
