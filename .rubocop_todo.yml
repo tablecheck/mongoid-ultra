@@ -5454,35 +5454,6 @@ Style/NumericLiteralPrefix:
 Style/NumericLiterals:
   MinDigits: 16
 
-# Offense count: 29
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle, AllowedMethods, AllowedPatterns.
-# SupportedStyles: predicate, comparison
-Style/NumericPredicate:
-  Exclude:
-    - 'lib/mongoid.rb'
-    - 'lib/mongoid/association/accessors.rb'
-    - 'lib/mongoid/association/eager_loadable.rb'
-    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
-    - 'lib/mongoid/association/nested/nested_buildable.rb'
-    - 'lib/mongoid/contextual/aggregable/memory.rb'
-    - 'lib/mongoid/contextual/mongo.rb'
-    - 'lib/mongoid/extensions/string.rb'
-    - 'lib/mongoid/fields.rb'
-    - 'lib/mongoid/fields/standard.rb'
-    - 'lib/mongoid/findable.rb'
-    - 'lib/mongoid/matcher/bits.rb'
-    - 'lib/mongoid/matcher/bits_all_clear.rb'
-    - 'lib/mongoid/matcher/bits_all_set.rb'
-    - 'lib/mongoid/matcher/bits_any_clear.rb'
-    - 'lib/mongoid/matcher/bits_any_set.rb'
-    - 'lib/mongoid/matcher/expression.rb'
-    - 'lib/mongoid/matcher/field_expression.rb'
-    - 'lib/mongoid/matcher/size.rb'
-    - 'lib/mongoid/persistable/poppable.rb'
-    - 'lib/mongoid/persistable/settable.rb'
-    - 'lib/mongoid/timestamps/timeless.rb'
-
 # Offense count: 4
 Style/OpenStructUse:
   Exclude:
