@@ -820,13 +820,9 @@ module Mongoid
           if INVALID_BSON_CLASSES.include?(result)
             warn_message = "Using #{result} as the field type is not supported. "
             if result == BSON::Decimal128
-              warn_message +=
-                "In BSON <= 4, the BSON::Decimal128 type will work as expected for both " \
-                "storing and querying, but will return a BigDecimal on query in BSON 5+." \
+              warn_message += "In BSON <= 4, the BSON::Decimal128 type will work as expected for both storing and querying, but will return a BigDecimal on query in BSON 5+."
             else
-              warn_message +=
-                "Saving values of this type to the database will work as expected, however, " \
-                "querying them will return a value of the native Ruby Integer type."
+              warn_message += "Saving values of this type to the database will work as expected, however, querying them will return a value of the native Ruby Integer type."
             end
             Mongoid.logger.warn(warn_message)
           end

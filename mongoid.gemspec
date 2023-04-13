@@ -13,11 +13,7 @@ Gem::Specification.new do |s|
   s.email       = "dev@tablecheck.com"
   s.homepage    = "https://mongoid.org"
   s.summary     = "Mongoid: Ultra Edition"
-
-  s.description =
-    "Ruby ODM (Object Document Mapper) Framework for MongoDB. " \
-    "Maintained by the community, for the community."
-
+  s.description = "Ruby ODM (Object Document Mapper) Framework for MongoDB. Maintained by the community, for the community."
   s.license     = "MIT"
 
   s.metadata = {

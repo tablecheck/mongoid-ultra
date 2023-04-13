@@ -145,10 +145,7 @@ module Mongoid
           end
 
           unless model.collection.cluster.sharded?
-            warn_msg =
-              "MONGOID: #{model} has shard config but is not persisted " \
-              "in a sharded cluster: #{model.collection.cluster.summary}"
-            logger.warn(warn_msg)
+            logger.warn("MONGOID: #{model} has shard config but is not persisted in a sharded cluster: #{model.collection.cluster.summary}")
             next
           end
 
@@ -201,10 +198,7 @@ module Mongoid
           begin
             admin_db.command(shardCollection: model.collection.namespace, **model.shard_config)
           rescue Mongo::Error::OperationFailure => e
-            error_msg =
-              "MONGOID: Failed to shard collection #{model.collection.namespace} " \
-              "for #{model}: #{e.class}: #{e}"
-            logger.error(error_msg)
+            logger.error("MONGOID: Failed to shard collection #{model.collection.namespace} for #{model}: #{e.class}: #{e}")
             next
           end
 
