@@ -4,6 +4,7 @@ module Mongoid
   module Association
     module Embedded
       class EmbedsOne
+
         # Transparent proxy for embeds_one associations.
         # An instance of this class is returned when calling the
         # association getter method on the parent document. This
@@ -11,15 +12,16 @@ module Mongoid
         # most of its methods to the target of the association, i.e.
         # the child document.
         class Proxy < Association::One
+
           # The valid options when defining this association.
           #
           # @return [ Array<Symbol> ] The allowed options when defining this association.
           VALID_OPTIONS = [
-            :autobuild,
-            :as,
-            :cascade_callbacks,
-            :cyclic,
-            :store_as
+              :autobuild,
+              :as,
+              :cascade_callbacks,
+              :cyclic,
+              :store_as
           ].freeze
 
           # Instantiate a new embeds_one association.

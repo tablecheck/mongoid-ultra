@@ -1,11 +1,13 @@
 module Mongoid
   module Matcher
+
     # In-memory matcher for $nor expression.
     #
     # @see https://www.mongodb.com/docs/manual/reference/operator/query/nor/
     #
     # @api private
     module Nor
+
       # Returns whether a document satisfies a $nor expression.
       #
       # @param [ Mongoid::Document ] document The document.
@@ -20,8 +22,7 @@ module Mongoid
         end
 
         if expr.empty?
-          raise Errors::InvalidQuery,
-                "$nor argument must be a non-empty array: #{Errors::InvalidQuery.truncate_expr(expr)}"
+          raise Errors::InvalidQuery, "$nor argument must be a non-empty array: #{Errors::InvalidQuery.truncate_expr(expr)}"
         end
 
         expr.each do |sub_expr|

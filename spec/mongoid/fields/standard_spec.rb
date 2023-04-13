@@ -3,7 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Fields::Standard do
+
   describe "#lazy?" do
+
     let(:field) do
       described_class.new(:test, type: String)
     end
@@ -14,6 +16,7 @@ describe Mongoid::Fields::Standard do
   end
 
   describe "#pre_processed?" do
+
     before(:all) do
       class FieldTest
         include Mongoid::Document
@@ -25,12 +28,15 @@ describe Mongoid::Fields::Standard do
     end
 
     context "when the field has a default" do
+
       context "when the default is a proc" do
+
         context "when the pre-processed option is true" do
+
           let(:field) do
             described_class.new(
               :test,
-              default: -> { "testing" },
+              default: ->{ "testing" },
               pre_processed: true,
               klass: FieldTest,
               type: String
@@ -43,10 +49,11 @@ describe Mongoid::Fields::Standard do
         end
 
         context "when the pre-processed option is not true" do
+
           let(:field) do
             described_class.new(
               :test,
-              default: -> { "testing" },
+              default: ->{ "testing" },
               klass: FieldTest,
               type: String
             )
@@ -59,6 +66,7 @@ describe Mongoid::Fields::Standard do
       end
 
       context "when the default is not a proc" do
+
         let(:field) do
           described_class.new(
             :test,
@@ -75,6 +83,7 @@ describe Mongoid::Fields::Standard do
     end
 
     context "when the field has no default" do
+
       let(:field) do
         described_class.new(
           :test,
@@ -89,6 +98,7 @@ describe Mongoid::Fields::Standard do
   end
 
   context "when checking hash values in a custom serializer" do
+
     let(:image) do
       Image.new("test")
     end
@@ -99,11 +109,13 @@ describe Mongoid::Fields::Standard do
   end
 
   context "when included in a hash" do
+
     let(:hash) do
       MyHash.new
     end
 
     context "when setting a value" do
+
       before do
         hash[:key] = "value"
       end
@@ -114,6 +126,7 @@ describe Mongoid::Fields::Standard do
     end
 
     context "when getting a non existent value" do
+
       it "returns nil" do
         expect(hash[:key]).to be_nil
       end
@@ -121,6 +134,7 @@ describe Mongoid::Fields::Standard do
   end
 
   context "when subclassing a serializable field" do
+
     let(:thumbnail) do
       Thumbnail.new("test")
     end
@@ -134,6 +148,7 @@ describe Mongoid::Fields::Standard do
     end
 
     context "when instantiating the class" do
+
       let(:movie) do
         Movie.new(
           poster: Image.new("poster"),

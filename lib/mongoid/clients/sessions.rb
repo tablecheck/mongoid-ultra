@@ -2,8 +2,10 @@
 
 module Mongoid
   module Clients
+
     # Encapsulates behavior for using sessions and transactions.
     module Sessions
+
       # Add class method mixin functionality.
       #
       # @todo Replace with ActiveSupport::Concern
@@ -12,6 +14,7 @@ module Mongoid
       end
 
       module ClassMethods
+
         # Execute a block within the context of a session.
         #
         # @example Execute some operations in the context of a session.
@@ -35,7 +38,6 @@ module Mongoid
           if Threaded.get_session(client: persistence_context.client)
             raise Mongoid::Errors::InvalidSessionNesting.new
           end
-
           session = persistence_context.client.start_session(options)
           Threaded.set_session(session, client: persistence_context.client)
           yield(session)

@@ -3,8 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Extensions::Date do
+
   describe ".mongoize" do
+
     context "when provided a date" do
+
       let(:date) do
         Date.new(2010, 1, 1)
       end
@@ -27,6 +30,7 @@ describe Mongoid::Extensions::Date do
       include_context 'setting ActiveSupport time zone'
 
       context "when the string is a valid date" do
+
         let(:mongoized) do
           Date.mongoize('2010-01-01')
         end
@@ -45,6 +49,7 @@ describe Mongoid::Extensions::Date do
       end
 
       context "when the string is a valid date and time" do
+
         let(:mongoized) do
           Date.mongoize("2010-01-01 02:00:00")
         end
@@ -60,6 +65,7 @@ describe Mongoid::Extensions::Date do
       end
 
       context "when the string is a valid date and time in later time zone" do
+
         let(:mongoized) do
           # Tokyo is +9
           Date.mongoize("2010-01-01 00:00:00 +1000")
@@ -75,6 +81,7 @@ describe Mongoid::Extensions::Date do
       end
 
       context "when the string is a valid date and time in earlier time zone" do
+
         let(:mongoized) do
           # Tokyo is +9
           Date.mongoize("2010-01-01 20:00:00 +0400")
@@ -90,6 +97,7 @@ describe Mongoid::Extensions::Date do
       end
 
       context "when the string is empty" do
+
         let(:mongoized) do
           Date.mongoize("")
         end
@@ -100,6 +108,7 @@ describe Mongoid::Extensions::Date do
       end
 
       context "when the string is an invalid time" do
+
         let(:mongoized) do
           Date.mongoize("time")
         end
@@ -308,7 +317,7 @@ describe Mongoid::Extensions::Date do
       end
 
       let(:array) do
-        [2010, 1, 1, 2, 3, 4, 0]
+        [ 2010, 1, 1, 2, 3, 4, 0 ]
       end
 
       let(:mongoized) do
@@ -321,6 +330,7 @@ describe Mongoid::Extensions::Date do
     end
 
     context "when provided nil" do
+
       it "returns nil" do
         expect(Date.mongoize(nil)).to be_nil
       end

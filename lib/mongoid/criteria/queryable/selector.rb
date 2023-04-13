@@ -3,9 +3,11 @@
 module Mongoid
   class Criteria
     module Queryable
+
       # The selector is a special kind of hash that knows how to serialize values
       # coming into it as well as being alias and locale aware for key names.
       class Selector < Smash
+
         # Merges another selector into this one.
         #
         # @example Merge in another selector.
@@ -85,7 +87,7 @@ module Mongoid
           if Range === value
             evolve_range(store_name, serializer, value)
           else
-            [store_name, evolve(serializer, value)]
+            [ store_name, evolve(serializer, value) ]
           end
         end
 
@@ -104,7 +106,6 @@ module Mongoid
           unless specs.is_a?(Array)
             raise ArgumentError, "specs is not an array: #{specs.inspect}"
           end
-
           specs.map do |spec|
             Hash[spec.map do |key, value|
               # If an application nests conditionals, e.g.
@@ -132,7 +133,7 @@ module Mongoid
                 evolved_value = key.transform_value(evolved_value)
               end
 
-              [final_key, evolved_value]
+              [ final_key, evolved_value ]
             end]
           end.uniq
         end
@@ -237,8 +238,7 @@ module Mongoid
         def evolve_range(key, serializer, value)
           v = value.__evolve_range__(serializer: serializer)
           assocs = []
-          Fields.traverse_association_tree(key, serializers, associations,
-                                           aliased_associations) do |meth, obj, is_field|
+          Fields.traverse_association_tree(key, serializers, associations, aliased_associations) do |meth, obj, is_field|
             assocs.push([meth, obj, is_field])
           end
 
@@ -248,7 +248,7 @@ module Mongoid
           loop do
             # If there are no arrays or embeds_many associations, just return
             # the key and value without $elemMatch.
-            return [key, v] if assocs.empty?
+            return [ key, v ] if assocs.empty?
 
             meth, obj, is_field = assocs.last
             break if (is_field && obj.type == Array) || (!is_field && obj.is_a?(Association::Embedded::EmbedsMany))
@@ -261,11 +261,11 @@ module Mongoid
           # the inner key (2) is ignored, and the outer key (1) is the original
           # key.
           if inner_key.blank?
-            [key, { "$elemMatch" => v }]
+            [ key, { "$elemMatch" => v }]
           else
             store_key = assocs.map(&:first).join('.')
             store_value = { "$elemMatch" => { inner_key.chop => v } }
-            [store_key, store_value]
+            [ store_key,  store_value ]
           end
         end
 

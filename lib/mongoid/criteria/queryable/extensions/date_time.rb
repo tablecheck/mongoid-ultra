@@ -4,8 +4,10 @@ module Mongoid
   class Criteria
     module Queryable
       module Extensions
+
         # Adds query type-casting behavior to DateTime class.
         module DateTime
+
           # Evolve the date time into a mongo friendly UTC time.
           #
           # @example Evolve the date time.
@@ -19,6 +21,7 @@ module Mongoid
           end
 
           module ClassMethods
+
             # Evolve the object to an date.
             #
             # @example Evolve dates.

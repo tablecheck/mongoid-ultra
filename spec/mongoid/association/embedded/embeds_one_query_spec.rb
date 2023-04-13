@@ -4,6 +4,7 @@ require "spec_helper"
 require_relative './embeds_one_models'
 
 describe Mongoid::Association::Embedded::EmbedsOne do
+
   context 'when projecting with #only' do
     before do
       parent = EomParent.new(name: 'foo')

@@ -2,6 +2,7 @@
 
 module Mongoid
   module Validatable
+
     # Validates that the specified attributes are not blank (as defined by
     # Object#blank?).
     #
@@ -14,6 +15,7 @@ module Mongoid
     #     validates_presence_of :title
     #   end
     class PresenceValidator < ActiveModel::EachValidator
+
       # Validate the document for the attribute and value.
       #
       # @example Validate the document.
@@ -57,7 +59,6 @@ module Mongoid
       # @return [ true | false ] If the doc is missing.
       def relation_or_fk_missing?(doc, attr, value)
         return true if value.blank? && doc.send(attr).blank?
-
         association = doc.relations[attr.to_s]
         association.stores_foreign_key? && doc.send(association.foreign_key).blank?
       end

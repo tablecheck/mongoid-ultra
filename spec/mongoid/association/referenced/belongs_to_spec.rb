@@ -4,6 +4,7 @@ require "spec_helper"
 require_relative './has_one_models'
 
 describe Mongoid::Association::Referenced::BelongsTo do
+
   before do
     class OwnerObject; include Mongoid::Document; end
     class BelongingObject; include Mongoid::Document; end
@@ -27,14 +28,15 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   let(:options) do
-    {}
+    { }
   end
 
   describe '#relation_complements' do
+
     let(:expected_complements) do
       [
-        Mongoid::Association::Referenced::HasMany,
-        Mongoid::Association::Referenced::HasOne
+          Mongoid::Association::Referenced::HasMany,
+          Mongoid::Association::Referenced::HasOne
       ]
     end
 
@@ -44,6 +46,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#setup!' do
+
     it 'sets up a getter for the relation' do
       expect(Mongoid::Association::Accessors).to receive(:define_getter!).with(association)
       association.setup!
@@ -70,10 +73,12 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'autosave' do
+
       context 'when the :autosave option is true' do
+
         let(:options) do
           {
-            autosave: true
+              autosave: true
           }
         end
 
@@ -90,9 +95,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the :autosave option is false' do
+
         let(:options) do
           {
-            autosave: false
+              autosave: false
           }
         end
 
@@ -103,6 +109,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the :autosave option is not provided' do
+
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup!! method will be called by the :embeds_many macro
@@ -117,10 +124,12 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'counter cache callbacks' do
+
       context 'when the :counter_cache option is true' do
+
         let(:options) do
           {
-            counter_cache: true
+              counter_cache: true
           }
         end
 
@@ -137,9 +146,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the :counter_cache option is a String' do
+
         let(:options) do
           {
-            counter_cache: 'counts_field'
+              counter_cache: 'counts_field'
           }
         end
 
@@ -156,9 +166,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the :counter_cache option is false' do
+
         let(:options) do
           {
-            counter_cache: false
+              counter_cache: false
           }
         end
 
@@ -169,6 +180,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the :counter_cache option is not provided' do
+
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup! method will be called by the :embeds_many macro
@@ -183,8 +195,11 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'polymorphic' do
+
       context 'when the polymorphic option is provided' do
+
         context 'when the polymorphic option is true' do
+
           let(:options) do
             {
               polymorphic: true
@@ -205,6 +220,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         context 'when the polymorphic option is false' do
+
           let(:options) do
             {
               polymorphic: false
@@ -222,6 +238,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the polymorphic option is not provided' do
+
         it 'does not set the polymorphic attribute on the owner class' do
           expect(belonging_class.polymorphic).to be(false)
         end
@@ -233,8 +250,11 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'dependent' do
+
       context 'when the dependent option is provided' do
+
         context 'when the dependent option is :delete_all' do
+
           let(:options) do
             {
               dependent: :delete_all
@@ -254,9 +274,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         context 'when the dependent option is :destroy' do
+
           let(:options) do
             {
-              dependent: :destroy
+                dependent: :destroy
             }
           end
 
@@ -273,9 +294,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         context 'when the dependent option is :nullify' do
+
           let(:options) do
             {
-              dependent: :nullify
+                dependent: :nullify
             }
           end
 
@@ -292,9 +314,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         context 'when the dependent option is :restrict_with_exception' do
+
           let(:options) do
             {
-              dependent: :restrict_with_exception
+                dependent: :restrict_with_exception
             }
           end
 
@@ -311,9 +334,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         context 'when the dependent option is :restrict_with_error' do
+
           let(:options) do
             {
-              dependent: :restrict_with_error
+                dependent: :restrict_with_error
             }
           end
 
@@ -331,6 +355,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the dependent option is not provided' do
+
         it 'does not set up the dependency' do
           expect(Mongoid::Association::Depending).not_to receive(:define_dependency!)
           association.setup!
@@ -339,6 +364,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'foreign key field' do
+
       before do
         association
       end
@@ -349,64 +375,73 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'index' do
+
       before do
         association
       end
 
       context 'when index is true' do
+
         context 'when polymorphic' do
+
           let(:options) do
             {
-              polymorphic: true,
-              index: true
+                polymorphic: true,
+                index: true
             }
           end
 
           it 'sets up the index with the key and inverse type' do
-            expect(belonging_class.index_specifications.first.fields).to match_array([association.key.to_sym,
-                                                                                      association.inverse_type.to_sym])
+            expect(belonging_class.index_specifications.first.fields).to match_array([ association.key.to_sym,
+                                                                                       association.inverse_type.to_sym])
           end
         end
 
         context 'when not polymorphic' do
+
           let(:options) do
             {
-              index: true
+                index: true
             }
           end
 
           it 'sets up the index with the key' do
-            expect(belonging_class.index_specifications.first.fields).to match_array([association.key.to_sym])
+            expect(belonging_class.index_specifications.first.fields).to match_array([ association.key.to_sym ])
           end
         end
       end
 
       context 'when index is false' do
+
         context 'when polymorphic' do
+
           let(:options) do
             {
-              polymorphic: true
+                polymorphic: true
             }
           end
 
           it 'does not set up an index' do
-            expect(belonging_class.index_specifications).to eq([])
+            expect(belonging_class.index_specifications).to eq([ ])
           end
         end
 
         context 'when not polymorphic' do
+
           it 'does not set up an index' do
-            expect(belonging_class.index_specifications).to eq([])
+            expect(belonging_class.index_specifications).to eq([ ])
           end
         end
       end
     end
 
     context 'touchable' do
+
       context 'when the :touch option is true' do
+
         let(:options) do
           {
-            touch: true
+              touch: true
           }
         end
 
@@ -423,9 +458,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the :touch option is false' do
+
         let(:options) do
           {
-            touch: false
+              touch: false
           }
         end
 
@@ -436,6 +472,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the :touch option is not provided' do
+
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup! method will be called by the :embeds_many macro
@@ -450,10 +487,12 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'validate' do
+
       context 'when the :validate option is true' do
+
         let(:options) do
           {
-            validate: true
+              validate: true
           }
         end
 
@@ -470,9 +509,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the :validate option is false' do
+
         let(:options) do
           {
-            validate: false
+              validate: false
           }
         end
 
@@ -483,6 +523,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the :validate option is not provided' do
+
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup! method will be called by the :belongs_to macro
@@ -497,6 +538,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'presence of validation' do
+
       let(:association) do
         # Note that it is necessary to create the association directly, otherwise the
         # setup! method will be called by the :belongs_to macro
@@ -507,9 +549,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
         config_override :belongs_to_required_by_default, true
 
         context 'when the required option is true' do
+
           let(:options) do
             {
-              required: true
+                required: true
             }
           end
 
@@ -519,10 +562,11 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           context 'when the optional option is true' do
+
             let(:options) do
               {
-                required: true,
-                optional: true
+                  required: true,
+                  optional: true
               }
             end
 
@@ -533,10 +577,11 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           context 'when the optional option is false' do
+
             let(:options) do
               {
-                required: true,
-                optional: false
+                  required: true,
+                  optional: false
               }
             end
 
@@ -548,9 +593,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         context 'when the required option is false' do
+
           let(:options) do
             {
-              required: false
+                required: false
             }
           end
 
@@ -560,10 +606,11 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           context 'when the optional option is true' do
+
             let(:options) do
               {
-                required: false,
-                optional: true
+                  required: false,
+                  optional: true
               }
             end
 
@@ -574,10 +621,11 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           context 'when the optional option is false' do
+
             let(:options) do
               {
-                required: false,
-                optional: false
+                  required: false,
+                  optional: false
               }
             end
 
@@ -589,15 +637,17 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         context 'when the required option is not provided' do
+
           it 'uses the default and sets up the presence of validation' do
             expect(belonging_class).to receive(:validates).with(name, { presence: true }).and_call_original
             association.setup!
           end
 
           context 'when the optional option is true' do
+
             let(:options) do
               {
-                optional: true
+                  optional: true
               }
             end
 
@@ -608,9 +658,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           context 'when the optional option is false' do
+
             let(:options) do
               {
-                optional: false
+                  optional: false
               }
             end
 
@@ -626,9 +677,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
         config_override :belongs_to_required_by_default, false
 
         context 'when the required option is true' do
+
           let(:options) do
             {
-              required: true
+                required: true
             }
           end
 
@@ -638,10 +690,11 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           context 'when the optional option is true' do
+
             let(:options) do
               {
-                required: true,
-                optional: true
+                  required: true,
+                  optional: true
               }
             end
 
@@ -652,10 +705,11 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           context 'when the optional option is false' do
+
             let(:options) do
               {
-                required: true,
-                optional: false
+                  required: true,
+                  optional: false
               }
             end
 
@@ -667,9 +721,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         context 'when the required option is false' do
+
           let(:options) do
             {
-              required: false
+                required: false
             }
           end
 
@@ -679,10 +734,11 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           context 'when the optional option is true' do
+
             let(:options) do
               {
-                required: false,
-                optional: true
+                  required: false,
+                  optional: true
               }
             end
 
@@ -693,10 +749,11 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           context 'when the optional option is false' do
+
             let(:options) do
               {
-                required: false,
-                optional: false
+                  required: false,
+                  optional: false
               }
             end
 
@@ -708,15 +765,17 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         context 'when the required option is not provided' do
+
           it 'uses the default and does not set up the presence of validation' do
             expect(belonging_class).not_to receive(:validates)
             association.setup!
           end
 
           context 'when the optional option is true' do
+
             let(:options) do
               {
-                optional: true
+                  optional: true
               }
             end
 
@@ -727,9 +786,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           context 'when the optional option is false' do
+
             let(:options) do
               {
-                optional: false
+                  optional: false
               }
             end
 
@@ -744,7 +804,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#type' do
+
     context 'when polymorphic' do
+
       let(:options) do
         { polymorphic: true }
       end
@@ -755,6 +817,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when not polymorphic' do
+
       it 'returns nil' do
         expect(association.type).to be_nil
       end
@@ -762,7 +825,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#inverse_type' do
+
     context 'when polymorphic' do
+
       let(:options) do
         { polymorphic: true }
       end
@@ -773,6 +838,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when not polymorphic' do
+
       it 'returns nil' do
         expect(association.inverse_type).to be_nil
       end
@@ -780,7 +846,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#inverse_type_setter' do
+
     context 'when polymorphic' do
+
       let(:options) do
         { polymorphic: true }
       end
@@ -791,6 +859,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when not polymorphic' do
+
       it 'returns nil' do
         expect(association.inverse_type_setter).to be_nil
       end
@@ -798,7 +867,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#foreign_key' do
+
     context 'when options has foreign_key specified' do
+
       let(:options) do
         { foreign_key: :other_object_id }
       end
@@ -809,6 +880,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when options does not have foreign_key specified' do
+
       it 'returns the ame followed by "_id"' do
         expect(association.foreign_key).to eq("#{name}_id")
       end
@@ -816,17 +888,21 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#embedded?' do
+
     it 'returns false' do
       expect(association.embedded?).to be(false)
     end
   end
 
   describe '#primary_key' do
+
     context 'when the :primary_key option is specified' do
+
       context 'when the :primary_key option is true' do
+
         let(:options) do
           {
-            primary_key: :other_primary_key
+              primary_key: :other_primary_key
           }
         end
 
@@ -837,6 +913,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when the :primary_key option is not specified' do
+
       it 'returns the default primary key' do
         expect(association.primary_key).to eq(Mongoid::Association::Relatable::PRIMARY_KEY_DEFAULT)
       end
@@ -844,11 +921,14 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#indexed?' do
+
     context 'when :index is specified in the options' do
+
       context 'when :index is true' do
+
         let(:options) do
           {
-            index: true
+              index: true
           }
         end
 
@@ -858,9 +938,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when :index is false' do
+
         let(:options) do
           {
-            index: false
+              index: false
           }
         end
 
@@ -871,6 +952,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when :index is not specified in the options' do
+
       it 'returns nil' do
         expect(association.indexed?).to be(false)
       end
@@ -878,48 +960,57 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#relation' do
+
     it 'returns Mongoid::Association::Referenced::BelongsTo::Proxy' do
       expect(association.relation).to be(Mongoid::Association::Referenced::BelongsTo::Proxy)
     end
   end
 
   describe '#validation_default' do
+
     it 'returns false' do
       expect(association.validation_default).to be(false)
     end
   end
 
   describe '#name' do
+
     it 'returns the name of the relation' do
       expect(association.name).to be(name)
     end
   end
 
   describe '#options' do
+
     it 'returns the options' do
       expect(association.options).to be(options)
     end
   end
 
   describe '#cyclic?' do
+
     it 'returns false' do
       expect(association.cyclic?).to be(false)
     end
   end
 
   describe '#merge!' do
+
   end
 
   describe '#store_as' do
+
     it 'returns nil' do
       expect(association.store_as).to be_nil
     end
   end
 
   describe '#touchable?' do
+
     context 'when :touch is in the options' do
+
       let(:options) do
-        { touch: true }
+        { touch: true}
       end
 
       it 'returns true' do
@@ -928,6 +1019,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when :touch is not in the options' do
+
       it 'return false' do
         expect(association.send(:touchable?)).to be(false)
       end
@@ -935,13 +1027,16 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#order' do
+
     it 'returns nil' do
       expect(association.order).to be_nil
     end
   end
 
   describe '#scope' do
+
     context 'when scope is specified in the options' do
+
       let(:options) do
         { scope: -> { unscoped.where(foo: :bar) } }
       end
@@ -952,6 +1047,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when scope is not specified in the options' do
+
       it 'returns nil' do
         expect(association.scope).to be_nil
       end
@@ -959,13 +1055,16 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#as' do
+
     it 'returns nil' do
       expect(association.as).to be_nil
     end
   end
 
   describe '#polymorphic?' do
+
     context 'when :polymorphic is specified in the options as true' do
+
       let(:options) do
         { polymorphic: true }
       end
@@ -976,6 +1075,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when :polymorphic is specified in the options as false' do
+
       let(:options) do
         { polymorphic: false }
       end
@@ -986,6 +1086,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when :polymorphic is not specified in the options' do
+
       it 'returns false' do
         expect(association.polymorphic?).to be(false)
       end
@@ -993,11 +1094,14 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#dependent' do
+
     context 'when the dependent option is provided' do
+
       context 'when the dependent option is :delete_all' do
+
         let(:options) do
           {
-            dependent: :delete_all
+              dependent: :delete_all
           }
         end
 
@@ -1007,9 +1111,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the dependent option is :destroy' do
+
         let(:options) do
           {
-            dependent: :destroy
+              dependent: :destroy
           }
         end
 
@@ -1019,9 +1124,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the dependent option is :nullify' do
+
         let(:options) do
           {
-            dependent: :nullify
+              dependent: :nullify
           }
         end
 
@@ -1031,9 +1137,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the dependent option is :restrict_with_exception' do
+
         let(:options) do
           {
-            dependent: :restrict_with_exception
+              dependent: :restrict_with_exception
           }
         end
 
@@ -1043,9 +1150,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the dependent option is :restrict_with_error' do
+
         let(:options) do
           {
-            dependent: :restrict_with_error
+              dependent: :restrict_with_error
           }
         end
 
@@ -1056,6 +1164,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when the dependent option is not provided' do
+
       it 'returns nil' do
         expect(association.dependent).to be_nil
       end
@@ -1063,16 +1172,19 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#bindable?' do
+
     it 'returns false' do
       expect(association.bindable?(Person.new)).to be(false)
     end
   end
 
   describe '#inverses' do
+
     context 'when polymorphic' do
+
       let(:options) do
         {
-          polymorphic: true
+            polymorphic: true
         }
       end
 
@@ -1081,62 +1193,70 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when another object is passed to the method' do
+
         let(:instance_of_other_class) do
           OwnerObject.new
         end
 
         context 'when the relation class has only one relation whose class matches the owning class' do
+
           before do
             OwnerObject.has_one :belonging_object, as: :containable
           end
 
           context 'when :inverse_of is specified' do
+
             before do
               options.merge!(inverse_of: :inverse_name)
             end
 
             it 'returns the :inverse_of value' do
-              expect(association.inverses(instance_of_other_class)).to eq([:inverse_name])
+              expect(association.inverses(instance_of_other_class)).to eq([ :inverse_name ])
             end
           end
 
           context 'when inverse_of is not specified' do
+
             it 'returns the list of relations whose :as attribute matches the name of this association' do
-              expect(association.inverses(instance_of_other_class)).to match_array([:belonging_object])
+              expect(association.inverses(instance_of_other_class)).to match_array([ :belonging_object ])
             end
           end
         end
 
         context 'when the relation class has more than one relation whose class matches the owning class' do
+
           before do
             OwnerObject.has_one :other_belonging_object, as: :containable, class_name: 'BelongingObject'
             OwnerObject.has_one :belonging_object, as: :containable
           end
 
           context 'when :inverse_of is specified' do
+
             before do
               options.merge!(inverse_of: :inverse_name)
             end
 
             it 'returns the :inverse_of value' do
-              expect(association.inverses(instance_of_other_class)).to eq([:inverse_name])
+              expect(association.inverses(instance_of_other_class)).to eq([ :inverse_name ])
             end
           end
 
           context 'when inverse_of is not specified' do
+
             it 'returns the list of relations whose :as attribute matches the name of this association' do
-              expect(association.inverses(instance_of_other_class)).to match_array([:other_belonging_object,
-                                                                                    :belonging_object])
+              expect(association.inverses(instance_of_other_class)).to match_array([ :other_belonging_object,
+                                                                                     :belonging_object ])
             end
 
             context 'when the relation class has two associations with the same name' do
+
               before do
                 OwnerObject.has_one :belonging_object, as: :containable
                 OwnerObject.has_one :other_belonging_object, as: :containable
               end
 
               it 'returns only the relations whose :as attribute and class match' do
-                expect(association.inverses(instance_of_other_class)).to match_array([:belonging_object])
+                expect(association.inverses(instance_of_other_class)).to match_array([ :belonging_object ])
               end
             end
           end
@@ -1144,17 +1264,20 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when another object is not passed to the method' do
+
         context 'when inverse_of is specified' do
+
           before do
             options.merge!(inverse_of: :inverse_name)
           end
 
           it 'returns the :inverse_of value' do
-            expect(association.inverses).to eq([:inverse_name])
+            expect(association.inverses).to eq([ :inverse_name ])
           end
         end
 
         context 'when inverse_of is not specified' do
+
           it 'returns nil' do
             expect(association.inverses).to eq(nil)
           end
@@ -1163,32 +1286,38 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when not polymorphic' do
+
       context 'when inverse_of is specified' do
+
         before do
           options.merge!(inverse_of: :inverse_name)
         end
 
         it 'returns the :inverse_of value' do
-          expect(association.inverses).to eq([:inverse_name])
+          expect(association.inverses).to eq([ :inverse_name ])
         end
       end
 
       context 'when inverse_of is not specified' do
+
         before do
           OwnerObject.has_many :belonging_objects
         end
 
         it 'uses the inverse class to find the inverse name' do
-          expect(association.inverses).to eq([:belonging_objects])
+          expect(association.inverses).to eq([ :belonging_objects ])
         end
       end
 
       context 'when :cyclic is specified' do
+
         it 'returns the cyclic inverse name' do
+
         end
       end
 
       context 'when the inverse class has more than one relation with objects of the owner class' do
+
         before do
           OwnerObject.has_many :belonging_objects
           OwnerObject.has_one :other_belonging_object, class_name: 'BelongingObject'
@@ -1202,22 +1331,25 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the inverse class only has one relation with objects of the owner class' do
+
         before do
           OwnerObject.has_many :belonging_objects
         end
 
         it 'uses the inverse class to find the inverse name' do
-          expect(association.inverses).to eq([:belonging_objects])
+          expect(association.inverses).to eq([ :belonging_objects ])
         end
       end
     end
   end
 
   describe '#inverse' do
+
     context 'when polymorphic' do
+
       let(:options) do
         {
-          polymorphic: true
+            polymorphic: true
         }
       end
 
@@ -1226,16 +1358,19 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when another object is passed to the method' do
+
         let(:instance_of_other_class) do
           OwnerObject.new
         end
 
         context 'when the relation class has only one relation whose class matches the owning class' do
+
           before do
             OwnerObject.has_many :belonging_objects, as: :containable
           end
 
           context 'when :inverse_of is specified' do
+
             before do
               options.merge!(inverse_of: :inverse_name)
             end
@@ -1246,6 +1381,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           context 'when inverse_of is not specified' do
+
             it 'returns the list of relations whose :as attribute matches the name of this association' do
               expect(association.inverse(instance_of_other_class)).to eq(:belonging_objects)
             end
@@ -1253,12 +1389,14 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         context 'when the relation class has more than one relation whose class matches the owning class' do
+
           before do
             OwnerObject.has_one :other_belonging_object, as: :containable, class_name: 'BelongingObject'
             OwnerObject.has_one :belonging_object, as: :containable
           end
 
           context 'when :inverse_of is specified' do
+
             before do
               options.merge!(inverse_of: :inverse_name)
             end
@@ -1269,6 +1407,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           context 'when inverse_of is not specified' do
+
             it 'returns the first candidate whose :as attribute matches the name of this association' do
               expect(association.inverse(instance_of_other_class)).to eq(:other_belonging_object)
             end
@@ -1277,7 +1416,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when another object is not passed to the method' do
+
         context 'when inverse_of is specified' do
+
           before do
             options.merge!(inverse_of: :inverse_name)
           end
@@ -1288,6 +1429,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         context 'when inverse_of is not specified' do
+
           it 'returns nil' do
             expect(association.inverse).to eq(nil)
           end
@@ -1296,7 +1438,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when not polymorphic' do
+
       context 'when inverse_of is specified' do
+
         before do
           options.merge!(inverse_of: :inverse_name)
         end
@@ -1307,6 +1451,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when inverse_of is not specified' do
+
         before do
           OwnerObject.has_many :belonging_objects
         end
@@ -1317,11 +1462,14 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when :cyclic is specified' do
+
         it 'returns the cyclic inverse name' do
+
         end
       end
 
       context 'when the inverse class has more than one relation with objects of the owner class' do
+
         before do
           OwnerObject.has_many :belonging_objects
           OwnerObject.has_many :other_belonging_objects, class_name: 'BelongingObject'
@@ -1335,6 +1483,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the inverse class only has one relation with objects of the owner class' do
+
         before do
           OwnerObject.has_many :belonging_objects
         end
@@ -1347,14 +1496,18 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#inverse_association' do
+
   end
 
   describe '#autosave' do
+
     context 'when the :autosave option is specified' do
+
       context 'when the :autosave option is true' do
+
         let(:options) do
           {
-            autosave: true
+              autosave: true
           }
         end
 
@@ -1364,9 +1517,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the :autosave option is false' do
+
         let(:options) do
           {
-            autosave: false
+              autosave: false
           }
         end
 
@@ -1377,6 +1531,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when the :autosave option is not specified' do
+
       it 'returns nil' do
         expect(association.autosave).to be(false)
       end
@@ -1384,10 +1539,12 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#counter_cached?' do
+
     context 'when the :counter_cache option is true' do
+
       let(:options) do
         {
-          counter_cache: true
+            counter_cache: true
         }
       end
 
@@ -1397,9 +1554,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when the :counter_cache option is a String' do
+
       let(:options) do
         {
-          counter_cache: 'counts_field'
+            counter_cache: 'counts_field'
         }
       end
 
@@ -1409,9 +1567,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when the :counter_cache option is false' do
+
       let(:options) do
         {
-          counter_cache: false
+            counter_cache: false
         }
       end
 
@@ -1421,6 +1580,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when the :counter_cache option is not provided' do
+
       it 'returns false' do
         expect(association.counter_cached?).to be(false)
       end
@@ -1428,10 +1588,12 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#counter_cache_column_name' do
+
     context 'when the :counter_cache option is true' do
+
       let(:options) do
         {
-          counter_cache: true
+            counter_cache: true
         }
       end
 
@@ -1441,9 +1603,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when the :counter_cache option is a String' do
+
       let(:options) do
         {
-          counter_cache: 'counts_field'
+            counter_cache: 'counts_field'
         }
       end
 
@@ -1454,7 +1617,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#relation_class_name' do
+
     context 'when the :class_name option is specified' do
+
       let(:options) do
         { class_name: 'OtherOwnerObject' }
       end
@@ -1465,6 +1630,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when the :class_name option is scoped with ::' do
+
       let(:options) do
         { class_name: '::OtherOwnerObject' }
       end
@@ -1475,6 +1641,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when the class_name option is not specified' do
+
       it 'uses the name of the relation to deduce the class name' do
         expect(association.relation_class_name).to eq('OwnerObject')
       end
@@ -1492,7 +1659,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#relation_class' do
+
     context 'when the :class_name option is specified' do
+
       let(:options) do
         { class_name: 'OtherOwnerObject' }
       end
@@ -1503,6 +1672,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when the :class_name option is scoped with ::' do
+
       let(:options) do
         { class_name: '::OtherOwnerObject' }
       end
@@ -1513,6 +1683,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when the class_name option is not specified' do
+
       it 'uses the name of the relation to deduce the class name' do
         expect(association.relation_class).to eq(OwnerObject)
       end
@@ -1532,6 +1703,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#inverse_class_name' do
+
     it 'returns the name of the owner class' do
       expect(association.inverse_class_name).to eq(belonging_class.name)
     end
@@ -1548,6 +1720,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#inverse_class' do
+
     it 'returns the owner class' do
       expect(association.inverse_class).to be(belonging_class)
     end
@@ -1564,7 +1737,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#inverse_of' do
+
     context 'when :inverse_of is specified in the options' do
+
       let(:options) do
         { inverse_of: :a_belonging_object }
       end
@@ -1575,6 +1750,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when :inverse_of is not specified in the options' do
+
       it 'returns nil' do
         expect(association.inverse_of).to be_nil
       end
@@ -1582,20 +1758,25 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#key' do
+
     it 'returns the name of the foreign_key as a string' do
       expect(association.key).to eq(association.foreign_key.to_s)
     end
   end
 
   describe '#setter' do
+
     it 'returns a string of the name followed by =' do
       expect(association.setter).to eq("#{name}=")
     end
   end
 
   describe '#validate?' do
+
     context 'when :validate is specified in the options' do
+
       context 'when validate is true' do
+
         let(:options) do
           { validate: true }
         end
@@ -1606,6 +1787,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when validate is false' do
+
         let(:options) do
           { validate: false }
         end
@@ -1617,6 +1799,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when :validate is not specified in the options' do
+
       it 'returns the validation_default' do
         expect(association.send(:validate?)).to eq(association.validation_default)
       end
@@ -1624,8 +1807,11 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#autobuilding?' do
+
     context 'when :autobuild is specified in the options' do
+
       context 'when autobuild is true' do
+
         let(:options) do
           { autobuild: true }
         end
@@ -1636,6 +1822,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when autobuild is false' do
+
         let(:options) do
           { autobuild: false }
         end
@@ -1647,6 +1834,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when :validate is not specified in the options' do
+
       it 'returns false' do
         expect(association.autobuilding?).to be(false)
       end
@@ -1654,19 +1842,23 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#forced_nil_inverse?' do
+
     it 'returns false' do
       expect(association.forced_nil_inverse?).to be(false)
     end
   end
 
   describe '#stores_foreign_key?' do
+
     it 'returns true' do
       expect(association.stores_foreign_key?).to be(true)
     end
   end
 
   describe '#inverse_setter' do
+
     context 'when an inverse can be determined' do
+
       before do
         OwnerObject.has_many :belonging_objects
       end
@@ -1677,6 +1869,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when an inverse cannot be determined' do
+
       it 'returns nil' do
         expect(association.inverse_setter).to be_nil
       end
@@ -1684,7 +1877,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#extension' do
+
     context 'when a block is passed' do
+
       let(:association) do
         belonging_class.belongs_to name, options do; end
       end
@@ -1695,12 +1890,12 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
       it 'returns the extension' do
         expect(association.extension).to eq(
-          "#{belonging_class.name}::#{belonging_class.name}#{name.to_s.camelize}RelationExtension".constantize
-        )
+          "#{belonging_class.name}::#{belonging_class.name}#{name.to_s.camelize}RelationExtension".constantize)
       end
     end
 
     context 'when an :extension is not specified in the options' do
+
       it 'returns false' do
         expect(association.extension).to be_nil
       end
@@ -1708,17 +1903,21 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#foreign_key_setter' do
+
     it 'returns the foreign key field followed by "="' do
       expect(association.foreign_key_setter).to eq("owner_object_id=")
     end
   end
 
   describe '#destructive?' do
+
     context 'when the dependent option is provided' do
+
       context 'when the dependent option is :delete_all' do
+
         let(:options) do
           {
-            dependent: :delete_all
+              dependent: :delete_all
           }
         end
 
@@ -1728,9 +1927,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the dependent option is :destroy' do
+
         let(:options) do
           {
-            dependent: :destroy
+              dependent: :destroy
           }
         end
 
@@ -1740,9 +1940,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the dependent option is :nullify' do
+
         let(:options) do
           {
-            dependent: :nullify
+              dependent: :nullify
           }
         end
 
@@ -1752,9 +1953,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the dependent option is :restrict_with_exception' do
+
         let(:options) do
           {
-            dependent: :restrict_with_exception
+              dependent: :restrict_with_exception
           }
         end
 
@@ -1764,9 +1966,10 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the dependent option is :restrict_with_error' do
+
         let(:options) do
           {
-            dependent: :restrict_with_error
+              dependent: :restrict_with_error
           }
         end
 
@@ -1777,6 +1980,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     context 'when the dependent option is not provided' do
+
       it 'returns false' do
         expect(association.destructive?).to be(false)
       end
@@ -1784,24 +1988,28 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#nested_builder' do
+
     it 'returns an instance of Association::Nested::One' do
       expect(association.nested_builder({}, {})).to be_a(Mongoid::Association::Nested::One)
     end
   end
 
   describe '#path' do
+
     it 'returns an instance of Mongoid::Atomic::Paths::Root' do
       expect(association.path({})).to be_a(Mongoid::Atomic::Paths::Root)
     end
   end
 
   describe '#foreign_key_check' do
+
     it 'returns the foreign_key followed by "_previously_changed?"' do
       expect(association.foreign_key_check).to eq('owner_object_id_previously_changed?')
     end
   end
 
   describe '#create_relation' do
+
     let(:owner) do
       BelongingObject.new
     end

@@ -3,7 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Errors::InvalidSetPolymorphicRelation do
+
   describe "#message" do
+
     let(:error) do
       described_class.new(:postable, Post, Person)
     end

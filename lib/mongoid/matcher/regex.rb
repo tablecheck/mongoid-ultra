@@ -1,11 +1,13 @@
 module Mongoid
   module Matcher
+
     # In-memory matcher for $regex expression.
     #
     # @see https://www.mongodb.com/docs/manual/reference/operator/query/regex/
     #
     # @api private
     module Regex
+
       # Returns whether a value satisfies a $regex expression.
       #
       # @param [ true | false ] exists Not used.
@@ -17,16 +19,15 @@ module Mongoid
       # @api private
       module_function def matches?(exists, value, condition)
         condition = case condition
-                    when Regexp
-                      condition
-                    when BSON::Regexp::Raw
-                      condition.compile
-                    else
-                      # Note that strings must have been converted to a regular expression
-                      # instance already (with $options taken into account, if provided).
-                      raise Errors::InvalidQuery,
-                            "$regex requires a regular expression argument: #{Errors::InvalidQuery.truncate_expr(condition)}"
-                    end
+        when Regexp
+          condition
+        when BSON::Regexp::Raw
+          condition.compile
+        else
+          # Note that strings must have been converted to a regular expression
+          # instance already (with $options taken into account, if provided).
+          raise Errors::InvalidQuery, "$regex requires a regular expression argument: #{Errors::InvalidQuery.truncate_expr(condition)}"
+        end
 
         case value
         when Array

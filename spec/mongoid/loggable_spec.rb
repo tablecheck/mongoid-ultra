@@ -3,7 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Loggable do
+
   describe "#logger=" do
+
     let(:logger) do
       Logger.new($stdout).tap do |log|
         log.level = Logger::INFO

@@ -1,11 +1,13 @@
 module Mongoid
   module Matcher
+
     # In-memory matcher for $not expression.
     #
     # @see https://www.mongodb.com/docs/manual/reference/operator/query/not/
     #
     # @api private
     module Not
+
       # Returns whether a value satisfies an $not expression.
       #
       # @param [ true | false ] exists Whether the value exists.
@@ -22,8 +24,7 @@ module Mongoid
           !Regex.matches?(exists, value, condition)
         when Hash
           if condition.empty?
-            raise Errors::InvalidQuery,
-                  "$not argument cannot be an empty hash: #{Errors::InvalidQuery.truncate_expr(condition)}"
+            raise Errors::InvalidQuery, "$not argument cannot be an empty hash: #{Errors::InvalidQuery.truncate_expr(condition)}"
           end
 
           condition.all? do |(k, cond_v)|
@@ -35,8 +36,7 @@ module Mongoid
             !FieldOperator.get(k).matches?(exists, value, cond_v)
           end
         else
-          raise Errors::InvalidQuery,
-                "$not argument must be a Hash or a regular expression: #{Errors::InvalidQuery.truncate_expr(condition)}"
+          raise Errors::InvalidQuery, "$not argument must be a Hash or a regular expression: #{Errors::InvalidQuery.truncate_expr(condition)}"
         end
       end
     end

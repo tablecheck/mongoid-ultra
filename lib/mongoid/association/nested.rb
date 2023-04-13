@@ -7,6 +7,7 @@ require 'mongoid/association/nested/one'
 module Mongoid
   module Association
     module Nested
+
       # The flags indicating that an association can be destroyed.
       DESTROY_FLAGS = [1, "1", true, "true"].freeze
     end

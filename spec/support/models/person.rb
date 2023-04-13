@@ -20,8 +20,8 @@ class Person
   field :map, type: Hash
   field :map_with_default, type: Hash, default: {}
   field :score, type: Integer
-  field :blood_alcohol_content, type: Float, default: -> { 0.0 }
-  field :last_drink_taken_at, type: Date, default: -> { 1.day.ago.in_time_zone("Alaska") }
+  field :blood_alcohol_content, type: Float, default: ->{ 0.0 }
+  field :last_drink_taken_at, type: Date, default: ->{ 1.day.ago.in_time_zone("Alaska") }
   field :ssn
   field :owner_id, type: Integer
   field :security_code
@@ -51,14 +51,13 @@ class Person
   attr_reader :rescored
 
   embeds_many :favorites, order: :title.desc, inverse_of: :perp, validate: false
-  embeds_many :videos, order: [[:title, :asc]], validate: false
+  embeds_many :videos, order: [[ :title, :asc ]], validate: false
   embeds_many :phone_numbers, class_name: "Phone", validate: false
   embeds_many :phones, store_as: :mobile_phones, validate: false
   embeds_many :addresses, as: :addressable, validate: false do
     def extension
       "Testing"
     end
-
     def find_by_street(street)
       where(street: street).first
     end
@@ -76,7 +75,6 @@ class Person
     def extension
       "Testing"
     end
-
     def dawkins?
       first_name == "Richard" && last_name == "Dawkins"
     end
@@ -119,7 +117,7 @@ class Person
     :administrated_events,
     class_name: 'Event',
     inverse_of: :administrators,
-    dependent: :nullify,
+    dependent:  :nullify,
     validate: false
 
   belongs_to :mother, class_name: 'Person'
@@ -135,9 +133,9 @@ class Person
   accepts_nested_attributes_for :quiz
   accepts_nested_attributes_for :services, allow_destroy: true
 
-  scope :minor, -> { where(:age.lt => 18) }
-  scope :without_ssn, -> { without(:ssn) }
-  scope :search, ->(query) { any_of({ title: query }) }
+  scope :minor, ->{ where(:age.lt => 18) }
+  scope :without_ssn, ->{ without(:ssn) }
+  scope :search, ->(query){ any_of({ title: query }) }
 
   def self.older_than(age:)
     where(:age.gt => age)
@@ -178,11 +176,9 @@ class Person
     def accepted
       scoped.where(terms: true)
     end
-
     def knight
       scoped.where(title: "Sir")
     end
-
     def old
       scoped.where(age: { "$gt" => 50 })
     end

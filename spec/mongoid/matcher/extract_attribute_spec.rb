@@ -9,6 +9,7 @@ describe 'Matcher.extract_attribute' do
 
       specs.each do |spec|
         context spec['name'] do
+
           if spec['pending']
             pending spec['pending'].to_s
           end

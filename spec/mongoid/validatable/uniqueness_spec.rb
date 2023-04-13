@@ -3,9 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Validatable::UniquenessValidator do
+
   describe "#valid?" do
+
     context "when the document is a root document" do
+
       context "when setting the read preference to non-primary" do
+
         before do
           Dictionary.validates_uniqueness_of :name
         end
@@ -27,6 +31,7 @@ describe Mongoid::Validatable::UniquenessValidator do
       end
 
       context "when adding custom persistence options" do
+
         before do
           Dictionary.validates_uniqueness_of :name
         end
@@ -36,6 +41,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when persisting to another collection" do
+
           before do
             Dictionary.with(collection: "dicts") do |klass|
               klass.create!(name: "websters")
@@ -43,6 +49,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the document is not valid" do
+
             let(:websters) do
               object = nil
               valid = Dictionary.with(collection: "dicts") do |klass|
@@ -66,6 +73,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the document is valid" do
+
             let(:oxford) do
               Dictionary.with(collection: "dicts") do |klass|
                 klass.new(name: "oxford")
@@ -80,7 +88,9 @@ describe Mongoid::Validatable::UniquenessValidator do
       end
 
       context "when the document contains no compound key" do
+
         context "when validating a relation" do
+
           before do
             Word.validates_uniqueness_of :dictionary
           end
@@ -90,6 +100,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute id is unique" do
+
             let(:dictionary) do
               Dictionary.create!
             end
@@ -105,6 +116,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when the field name is aliased" do
+
           before do
             Dictionary.create!(language: "en")
           end
@@ -118,6 +130,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the validation uses the aliased name" do
+
             before do
               Dictionary.validates_uniqueness_of :language
             end
@@ -129,11 +142,12 @@ describe Mongoid::Validatable::UniquenessValidator do
             it "adds the uniqueness error to the aliased field name" do
               dictionary.valid?
               expect(dictionary.errors).to have_key(:language)
-              expect(dictionary.errors[:language]).to eq(["has already been taken"])
+              expect(dictionary.errors[:language]).to eq([ "has already been taken" ])
             end
           end
 
           context "when the validation uses the underlying field name" do
+
             before do
               Dictionary.validates_uniqueness_of :l
             end
@@ -145,14 +159,17 @@ describe Mongoid::Validatable::UniquenessValidator do
             it "adds the uniqueness error to the underlying field name" do
               dictionary.valid?
               expect(dictionary.errors).to have_key(:l)
-              expect(dictionary.errors[:l]).to eq(["has already been taken"])
+              expect(dictionary.errors[:l]).to eq([ "has already been taken" ])
             end
           end
         end
 
         context "when the field is localized" do
+
           context "when no scope is provided" do
+
             context "when case sensitive is true" do
+
               before do
                 Dictionary.validates_uniqueness_of :description
               end
@@ -162,7 +179,9 @@ describe Mongoid::Validatable::UniquenessValidator do
               end
 
               context "when no attribute is set" do
+
                 context "when no document with no value exists in the database" do
+
                   let(:dictionary) do
                     Dictionary.new
                   end
@@ -173,6 +192,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                 end
 
                 context "when a document with no value exists in the database" do
+
                   before do
                     Dictionary.create!
                   end
@@ -188,7 +208,9 @@ describe Mongoid::Validatable::UniquenessValidator do
               end
 
               context "when the attribute is unique" do
+
                 context "when single localization" do
+
                   before do
                     Dictionary.create!(description: "english")
                   end
@@ -203,9 +225,10 @@ describe Mongoid::Validatable::UniquenessValidator do
                 end
 
                 context "when multiple localizations" do
+
                   before do
-                    Dictionary
-                      .create(description_translations: { "en" => "english", "de" => "german" })
+                    Dictionary.
+                        create(description_translations: { "en" => "english", "de" => "german" })
                   end
 
                   let(:dictionary) do
@@ -219,8 +242,11 @@ describe Mongoid::Validatable::UniquenessValidator do
               end
 
               context "when the attribute is not unique" do
+
                 context "when the document is not the match" do
+
                   context "when single localization" do
+
                     before do
                       Dictionary.create!(description: "english")
                     end
@@ -235,14 +261,15 @@ describe Mongoid::Validatable::UniquenessValidator do
 
                     it "adds the uniqueness error" do
                       dictionary.valid?
-                      expect(dictionary.errors[:description]).to eq(["has already been taken"])
+                      expect(dictionary.errors[:description]).to eq([ "has already been taken" ])
                     end
                   end
 
                   context "when multiple localizations" do
+
                     before do
-                      Dictionary
-                        .create(description_translations: { "en" => "english", "de" => "german" })
+                      Dictionary.
+                          create(description_translations: { "en" => "english", "de" => "german" })
                     end
 
                     let(:dictionary) do
@@ -255,7 +282,7 @@ describe Mongoid::Validatable::UniquenessValidator do
 
                     it "adds the uniqueness error" do
                       dictionary.valid?
-                      expect(dictionary.errors[:description]).to eq(["has already been taken"])
+                      expect(dictionary.errors[:description]).to eq([ "has already been taken" ])
                     end
                   end
                 end
@@ -263,6 +290,7 @@ describe Mongoid::Validatable::UniquenessValidator do
             end
 
             context "when case sensitive is false" do
+
               before do
                 Dictionary.validates_uniqueness_of :description, case_sensitive: false
               end
@@ -272,7 +300,9 @@ describe Mongoid::Validatable::UniquenessValidator do
               end
 
               context "when the attribute is unique" do
+
                 context "when there are no special characters" do
+
                   before do
                     Dictionary.create!(description: "english")
                   end
@@ -287,6 +317,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                 end
 
                 context "when special characters exist" do
+
                   before do
                     Dictionary.create!(description: "english")
                   end
@@ -302,8 +333,11 @@ describe Mongoid::Validatable::UniquenessValidator do
               end
 
               context "when the attribute is not unique" do
+
                 context "when the document is not the match" do
+
                   context "when signle localization" do
+
                     before do
                       Dictionary.create!(description: "english")
                     end
@@ -318,14 +352,15 @@ describe Mongoid::Validatable::UniquenessValidator do
 
                     it "adds the uniqueness error" do
                       dictionary.valid?
-                      expect(dictionary.errors[:description]).to eq(["has already been taken"])
+                      expect(dictionary.errors[:description]).to eq([ "has already been taken" ])
                     end
                   end
 
                   context "when multiple localizations" do
+
                     before do
-                      Dictionary
-                        .create(description_translations: { "en" => "english", "de" => "german" })
+                      Dictionary.
+                          create(description_translations: { "en" => "english", "de" => "german" })
                     end
 
                     let(:dictionary) do
@@ -338,12 +373,13 @@ describe Mongoid::Validatable::UniquenessValidator do
 
                     it "adds the uniqueness error" do
                       dictionary.valid?
-                      expect(dictionary.errors[:description]).to eq(["has already been taken"])
+                      expect(dictionary.errors[:description]).to eq([ "has already been taken" ])
                     end
                   end
                 end
 
                 context "when the document is the match in the database" do
+
                   let!(:dictionary) do
                     Dictionary.create!(description: "english")
                   end
@@ -357,6 +393,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when a scope is provided" do
+
             before do
               Dictionary.validates_uniqueness_of :description, scope: :name
             end
@@ -366,10 +403,12 @@ describe Mongoid::Validatable::UniquenessValidator do
             end
 
             context "when the attribute is not unique in the scope" do
+
               context "when the document is not the match" do
+
                 before do
-                  Dictionary
-                    .create(description: "english", name: "test")
+                  Dictionary.
+                    create(description: "english", name: "test")
                 end
 
                 let(:dictionary) do
@@ -382,7 +421,7 @@ describe Mongoid::Validatable::UniquenessValidator do
 
                 it "adds the uniqueness error" do
                   dictionary.valid?
-                  expect(dictionary.errors[:description]).to eq(["has already been taken"])
+                  expect(dictionary.errors[:description]).to eq([ "has already been taken" ])
                 end
               end
             end
@@ -390,6 +429,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when no scope is provided" do
+
           before do
             Dictionary.validates_uniqueness_of :name
           end
@@ -399,6 +439,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             let!(:oxford) do
               Dictionary.create!(name: "Oxford")
             end
@@ -412,6 +453,7 @@ describe Mongoid::Validatable::UniquenessValidator do
             end
 
             context "when subsequently cloning the document" do
+
               let(:clone) do
                 oxford.clone
               end
@@ -423,7 +465,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique" do
+
             context "when the document is not the match" do
+
               before do
                 Dictionary.create!(name: "Oxford")
               end
@@ -438,12 +482,14 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness error" do
                 dictionary.valid?
-                expect(dictionary.errors[:name]).to eq(["has already been taken"])
+                expect(dictionary.errors[:name]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               context "when the field has changed" do
+
                 let!(:dictionary) do
                   Dictionary.create!(name: "Oxford")
                 end
@@ -454,6 +500,7 @@ describe Mongoid::Validatable::UniquenessValidator do
               end
 
               context "when the field has not changed" do
+
                 before do
                   Dictionary.default_scoping = nil
                 end
@@ -480,9 +527,10 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when a default scope is on the model" do
+
           before do
             Dictionary.validates_uniqueness_of :name
-            Dictionary.default_scope(-> { Dictionary.where(year: 1990) })
+            Dictionary.default_scope(->{ Dictionary.where(year: 1990) })
           end
 
           after do
@@ -491,7 +539,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the document with the unqiue attribute is not in default scope" do
+
             context "when the attribute is not unique" do
+
               before do
                 Dictionary.create!(name: "Oxford")
               end
@@ -508,6 +558,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when an aliased scope is provided" do
+
           before do
             Dictionary.validates_uniqueness_of :name, scope: :language
           end
@@ -517,6 +568,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             before do
               Dictionary.create!(name: "Oxford", language: "English")
             end
@@ -531,6 +583,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique in the scope" do
+
             before do
               Dictionary.create!(name: "Oxford", language: "English")
             end
@@ -545,6 +598,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique with no scope" do
+
             before do
               Dictionary.create!(name: "Oxford", language: "English")
             end
@@ -559,6 +613,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique in another scope" do
+
             before do
               Dictionary.create!(name: "Oxford", language: "English")
             end
@@ -573,7 +628,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique in the same scope" do
+
             context "when the document is not the match" do
+
               before do
                 Dictionary.create!(name: "Oxford", language: "English")
               end
@@ -588,11 +645,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness errors" do
                 dictionary.valid?
-                expect(dictionary.errors[:name]).to eq(["has already been taken"])
+                expect(dictionary.errors[:name]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:dictionary) do
                 Dictionary.create!(name: "Oxford", language: "English")
               end
@@ -605,6 +663,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when a single scope is provided" do
+
           before do
             Dictionary.validates_uniqueness_of :name, scope: :publisher
           end
@@ -614,6 +673,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             before do
               Dictionary.create!(name: "Oxford", publisher: "Amazon")
             end
@@ -628,6 +688,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique in the scope" do
+
             before do
               Dictionary.create!(name: "Oxford", publisher: "Amazon")
             end
@@ -642,6 +703,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when uniqueness is violated due to scope change" do
+
             let(:personal_folder) do
               Folder.create!(name: "Personal")
             end
@@ -666,6 +728,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique with no scope" do
+
             before do
               Dictionary.create!(name: "Oxford", publisher: "Amazon")
             end
@@ -680,6 +743,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique in another scope" do
+
             before do
               Dictionary.create!(name: "Oxford", publisher: "Amazon")
             end
@@ -694,7 +758,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique in the same scope" do
+
             context "when the document is not the match" do
+
               before do
                 Dictionary.create!(name: "Oxford", publisher: "Amazon")
               end
@@ -709,11 +775,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness errors" do
                 dictionary.valid?
-                expect(dictionary.errors[:name]).to eq(["has already been taken"])
+                expect(dictionary.errors[:name]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:dictionary) do
                 Dictionary.create!(name: "Oxford", publisher: "Amazon")
               end
@@ -724,6 +791,7 @@ describe Mongoid::Validatable::UniquenessValidator do
             end
 
             context "when one of the scopes is a time" do
+
               before do
                 Dictionary.create!(
                   name: "Oxford",
@@ -746,16 +814,17 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness errors" do
                 dictionary.valid?
-                expect(dictionary.errors[:name]).to eq(["has already been taken"])
+                expect(dictionary.errors[:name]).to eq([ "has already been taken" ])
               end
             end
           end
         end
 
         context "when a range condition is provided" do
+
           before do
             Dictionary.validates_uniqueness_of(:name,
-                                               conditions: -> { Dictionary.where(:year.gte => 1900, :year.lt => 2000) })
+              conditions: -> { Dictionary.where(:year.gte => 1900, :year.lt => 2000) })
           end
 
           after do
@@ -796,8 +865,9 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when multiple scopes are provided" do
+
           before do
-            Dictionary.validates_uniqueness_of :name, scope: [:publisher, :year]
+            Dictionary.validates_uniqueness_of :name, scope: [ :publisher, :year ]
           end
 
           after do
@@ -805,6 +875,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             before do
               Dictionary.create!(name: "Oxford", publisher: "Amazon")
             end
@@ -819,6 +890,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique in the scope" do
+
             before do
               Dictionary.create!(
                 name: "Oxford",
@@ -841,6 +913,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique with no scope" do
+
             before do
               Dictionary.create!(name: "Oxford", publisher: "Amazon")
             end
@@ -855,6 +928,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique in another scope" do
+
             before do
               Dictionary.create!(
                 name: "Oxford",
@@ -877,7 +951,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique in the same scope" do
+
             context "when the document is not the match" do
+
               before do
                 Dictionary.create!(
                   name: "Oxford",
@@ -900,11 +976,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness errors" do
                 dictionary.valid?
-                expect(dictionary.errors[:name]).to eq(["has already been taken"])
+                expect(dictionary.errors[:name]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:dictionary) do
                 Dictionary.create!(
                   name: "Oxford",
@@ -921,6 +998,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when case sensitive is true" do
+
           before do
             Dictionary.validates_uniqueness_of :name
           end
@@ -930,6 +1008,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             before do
               Dictionary.create!(name: "Oxford")
             end
@@ -944,7 +1023,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique" do
+
             context "when the document is not the match" do
+
               before do
                 Dictionary.create!(name: "Oxford")
               end
@@ -959,11 +1040,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness error" do
                 dictionary.valid?
-                expect(dictionary.errors[:name]).to eq(["has already been taken"])
+                expect(dictionary.errors[:name]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:dictionary) do
                 Dictionary.create!(name: "Oxford")
               end
@@ -976,6 +1058,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when case sensitive is false" do
+
           before do
             Dictionary.validates_uniqueness_of :name, case_sensitive: false
           end
@@ -985,7 +1068,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             context "when there are no special characters" do
+
               before do
                 Dictionary.create!(name: "Oxford")
               end
@@ -1000,6 +1085,7 @@ describe Mongoid::Validatable::UniquenessValidator do
             end
 
             context "when special characters exist" do
+
               before do
                 Dictionary.create!(name: "Oxford")
               end
@@ -1015,7 +1101,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique" do
+
             context "when the document is not the match" do
+
               before do
                 Dictionary.create!(name: "Oxford")
               end
@@ -1030,11 +1118,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness error" do
                 dictionary.valid?
-                expect(dictionary.errors[:name]).to eq(["has already been taken"])
+                expect(dictionary.errors[:name]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:dictionary) do
                 Dictionary.create!(name: "Oxford")
               end
@@ -1047,12 +1136,14 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when not allowing nil" do
+
           it "raises a validation error" do
             expect { LineItem.create! }.to raise_error Mongoid::Errors::Validations
           end
         end
 
         context "when allowing nil" do
+
           before do
             Dictionary.validates_uniqueness_of :name, allow_nil: true
           end
@@ -1062,6 +1153,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is nil" do
+
             before do
               Dictionary.create!
             end
@@ -1077,6 +1169,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when allowing blank" do
+
           before do
             Dictionary.validates_uniqueness_of :name, allow_blank: true
           end
@@ -1086,6 +1179,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is blank" do
+
             before do
               Dictionary.create!(name: "")
             end
@@ -1102,7 +1196,9 @@ describe Mongoid::Validatable::UniquenessValidator do
       end
 
       context "when the document contains a compound key" do
+
         context "when no scope is provided" do
+
           before do
             Login.validates_uniqueness_of :username
           end
@@ -1112,6 +1208,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             before do
               Login.create!(username: "Oxford")
             end
@@ -1126,7 +1223,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique" do
+
             context "when the document is not the match" do
+
               before do
                 Login.create!(username: "Oxford")
               end
@@ -1141,11 +1240,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness error" do
                 login.valid?
-                expect(login.errors[:username]).to eq(["has already been taken"])
+                expect(login.errors[:username]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:login) do
                 Login.create!(username: "Oxford")
               end
@@ -1158,6 +1258,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when a single scope is provided" do
+
           before do
             Login.validates_uniqueness_of :username, scope: :application_id
           end
@@ -1167,6 +1268,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             before do
               Login.create!(username: "Oxford", application_id: 1)
             end
@@ -1181,6 +1283,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique in the scope" do
+
             before do
               Login.create!(username: "Oxford", application_id: 1)
             end
@@ -1195,6 +1298,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique with no scope" do
+
             before do
               Login.create!(username: "Oxford", application_id: 1)
             end
@@ -1209,6 +1313,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique in another scope" do
+
             before do
               Login.create!(username: "Oxford", application_id: 1)
             end
@@ -1223,7 +1328,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique in the same scope" do
+
             context "when the document is not the match" do
+
               before do
                 Login.create!(username: "Oxford", application_id: 1)
               end
@@ -1238,11 +1345,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness errors" do
                 login.valid?
-                expect(login.errors[:username]).to eq(["has already been taken"])
+                expect(login.errors[:username]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:login) do
                 Login.create!(username: "Oxford", application_id: 1)
               end
@@ -1255,6 +1363,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when case sensitive is true" do
+
           before do
             Login.validates_uniqueness_of :username
           end
@@ -1264,6 +1373,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             before do
               Login.create!(username: "Oxford")
             end
@@ -1278,7 +1388,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique" do
+
             context "when the document is not the match" do
+
               before do
                 Login.create!(username: "Oxford")
               end
@@ -1293,11 +1405,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness error" do
                 login.valid?
-                expect(login.errors[:username]).to eq(["has already been taken"])
+                expect(login.errors[:username]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:login) do
                 Login.create!(username: "Oxford")
               end
@@ -1310,6 +1423,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when case sensitive is false" do
+
           before do
             Login.validates_uniqueness_of :username, case_sensitive: false
           end
@@ -1319,7 +1433,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             context "when there are no special characters" do
+
               before do
                 Login.create!(username: "Oxford")
               end
@@ -1334,6 +1450,7 @@ describe Mongoid::Validatable::UniquenessValidator do
             end
 
             context "when special characters exist" do
+
               before do
                 Login.create!(username: "Oxford")
               end
@@ -1349,7 +1466,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique" do
+
             context "when the document is not the match" do
+
               before do
                 Login.create!(username: "Oxford")
               end
@@ -1364,11 +1483,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness error" do
                 login.valid?
-                expect(login.errors[:username]).to eq(["has already been taken"])
+                expect(login.errors[:username]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:login) do
                 Login.create!(username: "Oxford")
               end
@@ -1381,6 +1501,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when allowing nil" do
+
           before do
             Login.validates_uniqueness_of :username, allow_nil: true
           end
@@ -1390,6 +1511,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is nil" do
+
             before do
               Login.create!
             end
@@ -1405,6 +1527,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when allowing blank" do
+
           before do
             Login.validates_uniqueness_of :username, allow_blank: true
           end
@@ -1414,6 +1537,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is blank" do
+
             before do
               Login.create!(username: "")
             end
@@ -1430,6 +1554,7 @@ describe Mongoid::Validatable::UniquenessValidator do
       end
 
       context "when the attribute is a custom type" do
+
         before do
           Bar.validates_uniqueness_of :lat_lng
         end
@@ -1439,6 +1564,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when the attribute is unique" do
+
           before do
             Bar.create!(lat_lng: LatLng.new(52.30, 13.25))
           end
@@ -1450,9 +1576,11 @@ describe Mongoid::Validatable::UniquenessValidator do
           it "returns true" do
             expect(unique_bar).to be_valid
           end
+
         end
 
         context "when the attribute is not unique" do
+
           before do
             Bar.create!(lat_lng: LatLng.new(52.30, 13.25))
           end
@@ -1464,12 +1592,14 @@ describe Mongoid::Validatable::UniquenessValidator do
           it "returns false" do
             expect(non_unique_bar).to_not be_valid
           end
+
         end
       end
 
       context "when conditions is set" do
+
         before do
-          Band.validates_uniqueness_of :name, conditions: -> { Band.where(active: true) }
+          Band.validates_uniqueness_of :name, conditions: ->{ Band.where(active: true) }
         end
 
         after do
@@ -1477,6 +1607,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when the attribute is unique" do
+
           before do
             Band.create!(name: 'Foo', active: false)
           end
@@ -1488,9 +1619,11 @@ describe Mongoid::Validatable::UniquenessValidator do
           it "returns true" do
             expect(unique_band).to be_valid
           end
+
         end
 
         context "when the attribute is not unique" do
+
           before do
             Band.create!(name: 'Foo')
           end
@@ -1508,11 +1641,13 @@ describe Mongoid::Validatable::UniquenessValidator do
   end
 
   context "when the document is embedded" do
+
     let(:word) do
       Word.create!(name: "Schadenfreude")
     end
 
     context "when in an embeds_many" do
+
       let!(:def_one) do
         word.definitions.create!(description: "1")
       end
@@ -1522,6 +1657,7 @@ describe Mongoid::Validatable::UniquenessValidator do
       end
 
       context "when setting the read preference to non-primary" do
+
         before do
           Definition.validates_uniqueness_of :description
         end
@@ -1545,6 +1681,7 @@ describe Mongoid::Validatable::UniquenessValidator do
       end
 
       context "when a document is being destroyed" do
+
         before do
           Definition.validates_uniqueness_of :description
         end
@@ -1554,6 +1691,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when changing a document to the destroyed property" do
+
           let(:attributes) do
             {
               definitions_attributes: {
@@ -1574,7 +1712,9 @@ describe Mongoid::Validatable::UniquenessValidator do
       end
 
       context "when the document does not use composite keys" do
+
         context "when no scope is provided" do
+
           before do
             Definition.validates_uniqueness_of :description
           end
@@ -1584,6 +1724,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             before do
               word.definitions.build(description: "Malicious joy")
             end
@@ -1598,7 +1739,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique" do
+
             context "when the document is not the match" do
+
               before do
                 word.definitions.build(description: "Malicious joy")
               end
@@ -1613,11 +1756,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness error" do
                 definition.valid?
-                expect(definition.errors[:description]).to eq(["has already been taken"])
+                expect(definition.errors[:description]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:definition) do
                 word.definitions.build(description: "Malicious joy")
               end
@@ -1630,6 +1774,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when a single scope is provided" do
+
           before do
             Definition.validates_uniqueness_of :description, scope: :part
           end
@@ -1639,6 +1784,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             before do
               word.definitions.build(
                 description: "Malicious joy", part: "Noun"
@@ -1655,6 +1801,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique in the scope" do
+
             before do
               word.definitions.build(
                 description: "Malicious joy",
@@ -1675,6 +1822,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique with no scope" do
+
             before do
               word.definitions.build(
                 description: "Malicious joy",
@@ -1692,6 +1840,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique in another scope" do
+
             before do
               word.definitions.build(
                 description: "Malicious joy",
@@ -1712,7 +1861,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique in the same scope" do
+
             context "when the document is not the match" do
+
               before do
                 word.definitions.build(
                   description: "Malicious joy",
@@ -1733,11 +1884,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness errors" do
                 definition.valid?
-                expect(definition.errors[:description]).to eq(["has already been taken"])
+                expect(definition.errors[:description]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:definition) do
                 word.definitions.build(
                   description: "Malicious joy",
@@ -1753,8 +1905,9 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when multiple scopes are provided" do
+
           before do
-            Definition.validates_uniqueness_of :description, scope: [:part, :regular]
+            Definition.validates_uniqueness_of :description, scope: [ :part, :regular ]
           end
 
           after do
@@ -1762,6 +1915,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             before do
               word.definitions.build(
                 description: "Malicious joy",
@@ -1779,6 +1933,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique in the scope" do
+
             before do
               word.definitions.build(
                 description: "Malicious joy",
@@ -1801,6 +1956,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique with no scope" do
+
             before do
               word.definitions.build(
                 description: "Malicious joy",
@@ -1818,6 +1974,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique in another scope" do
+
             before do
               word.definitions.build(
                 description: "Malicious joy",
@@ -1840,7 +1997,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique in the same scope" do
+
             context "when the document is not the match" do
+
               before do
                 word.definitions.build(
                   description: "Malicious joy",
@@ -1863,11 +2022,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness errors" do
                 definition.valid?
-                expect(definition.errors[:description]).to eq(["has already been taken"])
+                expect(definition.errors[:description]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:definition) do
                 word.definitions.build(
                   description: "Malicious joy",
@@ -1884,6 +2044,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when case sensitive is true" do
+
           before do
             Definition.validates_uniqueness_of :description
           end
@@ -1893,6 +2054,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             before do
               word.definitions.build(description: "Malicious jo")
             end
@@ -1907,7 +2069,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique" do
+
             context "when the document is not the match" do
+
               before do
                 word.definitions.build(description: "Malicious joy")
               end
@@ -1922,11 +2086,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness error" do
                 definition.valid?
-                expect(definition.errors[:description]).to eq(["has already been taken"])
+                expect(definition.errors[:description]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:definition) do
                 word.definitions.build(description: "Malicious joy")
               end
@@ -1939,6 +2104,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when case sensitive is false" do
+
           before do
             Definition.validates_uniqueness_of :description, case_sensitive: false
           end
@@ -1948,7 +2114,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             context "when there are no special characters" do
+
               before do
                 word.definitions.build(description: "Malicious joy")
               end
@@ -1963,6 +2131,7 @@ describe Mongoid::Validatable::UniquenessValidator do
             end
 
             context "when special characters exist" do
+
               before do
                 word.definitions.build(description: "Malicious joy")
               end
@@ -1978,7 +2147,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique" do
+
             context "when the document is not the match" do
+
               before do
                 word.definitions.build(description: "Malicious joy")
               end
@@ -1993,11 +2164,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness error" do
                 definition.valid?
-                expect(definition.errors[:description]).to eq(["has already been taken"])
+                expect(definition.errors[:description]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:definition) do
                 word.definitions.build(description: "Malicious joy")
               end
@@ -2010,6 +2182,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when allowing nil" do
+
           before do
             Definition.validates_uniqueness_of :description, allow_nil: true
           end
@@ -2019,6 +2192,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is nil" do
+
             before do
               word.definitions.build
             end
@@ -2034,6 +2208,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when allowing blank" do
+
           before do
             Definition.validates_uniqueness_of :description, allow_blank: true
           end
@@ -2043,6 +2218,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is blank" do
+
             before do
               word.definitions.build(description: "")
             end
@@ -2058,6 +2234,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when the field name is aliased" do
+
           before do
             word.definitions.build(part: "noun", synonyms: "foo")
           end
@@ -2071,6 +2248,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the validation uses the aliased name" do
+
             before do
               Definition.validates_uniqueness_of :part, case_sensitive: false
             end
@@ -2082,11 +2260,12 @@ describe Mongoid::Validatable::UniquenessValidator do
             it "adds the uniqueness error to the aliased field name" do
               definition.valid?
               expect(definition.errors).to have_key(:part)
-              expect(definition.errors[:part]).to eq(["has already been taken"])
+              expect(definition.errors[:part]).to eq([ "has already been taken" ])
             end
           end
 
           context "when the validation uses the underlying field name" do
+
             before do
               Definition.validates_uniqueness_of :p, case_sensitive: false
             end
@@ -2098,12 +2277,14 @@ describe Mongoid::Validatable::UniquenessValidator do
             it "adds the uniqueness error to the underlying field name" do
               definition.valid?
               expect(definition.errors).to have_key(:p)
-              expect(definition.errors[:p]).to eq(["has already been taken"])
+              expect(definition.errors[:p]).to eq([ "has already been taken" ])
             end
           end
 
           context "when the field is localized" do
+
             context "when the validation uses the aliased name" do
+
               before do
                 Definition.validates_uniqueness_of :synonyms, case_sensitive: false
               end
@@ -2115,11 +2296,12 @@ describe Mongoid::Validatable::UniquenessValidator do
               it "adds the uniqueness error to the aliased field name" do
                 definition.valid?
                 expect(definition.errors).to have_key(:synonyms)
-                expect(definition.errors[:synonyms]).to eq(["has already been taken"])
+                expect(definition.errors[:synonyms]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the validation uses the underlying field name" do
+
               before do
                 Definition.validates_uniqueness_of :syn, case_sensitive: false
               end
@@ -2131,7 +2313,7 @@ describe Mongoid::Validatable::UniquenessValidator do
               it "adds the uniqueness error to the aliased field name" do
                 definition.valid?
                 expect(definition.errors).to have_key(:syn)
-                expect(definition.errors[:syn]).to eq(["has already been taken"])
+                expect(definition.errors[:syn]).to eq([ "has already been taken" ])
               end
             end
           end
@@ -2139,7 +2321,9 @@ describe Mongoid::Validatable::UniquenessValidator do
       end
 
       context "when the document uses composite keys" do
+
         context "when no scope is provided" do
+
           before do
             WordOrigin.validates_uniqueness_of :origin_id
           end
@@ -2149,6 +2333,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is unique" do
+
             before do
               word.word_origins.build(origin_id: 1)
             end
@@ -2163,7 +2348,9 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is not unique" do
+
             context "when the document is not the match" do
+
               before do
                 word.word_origins.build(origin_id: 1)
               end
@@ -2178,11 +2365,12 @@ describe Mongoid::Validatable::UniquenessValidator do
 
               it "adds the uniqueness error" do
                 word_origin.valid?
-                expect(word_origin.errors[:origin_id]).to eq(["has already been taken"])
+                expect(word_origin.errors[:origin_id]).to eq([ "has already been taken" ])
               end
             end
 
             context "when the document is the match in the database" do
+
               let!(:word_origin) do
                 word.word_origins.build(origin_id: 1)
               end
@@ -2195,6 +2383,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when allowing nil" do
+
           before do
             WordOrigin.validates_uniqueness_of :origin_id, allow_nil: true
           end
@@ -2204,6 +2393,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is nil" do
+
             before do
               word.word_origins.build
             end
@@ -2219,6 +2409,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         end
 
         context "when allowing blank" do
+
           before do
             WordOrigin.validates_uniqueness_of :origin_id, allow_blank: true
           end
@@ -2228,6 +2419,7 @@ describe Mongoid::Validatable::UniquenessValidator do
           end
 
           context "when the attribute is blank" do
+
             before do
               word.word_origins.build(origin_id: "")
             end
@@ -2245,6 +2437,7 @@ describe Mongoid::Validatable::UniquenessValidator do
     end
 
     context "when in an embeds_one" do
+
       before do
         Pronunciation.validates_uniqueness_of :sound
       end
@@ -2264,6 +2457,7 @@ describe Mongoid::Validatable::UniquenessValidator do
   end
 
   context "when describing validation on the instance level" do
+
     let!(:dictionary) do
       Dictionary.create!(name: "en")
     end
@@ -2273,7 +2467,7 @@ describe Mongoid::Validatable::UniquenessValidator do
     end
 
     it "adds the validation only to the instance" do
-      expect(validators).to eq([described_class])
+      expect(validators).to eq([ described_class ])
     end
   end
 
@@ -2296,12 +2490,13 @@ describe Mongoid::Validatable::UniquenessValidator do
     it "should be invalid" do
       subclass_document_with_duplicated_name.tap do |d|
         expect(d).to be_invalid
-        expect(d.errors[:name]).to eq(["has already been taken"])
+        expect(d.errors[:name]).to eq([ "has already been taken" ])
       end
     end
   end
 
   context "when persisting with safe options" do
+
     before do
       Person.validates_uniqueness_of(:username)
       Person.index({ ssn: 1 }, { unique: true })
@@ -2325,6 +2520,7 @@ describe Mongoid::Validatable::UniquenessValidator do
   end
 
   describe "i18n" do
+
     context 'when using a different locale' do
       with_default_i18n_configs
 

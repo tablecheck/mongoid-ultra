@@ -3,6 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Contextual::None do
+
   before do
     Band.create!(name: "Depeche Mode")
   end
@@ -12,6 +13,7 @@ describe Mongoid::Contextual::None do
   end
 
   describe "#==" do
+
     context "when the other is a none" do
       let(:other) do
         described_class.new(Band.where(name: "Depeche Mode"))
@@ -52,6 +54,7 @@ describe Mongoid::Contextual::None do
   end
 
   describe "#pluck" do
+
     context "when plucking one field" do
       it "returns an empty array" do
         expect(context.pluck(:id)).to eq([])
@@ -66,7 +69,9 @@ describe Mongoid::Contextual::None do
   end
 
   describe "#pluck_each" do
+
     context "when block given" do
+
       let!(:plucked_values) { [] }
 
       let!(:plucked) do
@@ -83,6 +88,7 @@ describe Mongoid::Contextual::None do
     end
 
     context "when block not given" do
+
       let!(:plucked) do
         context.pluck_each(:street)
       end
@@ -167,12 +173,13 @@ describe Mongoid::Contextual::None do
     end
   end
 
-  [:second,
-   :third,
-   :fourth,
-   :fifth,
-   :second_to_last,
-   :third_to_last].each do |meth|
+  [ :second,
+    :third,
+    :fourth,
+    :fifth,
+    :second_to_last,
+    :third_to_last
+  ].each do |meth|
     describe "##{meth}" do
       it "returns nil" do
         expect(context.send(meth)).to be_nil

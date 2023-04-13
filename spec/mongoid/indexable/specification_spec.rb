@@ -3,8 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Indexable::Specification do
+
   describe "#==" do
+
     context "when the keys are different" do
+
       let(:spec_one) do
         described_class.new(Band, { name: 1 })
       end
@@ -19,6 +22,7 @@ describe Mongoid::Indexable::Specification do
     end
 
     context "when the keys are the same" do
+
       let(:spec_one) do
         described_class.new(Band, { name: 1 })
       end
@@ -33,6 +37,7 @@ describe Mongoid::Indexable::Specification do
     end
 
     context "when the keys are in different order" do
+
       let(:spec_one) do
         described_class.new(Band, { name: 1, title: -1 })
       end
@@ -47,6 +52,7 @@ describe Mongoid::Indexable::Specification do
     end
 
     context "when the keys are the same with different value" do
+
       let(:spec_one) do
         described_class.new(Band, { name: 1, title: 1 })
       end
@@ -62,17 +68,20 @@ describe Mongoid::Indexable::Specification do
   end
 
   describe "#fields" do
+
     let(:spec) do
       described_class.new(Band, { name: 1, title: 1 })
     end
 
     it "returns the key fields in order" do
-      expect(spec.fields).to eq([:name, :title])
+      expect(spec.fields).to eq([ :name, :title ])
     end
   end
 
   describe "#initialize" do
+
     context "standard case" do
+
       let(:spec) do
         described_class.new(
           Band,
@@ -96,6 +105,7 @@ describe Mongoid::Indexable::Specification do
     end
 
     context "with aliased field options" do
+
       let(:spec) do
         described_class.new(
           Band,
@@ -148,6 +158,7 @@ describe Mongoid::Indexable::Specification do
     end
 
     context "with aliased field options nested inside $ operators" do
+
       let(:spec) do
         described_class.new(
           Band,
@@ -172,16 +183,17 @@ describe Mongoid::Indexable::Specification do
 
       it "normalizes the options" do
         expect(spec.options).to eq(partial_filter_expression: {
-                                     '$foo': { y: { '$lte' => 50 } },
-                                     '$bar': [
-                                       { views: { '$gt' => 100 } },
-                                       { y: { '$lte' => 50 } }
-                                     ]
-                                   })
+          '$foo': { y: { '$lte' => 50 } },
+          '$bar': [
+            { views: { '$gt' => 100 } },
+            { y: { '$lte' => 50 } }
+          ]
+        })
       end
     end
 
     context "with aliased field options double-nested" do
+
       let(:spec) do
         described_class.new(
           Band,
@@ -202,14 +214,16 @@ describe Mongoid::Indexable::Specification do
 
       it "normalizes the options" do
         expect(spec.options).to eq(partial_filter_expression: {
-                                     '$foo': { y: { years: { '$lte' => 50 } } },
-                                   })
+          '$foo': { y: { years: { '$lte' => 50 } } },
+        })
       end
     end
   end
 
   describe '#name' do
+
     context 'when there is only one field' do
+
       let(:spec) do
         described_class.new(Band, { name: 1 })
       end
@@ -220,6 +234,7 @@ describe Mongoid::Indexable::Specification do
     end
 
     context 'when there are two fields' do
+
       let(:spec) do
         described_class.new(Band, { name: 1, title: -1 })
       end

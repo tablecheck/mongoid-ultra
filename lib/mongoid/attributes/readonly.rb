@@ -2,6 +2,7 @@
 
 module Mongoid
   module Attributes
+
     # This module defines behavior for readonly attributes.
     module Readonly
       extend ActiveSupport::Concern
@@ -45,6 +46,7 @@ module Mongoid
       end
 
       module ClassMethods
+
         # Defines an attribute as readonly. This will ensure that the value for
         # the attribute is only set when the document is new or we are
         # creating. In other cases, the field write will be ignored with the

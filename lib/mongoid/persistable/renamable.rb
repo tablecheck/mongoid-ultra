@@ -2,6 +2,7 @@
 
 module Mongoid
   module Persistable
+
     # Defines behavior for $rename operations.
     module Renamable
       extend ActiveSupport::Concern

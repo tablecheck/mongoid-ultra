@@ -2,6 +2,7 @@
 
 module Mongoid
   class Criteria
+
     # This is a helper module for translating atomic and composite
     # Ruby values into corresponding query and option components.
     # Originally implemented as patches to core classes, that approach
@@ -39,5 +40,6 @@ module Mongoid
         end
       end
     end
+
   end
 end

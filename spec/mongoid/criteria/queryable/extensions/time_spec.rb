@@ -3,9 +3,13 @@
 require "spec_helper"
 
 describe Time do
+
   describe ".evolve" do
+
     context "when provided a time" do
+
       context "when the time is not in utc" do
+
         let(:time) do
           Time.new(2010, 1, 1, 14, 0, 0, '+02:00')
         end
@@ -33,6 +37,7 @@ describe Time do
       end
 
       context "when the time is already utc" do
+
         let(:time) do
           Time.new(2010, 1, 1, 12, 0, 0).utc
         end
@@ -56,13 +61,15 @@ describe Time do
     end
 
     context "when provided an array" do
+
       context "when the array is composed of times" do
+
         let(:time) do
           Time.new(2010, 1, 1, 12, 0, 0)
         end
 
         let(:evolved) do
-          described_class.evolve([time])
+          described_class.evolve([ time ])
         end
 
         let(:expected) do
@@ -70,7 +77,7 @@ describe Time do
         end
 
         it "returns the array with evolved times" do
-          expect(evolved).to eq([expected])
+          expect(evolved).to eq([ expected ])
         end
 
         it "returns utc times" do
@@ -79,16 +86,17 @@ describe Time do
       end
 
       context "when the array is composed of strings" do
+
         let(:time) do
           Time.parse("1st Jan 2010 12:00:00+01:00")
         end
 
         let(:evolved) do
-          described_class.evolve([time.to_s])
+          described_class.evolve([ time.to_s ])
         end
 
         it "returns the strings as a times" do
-          expect(evolved).to eq([time.to_time])
+          expect(evolved).to eq([ time.to_time ])
         end
 
         it "returns the times in utc" do
@@ -97,12 +105,13 @@ describe Time do
       end
 
       context "when the array is composed of integers" do
+
         let(:integer) do
           1331890719
         end
 
         let(:evolved) do
-          described_class.evolve([integer])
+          described_class.evolve([ integer ])
         end
 
         let(:expected) do
@@ -110,7 +119,7 @@ describe Time do
         end
 
         it "returns the integers as times" do
-          expect(evolved).to eq([expected])
+          expect(evolved).to eq([ expected ])
         end
 
         it "returns the times in utc" do
@@ -119,12 +128,13 @@ describe Time do
       end
 
       context "when the array is composed of floats" do
+
         let(:float) do
           1331890719.413
         end
 
         let(:evolved) do
-          described_class.evolve([float])
+          described_class.evolve([ float ])
         end
 
         let(:expected) do
@@ -132,7 +142,7 @@ describe Time do
         end
 
         it "returns the floats as times" do
-          expect(evolved).to eq([expected])
+          expect(evolved).to eq([ expected ])
         end
 
         it "returns the times in utc" do
@@ -142,7 +152,9 @@ describe Time do
     end
 
     context "when provided a range" do
+
       context "when the range are times" do
+
         let(:min) do
           Time.new(2010, 1, 1, 12, 0, 0)
         end
@@ -175,6 +187,7 @@ describe Time do
       end
 
       context "when the range are strings" do
+
         let(:min) do
           Time.new(2010, 1, 1, 12, 0, 0)
         end
@@ -199,6 +212,7 @@ describe Time do
       end
 
       context "when the range is floats" do
+
         let(:min) do
           1331890719.1234
         end
@@ -231,6 +245,7 @@ describe Time do
       end
 
       context "when the range is integers" do
+
         let(:min) do
           1331890719
         end
@@ -264,6 +279,7 @@ describe Time do
     end
 
     context "when provided a string" do
+
       let(:time) do
         Time.parse("1st Jan 2010 12:00:00+01:00")
       end
@@ -282,6 +298,7 @@ describe Time do
     end
 
     context "when provided a float" do
+
       let(:float) do
         1331890719.8170738
       end
@@ -304,6 +321,7 @@ describe Time do
     end
 
     context "when provided an integer" do
+
       let(:integer) do
         1331890719
       end
@@ -326,6 +344,7 @@ describe Time do
     end
 
     context "when provided an invalid string" do
+
       let(:evolved) do
         described_class.evolve("bogus")
       end
@@ -336,6 +355,7 @@ describe Time do
     end
 
     context "when provided nil" do
+
       it "returns nil" do
         expect(described_class.evolve(nil)).to be_nil
       end
@@ -343,6 +363,7 @@ describe Time do
   end
 
   describe "#__evolve_date__" do
+
     let(:evolved) do
       time.__evolve_date__
     end
@@ -369,6 +390,7 @@ describe Time do
   end
 
   describe "#__evolve_time__" do
+
     let(:time) do
       Time.new(2010, 1, 1, 12, 0, 0).freeze
     end

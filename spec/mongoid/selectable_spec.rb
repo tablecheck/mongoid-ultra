@@ -3,9 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Selectable do
+
   describe "#atomic_selector" do
+
     context "when the document is a root document" do
+
       context "when the document has a shard key" do
+
         let(:profile) do
           Profile.create!(name: "google")
         end
@@ -20,7 +24,9 @@ describe Mongoid::Selectable do
       end
 
       context "when the document does not have a shard key" do
+
         context "when using object ids" do
+
           let(:band) do
             Band.create!
           end
@@ -35,6 +41,7 @@ describe Mongoid::Selectable do
         end
 
         context "when using a custom id" do
+
           let(:account) do
             Account.create!(name: "savings")
           end
@@ -44,12 +51,14 @@ describe Mongoid::Selectable do
           end
 
           context "when the id has not changed" do
+
             it "returns the hash with the key" do
               expect(selector).to eq({ "_id" => "savings" })
             end
           end
 
           context "when the composite key has changed" do
+
             before do
               account.new_record = false
               account.name = "current"
@@ -64,11 +73,13 @@ describe Mongoid::Selectable do
     end
 
     context "when the document is embedded" do
+
       let(:person) do
         Person.create!
       end
 
       context "when the document is an embeds one" do
+
         let(:name) do
           person.create_name(first_name: "test", last_name: "user")
         end
@@ -81,6 +92,7 @@ describe Mongoid::Selectable do
       end
 
       context "when the document is an embeds many" do
+
         let(:address) do
           person.addresses.create!(street: "kreuzbergstr")
         end
@@ -92,6 +104,7 @@ describe Mongoid::Selectable do
         end
 
         context "when the document's id changes" do
+
           before do
             address._id = "hobrecht"
           end
@@ -102,6 +115,7 @@ describe Mongoid::Selectable do
         end
 
         context "when the document is embedded multiple levels" do
+
           let(:location) do
             address.locations.create!
           end

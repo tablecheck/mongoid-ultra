@@ -3,6 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Clients::Options, retry: 3 do
+
   before do
     # This test asserts on numbers of open connections,
     # to make these assertions work in jruby we cannot have connections
@@ -13,7 +14,9 @@ describe Mongoid::Clients::Options, retry: 3 do
   end
 
   describe '#with' do
+
     context 'when passing some options' do
+
       let(:persistence_context) do
         Minim.with(options) do |klass|
           klass.persistence_context
@@ -31,6 +34,7 @@ describe Mongoid::Clients::Options, retry: 3 do
       end
 
       context 'when the options are not valid mongo client options' do
+
         let(:persistence_context) do
           Minim.with(invalid_options) do |klass|
             klass.persistence_context
@@ -52,6 +56,7 @@ describe Mongoid::Clients::Options, retry: 3 do
       end
 
       context 'when the options include a collection' do
+
         let(:options) { { collection: 'another-collection' } }
 
         it 'uses the collection' do
@@ -70,6 +75,7 @@ describe Mongoid::Clients::Options, retry: 3 do
       end
 
       context 'when passing a block' do
+
         let!(:connections_before) do
           Minim.mongo_client.database.command(serverStatus: 1).first['connections']['current']
         end
@@ -82,7 +88,7 @@ describe Mongoid::Clients::Options, retry: 3 do
             connections = Minim.mongo_client.database.command(serverStatus: 1).first['connections']['current']
             cluster = Minim.collection.cluster
           end
-          [connections, cluster]
+          [ connections, cluster ]
         end
 
         let(:connections_during) do
@@ -114,7 +120,7 @@ describe Mongoid::Clients::Options, retry: 3 do
           end
 
           it 'creates a new cluster' do
-            expect(connections_before).to be < (connections_during)
+            expect(connections_before).to be <(connections_during)
             expect(cluster_before).not_to be(cluster_during)
           end
 
@@ -148,10 +154,11 @@ describe Mongoid::Clients::Options, retry: 3 do
         end
 
         context 'when the client options were configured using a uri' do
+
           let(:config) do
             {
-              default: { hosts: SpecConfig.instance.addresses, database: database_id },
-              analytics: { uri: "mongodb://#{SpecConfig.instance.addresses.first}/analytics-db?connectTimeoutMS=3000" }
+                default: { hosts: SpecConfig.instance.addresses, database: database_id },
+                analytics: { uri: "mongodb://#{SpecConfig.instance.addresses.first}/analytics-db?connectTimeoutMS=3000" }
             }
           end
 
@@ -181,6 +188,7 @@ describe Mongoid::Clients::Options, retry: 3 do
       end
 
       context 'when changing the collection' do
+
         let(:options) do
           { collection: 'other' }
         end
@@ -191,14 +199,16 @@ describe Mongoid::Clients::Options, retry: 3 do
       end
 
       context 'when returning a criteria' do
+
         shared_context 'applies secondary read preference' do
+
           let(:context_and_criteria) do
             collection = nil
             cxt = Minim.with(read_secondary_option) do |klass|
               collection = klass.all.collection
               klass.persistence_context
             end
-            [cxt, collection]
+            [ cxt, collection ]
           end
 
           let(:persistence_context) do
@@ -215,19 +225,20 @@ describe Mongoid::Clients::Options, retry: 3 do
         end
 
         context 'read: :secondary shorthand' do
-          let(:read_secondary_option) { { read: :secondary } }
+          let(:read_secondary_option) { {read: :secondary} }
 
           it_behaves_like 'applies secondary read preference'
         end
 
         context 'read: {mode: :secondary}' do
-          let(:read_secondary_option) { { read: { mode: :secondary } } }
+          let(:read_secondary_option) { {read: {mode: :secondary}} }
 
           it_behaves_like 'applies secondary read preference'
         end
       end
 
       context 'when the object is shared between threads' do
+
         before do
           threads = []
           100.times do |i|
@@ -266,6 +277,7 @@ describe Mongoid::Clients::Options, retry: 3 do
     end
 
     context 'when passing a persistence context' do
+
       let(:instance) do
         Minim.new
       end
@@ -287,7 +299,9 @@ describe Mongoid::Clients::Options, retry: 3 do
   end
 
   describe '.with' do
+
     context 'when passing some options' do
+
       let(:options) do
         { database: 'other' }
       end
@@ -311,6 +325,7 @@ describe Mongoid::Clients::Options, retry: 3 do
       end
 
       context 'when the options are not valid mongo client options' do
+
         let(:persistence_context) do
           test_model.with(invalid_options) do |object|
             object.persistence_context
@@ -332,15 +347,16 @@ describe Mongoid::Clients::Options, retry: 3 do
       end
 
       context 'when the client options were configured using a uri' do
+
         let(:config) do
           {
-            default: { hosts: SpecConfig.instance.addresses, database: database_id },
-            analytics: {
-              uri: "mongodb://#{SpecConfig.instance.addresses.first}/analytics-db",
-              options: {
-                server_selection_timeout: 0.5,
-              },
-            }
+              default: { hosts: SpecConfig.instance.addresses, database: database_id },
+              analytics: {
+                uri: "mongodb://#{SpecConfig.instance.addresses.first}/analytics-db",
+                options: {
+                  server_selection_timeout: 0.5,
+                },
+              }
           }
         end
 
@@ -361,6 +377,7 @@ describe Mongoid::Clients::Options, retry: 3 do
       end
 
       context 'when passing a block' do
+
         let!(:connections_before) do
           test_model.mongo_client.database.command(serverStatus: 1).first['connections']['current']
         end
@@ -372,7 +389,7 @@ describe Mongoid::Clients::Options, retry: 3 do
             connections = test_model.mongo_client.database.command(serverStatus: 1).first['connections']['current']
             b.persistence_context.cluster
           end
-          [connections, cluster]
+          [ connections, cluster ]
         end
 
         let(:connections_during) do
@@ -434,6 +451,7 @@ describe Mongoid::Clients::Options, retry: 3 do
       end
 
       context 'when changing the collection' do
+
         let(:options) do
           { collection: 'other' }
         end
@@ -444,6 +462,7 @@ describe Mongoid::Clients::Options, retry: 3 do
       end
 
       context 'when the object is shared between threads' do
+
         before do
           threads = []
           100.times do |i|
@@ -485,6 +504,7 @@ describe Mongoid::Clients::Options, retry: 3 do
     end
 
     context 'when passing a persistence context' do
+
       let(:persistence_context) do
         Minim.with(options) do |klass|
           klass.persistence_context

@@ -2,6 +2,7 @@
 
 module Mongoid
   module Errors
+
     # Raised when a persistence method ending in ! fails validation. The message
     # will contain the full error messages from the +Document+ in question.
     #

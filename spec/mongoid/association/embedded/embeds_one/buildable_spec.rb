@@ -3,15 +3,17 @@
 require "spec_helper"
 
 describe Mongoid::Association::Embedded::EmbedsOne::Buildable do
+
   let(:base) do
     double
   end
 
   let(:options) do
-    {}
+    { }
   end
 
   describe "#build" do
+
     let(:document) do
       association.build(base, object)
     end
@@ -21,6 +23,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Buildable do
     end
 
     context "when provided nil" do
+
       let(:object) do
         nil
       end
@@ -31,6 +34,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Buildable do
     end
 
     context "when provided a document" do
+
       let(:object) do
         Name.new
       end
@@ -41,6 +45,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Buildable do
     end
 
     context "when no type is in the object" do
+
       let(:object) do
         { "first_name" => "Corbin" }
       end
@@ -55,6 +60,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Buildable do
     end
 
     context "when a type is in the object" do
+
       let(:association) do
         Mongoid::Association::Embedded::EmbedsOne.new(Person, :writer, options)
       end
@@ -74,6 +80,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Buildable do
   end
 
   context 'when the object is already associated with another object' do
+
     let(:owner1) do
       Owner.create!
     end

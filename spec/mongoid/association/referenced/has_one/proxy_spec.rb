@@ -3,8 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Association::Referenced::HasOne::Proxy do
+
   describe "#=" do
+
     context "when the relationship is an illegal embedded reference" do
+
       let(:game) do
         Game.new
       end
@@ -21,6 +24,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     context "when the relation is cyclic" do
+
       let(:user) do
         User.new
       end
@@ -39,7 +43,9 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     context "when the relation is not polymorphic" do
+
       context "when the parent is a new record" do
+
         let(:person) do
           Person.new
         end
@@ -79,6 +85,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       context "when the parent is not a new record" do
+
         let(:person) do
           Person.create!
         end
@@ -112,11 +119,13 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
         end
 
         context "when reloading the parent" do
+
           before do
             person.reload
           end
 
           context "when setting a new document on the relation" do
+
             before do
               person.game = Game.new
             end
@@ -131,6 +140,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       context "when relation have a different primary_key" do
+
         let(:person) do
           Person.create!
         end
@@ -166,7 +176,9 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     context "when the relation is polymorphic" do
+
       context "when the parent is a new record" do
+
         let(:bar) do
           Bar.new
         end
@@ -201,6 +213,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       context "when the parent is not a new record" do
+
         let(:bar) do
           Bar.create!
         end
@@ -235,6 +248,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       context "when replacing an existing persisted (dependent: :destroy) relation" do
+
         let!(:person) do
           Person.create!
         end
@@ -244,6 +258,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
         end
 
         context "with a new one created via the parent" do
+
           let!(:new_game) do
             person.create_game(name: "Starcraft 2")
           end
@@ -274,6 +289,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
         end
 
         context "with a new one built via the parent" do
+
           let!(:new_game) do
             person.build_game(name: "Starcraft 2")
           end
@@ -305,6 +321,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       context "when replacing an existing unpersisted (dependent: :destroy) relation" do
+
         let!(:person) do
           Person.create!
         end
@@ -314,6 +331,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
         end
 
         context "with a new one created via the parent" do
+
           let!(:new_game) do
             person.create_game(name: "Starcraft 2")
           end
@@ -344,6 +362,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
         end
 
         context "with a new one built via the parent" do
+
           let!(:new_game) do
             person.build_game(name: "Starcraft 2")
           end
@@ -375,6 +394,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       context "when replacing an existing persisted (dependent: :nullify) relation" do
+
         let!(:person) do
           Person.create!
         end
@@ -384,6 +404,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
         end
 
         context "with a new one created via the parent" do
+
           let!(:new_cat) do
             person.create_cat(name: "Brutus")
           end
@@ -414,6 +435,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
         end
 
         context "with a new one built via the parent" do
+
           let!(:new_cat) do
             person.build_cat(name: "Brutus")
           end
@@ -445,6 +467,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       context "when replacing an existing unpersisted (dependent: :nullify) relation" do
+
         let!(:person) do
           Person.create!
         end
@@ -454,6 +477,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
         end
 
         context "with a new one created via the parent" do
+
           let!(:new_cat) do
             person.create_cat(name: "Brutus")
           end
@@ -484,6 +508,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
         end
 
         context "with a new one built via the parent" do
+
           let!(:new_cat) do
             person.build_cat(name: "Brutus")
           end
@@ -515,11 +540,13 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       context "when replacing an existing relation with a new one" do
+
         let!(:person) do
           Person.create!
         end
 
         context "when dependent is destroy" do
+
           let!(:game) do
             person.create_game(name: "Starcraft")
           end
@@ -550,6 +577,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
         end
 
         context "when dependent is not set" do
+
           let!(:account) do
             person.create_account(name: "savings")
           end
@@ -583,8 +611,11 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
   end
 
   describe "#= nil" do
+
     context "when the relation is not polymorphic" do
+
       context "when the parent is a new record" do
+
         let(:person) do
           Person.new
         end
@@ -612,6 +643,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       context "when the parent is not a new record" do
+
         let(:person) do
           Person.create!
         end
@@ -644,7 +676,9 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     context "when the relation is polymorphic" do
+
       context "when the parent is a new record" do
+
         let(:bar) do
           Bar.new
         end
@@ -672,6 +706,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       context "when the parent is not a new record" do
+
         let(:bar) do
           Bar.create!
         end
@@ -705,7 +740,9 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
   end
 
   describe "#build_#\{name}" do
+
     context "when the relationship is an illegal embedded reference" do
+
       let(:game) do
         Game.new
       end
@@ -718,7 +755,9 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     context "when the relation is not polymorphic" do
+
       context "when using object ids" do
+
         let(:person) do
           Person.create!
         end
@@ -745,6 +784,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       context "when providing no attributes" do
+
         let(:person) do
           Person.create!
         end
@@ -767,6 +807,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       context "when providing nil attributes" do
+
         let(:person) do
           Person.create!
         end
@@ -790,7 +831,9 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     context "when the relation is polymorphic" do
+
       context "when using object ids" do
+
         let(:bar) do
           Bar.create!
         end
@@ -819,7 +862,9 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
   end
 
   describe "#create_#\{name}" do
+
     context "when the relationship is an illegal embedded reference" do
+
       let(:game) do
         Game.new
       end
@@ -832,6 +877,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     context "when the relation is not polymorphic" do
+
       let(:person) do
         Person.create!
       end
@@ -858,6 +904,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     context "when providing no attributes" do
+
       let(:person) do
         Person.create!
       end
@@ -880,6 +927,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     context "when providing nil attributes" do
+
       let(:person) do
         Person.create!
       end
@@ -902,6 +950,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     context "when the relation is polymorphic" do
+
       let(:bar) do
         Bar.create!
       end
@@ -929,12 +978,14 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
   end
 
   describe ".embedded?" do
+
     it "returns false" do
       expect(described_class).to_not be_embedded
     end
   end
 
   describe "#nullify" do
+
     let(:person) do
       Person.create!
     end
@@ -944,6 +995,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     context "when the instance has been set" do
+
       before do
         person.game.nullify
       end
@@ -958,6 +1010,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     context "when the instance has been reloaded" do
+
       let(:from_db) do
         Person.find(person.id)
       end
@@ -981,6 +1034,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
   end
 
   describe "#respond_to?" do
+
     let(:person) do
       Person.new
     end
@@ -994,7 +1048,9 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     Mongoid::Document.public_instance_methods(true).each do |method|
+
       context "when checking #{method}" do
+
         it "returns true" do
           expect(document.respond_to?(method)).to be true
         end
@@ -1003,6 +1059,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
   end
 
   context "when reloading the relation" do
+
     let!(:person) do
       Person.create!
     end
@@ -1020,9 +1077,10 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     context "when the relation references the same document" do
+
       before do
-        Game.collection.find({ _id: game_one.id })
-            .update_one({ "$set" => { name: "Diablo 2" } })
+        Game.collection.find({ _id: game_one.id }).
+            update_one({ "$set" => { name: "Diablo 2" }})
       end
 
       let(:reloaded) do
@@ -1039,6 +1097,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     end
 
     context "when the relation references a different document" do
+
       before do
         person.game = game_two
       end
@@ -1058,7 +1117,9 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
   end
 
   context "when dependent is set to delete for child" do
+
     context "when autobuild is true for child" do
+
       let(:explosion) do
         Explosion.create!
       end
@@ -1074,7 +1135,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       it "clearing the child raises no error" do
-        expect { clear_child }.not_to raise_error
+        expect{ clear_child }.not_to raise_error
       end
     end
   end
@@ -1089,6 +1150,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
   end
 
   context "when the document is not persisted and the association is invalid" do
+
     before do
       class HomParent
         include Mongoid::Document
@@ -1115,6 +1177,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
 
     let(:child) { HomChild.new }
     let(:parent) { HomParent.new }
+
 
     context "when belongs_to_required_by_default is true" do
       config_override :belongs_to_required_by_default, true

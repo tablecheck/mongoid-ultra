@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 module Mongoid
+
   # This module is responsible for taking update selectors and switching out
   # the indexes for the $ positional operator where appropriate.
   module Positional
+
     # Takes the provided selector and atomic operations and replaces the
     # indexes of the embedded documents with the positional operator when
     # needed.
@@ -32,9 +34,8 @@ module Mongoid
       if selector.size == 1 || selector.values.any? { |val| val.nil? }
         return operations
       end
-
-      keys = selector.keys.map { |m| m.sub('._id', '') } - ['_id']
-      keys = keys.sort_by { |s| s.length * -1 }
+      keys = selector.keys.map{ |m| m.sub('._id','') } - ['_id']
+      keys = keys.sort_by { |s| s.length*-1 }
       process_operations(keys, operations, processed)
     end
 

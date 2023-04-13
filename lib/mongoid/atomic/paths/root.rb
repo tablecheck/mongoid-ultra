@@ -3,9 +3,11 @@
 module Mongoid
   module Atomic
     module Paths
+
       # This class encapsulates behavior for locating and updating root
       # documents atomically.
       class Root
+
         attr_reader :document, :path, :position
 
         # Create the new root path utility.

@@ -3,23 +3,28 @@
 require "spec_helper"
 
 describe Mongoid::Query do
+
   describe "#==" do
+
     let(:query) do
       described_class.new
     end
 
     context "when the objects have the same selector" do
+
       let(:other) do
         described_class.new
       end
 
       context "when the options are the same" do
+
         it "returns true" do
           expect(query).to eq(other)
         end
       end
 
       context "when the options are different" do
+
         before do
           other.options[:skip] = 20
         end
@@ -31,6 +36,7 @@ describe Mongoid::Query do
     end
 
     context "when the objects have different selectors" do
+
       let(:other) do
         described_class.new do |query|
           query.selector["field"] = "value"
@@ -43,6 +49,7 @@ describe Mongoid::Query do
     end
 
     context "when the objects are different types" do
+
       let(:other) do
         "Query"
       end
@@ -54,7 +61,9 @@ describe Mongoid::Query do
   end
 
   describe "#initialize" do
+
     context "when passed no arguments" do
+
       let(:query) do
         described_class.new
       end
@@ -69,6 +78,7 @@ describe Mongoid::Query do
     end
 
     context "when passed a block" do
+
       let(:query) do
         described_class.new do |query|
           query.selector["field"] = "value"
@@ -82,6 +92,7 @@ describe Mongoid::Query do
   end
 
   describe "#initialize_copy" do
+
     let(:sort) do
       { "name" => 1 }
     end
@@ -110,7 +121,7 @@ describe Mongoid::Query do
     end
 
     it "retains the option values" do
-      expect(cloned.options).to eq({ "sort" => { "field" => sort } })
+      expect(cloned.options).to eq({ "sort" => { "field" => sort }})
     end
 
     it "deep copies the selector" do

@@ -2,9 +2,11 @@
 
 module Mongoid
   module Association
+
     # This is the superclass for one to one relations and defines the common
     # behavior or those proxies.
     class One < Association::Proxy
+
       # Clear this relation - same as calling #delete on the document.
       #
       # @example Clear the relation.
@@ -22,7 +24,7 @@ module Mongoid
       #
       # @return [ Array<Mongoid::Document> ] The documents in memory.
       def in_memory
-        [_target]
+        [ _target ]
       end
 
       # Since method_missing is overridden we should override this as well.

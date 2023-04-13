@@ -2,9 +2,11 @@
 
 module Mongoid
   module Errors
+
     # Raised when executing a map/reduce without specifying the output
     # location.
     class NoMapReduceOutput < MongoidError
+
       # Create the new error.
       #
       # @example Create the new error.

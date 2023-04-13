@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Rails
+
   # Mongoid utilities for Rails.
   module Mongoid
     extend self

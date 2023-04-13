@@ -2,6 +2,7 @@
 
 module Mongoid
   module Persistable
+
     # Defines behavior for $pop operations.
     module Poppable
       extend ActiveSupport::Concern

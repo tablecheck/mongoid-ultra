@@ -3,8 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Inspectable do
+
   describe "#inspect" do
+
     context "when not allowing dynamic fields" do
+
       let(:person) do
         Person.new(title: "CEO")
       end
@@ -35,6 +38,7 @@ describe Mongoid::Inspectable do
     end
 
     context "when using a custom discriminator key" do
+
       before do
         Person.discriminator_key = "dkey"
       end
@@ -57,6 +61,7 @@ describe Mongoid::Inspectable do
     end
 
     context "when allowing dynamic fields" do
+
       let(:person) do
         Person.new(title: "CEO", some_attribute: "foo")
       end

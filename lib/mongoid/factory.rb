@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Mongoid
+
   # Instantiates documents that came from the database.
   module Factory
     extend self

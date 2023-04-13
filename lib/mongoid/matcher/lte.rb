@@ -1,11 +1,13 @@
 module Mongoid
   module Matcher
+
     # In-memory matcher for $lte expression.
     #
     # @see https://www.mongodb.com/docs/manual/reference/operator/query/lte/
     #
     # @api private
     module Lte
+
       # Returns whether a value satisfies a $lte expression.
       #
       # @param [ true | false ] exists Whether the value exists.
@@ -18,8 +20,7 @@ module Mongoid
       module_function def matches?(exists, value, condition)
         case condition
         when Range
-          raise Errors::InvalidQuery,
-                "$lte argument cannot be a Range: #{Errors::InvalidQuery.truncate_expr(condition)}"
+          raise Errors::InvalidQuery, "$lte argument cannot be a Range: #{Errors::InvalidQuery.truncate_expr(condition)}"
         end
         FieldOperator.apply_array_field_operator(exists, value, condition) do |v|
           FieldOperator.apply_comparison_operator(:<=, v, condition)

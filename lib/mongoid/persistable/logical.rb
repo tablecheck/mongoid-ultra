@@ -2,6 +2,7 @@
 
 module Mongoid
   module Persistable
+
     # Defines behavior for logical bitwise operations.
     module Logical
       extend ActiveSupport::Concern

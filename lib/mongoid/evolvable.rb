@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 module Mongoid
+
   # Contains behavior specific to evolving for queryable queries.
   module Evolvable
+
     # Evolve the document into an object id.
     #
     # @example Evolve the document.

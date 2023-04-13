@@ -3,14 +3,17 @@
 require "spec_helper"
 
 describe Mongoid::Errors::InvalidIncludes do
+
   describe "#message" do
+
     context "default" do
+
       let(:klass) do
         Band
       end
 
       let(:args) do
-        [:members]
+        [ :members ]
       end
 
       let(:error) do

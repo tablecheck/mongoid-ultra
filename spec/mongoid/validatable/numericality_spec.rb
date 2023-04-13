@@ -3,7 +3,9 @@
 require "spec_helper"
 
 describe ActiveModel::Validations::NumericalityValidator do
+
   describe "#validate_each" do
+
     before(:all) do
       class TestModel
         include Mongoid::Document
@@ -17,6 +19,7 @@ describe ActiveModel::Validations::NumericalityValidator do
     end
 
     context "when the value is non numeric" do
+
       let(:model) do
         TestModel.new(amount: "asdf")
       end

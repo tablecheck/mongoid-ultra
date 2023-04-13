@@ -18,6 +18,7 @@ require 'mongoid/association/reflections'
 require 'mongoid/association/eager_loadable'
 
 module Mongoid
+
   # Mixin module which adds association behavior to a Mongoid document.
   # Adds methods such as #embedded? which indicate a document's
   # relative association state.
@@ -37,13 +38,13 @@ module Mongoid
     #
     # @return [ Hash ] The mapping from macros to their Association class.
     MACRO_MAPPING = {
-      embeds_one: Association::Embedded::EmbedsOne,
-      embeds_many: Association::Embedded::EmbedsMany,
-      embedded_in: Association::Embedded::EmbeddedIn,
-      has_one: Association::Referenced::HasOne,
-      has_many: Association::Referenced::HasMany,
-      has_and_belongs_to_many: Association::Referenced::HasAndBelongsToMany,
-      belongs_to: Association::Referenced::BelongsTo,
+        embeds_one: Association::Embedded::EmbedsOne,
+        embeds_many: Association::Embedded::EmbedsMany,
+        embedded_in: Association::Embedded::EmbeddedIn,
+        has_one: Association::Referenced::HasOne,
+        has_many: Association::Referenced::HasMany,
+        has_and_belongs_to_many: Association::Referenced::HasAndBelongsToMany,
+        belongs_to: Association::Referenced::BelongsTo,
     }.freeze
 
     attr_accessor :_association
@@ -95,7 +96,6 @@ module Mongoid
     # @return [ Symbol ] The association name.
     def association_name
       raise Errors::NoMetadata.new(self.class.name) unless _association
-
       _association.name
     end
 

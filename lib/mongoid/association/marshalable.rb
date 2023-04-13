@@ -2,9 +2,11 @@
 
 module Mongoid
   module Association
+
     # Mixin module for Mongoid::Association::Proxy which adds
     # custom Marshal.dump functionality.
     module Marshalable
+
       # Provides the data needed to Marshal.dump an association proxy.
       #
       # @example Dump the proxy.
@@ -12,7 +14,7 @@ module Mongoid
       #
       # @return [ Array<Object> ] The dumped data.
       def marshal_dump
-        [_base, _target, _association]
+        [ _base, _target, _association ]
       end
 
       # Takes the provided data and sets it back on the proxy.

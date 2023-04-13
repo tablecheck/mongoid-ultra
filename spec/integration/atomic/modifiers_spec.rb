@@ -3,11 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Atomic::Modifiers do
+
   let(:modifiers) do
     described_class.new
   end
 
   context 'when performing multiple operations with similar keys' do
+
     let(:pushes) do
       { "addresses.0.locations" => { "street" => "Bond St" } }
     end
@@ -31,10 +33,10 @@ describe Mongoid::Atomic::Modifiers do
 
       it "adds all modifiers to top level" do
         expect(modifiers).to eq({ "$push" => {
-                                  "addresses.0.locations" => { '$each' => [{ "street" => "Bond St" }] },
-                                  "dresses" => { '$each' => [{ "color" => "red" }] },
-                                  "ses.0.foo" => { '$each' => [{ "baz" => "qux" }] }
-                                } })
+                                    "addresses.0.locations" => { '$each' => [{ "street" => "Bond St" }] },
+                                    "dresses" => { '$each' => [{ "color" => "red" }] },
+                                    "ses.0.foo" => { '$each' => [{ "baz" => "qux" }] }
+                                 } })
       end
     end
 
@@ -43,10 +45,10 @@ describe Mongoid::Atomic::Modifiers do
 
       it "adds all modifiers to top level" do
         expect(modifiers).to eq({ "$pull" => {
-                                  "addresses.0.locations" => { "street" => "Bond St" },
-                                  "dresses" => { "color" => "red" },
-                                  "ses.0.foo" => { "baz" => "qux" },
-                                } })
+                                    "addresses.0.locations" => { "street" => "Bond St" },
+                                    "dresses" => { "color" => "red" },
+                                    "ses.0.foo" => { "baz" => "qux" },
+                                 } })
       end
     end
 
@@ -55,10 +57,10 @@ describe Mongoid::Atomic::Modifiers do
 
       it "adds all modifiers to top level" do
         expect(modifiers).to eq({ "$pullAll" => {
-                                  "addresses.0.locations" => { "street" => "Bond St" },
-                                  "dresses" => { "color" => "red" },
-                                  "ses.0.foo" => { "baz" => "qux" },
-                                } })
+                                    "addresses.0.locations" => { "street" => "Bond St" },
+                                    "dresses" => { "color" => "red" },
+                                    "ses.0.foo" => { "baz" => "qux" },
+                                 } })
       end
     end
 
@@ -67,10 +69,10 @@ describe Mongoid::Atomic::Modifiers do
 
       it "adds all modifiers to top level" do
         expect(modifiers).to eq({ "$addToSet" => {
-                                  "addresses.0.locations" => { '$each' => { "street" => "Bond St" } },
-                                  "dresses" => { '$each' => { "color" => "red" } },
-                                  "ses.0.foo" => { '$each' => { "baz" => "qux" } }
-                                } })
+                                    "addresses.0.locations" => { '$each' => { "street" => "Bond St" } },
+                                    "dresses" => { '$each' => { "color" => "red" } },
+                                    "ses.0.foo" => { '$each' => { "baz" => "qux" } }
+                                 } })
       end
     end
 
@@ -79,10 +81,10 @@ describe Mongoid::Atomic::Modifiers do
 
       it "adds all modifiers to top level" do
         expect(modifiers).to eq({ "$set" => {
-                                  "addresses.0.locations" => { "street" => "Bond St" },
-                                  "dresses" => { "color" => "red" },
-                                  "ses.0.foo" => { "baz" => "qux" },
-                                } })
+                                    "addresses.0.locations" => { "street" => "Bond St" },
+                                    "dresses" => { "color" => "red" },
+                                    "ses.0.foo" => { "baz" => "qux" },
+                                 } })
       end
     end
 
@@ -103,11 +105,12 @@ describe Mongoid::Atomic::Modifiers do
 
       it "adds all modifiers to top level" do
         expect(modifiers).to eq("$unset" => {
-                                  foobar: true,
-                                  foo: true,
-                                  bar: true,
-                                })
+          foobar: true,
+          foo: true,
+          bar: true,
+        })
       end
     end
   end
+
 end

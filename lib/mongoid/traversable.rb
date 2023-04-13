@@ -3,6 +3,7 @@
 require "mongoid/fields/validators/macro"
 
 module Mongoid
+
   # Mixin module included in Mongoid::Document to provide behavior
   # around traversing the document graph.
   module Traversable
@@ -32,6 +33,7 @@ module Mongoid
     #
     # @api private
     module DiscriminatorAssignment
+
       # Sets the discriminator key.
       #
       # @param [ String ] value The discriminator key to set.
@@ -89,6 +91,7 @@ module Mongoid
     #
     # @api private
     module DiscriminatorRetrieval
+
       # Get the name on the reading side if the discriminator_value is nil
       def discriminator_value
         @discriminator_value || self.name
@@ -116,7 +119,7 @@ module Mongoid
       # @param [ Class ] The class the discriminator_value was set on
       #
       # @api private
-      def self.add_discriminator_mapping(value, klass = self)
+      def self.add_discriminator_mapping(value, klass=self)
         self.discriminator_mapping ||= {}
         self.discriminator_mapping[value] = klass
         superclass.add_discriminator_mapping(value, klass) if hereditary?
@@ -199,7 +202,6 @@ module Mongoid
         to_expand = []
         expanding.each do |child|
           next if expanded[child]
-
           # Don't mark expanded if _id is nil, since documents are compared by
           # their _ids, multiple embedded documents with nil ids will compare
           # equally, and some documents will not be expanded.
@@ -311,6 +313,7 @@ module Mongoid
     end
 
     module ClassMethods
+
       # Determines if the document is a subclass of another document.
       #
       # @example Check if the document is a subclass.
@@ -337,7 +340,7 @@ module Mongoid
         subclass.fields = fields.dup
         subclass.pre_processed_defaults = pre_processed_defaults.dup
         subclass.post_processed_defaults = post_processed_defaults.dup
-        subclass._declared_scopes = Hash.new { |hash, key| self._declared_scopes[key] }
+        subclass._declared_scopes = Hash.new { |hash,key| self._declared_scopes[key] }
         subclass.discriminator_value = subclass.name
 
         # We need to do this here because the discriminator_value method is

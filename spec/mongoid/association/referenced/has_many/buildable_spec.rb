@@ -3,11 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Association::Referenced::HasMany::Buildable do
+
   let(:base) do
     double
   end
 
   describe "#build" do
+
     let(:documents) do
       association.build(base, object)
     end
@@ -21,6 +23,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
     end
 
     context "when provided an id" do
+
       let(:object) do
         BSON::ObjectId.new
       end
@@ -35,6 +38,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
     end
 
     context "when order is specified" do
+
       let(:options) do
         {
           order: :rating.asc,
@@ -55,6 +59,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
     end
 
     context "when scope is specified" do
+
       let(:options) do
         {
           scope: -> { where(rating: 3) },
@@ -75,6 +80,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
     end
 
     context "when the relation is polymorphic" do
+
       let(:options) do
         {
           as: :ratable
@@ -99,8 +105,9 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
     end
 
     context "when provided a object" do
+
       let(:object) do
-        [Person.new]
+        [ Person.new ]
       end
 
       it "returns the object" do
@@ -109,9 +116,11 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
     end
 
     context "when no documents found in the database" do
+
       context "when the ids are empty" do
+
         let(:object) do
-          [nil]
+          [ nil ]
         end
 
         it "returns an empty array" do
@@ -119,6 +128,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
         end
 
         context "during initialization" do
+
           it "returns an empty array" do
             Person.new do |p|
               expect(p.posts).to be_empty
@@ -130,7 +140,9 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
     end
 
     context 'when the object is already associated with another object' do
+
       context "when using <<" do
+
         let(:person1) do
           Person.new
         end
@@ -157,6 +169,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
       end
 
       context "when using concat" do
+
         let(:person1) do
           Person.new
         end
@@ -183,6 +196,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
       end
 
       context "when using =" do
+
         let(:person1) do
           Person.new
         end
@@ -209,6 +223,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
       end
 
       context "when using = on the same document twice" do
+
         let(:person1) do
           Person.new
         end

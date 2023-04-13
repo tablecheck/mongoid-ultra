@@ -2,8 +2,10 @@
 
 module Mongoid
   module Errors
+
     # Raised when invalid options are passed to an association macro.
     class InvalidOptions < MongoidError
+
       # Instantiate the options error.
       #
       # @example Create the error.

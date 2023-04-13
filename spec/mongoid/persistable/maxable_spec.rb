@@ -3,7 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Persistable::Maxable do
+
   describe "#set_max" do
+
     shared_examples_for 'a max-able interface' do
       context "when the document is a root document" do
         let(:initial_name) { "Manhattan Transfer" }
@@ -14,22 +16,21 @@ describe Mongoid::Persistable::Maxable do
           Band.create!(
             name: initial_name,
             member_count: initial_members,
-            founded: initial_founded
-          )
+            founded: initial_founded)
         end
 
         shared_examples_for "a max-able root document" do
           before do
             band.send(max_method,
-                      name: given_name,
-                      member_count: given_members,
-                      founded: given_founded)
+              name: given_name,
+              member_count: given_members,
+              founded: given_founded)
           end
 
           it 'sets the fields to larger of current vs. given' do
-            expect(band.reload.name).to eq [initial_name, given_name].max
-            expect(band.member_count).to eq [initial_members, given_members].max
-            expect(band.founded).to eq [initial_founded, given_founded].max
+            expect(band.reload.name).to eq [ initial_name, given_name ].max
+            expect(band.member_count).to eq [ initial_members, given_members ].max
+            expect(band.founded).to eq [ initial_founded, given_founded ].max
           end
 
           it "resets dirty changes" do
@@ -72,22 +73,21 @@ describe Mongoid::Persistable::Maxable do
           person.addresses.create!(
             city: initial_city,
             number: initial_number,
-            end_date: initial_end_date
-          )
+            end_date: initial_end_date)
         end
 
         shared_examples_for "a max-able embedded document" do
           before do
             address.send(max_method,
-                         city: given_city,
-                         number: given_number,
-                         end_date: given_end_date)
+              city: given_city,
+              number: given_number,
+              end_date: given_end_date)
           end
 
           it 'sets the fields to smaller of current vs. given' do
-            expect(address.reload.city).to eq [initial_city, given_city].max
-            expect(address.number).to eq [initial_number, given_number].max
-            expect(address.end_date).to eq [initial_end_date, given_end_date].max
+            expect(address.reload.city).to eq [ initial_city, given_city ].max
+            expect(address.number).to eq [ initial_number, given_number ].max
+            expect(address.end_date).to eq [ initial_end_date, given_end_date ].max
           end
 
           it "resets dirty changes" do

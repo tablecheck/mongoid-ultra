@@ -5,7 +5,9 @@ require "spec_helper"
 # This file is for testing the functionality of uncastable values for all
 # mongoizable classes.
 describe "mongoize/demongoize/evolve methods" do
+
   shared_examples "handles unmongoizable values" do
+
     context "when passing an invalid value" do
       context "to mongoize" do
         it "returns nil" do
@@ -28,6 +30,7 @@ describe "mongoize/demongoize/evolve methods" do
   end
 
   shared_examples "handles undemongoizable values" do
+
     context "when passing an invalid value" do
       context "to demongoize" do
         it "returns nil" do
@@ -36,6 +39,7 @@ describe "mongoize/demongoize/evolve methods" do
       end
 
       context "when retrieving an invalid value from the db" do
+
         before do
           Catalog.collection.insert_one(field_name => invalid_value)
         end
@@ -50,6 +54,7 @@ describe "mongoize/demongoize/evolve methods" do
   end
 
   shared_examples "pushes through unmongoizable values" do
+
     context "when passing an invalid value" do
       context "to mongoize" do
         it "returns that value" do
@@ -73,6 +78,7 @@ describe "mongoize/demongoize/evolve methods" do
   end
 
   shared_examples "pushes through undemongoizable values" do
+
     context "when reading an invalid value from the db" do
       before do
         Catalog.collection.insert_one(field_name => invalid_value)
@@ -87,7 +93,9 @@ describe "mongoize/demongoize/evolve methods" do
   end
 
   shared_examples "pushes through unevolvable values" do
+
     context "when passing an uncastable value to evolve" do
+
       it "pushes the value through" do
         expect(klass.evolve(invalid_value)).to eq(mongoized_value)
       end

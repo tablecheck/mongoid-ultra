@@ -1,11 +1,13 @@
 module Mongoid
   module Matcher
+
     # In-memory matcher for $or expression.
     #
     # @see https://www.mongodb.com/docs/manual/reference/operator/query/or/
     #
     # @api private
     module Or
+
       # Returns whether a document satisfies an $or expression.
       #
       # @param [ Mongoid::Document ] document The document.
@@ -20,8 +22,7 @@ module Mongoid
         end
 
         if expr.empty?
-          raise Errors::InvalidQuery,
-                "$or argument must be a non-empty array: #{Errors::InvalidQuery.truncate_expr(expr)}"
+          raise Errors::InvalidQuery, "$or argument must be a non-empty array: #{Errors::InvalidQuery.truncate_expr(expr)}"
         end
 
         expr.any? do |sub_expr|

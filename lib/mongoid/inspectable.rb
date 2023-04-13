@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 module Mongoid
+
   # Contains the behavior around inspecting documents via inspect.
   module Inspectable
+
     # Returns the class name plus its attributes. If using dynamic fields will
     # include those as well.
     #

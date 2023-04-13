@@ -3,13 +3,15 @@
 require "spec_helper"
 
 describe Mongoid::Contextual::Atomic do
+
   describe "#add_to_set" do
+
     let!(:depeche_mode) do
-      Band.create!(members: ["Dave"])
+      Band.create!(members: [ "Dave" ])
     end
 
     let!(:new_order) do
-      Band.create!(members: ["Peter"])
+      Band.create!(members: [ "Peter" ])
     end
 
     let!(:smiths) do
@@ -17,6 +19,7 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context "when the criteria has no sorting" do
+
       let(:criteria) do
         Band.all
       end
@@ -30,19 +33,20 @@ describe Mongoid::Contextual::Atomic do
       end
 
       it "does not add duplicates" do
-        expect(depeche_mode.reload.members).to eq(["Dave"])
+        expect(depeche_mode.reload.members).to eq([ "Dave" ])
       end
 
       it "adds unique values" do
-        expect(new_order.reload.members).to eq(["Peter", "Dave"])
+        expect(new_order.reload.members).to eq([ "Peter", "Dave" ])
       end
 
       it "adds to non initialized fields" do
-        expect(smiths.reload.members).to eq(["Dave"])
+        expect(smiths.reload.members).to eq([ "Dave" ])
       end
     end
 
     context "when the criteria has sorting" do
+
       let(:criteria) do
         Band.asc(:name)
       end
@@ -56,25 +60,26 @@ describe Mongoid::Contextual::Atomic do
       end
 
       it "does not add duplicates" do
-        expect(depeche_mode.reload.members).to eq(["Dave"])
+        expect(depeche_mode.reload.members).to eq([ "Dave" ])
       end
 
       it "adds multiple operations" do
-        expect(depeche_mode.reload.genres).to eq(["Electro"])
+        expect(depeche_mode.reload.genres).to eq([ "Electro" ])
       end
 
       it "adds unique values" do
-        expect(new_order.reload.members).to eq(["Peter", "Dave"])
+        expect(new_order.reload.members).to eq([ "Peter", "Dave" ])
       end
 
       it "adds to non initialized fields" do
-        expect(smiths.reload.members).to eq(["Dave"])
+        expect(smiths.reload.members).to eq([ "Dave" ])
       end
     end
 
     context 'when the criteria has a collation' do
+
       let(:criteria) do
-        Band.where(members: ["DAVE"]).collation(locale: 'en_US', strength: 2)
+        Band.where(members: [ "DAVE" ]).collation(locale: 'en_US', strength: 2)
       end
 
       let(:context) do
@@ -86,22 +91,23 @@ describe Mongoid::Contextual::Atomic do
       end
 
       it "does not add duplicates" do
-        expect(depeche_mode.reload.members).to eq(["Dave"])
+        expect(depeche_mode.reload.members).to eq([ "Dave" ])
       end
 
       it "adds multiple operations" do
-        expect(depeche_mode.reload.genres).to eq(["Electro"])
+        expect(depeche_mode.reload.genres).to eq([ "Electro" ])
       end
     end
   end
 
   describe "#add_each_to_set" do
+
     let!(:depeche_mode) do
-      Band.create!(members: ["Dave"])
+      Band.create!(members: [ "Dave" ])
     end
 
     let!(:new_order) do
-      Band.create!(members: ["Peter"])
+      Band.create!(members: [ "Peter" ])
     end
 
     let!(:smiths) do
@@ -109,6 +115,7 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context "when the criteria has no sorting" do
+
       let(:criteria) do
         Band.all
       end
@@ -118,23 +125,24 @@ describe Mongoid::Contextual::Atomic do
       end
 
       before do
-        context.add_each_to_set(members: ["Dave", "Joe"])
+        context.add_each_to_set(members: [ "Dave", "Joe" ])
       end
 
       it "does not add duplicates" do
-        expect(depeche_mode.reload.members).to eq(["Dave", "Joe"])
+        expect(depeche_mode.reload.members).to eq([ "Dave", "Joe" ])
       end
 
       it "adds unique values" do
-        expect(new_order.reload.members).to eq(["Peter", "Dave", "Joe"])
+        expect(new_order.reload.members).to eq([ "Peter", "Dave", "Joe" ])
       end
 
       it "adds to non initialized fields" do
-        expect(smiths.reload.members).to eq(["Dave", "Joe"])
+        expect(smiths.reload.members).to eq([ "Dave", "Joe" ])
       end
     end
 
     context "when the criteria has sorting" do
+
       let(:criteria) do
         Band.asc(:name)
       end
@@ -144,29 +152,30 @@ describe Mongoid::Contextual::Atomic do
       end
 
       before do
-        context.add_each_to_set(members: ["Dave", "Joe"], genres: "Electro")
+        context.add_each_to_set(members: [ "Dave", "Joe" ], genres: "Electro")
       end
 
       it "does not add duplicates" do
-        expect(depeche_mode.reload.members).to eq(["Dave", "Joe"])
+        expect(depeche_mode.reload.members).to eq([ "Dave", "Joe" ])
       end
 
       it "adds multiple operations" do
-        expect(depeche_mode.reload.genres).to eq(["Electro"])
+        expect(depeche_mode.reload.genres).to eq([ "Electro" ])
       end
 
       it "adds unique values" do
-        expect(new_order.reload.members).to eq(["Peter", "Dave", "Joe"])
+        expect(new_order.reload.members).to eq([ "Peter", "Dave", "Joe" ])
       end
 
       it "adds to non initialized fields" do
-        expect(smiths.reload.members).to eq(["Dave", "Joe"])
+        expect(smiths.reload.members).to eq([ "Dave", "Joe" ])
       end
     end
 
     context 'when the criteria has a collation' do
+
       let(:criteria) do
-        Band.where(members: ["DAVE"]).collation(locale: 'en_US', strength: 2)
+        Band.where(members: [ "DAVE" ]).collation(locale: 'en_US', strength: 2)
       end
 
       let(:context) do
@@ -174,20 +183,21 @@ describe Mongoid::Contextual::Atomic do
       end
 
       before do
-        context.add_each_to_set(members: ["Dave", "Joe"], genres: "Electro")
+        context.add_each_to_set(members: [ "Dave", "Joe" ], genres: "Electro")
       end
 
       it "does not add duplicates" do
-        expect(depeche_mode.reload.members).to eq(["Dave", "Joe"])
+        expect(depeche_mode.reload.members).to eq([ "Dave", "Joe" ])
       end
 
       it "adds multiple operations" do
-        expect(depeche_mode.reload.genres).to eq(["Electro"])
+        expect(depeche_mode.reload.genres).to eq([ "Electro" ])
       end
     end
   end
 
   describe "#bit" do
+
     let!(:depeche_mode) do
       Band.create!(likes: 60)
     end
@@ -201,6 +211,7 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context "when performing a bitwise and" do
+
       before do
         context.bit(likes: { and: 13 })
       end
@@ -211,6 +222,7 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context "when performing a bitwise or" do
+
       before do
         context.bit(likes: { or: 13 })
       end
@@ -221,6 +233,7 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context "when chaining bitwise operations" do
+
       before do
         context.bit(likes: { and: 13, or: 10 })
       end
@@ -231,12 +244,13 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context 'when the criteria has a collation' do
+
       let!(:depeche_mode) do
-        Band.create!(members: ["Dave"], likes: 60)
+        Band.create!(members: [ "Dave" ], likes: 60)
       end
 
       let(:criteria) do
-        Band.where(members: ["DAVE"]).collation(locale: 'en_US', strength: 2)
+        Band.where(members: [ "DAVE" ]).collation(locale: 'en_US', strength: 2)
       end
 
       let(:context) do
@@ -254,6 +268,7 @@ describe Mongoid::Contextual::Atomic do
   end
 
   describe "#inc" do
+
     let!(:depeche_mode) do
       Band.create!(likes: 60)
     end
@@ -279,18 +294,21 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context "when the field exists" do
+
       it "incs the value" do
         expect(depeche_mode.reload.likes).to eq(70)
       end
     end
 
     context "when the field does not exist" do
+
       it "does not error on the inc" do
         expect(smiths.reload.likes).to eq 10
       end
     end
 
     context "when using the alias" do
+
       before do
         context.inc(years: 1)
       end
@@ -305,12 +323,13 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context 'when the criteria has a collation' do
+
       let!(:depeche_mode) do
-        Band.create!(members: ["Dave"])
+        Band.create!(members: [ "Dave" ])
       end
 
       let(:criteria) do
-        Band.where(members: ["DAVE"]).collation(locale: 'en_US', strength: 2)
+        Band.where(members: [ "DAVE" ]).collation(locale: 'en_US', strength: 2)
       end
 
       let(:context) do
@@ -328,6 +347,7 @@ describe Mongoid::Contextual::Atomic do
   end
 
   describe "#mul" do
+
     let!(:depeche_mode) { Band.create!(likes: 60) }
     let!(:smiths) { Band.create! }
     let!(:beatles) { Band.create!(years: 2) }
@@ -338,18 +358,21 @@ describe Mongoid::Contextual::Atomic do
     before { context.mul(likes: 10) }
 
     context "when the field exists" do
+
       it "muls the value" do
         expect(depeche_mode.reload.likes).to eq(600)
       end
     end
 
     context "when the field does not exist" do
+
       it "sets undefined fields to zero" do
         expect(smiths.reload.likes).to eq 0
       end
     end
 
     context "when using the alias" do
+
       before do
         context.mul(years: 2)
       end
@@ -364,9 +387,10 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context 'when the criteria has a collation' do
-      let!(:depeche_mode) { Band.create!(members: ["Dave"], years: 3) }
+
+      let!(:depeche_mode) { Band.create!(members: [ "Dave" ], years: 3) }
       let(:criteria) do
-        Band.where(members: ["DAVE"]).collation(locale: 'en_US', strength: 2)
+        Band.where(members: [ "DAVE" ]).collation(locale: 'en_US', strength: 2)
       end
 
       let(:context) { Mongoid::Contextual::Mongo.new(criteria) }
@@ -380,8 +404,9 @@ describe Mongoid::Contextual::Atomic do
   end
 
   describe "#pop" do
+
     let!(:depeche_mode) do
-      Band.create!(members: ["Dave", "Martin"])
+      Band.create!(members: [ "Dave", "Martin" ])
     end
 
     let!(:smiths) do
@@ -397,12 +422,13 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context "when popping from the front" do
+
       before do
         context.pop(members: -1)
       end
 
       it "pops the first element off the array" do
-        expect(depeche_mode.reload.members).to eq(["Martin"])
+        expect(depeche_mode.reload.members).to eq([ "Martin" ])
       end
 
       it "does not error on uninitialized fields" do
@@ -411,12 +437,13 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context "when popping from the rear" do
+
       before do
         context.pop(members: 1)
       end
 
       it "pops the last element off the array" do
-        expect(depeche_mode.reload.members).to eq(["Dave"])
+        expect(depeche_mode.reload.members).to eq([ "Dave" ])
       end
 
       it "does not error on uninitialized fields" do
@@ -425,12 +452,13 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context 'when the criteria has a collation' do
+
       let!(:depeche_mode) do
-        Band.create!(members: ["Dave"])
+        Band.create!(members: [ "Dave" ])
       end
 
       let(:criteria) do
-        Band.where(members: ["DAVE"]).collation(locale: 'en_US', strength: 2)
+        Band.where(members: [ "DAVE" ]).collation(locale: 'en_US', strength: 2)
       end
 
       let(:context) do
@@ -448,8 +476,9 @@ describe Mongoid::Contextual::Atomic do
   end
 
   describe "#pull" do
+
     let!(:depeche_mode) do
-      Band.create!(members: ["Dave", "Alan"])
+      Band.create!(members: [ "Dave", "Alan" ])
     end
 
     let!(:smiths) do
@@ -469,7 +498,7 @@ describe Mongoid::Contextual::Atomic do
     end
 
     it "pulls when the value is found" do
-      expect(depeche_mode.reload.members).to eq(["Dave"])
+      expect(depeche_mode.reload.members).to eq([ "Dave" ])
     end
 
     it "does not error on non existent fields" do
@@ -477,12 +506,13 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context 'when the criteria has a collation' do
+
       let!(:depeche_mode) do
-        Band.create!(members: ["Dave"])
+        Band.create!(members: [ "Dave" ])
       end
 
       let(:criteria) do
-        Band.where(members: ["DAVE"]).collation(locale: 'en_US', strength: 2)
+        Band.where(members: [ "DAVE" ]).collation(locale: 'en_US', strength: 2)
       end
 
       let(:context) do
@@ -500,9 +530,11 @@ describe Mongoid::Contextual::Atomic do
   end
 
   describe "#pull_all" do
+
     context 'when the criteria does not have a collation' do
+
       let!(:depeche_mode) do
-        Band.create!(members: ["Dave", "Alan", "Fletch"])
+        Band.create!(members: [ "Dave", "Alan", "Fletch" ])
       end
 
       let!(:smiths) do
@@ -518,11 +550,11 @@ describe Mongoid::Contextual::Atomic do
       end
 
       before do
-        context.pull_all(members: ["Alan", "Dave"])
+        context.pull_all(members: [ "Alan", "Dave" ])
       end
 
       it "pulls when the values are found" do
-        expect(depeche_mode.reload.members).to eq(["Fletch"])
+        expect(depeche_mode.reload.members).to eq([ "Fletch" ])
       end
 
       it "does not error on non existent fields" do
@@ -531,8 +563,9 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context 'when the criteria has a collation' do
+
       let!(:depeche_mode) do
-        Band.create!(members: ["Dave", "Alan", "Fletch"])
+        Band.create!(members: [ "Dave", "Alan", "Fletch" ])
       end
 
       let(:criteria) do
@@ -544,19 +577,21 @@ describe Mongoid::Contextual::Atomic do
       end
 
       before do
-        context.pull_all(members: ["ALAN", "DAVE"])
+        context.pull_all(members: [ "ALAN", "DAVE" ])
       end
 
       it "pulls when the value is found" do
-        expect(depeche_mode.reload.members).to eq(["Fletch"])
+        expect(depeche_mode.reload.members).to eq([ "Fletch" ])
       end
     end
   end
 
   describe "#push" do
+
     context 'when the criteria does not have a collation' do
+
       let!(:depeche_mode) do
-        Band.create!(members: ["Dave"])
+        Band.create!(members: [ "Dave" ])
       end
 
       let!(:smiths) do
@@ -576,17 +611,18 @@ describe Mongoid::Contextual::Atomic do
       end
 
       it "pushes the value to existing arrays" do
-        expect(depeche_mode.reload.members).to eq(["Dave", "Alan"])
+        expect(depeche_mode.reload.members).to eq([ "Dave", "Alan" ])
       end
 
       it "pushes to non existent fields" do
-        expect(smiths.reload.members).to eq(["Alan"])
+        expect(smiths.reload.members).to eq([ "Alan" ])
       end
     end
 
     context 'when the criteria has a collation' do
+
       let!(:depeche_mode) do
-        Band.create!(members: ["Dave"])
+        Band.create!(members: [ "Dave" ])
       end
 
       let!(:smiths) do
@@ -606,7 +642,7 @@ describe Mongoid::Contextual::Atomic do
       end
 
       it "pushes the value to existing arrays" do
-        expect(depeche_mode.reload.members).to eq(["Dave", "Alan"])
+        expect(depeche_mode.reload.members).to eq([ "Dave", "Alan" ])
       end
 
       it "pushes to non existent fields" do
@@ -616,9 +652,11 @@ describe Mongoid::Contextual::Atomic do
   end
 
   describe "#push_all" do
+
     context 'when the criteria does not have a collation' do
+
       let!(:depeche_mode) do
-        Band.create!(members: ["Dave"])
+        Band.create!(members: [ "Dave" ])
       end
 
       let!(:smiths) do
@@ -634,21 +672,22 @@ describe Mongoid::Contextual::Atomic do
       end
 
       before do
-        context.push_all(members: ["Alan", "Fletch"])
+        context.push_all(members: [ "Alan", "Fletch" ])
       end
 
       it "pushes the values to existing arrays" do
-        expect(depeche_mode.reload.members).to eq(["Dave", "Alan", "Fletch"])
+        expect(depeche_mode.reload.members).to eq([ "Dave", "Alan", "Fletch" ])
       end
 
       it "pushes to non existent fields" do
-        expect(smiths.reload.members).to eq(["Alan", "Fletch"])
+        expect(smiths.reload.members).to eq([ "Alan", "Fletch" ])
       end
     end
 
     context 'when the criteria has a collation' do
+
       let!(:depeche_mode) do
-        Band.create!(members: ["Dave"])
+        Band.create!(members: [ "Dave" ])
       end
 
       let!(:smiths) do
@@ -664,19 +703,21 @@ describe Mongoid::Contextual::Atomic do
       end
 
       before do
-        context.push_all(members: ["Alan", "Fletch"])
+        context.push_all(members: [ "Alan", "Fletch" ])
       end
 
       it "pushes the values to existing arrays" do
-        expect(depeche_mode.reload.members).to eq(["Dave", "Alan", "Fletch"])
+        expect(depeche_mode.reload.members).to eq([ "Dave", "Alan", "Fletch" ])
       end
     end
   end
 
   describe "#rename" do
+
     context 'when the criteria does not have a collation' do
+
       let!(:depeche_mode) do
-        Band.create!(members: ["Dave"])
+        Band.create!(members: [ "Dave" ])
       end
 
       let!(:smiths) do
@@ -696,7 +737,7 @@ describe Mongoid::Contextual::Atomic do
       end
 
       it "renames existing fields" do
-        expect(depeche_mode.reload.musicians).to eq(["Dave"])
+        expect(depeche_mode.reload.musicians).to eq([ "Dave" ])
       end
 
       it "does not rename non existent fields" do
@@ -705,8 +746,9 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context 'when the criteria has a collation' do
+
       let!(:depeche_mode) do
-        Band.create!(members: ["Dave"])
+        Band.create!(members: [ "Dave" ])
       end
 
       let!(:smiths) do
@@ -726,7 +768,7 @@ describe Mongoid::Contextual::Atomic do
       end
 
       it "renames existing fields" do
-        expect(depeche_mode.reload.musicians).to eq(["Dave"])
+        expect(depeche_mode.reload.musicians).to eq([ "Dave" ])
       end
 
       it "does not rename non existent fields" do
@@ -736,6 +778,7 @@ describe Mongoid::Contextual::Atomic do
   end
 
   describe "#set" do
+
     let!(:depeche_mode) do
       Band.create!(name: "Depeche Mode")
     end
@@ -769,6 +812,7 @@ describe Mongoid::Contextual::Atomic do
     include_examples 'writes as expected'
 
     context 'when fields being set have been projected out' do
+
       let(:criteria) do
         Band.only(:genres)
       end
@@ -778,7 +822,9 @@ describe Mongoid::Contextual::Atomic do
   end
 
   describe "#unset" do
+
     context "when unsetting a single field" do
+
       let!(:depeche_mode) do
         Band.create!(name: "Depeche Mode", years: 10)
       end
@@ -796,6 +842,7 @@ describe Mongoid::Contextual::Atomic do
       end
 
       context "when the field is not aliased" do
+
         before do
           context.unset(:name)
         end
@@ -827,9 +874,10 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context "when unsetting multiple fields" do
+
       let!(:new_order) do
         Band.create!(name: "New Order", genres: %w[electro dub], years: 10,
-                     likes: 200, rating: 4.3, origin: 'Space')
+          likes: 200, rating: 4.3, origin: 'Space')
       end
 
       let(:criteria) do
@@ -841,6 +889,7 @@ describe Mongoid::Contextual::Atomic do
       end
 
       context "when the field is not aliased" do
+
         before do
           context.unset(:name, :genres)
         end
@@ -856,6 +905,7 @@ describe Mongoid::Contextual::Atomic do
       end
 
       context "when the field is aliased" do
+
         before do
           context.unset(:name, :years)
         end
@@ -871,6 +921,7 @@ describe Mongoid::Contextual::Atomic do
       end
 
       context "when using Hash arguments" do
+
         before do
           context.unset({ years: true, likes: "" }, { rating: false, origin: nil })
         end
@@ -887,6 +938,7 @@ describe Mongoid::Contextual::Atomic do
       end
 
       context "when mixing argument types" do
+
         before do
           context.unset(:name, [:years], { likes: "" }, { rating: false })
         end
@@ -903,6 +955,7 @@ describe Mongoid::Contextual::Atomic do
     end
 
     context 'when the criteria has a collation' do
+
       let!(:depeche_mode) do
         Band.create!(name: "Depeche Mode", years: 10)
       end
@@ -941,8 +994,7 @@ describe Mongoid::Contextual::Atomic do
       Band.create!(
         member_count: member_count,
         founded: founded,
-        views: views
-      )
+        views: views)
     end
 
     let(:criteria) { Band.all }
@@ -952,11 +1004,11 @@ describe Mongoid::Contextual::Atomic do
       shared_examples_for 'a min-able context' do
         it 'chooses the smaller value' do
           context.send(min_method, "member_count" => given_members, views: given_views)
-          expect(band.reload.member_count).to eq [member_count, given_members].min
-          expect(band.views).to eq [views, given_views].min
+          expect(band.reload.member_count).to eq [ member_count, given_members ].min
+          expect(band.views).to eq [ views, given_views ].min
         end
       end
-
+  
       context 'when given value < existing value' do
         let(:given_views) { views - 1 }
         let(:given_members) { member_count - 1 }
@@ -1014,8 +1066,7 @@ describe Mongoid::Contextual::Atomic do
       Band.create!(
         member_count: member_count,
         founded: founded,
-        views: views
-      )
+        views: views)
     end
 
     let(:criteria) { Band.all }
@@ -1025,8 +1076,8 @@ describe Mongoid::Contextual::Atomic do
       shared_examples_for 'a max-able context' do
         it 'chooses the larger value' do
           context.send(max_method, "member_count" => given_members, views: given_views)
-          expect(band.reload.member_count).to eq [member_count, given_members].max
-          expect(band.views).to eq [views, given_views].max
+          expect(band.reload.member_count).to eq [ member_count, given_members ].max
+          expect(band.views).to eq [ views, given_views ].max
         end
       end
 

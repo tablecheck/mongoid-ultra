@@ -10,6 +10,7 @@ require "mongoid/validatable/presence"
 require "mongoid/validatable/uniqueness"
 
 module Mongoid
+
   # This module provides additional validations that ActiveModel does not
   # provide: validates_associated and validates_uniqueness_of.
   module Validatable
@@ -110,6 +111,7 @@ module Mongoid
     end
 
     module ClassMethods
+
       # Adds an associated validator for the association if the validate option
       # was not provided or set to true.
       #

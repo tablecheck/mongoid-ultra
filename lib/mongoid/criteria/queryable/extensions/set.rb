@@ -6,9 +6,11 @@ module Mongoid
   class Criteria
     module Queryable
       module Extensions
+
         # Adds query type-casting behavior to Set class.
         module Set
           module ClassMethods
+
             # Evolve the set, casting all its elements.
             #
             # @example Evolve the set.
@@ -19,8 +21,7 @@ module Mongoid
             # @return [ Array ] The evolved set.
             def evolve(object)
               return object if !object || !object.respond_to?(:map)
-
-              object.map { |obj| obj.class.evolve(obj) }
+              object.map{ |obj| obj.class.evolve(obj) }
             end
           end
         end

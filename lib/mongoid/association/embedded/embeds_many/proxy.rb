@@ -6,6 +6,7 @@ module Mongoid
   module Association
     module Embedded
       class EmbedsMany
+
         # Transparent proxy for embeds_many associations.
         # An instance of this class is returned when calling the
         # association getter method on the parent document. This
@@ -28,7 +29,6 @@ module Mongoid
           def <<(*args)
             docs = args.flatten
             return concat(docs) if docs.size > 1
-
             if doc = docs.first
               append(doc)
               doc.save if persistable? && !_assigning?
@@ -443,7 +443,6 @@ module Mongoid
           # @return [ Mongoid::Criteria | Object ] A Criteria or return value from the target.
           ruby2_keywords def method_missing(name, *args, &block)
             return super if _target.respond_to?(name)
-
             klass.send(:with_scope, criteria) do
               criteria.public_send(name, *args, &block)
             end

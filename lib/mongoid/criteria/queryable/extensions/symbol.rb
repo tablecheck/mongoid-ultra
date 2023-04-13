@@ -4,8 +4,10 @@ module Mongoid
   class Criteria
     module Queryable
       module Extensions
+
         # Adds query type-casting behavior to Symbol class.
         module Symbol
+
           # Get the symbol as a specification.
           #
           # @example Get the symbol as a criteria.
@@ -20,6 +22,7 @@ module Mongoid
           end
 
           module ClassMethods
+
             # Adds a method on symbol as a convenience for the MongoDB operator.
             #
             # @example Add the $in method.

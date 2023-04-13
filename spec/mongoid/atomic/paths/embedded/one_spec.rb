@@ -3,6 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Atomic::Paths::Embedded::One do
+
   let(:person) do
     Person.new
   end
@@ -20,31 +21,37 @@ describe Mongoid::Atomic::Paths::Embedded::One do
   end
 
   describe "#delete_modifier" do
+
     it "returns $unset" do
       expect(one.delete_modifier).to eq("$unset")
     end
   end
 
   describe "#document" do
+
     it "returns the document" do
       expect(one.document).to eq(name)
     end
   end
 
   describe "#insert_modifier" do
+
     it "returns $set" do
       expect(one.insert_modifier).to eq("$set")
     end
   end
 
   describe "#path" do
+
     context "when the document is embedded one level" do
+
       it "returns the name of the relation" do
         expect(one.path).to eq("name")
       end
     end
 
     context "when the document is embedded multiple levels" do
+
       let(:phone) do
         Phone.new(number: "404-555-1212")
       end
@@ -69,13 +76,16 @@ describe Mongoid::Atomic::Paths::Embedded::One do
   end
 
   describe "#position" do
+
     context "when the document is embedded one level" do
+
       it "returns the name of the relation" do
         expect(one.position).to eq("name")
       end
     end
 
     context "when the document is embedded multiple levels" do
+
       let(:phone) do
         Phone.new(number: "404-555-1212")
       end

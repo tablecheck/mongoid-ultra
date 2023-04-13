@@ -2,6 +2,7 @@
 
 module Mongoid
   module Macros
+
     def use_spec_mongoid_config
       around do |example|
         config_path = File.join(File.dirname(__FILE__), "..", "config", "mongoid.yml")

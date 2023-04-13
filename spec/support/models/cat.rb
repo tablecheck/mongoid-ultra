@@ -6,4 +6,5 @@ class Cat
   field :name
 
   belongs_to :person, primary_key: :username
+
 end

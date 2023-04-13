@@ -11,6 +11,7 @@ module Mongoid
       #
       # @api private
       module Expandable
+
         private
 
         # Expands the specified condition to MongoDB syntax.
@@ -60,6 +61,7 @@ module Mongoid
             [key, value.__array__]
           end]
         end
+
       end
     end
   end

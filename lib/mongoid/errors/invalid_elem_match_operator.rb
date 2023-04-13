@@ -2,9 +2,11 @@
 
 module Mongoid
   module Errors
+
     # Raised when invalid field-level operator is passed to the $elemMatch
     # embedded matcher.
     class InvalidElemMatchOperator < InvalidQuery
+
       # @api private
       VALID_OPERATORS = %w(
         and all eq exists gt gte in lt lte ne nin nor not or regex size
@@ -18,8 +20,9 @@ module Mongoid
       def initialize(operator)
         @operator = operator
         super(compose_message("invalid_elem_match_operator",
-                              operator: operator,
-                              valid_operators: VALID_OPERATORS.map { |op| "'$#{op}'" }.join(', '),))
+          operator: operator,
+          valid_operators: VALID_OPERATORS.map { |op| "'$#{op}'" }.join(', '),
+        ))
       end
 
       # @return [ String ] The operator that was used.

@@ -2,9 +2,11 @@
 
 module Mongoid
   module Errors
+
     # This error is raised when automatic encryption configuration for a client
     # is invalid.
     class InvalidAutoEncryptionConfiguration < MongoidError
+
       # Initialize the error.
       #
       # @param [ Symbol ] name The name of the client config.

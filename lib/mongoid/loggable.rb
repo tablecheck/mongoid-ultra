@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 module Mongoid
+
   # Contains logging behavior.
   module Loggable
+
     # Get the logger.
     #
     # @note Will try to grab Rails' logger first before creating a new logger
@@ -14,7 +16,6 @@ module Mongoid
     # @return [ Logger ] The logger.
     def logger
       return @logger if defined?(@logger)
-
       @logger = rails_logger || default_logger
     end
 

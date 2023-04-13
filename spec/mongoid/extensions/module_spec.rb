@@ -3,8 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Extensions::Module do
+
   describe "#re_define_method" do
+
     context "when the method already exists" do
+
       class Smoochy
         def sing
           "singing"
@@ -23,6 +26,7 @@ describe Mongoid::Extensions::Module do
     end
 
     context "when the method does not exist" do
+
       class Rhino
       end
 

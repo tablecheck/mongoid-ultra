@@ -3,9 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Persistable::Multipliable do
+
   describe "#mul" do
+
     context "when the document is a root document" do
+
       shared_examples_for "a multipliable root document" do
+
         it "multiplies a positive value" do
           expect(person.age).to eq(50)
         end
@@ -44,6 +48,7 @@ describe Mongoid::Persistable::Multipliable do
       end
 
       context "when providing string fields" do
+
         let!(:op) do
           person.mul("age" => 5, "score" => -5, "inte" => 30)
         end
@@ -52,6 +57,7 @@ describe Mongoid::Persistable::Multipliable do
       end
 
       context "when providing symbol fields" do
+
         let!(:op) do
           person.mul(age: 5, score: -5, inte: 30)
         end
@@ -60,6 +66,7 @@ describe Mongoid::Persistable::Multipliable do
       end
 
       context "when providing big decimal values" do
+
         let(:positive) do
           BigDecimal("5.0")
         end
@@ -81,7 +88,9 @@ describe Mongoid::Persistable::Multipliable do
     end
 
     context "when the document is embedded" do
+
       shared_examples_for "a multipliable embedded document" do
+
         it "multiplies a positive value" do
           expect(address.number).to eq(50)
         end
@@ -124,6 +133,7 @@ describe Mongoid::Persistable::Multipliable do
       end
 
       context "when providing string fields" do
+
         let!(:op) do
           address.mul("number" => 5, "no" => -5, "house" => 30)
         end
@@ -132,6 +142,7 @@ describe Mongoid::Persistable::Multipliable do
       end
 
       context "when providing symbol fields" do
+
         let!(:op) do
           address.mul(number: 5, no: -5, house: 30)
         end
@@ -140,6 +151,7 @@ describe Mongoid::Persistable::Multipliable do
       end
 
       context "when providing big decimal values" do
+
         let(:positive) do
           BigDecimal("5.0")
         end
@@ -161,6 +173,7 @@ describe Mongoid::Persistable::Multipliable do
     end
 
     context "when executing atomically" do
+
       let(:person) do
         Person.create!(age: 10, score: 100)
       end
@@ -168,12 +181,13 @@ describe Mongoid::Persistable::Multipliable do
       it "marks a dirty change for the multiplied fields" do
         person.atomically do
           person.mul age: 15, score: 2
-          expect(person.changes).to eq({ "age" => [10, 150], "score" => [100, 200] })
+          expect(person.changes).to eq({"age" => [10, 150], "score" => [100, 200]})
         end
       end
     end
 
     context "when executing on a readonly document" do
+
       let(:person) do
         Person.create!(age: 10, score: 100)
       end

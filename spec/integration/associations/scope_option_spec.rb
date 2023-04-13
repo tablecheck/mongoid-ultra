@@ -6,6 +6,7 @@ require_relative '../../mongoid/association/referenced/has_many_models'
 require_relative '../../mongoid/association/referenced/has_one_models'
 
 describe 'association :scope option' do
+
   context 'has_many and belongs_to' do
     let!(:trainer1) { HmmTrainer.create!(name: 'Dave') }
     let!(:trainer2) { HmmTrainer.create!(name: 'Ash') }

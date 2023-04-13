@@ -4,8 +4,10 @@ module Mongoid
   module Association
     module Referenced
       class HasOne
+
         # Eager class for has_one associations.
         class Eager < Association::Eager
+
           private
 
           def preload
@@ -26,6 +28,7 @@ module Mongoid
           def key
             @association.foreign_key
           end
+
         end
       end
     end

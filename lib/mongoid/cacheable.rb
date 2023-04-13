@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Mongoid
+
   # Encapsulates behavior around caching.
   module Cacheable
     extend ActiveSupport::Concern
@@ -26,7 +27,6 @@ module Mongoid
     def cache_key
       return "#{model_key}/new" if new_record?
       return "#{model_key}/#{_id}-#{updated_at.utc.to_formatted_s(cache_timestamp_format)}" if do_or_do_not(:updated_at)
-
       "#{model_key}/#{_id}"
     end
   end

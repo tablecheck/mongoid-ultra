@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 describe 'embeds_one associations' do
+
   context 're-associating the same object' do
     context 'with dependent: destroy' do
       let(:canvas) do

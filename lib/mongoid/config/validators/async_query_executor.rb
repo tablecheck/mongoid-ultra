@@ -3,6 +3,7 @@
 module Mongoid
   module Config
     module Validators
+
       # Validates the async query executor options in the Mongoid
       # configuration. Used during application bootstrapping.
       #

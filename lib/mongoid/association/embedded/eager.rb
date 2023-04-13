@@ -3,9 +3,11 @@
 module Mongoid
   module Association
     module Embedded
+
       # Eager class for embedded associations (embedded_in, embeds_many,
       # embeds_one).
       class Eager < Association::Eager
+
         private
 
         # Embedded associations have no preload phase, since the embedded
@@ -14,6 +16,7 @@ module Mongoid
         def preload
         end
       end
+
     end
   end
 end

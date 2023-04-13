@@ -3,9 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Errors::InvalidOptions do
+
   describe "#message" do
+
     let(:error) do
-      described_class.new(:name, :invalid, [:valid])
+      described_class.new(:name, :invalid, [ :valid ])
     end
 
     it "contains the problem in the message" do

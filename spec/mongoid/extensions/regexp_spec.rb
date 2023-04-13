@@ -3,9 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Extensions::Regexp do
-  [:mongoize, :demongoize].each do |method|
+
+  [ :mongoize, :demongoize ].each do |method|
+
     describe ".#{method}" do
+
       context "when providing a regex" do
+
         let(:value) do
           Regexp.send(method, /[^abc]/)
         end
@@ -16,6 +20,7 @@ describe Mongoid::Extensions::Regexp do
       end
 
       context "when providing a string" do
+
         let(:value) do
           Regexp.send(method, "[^abc]")
         end
@@ -24,7 +29,9 @@ describe Mongoid::Extensions::Regexp do
           expect(value).to eq(/[^abc]/)
         end
 
+
         context "when the string is empty" do
+
           let(:value) do
             Regexp.send(method, "")
           end
@@ -36,6 +43,7 @@ describe Mongoid::Extensions::Regexp do
       end
 
       context "when the value is nil" do
+
         let(:value) do
           Regexp.send(method, nil)
         end
@@ -46,6 +54,7 @@ describe Mongoid::Extensions::Regexp do
       end
 
       context "when providing a BSON::Regexp::Raw" do
+
         let(:value) do
           Regexp.send(method, BSON::Regexp::Raw.new("hello"))
         end
@@ -56,6 +65,7 @@ describe Mongoid::Extensions::Regexp do
       end
 
       context "when providing an invalid regexp" do
+
         let(:value) do
           Regexp.send(method, "[")
         end
@@ -66,6 +76,7 @@ describe Mongoid::Extensions::Regexp do
       end
 
       context "when providing an invalid Regexp to a BSON::Regexp::Raw" do
+
         let(:value) do
           Regexp.send(method, BSON::Regexp::Raw.new("["))
         end
@@ -78,6 +89,7 @@ describe Mongoid::Extensions::Regexp do
   end
 
   describe "#mongoize" do
+
     it "returns self" do
       expect(/[^abc]/.mongoize).to eq(/[^abc]/)
     end

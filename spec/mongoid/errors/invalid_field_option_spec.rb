@@ -3,9 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Errors::InvalidFieldOption do
+
   describe "#message" do
+
     let(:error) do
-      described_class.new(Person, :testing, :localized, [:localize])
+      described_class.new(Person, :testing, :localized, [ :localize ])
     end
 
     it "contains the problem in the message" do

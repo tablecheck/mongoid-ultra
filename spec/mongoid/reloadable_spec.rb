@@ -3,8 +3,11 @@
 require "spec_helper"
 
 describe Mongoid::Reloadable do
+
   describe "#reload" do
+
     context 'when persistence options are set' do
+
       let(:person) do
         Person.with(collection: 'other') do |person_class|
           person_class.create!
@@ -23,6 +26,7 @@ describe Mongoid::Reloadable do
     end
 
     context "when using bson ids" do
+
       let(:person) do
         Person.create!
       end
@@ -45,6 +49,7 @@ describe Mongoid::Reloadable do
     end
 
     context "when using string ids" do
+
       let(:account) do
         Account.create!(name: "bank", number: "1000")
       end
@@ -67,6 +72,7 @@ describe Mongoid::Reloadable do
     end
 
     context "when an after initialize callback is defined" do
+
       let!(:book) do
         Book.create!(title: "Snow Crash")
       end
@@ -82,6 +88,7 @@ describe Mongoid::Reloadable do
     end
 
     context "when the document was dirty" do
+
       let(:person) do
         Person.create!
       end
@@ -101,7 +108,9 @@ describe Mongoid::Reloadable do
     end
 
     context "when document not saved" do
+
       context "when there is no document matching our id" do
+
         it "raises an error" do
           expect {
             Person.new.reload
@@ -110,6 +119,7 @@ describe Mongoid::Reloadable do
       end
 
       context 'when there is a document matching our id' do
+
         let!(:previous) { Agent.create!(title: '007') }
 
         let(:agent) { Agent.new(id: previous.id) }
@@ -127,12 +137,15 @@ describe Mongoid::Reloadable do
     end
 
     context "when the document is embedded" do
+
       let(:person) do
         Person.create!
       end
 
       context "when embedded a single level" do
+
         context 'when persistence options are set' do
+
           let(:person) do
             Person.with(collection: 'other') do |person_class|
               person_class.create!
@@ -147,8 +160,8 @@ describe Mongoid::Reloadable do
 
           before do
             Person.mongo_client[:other].find(
-              { "_id" => person.id }
-            ).update_one({ "$set" => { "addresses.0.number" => 3 } })
+                { "_id" => person.id }
+            ).update_one({ "$set" => { "addresses.0.number" => 3 }})
           end
 
           let!(:reloaded) do
@@ -160,9 +173,11 @@ describe Mongoid::Reloadable do
           it "reloads the embedded document attributes" do
             expect(reloaded.number).to eq(3)
           end
+
         end
 
         context "when the relation is an embeds many" do
+
           let!(:address) do
             person.addresses.create!(street: "Abbey Road", number: 4)
           end
@@ -170,7 +185,7 @@ describe Mongoid::Reloadable do
           before do
             Person.collection.find(
               { "_id" => person.id }
-            ).update_one({ "$set" => { "addresses.0.number" => 3 } })
+            ).update_one({ "$set" => { "addresses.0.number" => 3 }})
           end
 
           let!(:reloaded) do
@@ -191,13 +206,14 @@ describe Mongoid::Reloadable do
         end
 
         context "when the relation is an embeds one" do
+
           let!(:name) do
             person.create_name(first_name: "Syd")
           end
 
           before do
-            Person.collection.find({ "_id" => person.id })
-                  .update_one({ "$set" => { "name.last_name" => "Vicious" } })
+            Person.collection.find({ "_id" => person.id }).
+              update_one({ "$set" => { "name.last_name" => "Vicious" }})
           end
 
           let!(:reloaded) do
@@ -219,6 +235,7 @@ describe Mongoid::Reloadable do
       end
 
       context "when the relation is embedded multiple levels" do
+
         let!(:address) do
           person.addresses.create!(street: "Abbey Road", number: 3)
         end
@@ -228,8 +245,8 @@ describe Mongoid::Reloadable do
         end
 
         before do
-          Person.collection.find({ "_id" => person.id })
-                .update_one({ "$set" => { "addresses.0.locations.0.name" => "work" } })
+          Person.collection.find({ "_id" => person.id }).
+            update_one({ "$set" => { "addresses.0.locations.0.name" => "work" }})
         end
 
         let!(:reloaded) do
@@ -251,6 +268,7 @@ describe Mongoid::Reloadable do
     end
 
     context "when embedded documents change" do
+
       let(:person) do
         Person.create!
       end
@@ -260,8 +278,8 @@ describe Mongoid::Reloadable do
       end
 
       before do
-        Person.collection.find({ "_id" => person.id })
-              .update_one({ "$set" => { "addresses" => [] } })
+        Person.collection.find({ "_id" => person.id }).
+          update_one({ "$set" => { "addresses" => [] }})
         person.reload
       end
 
@@ -271,6 +289,7 @@ describe Mongoid::Reloadable do
     end
 
     context "when embedded documents are unasssigned and reassigned" do
+
       let(:palette) do
         Palette.new
       end
@@ -293,6 +312,7 @@ describe Mongoid::Reloadable do
     end
 
     context "when embeds_many documents are cleared and reassigned" do
+
       let(:contractor) do
         Contractor.new(name: 'contractor')
       end
@@ -315,6 +335,7 @@ describe Mongoid::Reloadable do
     end
 
     context "when embedded document is nil" do
+
       let(:palette) do
         Palette.new
       end
@@ -339,18 +360,20 @@ describe Mongoid::Reloadable do
     end
 
     context "with relational associations" do
+
       let(:person) do
         Person.create!
       end
 
       context "for a has_one" do
+
         let!(:game) do
           person.create_game(score: 50)
         end
 
         before do
-          Game.collection.find({ "_id" => game.id })
-              .update_one({ "$set" => { "score" => 75 } })
+          Game.collection.find({ "_id" => game.id }).
+            update_one({ "$set" => { "score" => 75 }})
           person.reload
         end
 
@@ -360,14 +383,16 @@ describe Mongoid::Reloadable do
       end
 
       context "for a belongs_to" do
+
         context "when the relation type does not change" do
+
           let!(:game) do
             person.create_game(score: 50)
           end
 
           before do
-            Person.collection.find({ "_id" => person.id })
-                  .update_one({ "$set" => { "title" => "Mam" } })
+            Person.collection.find({ "_id" => person.id }).
+              update_one({ "$set" => { "title" => "Mam" }})
             game.reload
           end
 
@@ -379,6 +404,7 @@ describe Mongoid::Reloadable do
     end
 
     context "when overriding #id alias" do
+
       let!(:object) do
         IdKey.create!(key: 'foo')
       end
@@ -401,6 +427,7 @@ describe Mongoid::Reloadable do
     end
 
     context 'when the document is readonly' do
+
       before do
         Person.create!
       end
@@ -475,12 +502,13 @@ describe Mongoid::Reloadable do
         end
 
         it 'uses the shard key to reload the document' do
-          expect(find_events.length).to eq(1)
+          expect(find_events.length). to eq(1)
 
           event = find_events.first
           expect(event.command['filter'].keys).to include('name')
         end
       end
+
 
       context 'with embedded document' do
         let(:profile_image) do
@@ -497,7 +525,7 @@ describe Mongoid::Reloadable do
         end
 
         it 'uses the shard key to reload the embedded document' do
-          expect(find_events.length).to eq(1)
+          expect(find_events.length). to eq(1)
 
           event = find_events.first
           expect(event.command['filter'].keys).to include('name')

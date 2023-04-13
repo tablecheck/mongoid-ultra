@@ -3,6 +3,7 @@
 module Mongoid
   module Contextual
     module Aggregable
+
       # @api private
       EMPTY_RESULT = {
         "count" => 0,

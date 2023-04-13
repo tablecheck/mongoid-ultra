@@ -2,9 +2,11 @@
 
 module Mongoid
   module Errors
+
     # This error is raised when a bad configuration option is attempted to be
     # set.
     class InvalidConfigOption < MongoidError
+
       # Create the new error.
       #
       # @example Create the new error.

@@ -3,9 +3,13 @@
 require "spec_helper"
 
 describe Mongoid::Persistable::Settable do
+
   describe "#set" do
+
     context "when the document is a root document" do
+
       shared_examples_for "a settable root document" do
+
         it "sets the normal field to the new value" do
           expect(person.title).to eq("kaiser")
         end
@@ -48,6 +52,7 @@ describe Mongoid::Persistable::Settable do
       end
 
       context "when provided string fields" do
+
         let!(:set) do
           person.set("title" => "kaiser", "test" => "alias-test", "dob" => date)
         end
@@ -56,6 +61,7 @@ describe Mongoid::Persistable::Settable do
       end
 
       context "when provided symbol fields" do
+
         let!(:set) do
           person.set(title: "kaiser", test: "alias-test", dob: date)
         end
@@ -65,7 +71,9 @@ describe Mongoid::Persistable::Settable do
     end
 
     context "when the document is embedded" do
+
       shared_examples_for "a settable embedded document" do
+
         it "sets the normal field to the new value" do
           expect(address.number).to eq(44)
         end
@@ -112,6 +120,7 @@ describe Mongoid::Persistable::Settable do
       end
 
       context "when provided string fields" do
+
         let!(:set) do
           address.set("number" => 44, "suite" => "400", "end_date" => date)
         end
@@ -120,6 +129,7 @@ describe Mongoid::Persistable::Settable do
       end
 
       context "when provided symbol fields" do
+
         let!(:set) do
           address.set(number: 44, suite: "400", end_date: date)
         end
@@ -128,6 +138,7 @@ describe Mongoid::Persistable::Settable do
       end
 
       context 'when the field is a relation' do
+
         let(:person) do
           Person.create!
         end
@@ -150,13 +161,14 @@ describe Mongoid::Persistable::Settable do
         end
 
         it "should persist changes of embeds_many fields" do
-          person.set({ phone_numbers: [home_phone, office_phone].map { |p| p.as_document } })
+          person.set({ phone_numbers: [home_phone, office_phone].map { |p| p.as_document} })
           expect(person.reload.phone_numbers).to eq([home_phone, office_phone])
         end
       end
     end
 
     context "when executing atomically" do
+
       let(:person) do
         Person.create!(title: "sir", age: 30)
       end
@@ -164,12 +176,13 @@ describe Mongoid::Persistable::Settable do
       it "marks a dirty change for the set fields" do
         person.atomically do
           person.set title: "miss", age: 21
-          expect(person.changes).to eq({ "title" => ["sir", "miss"], "age" => [30, 21] })
+          expect(person.changes).to eq({"title" => ["sir", "miss"], "age" => [30, 21]})
         end
       end
     end
 
     context "when executing on a readonly document" do
+
       let(:person) do
         Person.create!(title: "sir", age: 30)
       end
@@ -246,6 +259,7 @@ describe Mongoid::Persistable::Settable do
   end
 
   context 'when the field is already set locally' do
+
     let(:church) do
       Church.new.tap do |a|
         a.location = { 'city' => 'Berlin' }
@@ -255,35 +269,38 @@ describe Mongoid::Persistable::Settable do
     end
 
     context 'when the field is a Hash type' do
+
       before do
         church.set('location.neighborhood' => 'Kreuzberg')
       end
 
       it 'updates the hash while keeping existing key and values locally' do
-        expect(church.location).to eq({ 'city' => 'Berlin', 'neighborhood' => 'Kreuzberg' })
+        expect(church.location).to eq({ 'city' => 'Berlin', 'neighborhood' => 'Kreuzberg'})
       end
 
       it 'updates the hash in the database' do
-        expect(church.reload.location).to eq({ 'city' => 'Berlin', 'neighborhood' => 'Kreuzberg' })
+        expect(church.reload.location).to eq({ 'city' => 'Berlin', 'neighborhood' => 'Kreuzberg'})
       end
     end
 
     context 'when the field is assigned with nil' do
+
       before do
         church.location = nil
         church.set('location.neighborhood' => 'Kreuzberg')
       end
 
       it 'updates the hash while keeping existing key and values locally' do
-        expect(church.location).to eq({ 'neighborhood' => 'Kreuzberg' })
+        expect(church.location).to eq({'neighborhood' => 'Kreuzberg'})
       end
 
       it 'updates the hash in the database' do
-        expect(church.reload.location).to eq({ 'neighborhood' => 'Kreuzberg' })
+        expect(church.reload.location).to eq({'neighborhood' => 'Kreuzberg'})
       end
     end
 
     context 'when the field type is String' do
+
       before do
         church.set('name' => 'Church2')
       end
@@ -298,23 +315,26 @@ describe Mongoid::Persistable::Settable do
     end
 
     context 'when there are two fields of type Hash and String' do
+
       before do
         church.set('name' => 'Church2', 'location.street' => 'Yorckstr.')
       end
 
       it 'updates the fields locally' do
         expect(church.name).to eq('Church2')
-        expect(church.location).to eq({ 'city' => 'Berlin', 'street' => 'Yorckstr.' })
+        expect(church.location).to eq({ 'city' => 'Berlin', 'street' => 'Yorckstr.'})
       end
 
       it 'updates the fields in the database' do
         expect(church.reload.name).to eq('Church2')
-        expect(church.reload.location).to eq({ 'city' => 'Berlin', 'street' => 'Yorckstr.' })
+        expect(church.reload.location).to eq({ 'city' => 'Berlin', 'street' => 'Yorckstr.'})
       end
     end
 
     context 'when the field is a nested hash' do
+
       context 'when the field is set to an empty hash' do
+
         before do
           church.set('location' => {})
         end
@@ -329,9 +349,10 @@ describe Mongoid::Persistable::Settable do
       end
 
       context 'when a leaf value in the nested hash is updated' do
+
         let(:church) do
           Church.new.tap do |a|
-            a.location = { 'address' => { 'city' => 'Berlin', 'street' => 'Yorckstr' } }
+            a.location = {'address' => {'city' => 'Berlin', 'street' => 'Yorckstr'}}
             a.name = 'Church1'
             a.save!
           end
@@ -343,14 +364,15 @@ describe Mongoid::Persistable::Settable do
 
         it 'does not reset the nested hash' do
           expect(church.name).to eq('Church1')
-          expect(church.location).to eql({ 'address' => { 'city' => 'Munich', 'street' => 'Yorckstr' } })
+          expect(church.location).to eql({'address' => {'city' => 'Munich', 'street' => 'Yorckstr'}})
         end
       end
 
       context 'when a leaf value in the nested hash is updated to a number' do
+
         let(:church) do
           Church.new.tap do |a|
-            a.location = { 'address' => { 'city' => 'Berlin', 'street' => 'Yorckstr' } }
+            a.location = {'address' => {'city' => 'Berlin', 'street' => 'Yorckstr'}}
             a.name = 'Church1'
             a.save!
           end
@@ -362,14 +384,15 @@ describe Mongoid::Persistable::Settable do
 
         it 'updates the nested value to the correct value' do
           expect(church.name).to eq('Church1')
-          expect(church.location).to eql({ 'address' => { 'city' => 12345, 'street' => 'Yorckstr' } })
+          expect(church.location).to eql({'address' => {'city' => 12345, 'street' => 'Yorckstr'}})
         end
       end
 
       context 'when the nested hash is many levels deep' do
+
         let(:church) do
           Church.new.tap do |a|
-            a.location = { 'address' => { 'state' => { 'address' => { 'city' => 'Berlin', 'street' => 'Yorckstr' } } } }
+            a.location = {'address' => {'state' => {'address' => {'city' => 'Berlin', 'street' => 'Yorckstr'}}}}
             a.name = 'Church1'
             a.save!
           end
@@ -380,30 +403,30 @@ describe Mongoid::Persistable::Settable do
             church.set('location.address.state.address.city' => 'Munich')
 
             expect(church.name).to eq('Church1')
-            expect(church.location).to eql({ 'address' => { 'state' => { 'address' => { 'city' => 'Munich', 'street' => 'Yorckstr' } } } })
+            expect(church.location).to eql({'address' => {'state' => {'address' => {'city' => 'Munich', 'street' => 'Yorckstr'}}}})
           end
 
           it 'removes lower level attributes of the nested hash' do
             church.set('location.address.state.address' => 'hello')
 
             expect(church.name).to eq('Church1')
-            expect(church.location).to eql({ 'address' => { 'state' => { 'address' => 'hello' } } })
+            expect(church.location).to eql({'address' => {'state' => {'address' => 'hello'}}})
           end
         end
 
         context 'setting value to a hash' do
           it 'keeps peer attributes of the nested hash' do
-            church.set('location.address.state.address.city' => { 'hello' => 'world' })
+            church.set('location.address.state.address.city' => {'hello' => 'world'})
 
             expect(church.name).to eq('Church1')
-            expect(church.location).to eql({ 'address' => { 'state' => { 'address' => { 'city' => { 'hello' => 'world' }, 'street' => 'Yorckstr' } } } })
+            expect(church.location).to eql({'address' => {'state' => {'address' => {'city' => {'hello' => 'world'}, 'street' => 'Yorckstr'}}}})
           end
 
           it 'removes lower level attributes of the nested hash' do
-            church.set('location.address.state.address' => { 'hello' => 'world' })
+            church.set('location.address.state.address' => {'hello' => 'world'})
 
             expect(church.name).to eq('Church1')
-            expect(church.location).to eql({ 'address' => { 'state' => { 'address' => { 'hello' => 'world' } } } })
+            expect(church.location).to eql({'address' => {'state' => {'address' => {'hello' => 'world'}}}})
           end
         end
       end
@@ -412,7 +435,7 @@ describe Mongoid::Persistable::Settable do
     context 'when nested field is an array' do
       let(:church) do
         Church.create!(
-          location: { 'address' => ['one', 'two'] }
+          location: {'address' => ['one', 'two']}
         )
       end
 
@@ -440,7 +463,7 @@ describe Mongoid::Persistable::Settable do
     context 'when nested field is not an array' do
       let(:church) do
         Church.create!(
-          location: { 'address' => 5 }
+          location: {'address' => 5}
         )
       end
 
@@ -458,40 +481,43 @@ describe Mongoid::Persistable::Settable do
     context 'when nesting into a field that is not a hash' do
       let(:church) do
         Church.create!(
-          location: { 'address' => 5 }
+          location: {'address' => 5}
         )
       end
 
       it 'sets field to new hash value discarding original value' do
         church.set('location.address.a' => 'test')
 
-        expect(church.location).to eq('address' => { 'a' => 'test' })
+        expect(church.location).to eq('address' => {'a' => 'test'})
         church.reload
-        expect(church.location).to eq('address' => { 'a' => 'test' })
+        expect(church.location).to eq('address' => {'a' => 'test'})
       end
     end
   end
 
   context 'when the field is not already set locally' do
+
     let(:church) do
       Church.create!
     end
 
     context 'when the field is a Hash type' do
+
       before do
         church.set('location.neighborhood' => 'Kreuzberg')
       end
 
       it 'sets the hash locally' do
-        expect(church.location).to eq({ 'neighborhood' => 'Kreuzberg' })
+        expect(church.location).to eq({ 'neighborhood' => 'Kreuzberg'})
       end
 
       it 'sets the hash in the database' do
-        expect(church.reload.location).to eq({ 'neighborhood' => 'Kreuzberg' })
+        expect(church.reload.location).to eq({ 'neighborhood' => 'Kreuzberg'})
       end
     end
 
     context 'when the field type is String' do
+
       before do
         church.set('name' => 'Church2')
       end
@@ -506,18 +532,19 @@ describe Mongoid::Persistable::Settable do
     end
 
     context 'when there are two fields of type Hash and String' do
+
       before do
         church.set('name' => 'Church2', 'location.street' => 'Yorckstr.')
       end
 
       it 'sets the fields locally' do
         expect(church.name).to eq('Church2')
-        expect(church.location).to eq({ 'street' => 'Yorckstr.' })
+        expect(church.location).to eq({ 'street' => 'Yorckstr.'})
       end
 
       it 'sets the fields in the database' do
         expect(church.reload.name).to eq('Church2')
-        expect(church.reload.location).to eq({ 'street' => 'Yorckstr.' })
+        expect(church.reload.location).to eq({ 'street' => 'Yorckstr.'})
       end
     end
   end

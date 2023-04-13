@@ -2,6 +2,7 @@
 
 module Mongoid
   module Validatable
+
     # Validates whether or not an association is valid or not. Will correctly
     # handle has one and has many associations.
     #
@@ -15,6 +16,7 @@ module Mongoid
     #     validates_associated :name, :addresses
     #   end
     class AssociatedValidator < ActiveModel::EachValidator
+
       # Validates that the associations provided are either all nil or all
       # valid. If neither is true then the appropriate errors will be added to
       # the parent document.

@@ -3,6 +3,7 @@
 module Mongoid
   module Railties
     module ControllerRuntime
+
       # This extension mimics the Rails' internal method to
       # measure ActiveRecord runtime during request processing.
       # It appends MongoDB runtime value (`mongoid_runtime`) into payload
@@ -36,6 +37,7 @@ module Mongoid
         end
 
         module ClassMethods
+
           # Append MongoDB runtime information to ActionController runtime
           # log message.
           def log_process_action(payload)
@@ -52,6 +54,7 @@ module Mongoid
       # variable to provide correct accounting when an application issues
       # MongoDB operations from background threads.
       class Collector
+
         VARIABLE_NAME = "Mongoid.controller_runtime".freeze
 
         # Call when event started. Does nothing.

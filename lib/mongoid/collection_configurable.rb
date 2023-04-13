@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Mongoid
+
   # Encapsulates behavior around defining collections.
   module CollectionConfigurable
     extend ActiveSupport::Concern
@@ -28,7 +29,6 @@ module Mongoid
           # We do not do anything with system collections.
           return
         end
-
         if force
           collection.drop
         end

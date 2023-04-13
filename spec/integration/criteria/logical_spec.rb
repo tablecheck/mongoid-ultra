@@ -27,12 +27,12 @@ describe 'Criteria logical operations' do
     end
 
     it 'combines existing `$and` clause in query and `where` condition' do
-      bands = Band.where(id: 1).and({ year: { '$in' => [2020] } }, { year: { '$in' => [2021] } }).where(id: 2)
+      bands = Band.where(id: 1).and({year: {'$in' => [2020]}}, {year: {'$in' => [2021]}}).where(id: 2)
       expect(bands.selector).to eq(
         {
-          "_id" => 1,
-          "year" => { "$in" => [2020] },
-          "$and" => [{ "year" => { "$in" => [2021] } }, { "_id" => 2 }]
+          "_id"=>1,
+          "year"=>{"$in"=>[2020]},
+          "$and"=>[{"year"=>{"$in"=>[2021]}}, {"_id"=>2}]
         }
       )
     end
@@ -80,7 +80,7 @@ describe 'Criteria logical operations' do
       end
 
       let(:expected) do
-        { 'name' => { '$ne' => 'test' } }
+        {'name' => {'$ne' => 'test'}}
       end
 
       it 'expands to use $ne' do
@@ -94,7 +94,7 @@ describe 'Criteria logical operations' do
       end
 
       let(:expected) do
-        { 'name' => { '$not' => /test/ } }
+        {'name' => {'$not' => /test/}}
       end
 
       it 'expands to use $not' do

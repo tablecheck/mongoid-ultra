@@ -17,6 +17,7 @@ describe "Syncable Association" do
   end
 
   describe 'Model loading' do
+
     let(:model_synced) do
       class TestModel
         include Mongoid::Document
@@ -62,6 +63,7 @@ describe "Syncable Association" do
   end
 
   describe ".update_inverse_keys" do
+
     let(:agent) do
       Agent.create!
     end
@@ -75,6 +77,7 @@ describe "Syncable Association" do
     end
 
     context "when an unpersisted account is created" do
+
       let(:account) do
         Account.new do |a|
           a.name = "testing"
@@ -105,12 +108,14 @@ describe "Syncable Association" do
       end
 
       context "and is Persisted" do
+
         it "is able to :save" do
           expect(account.save!).to be true
         end
       end
 
       context "check for existing Agent, then Persisted" do
+
         before do
           account.agents.where(_id: agent.id).exists?
         end
@@ -123,6 +128,7 @@ describe "Syncable Association" do
   end
 
   context "when the inverse of is nil" do
+
     let(:preference) do
       Preference.new(name: "test")
     end
@@ -140,11 +146,12 @@ describe "Syncable Association" do
     end
 
     it "sets the one side of the relation" do
-      expect(article.preferences).to eq([preference])
+      expect(article.preferences).to eq([ preference ])
     end
   end
 
   context "when first setting by the relation itself" do
+
     let!(:person) do
       Person.create!
     end
@@ -158,7 +165,7 @@ describe "Syncable Association" do
     end
 
     it "sets the inverse foreign key" do
-      expect(one.person_ids).to eq([person.id])
+      expect(one.person_ids).to eq([ person.id ])
     end
 
     it "resets the synced flag" do
@@ -166,6 +173,7 @@ describe "Syncable Association" do
     end
 
     context "when subsequently setting with keys" do
+
       let!(:two) do
         Preference.create!(name: "two")
       end
@@ -176,12 +184,13 @@ describe "Syncable Association" do
       end
 
       it "sets the inverse foreign key" do
-        expect(two.reload.person_ids).to eq([person.id])
+        expect(two.reload.person_ids).to eq([ person.id ])
       end
     end
   end
 
   context "when setting new ids" do
+
     let!(:person) do
       Person.create!
     end
@@ -195,11 +204,11 @@ describe "Syncable Association" do
     end
 
     before do
-      person.preference_ids = [one.id, two.id]
+      person.preference_ids = [ one.id, two.id ]
     end
 
     it "sets the foreign_key" do
-      expect(person.preference_ids).to eq([one.id, two.id])
+      expect(person.preference_ids).to eq([ one.id, two.id ])
     end
 
     it "does not set the first inverse key" do
@@ -211,27 +220,30 @@ describe "Syncable Association" do
     end
 
     context "when saving the base" do
+
       context "when validation passes" do
+
         before do
           person.save!
         end
 
         it "persists the foreign_key" do
-          expect(person.reload.preference_ids).to eq([one.id, two.id])
+          expect(person.reload.preference_ids).to eq([ one.id, two.id ])
         end
 
         it "sets the first inverse key" do
-          expect(one.reload.person_ids).to eq([person.id])
+          expect(one.reload.person_ids).to eq([ person.id ])
         end
 
         it "sets the second inverse key" do
-          expect(two.reload.person_ids).to eq([person.id])
+          expect(two.reload.person_ids).to eq([ person.id ])
         end
       end
     end
   end
 
   context "when replacing ids" do
+
     let!(:one) do
       Preference.create!(name: "one")
     end
@@ -241,7 +253,7 @@ describe "Syncable Association" do
     end
 
     let!(:person) do
-      Person.create!(preference_ids: [one.id, two.id])
+      Person.create!(preference_ids: [ one.id, two.id ])
     end
 
     let!(:three) do
@@ -249,19 +261,19 @@ describe "Syncable Association" do
     end
 
     before do
-      person.preference_ids = [three.id]
+      person.preference_ids = [ three.id ]
     end
 
     it "sets the foreign_key" do
-      expect(person.preference_ids).to eq([three.id])
+      expect(person.preference_ids).to eq([ three.id ])
     end
 
     it "does not remove the first inverse key" do
-      expect(one.reload.person_ids).to eq([person.id])
+      expect(one.reload.person_ids).to eq([ person.id ])
     end
 
     it "does not remove the second inverse key" do
-      expect(two.reload.person_ids).to eq([person.id])
+      expect(two.reload.person_ids).to eq([ person.id ])
     end
 
     it "does not set the third inverse key" do
@@ -269,13 +281,15 @@ describe "Syncable Association" do
     end
 
     context "when saving the base" do
+
       context "when validation passes" do
+
         before do
           person.save!
         end
 
         it "persists the foreign_key" do
-          expect(person.reload.preference_ids).to eq([three.id])
+          expect(person.reload.preference_ids).to eq([ three.id ])
         end
 
         it "removes the first inverse key" do
@@ -287,13 +301,14 @@ describe "Syncable Association" do
         end
 
         it "sets the third inverse key" do
-          expect(three.reload.person_ids).to eq([person.id])
+          expect(three.reload.person_ids).to eq([ person.id ])
         end
       end
     end
   end
 
   context "when setting ids to empty" do
+
     let!(:one) do
       Preference.create!(name: "one")
     end
@@ -303,7 +318,7 @@ describe "Syncable Association" do
     end
 
     let!(:person) do
-      Person.create!(preference_ids: [one.id, two.id])
+      Person.create!(preference_ids: [ one.id, two.id ])
     end
 
     before do
@@ -315,15 +330,17 @@ describe "Syncable Association" do
     end
 
     it "does not remove the first inverse key" do
-      expect(one.reload.person_ids).to eq([person.id])
+      expect(one.reload.person_ids).to eq([ person.id ])
     end
 
     it "does not remove the second inverse key" do
-      expect(two.reload.person_ids).to eq([person.id])
+      expect(two.reload.person_ids).to eq([ person.id ])
     end
 
     context "when saving the base" do
+
       context "when validation passes" do
+
         before do
           person.save!
         end
@@ -344,6 +361,7 @@ describe "Syncable Association" do
   end
 
   context "when setting ids to nil" do
+
     let!(:one) do
       Preference.create!(name: "one")
     end
@@ -353,7 +371,7 @@ describe "Syncable Association" do
     end
 
     let!(:person) do
-      Person.create!(preference_ids: [one.id, two.id])
+      Person.create!(preference_ids: [ one.id, two.id ])
     end
 
     before do
@@ -365,15 +383,17 @@ describe "Syncable Association" do
     end
 
     it "does not remove the first inverse key" do
-      expect(one.reload.person_ids).to eq([person.id])
+      expect(one.reload.person_ids).to eq([ person.id ])
     end
 
     it "does not remove the second inverse key" do
-      expect(two.reload.person_ids).to eq([person.id])
+      expect(two.reload.person_ids).to eq([ person.id ])
     end
 
     context "when saving the base" do
+
       context "when validation passes" do
+
         before do
           person.save!
         end
@@ -394,6 +414,7 @@ describe "Syncable Association" do
   end
 
   context "when destroying" do
+
     let!(:one) do
       Preference.create!(name: "one")
     end
@@ -403,10 +424,11 @@ describe "Syncable Association" do
     end
 
     let!(:person) do
-      Person.create!(preferences: [one, two])
+      Person.create!(preferences: [ one, two ])
     end
 
     context "when destroying the parent" do
+
       before do
         person.destroy
       end
@@ -421,17 +443,19 @@ describe "Syncable Association" do
     end
 
     context "when destroying the child" do
+
       before do
         one.destroy
       end
 
       it "removes the inverse key" do
-        expect(person.reload.preference_ids).to eq([two.id])
+        expect(person.reload.preference_ids).to eq([ two.id ])
       end
     end
   end
 
   context "when appending an existing document to a new one" do
+
     let!(:persisted) do
       Tag.create!
     end
@@ -446,21 +470,22 @@ describe "Syncable Association" do
     end
 
     it "persists the foreign key on the inverse" do
-      expect(persisted.article_ids).to eq([article.id])
+      expect(persisted.article_ids).to eq([ article.id ])
     end
 
     it "persists the inverse relation" do
-      expect(persisted.articles).to eq([article])
+      expect(persisted.articles).to eq([ article ])
     end
   end
 
   context "when the document has an ordering default scope" do
+
     let!(:dog) do
       Dog.create!(name: "Fido")
     end
 
     let!(:breed) do
-      Breed.new(dog_ids: [dog.id])
+      Breed.new(dog_ids: [ dog.id ])
     end
 
     before do
@@ -468,7 +493,7 @@ describe "Syncable Association" do
     end
 
     it "adds the id to the inverse relation" do
-      expect(dog.reload.breed_ids).to eq([breed.id])
+      expect(dog.reload.breed_ids).to eq([ breed.id ])
     end
   end
 

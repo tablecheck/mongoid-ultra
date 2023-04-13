@@ -3,6 +3,7 @@
 require "spec_helper"
 
 describe Mongoid::Contextual::Aggregable::Memory do
+
   let(:criteria) do
     Band.all.tap do |crit|
       crit.documents = documents
@@ -31,6 +32,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
       { integer: :views,
         float: :rating,
         big_decimal: :sales }.each do |type, field|
+
         %i[sum avg min max].each do |method|
           context "#{type.to_s.camelize} field :#{method}" do
             let(:expected) do

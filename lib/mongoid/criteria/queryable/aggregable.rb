@@ -3,6 +3,7 @@
 module Mongoid
   class Criteria
     module Queryable
+
       # Provides a DSL around crafting aggregation framework commands.
       module Aggregable
         extend Macroable
@@ -93,7 +94,6 @@ module Mongoid
         # @return [ Aggregable ] The cloned aggregable.
         def aggregation(operation)
           return self unless operation
-
           clone.tap do |query|
             unless aggregating?
               query.pipeline.concat(query.selector.to_pipeline)

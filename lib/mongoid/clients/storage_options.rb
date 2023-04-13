@@ -2,6 +2,7 @@
 
 module Mongoid
   module Clients
+
     # Mixin module included into Mongoid::Document which adds
     # the ability to set the collection in which to store the
     # document by default.
@@ -13,6 +14,7 @@ module Mongoid
       end
 
       module ClassMethods
+
         # Give this model specific custom default storage options.
         #
         # @example Store this model by default in "artists"

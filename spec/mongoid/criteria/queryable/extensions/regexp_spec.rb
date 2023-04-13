@@ -2,9 +2,13 @@
 
 require "spec_helper"
 
+
 describe Mongoid::Criteria::Queryable::Extensions::Regexp do
+
   describe ".evolve" do
+
     context "when provided a regexp" do
+
       let(:regexp) do
         /\A[123]/
       end
@@ -19,6 +23,7 @@ describe Mongoid::Criteria::Queryable::Extensions::Regexp do
     end
 
     context "when provided a string" do
+
       let(:regexp) do
         "\\A[123]"
       end
@@ -33,13 +38,15 @@ describe Mongoid::Criteria::Queryable::Extensions::Regexp do
     end
 
     context "when provided an array" do
+
       context "when the elements are regexps" do
+
         let(:regexp) do
           /\A[123]/
         end
 
         let(:array) do
-          [regexp]
+          [ regexp ]
         end
 
         let(:evolved) do
@@ -47,7 +54,7 @@ describe Mongoid::Criteria::Queryable::Extensions::Regexp do
         end
 
         it "returns the regexps" do
-          expect(evolved).to eq([regexp])
+          expect(evolved).to eq([ regexp ])
         end
 
         it "does not evolve in place" do
@@ -56,22 +63,24 @@ describe Mongoid::Criteria::Queryable::Extensions::Regexp do
       end
 
       context "when the elements are strings" do
+
         let(:regexp) do
           "\\A[123]"
         end
 
         let(:evolved) do
-          Regexp.evolve([regexp])
+          Regexp.evolve([ regexp ])
         end
 
         it "returns the regexps" do
-          expect(evolved).to eq([/\A[123]/])
+          expect(evolved).to eq([ /\A[123]/ ])
         end
       end
     end
   end
 
   describe "#regexp?" do
+
     let(:regexp) do
       /\A[123]/
     end

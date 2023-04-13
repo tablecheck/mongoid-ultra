@@ -1,5 +1,6 @@
 module Mongoid
   module Matcher
+
     # Singleton module provides lookup of query operator matchers
     # related to field values.
     #

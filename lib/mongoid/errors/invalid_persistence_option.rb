@@ -2,8 +2,10 @@
 
 module Mongoid
   module Errors
+
     # Raised when invalid options are used to create a persistence context.
     class InvalidPersistenceOption < MongoidError
+
       # Instantiate the persistence context option error.
       #
       # @example Create the error.
@@ -13,10 +15,10 @@ module Mongoid
       # @param [ Array<Symbol> ] valid The allowed options.
       def initialize(invalid, valid)
         super(
-          compose_message(
-            "invalid_persistence_option",
-            { invalid: invalid, valid: valid }
-          )
+            compose_message(
+                "invalid_persistence_option",
+                { invalid: invalid, valid: valid }
+            )
         )
       end
     end

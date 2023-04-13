@@ -8,6 +8,7 @@ describe Mongoid::Persistable::Savable do
   immutable_id_examples_as "persisted _ids are immutable"
 
   describe "#save" do
+
     let(:person) do
       Person.create!
     end
@@ -21,7 +22,9 @@ describe Mongoid::Persistable::Savable do
     end
 
     context "when skipping validation" do
+
       context "when no relations are involved" do
+
         let(:account) do
           Account.new
         end
@@ -44,6 +47,7 @@ describe Mongoid::Persistable::Savable do
       end
 
       context "when saving document that is a belongs to child" do
+
         let(:account) do
           Account.create!(name: 'Foobar')
         end
@@ -53,6 +57,7 @@ describe Mongoid::Persistable::Savable do
         end
 
         context "when validating presence of the parent" do
+
           before do
             Alert.validates(:message, :account, presence: true)
           end
@@ -62,6 +67,7 @@ describe Mongoid::Persistable::Savable do
           end
 
           context "when the parent validates associated on the child" do
+
             before do
               alert.save(validate: false)
             end
@@ -71,6 +77,7 @@ describe Mongoid::Persistable::Savable do
             end
 
             context "when the document is not new" do
+
               before do
                 alert.save(validate: false)
               end
@@ -83,6 +90,7 @@ describe Mongoid::Persistable::Savable do
         end
 
         context 'when the embedded document is unchanged' do
+
           let(:kangaroo) do
             Kangaroo.new
           end
@@ -102,12 +110,14 @@ describe Mongoid::Persistable::Savable do
     end
 
     context "when the document has been instantiated with limited fields" do
+
       before do
         person.age = 20
         person.save
       end
 
       context "when a default is excluded" do
+
         let(:limited) do
           Person.only(:_id).find(person.id)
         end
@@ -118,6 +128,7 @@ describe Mongoid::Persistable::Savable do
       end
 
       context "when iterating over the documents" do
+
         let(:limited) do
           Person.only(:_id)
         end
@@ -131,12 +142,14 @@ describe Mongoid::Persistable::Savable do
     end
 
     context "when validation passes" do
+
       it "returns true" do
         expect(person.save).to be true
       end
     end
 
     context "when validation fails" do
+
       let(:address) do
         person.addresses.create!(city: "London")
       end
@@ -151,7 +164,9 @@ describe Mongoid::Persistable::Savable do
     end
 
     context "when modifying the entire hierarchy" do
+
       context "when performing modification and insert ops" do
+
         let(:owner) do
           Owner.create!(name: "Blah")
         end
@@ -175,17 +190,18 @@ describe Mongoid::Persistable::Savable do
 
         it "persists with proper set and push modifiers" do
           expect(owner.atomic_updates).to eq({
-                                               "$set" => {
-                                                 "name" => "King",
-                                                 "scribe.name" => "Tosh"
-                                               },
-                                               "$push" => {
-                                                 "birthdays" => { '$each' => [{ "_id" => birthday.id, "title" => "First" }] }
-                                               }
-                                             })
+            "$set" => {
+              "name" => "King",
+              "scribe.name" => "Tosh"
+            },
+            "$push"=> {
+              "birthdays" => { '$each' => [ { "_id" => birthday.id, "title" => "First" } ] }
+            }
+          })
         end
 
         context "when saving the document" do
+
           it "saves the root document" do
             expect(owner.name).to eq("King")
           end
@@ -201,6 +217,7 @@ describe Mongoid::Persistable::Savable do
       end
 
       context "when combining modifications and pushes" do
+
         let!(:location) do
           Location.new(name: 'Work')
         end
@@ -209,14 +226,14 @@ describe Mongoid::Persistable::Savable do
           Address.new(
             number: 101,
             street: 'South St',
-            locations: [location]
+            locations: [ location ]
           )
         end
 
         let!(:person) do
           Person.create!(
             title: "Blah",
-            addresses: [address]
+            addresses: [ address ]
           )
         end
 
@@ -280,7 +297,7 @@ describe Mongoid::Persistable::Savable do
 
           # TODO: MONGOID-5026: combine the updates so that there are
           # no conflicts.
-          # expect(truck.atomic_updates[:conflicts]).to eq nil
+          #expect(truck.atomic_updates[:conflicts]).to eq nil
 
           expect { truck.save! }.not_to raise_error
 
@@ -400,6 +417,7 @@ describe Mongoid::Persistable::Savable do
       end
 
       context "when removing elements without using delete or destroy" do
+
         let!(:person) do
           Person.create!(title: "Blah")
         end
@@ -421,7 +439,9 @@ describe Mongoid::Persistable::Savable do
     end
 
     context "when setting floating point numbers" do
+
       context "when value is an empty string" do
+
         let(:person) do
           Person.new
         end
@@ -437,6 +457,7 @@ describe Mongoid::Persistable::Savable do
     end
 
     context "when the changed attribute is not writable" do
+
       before do
         Person.create!(title: "sir")
       end
@@ -453,6 +474,7 @@ describe Mongoid::Persistable::Savable do
       end
 
       context 'when the changed attribute is aliased' do
+
         before do
           Person.create!(at: Time.now)
         end
@@ -475,7 +497,9 @@ describe Mongoid::Persistable::Savable do
     end
 
     context "when validation context exists" do
+
       context "on new document" do
+
         it "returns true" do
           contextable_item.title = "sir"
           expect(contextable_item.save(context: :in_context)).to be true
@@ -487,6 +511,7 @@ describe Mongoid::Persistable::Savable do
       end
 
       context "on persisted document" do
+
         it "returns true" do
           persisted_contextable_item.title = "lady"
           expect(persisted_contextable_item.save(context: :in_context)).to be true
@@ -500,10 +525,12 @@ describe Mongoid::Persistable::Savable do
     end
 
     context "when saving a readonly document" do
+
       context "when legacy_readonly is true" do
         config_override :legacy_readonly, true
 
         context "when its a new document" do
+
           let(:document) do
             Band.new
           end
@@ -521,6 +548,7 @@ describe Mongoid::Persistable::Savable do
         end
 
         context "when its an old document" do
+
           let(:document) do
             Band.only(:name).first
           end
@@ -542,6 +570,7 @@ describe Mongoid::Persistable::Savable do
         config_override :legacy_readonly, false
 
         context "when its a new document" do
+
           let(:document) do
             Band.new
           end
@@ -559,6 +588,7 @@ describe Mongoid::Persistable::Savable do
         end
 
         context "when its an old document" do
+
           let(:document) do
             Band.first.tap(&:readonly!)
           end
@@ -589,8 +619,11 @@ describe Mongoid::Persistable::Savable do
   end
 
   describe "save!" do
+
     context "inserting with a field that is not unique" do
+
       context "when a unique index exists" do
+
         let(:person) do
           Person.new(ssn: "555-55-9999")
         end
@@ -612,6 +645,7 @@ describe Mongoid::Persistable::Savable do
     end
 
     context "with a validation error" do
+
       let(:person) do
         Person.new
       end
@@ -627,6 +661,7 @@ describe Mongoid::Persistable::Savable do
     end
 
     context "when a callback aborts the callback chain" do
+
       let(:oscar) do
         Oscar.new
       end
@@ -637,6 +672,7 @@ describe Mongoid::Persistable::Savable do
     end
 
     context "when a callback destroys the document" do
+
       let(:oscar) do
         Oscar.new(:destroy_after_save => true)
       end
@@ -651,6 +687,7 @@ describe Mongoid::Persistable::Savable do
     end
 
     context "when a DateTime attribute is updated and persisted" do
+
       let(:user) do
         User.create!(last_login: 2.days.ago).tap do |u|
           u.last_login = DateTime.now
@@ -669,6 +706,7 @@ describe Mongoid::Persistable::Savable do
     end
 
     context "when a Date attribute is persisted" do
+
       let(:user) do
         User.create!(account_expires: 2.years.from_now).tap do |u|
           u.account_expires = "2/2/2002".to_date
@@ -687,6 +725,7 @@ describe Mongoid::Persistable::Savable do
     end
 
     context "when the document has associations" do
+
       let!(:firefox) do
         Firefox.create!(name: "firefox")
       end
@@ -709,7 +748,7 @@ describe Mongoid::Persistable::Savable do
 
       before do
         firefox.writer = writer
-        firefox.shapes << [circle, square]
+        firefox.shapes << [ circle, square ]
         firefox.save!
       end
 

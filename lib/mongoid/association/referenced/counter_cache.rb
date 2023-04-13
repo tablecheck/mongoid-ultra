@@ -3,6 +3,7 @@
 module Mongoid
   module Association
     module Referenced
+
       # Mixin module included into Mongoid::Document which adds
       # the ability to cache the count of opposite-side documents
       # in referenced n-to-many associations.
@@ -24,6 +25,7 @@ module Mongoid
         end
 
         module ClassMethods
+
           # Reset the given counter using the .count() query from the
           # db. This method is useful in case that a counter got
           # corrupted, or a new counter was added to the collection.

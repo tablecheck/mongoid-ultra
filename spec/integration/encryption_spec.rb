@@ -76,4 +76,6 @@ describe 'Encryption' do
       expect(doc['code']).to eq('12345')
     end
   end
+
+
 end

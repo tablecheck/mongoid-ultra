@@ -2,8 +2,10 @@
 
 module Mongoid
   module Extensions
+
     # Adds type-casting behavior to BSON::Decimal128 class.
     module Decimal128
+
       # Evolve the decimal128.
       #
       # @example Evolve the decimal128.
@@ -15,6 +17,7 @@ module Mongoid
       end
 
       module ClassMethods
+
         # Evolve the object into a mongo-friendly value to query with.
         #
         # @example Evolve the object.

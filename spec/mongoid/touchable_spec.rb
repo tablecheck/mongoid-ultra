@@ -4,7 +4,9 @@ require "spec_helper"
 require_relative './touchable_spec_models'
 
 describe Mongoid::Touchable do
+
   describe "#touch" do
+
     context "when the document has no associations" do
       let(:updatable) do
         Updatable.create!
@@ -32,6 +34,7 @@ describe Mongoid::Touchable do
     end
 
     context 'when the document has a parent association' do
+
       let(:building) do
         parent_cls.create!
       end
@@ -73,6 +76,7 @@ describe Mongoid::Touchable do
       end
 
       shared_examples 'updates the parent when :touch is true' do
+
         it 'updates updated_at on parent' do
           floor
           update_time
@@ -166,12 +170,15 @@ describe Mongoid::Touchable do
     end
 
     context "when no relations have touch options" do
+
       context "when no updated at is defined" do
+
         let(:person) do
           Person.create!
         end
 
         context "when no attribute is provided" do
+
           let!(:touched) do
             person.touch
           end
@@ -186,6 +193,7 @@ describe Mongoid::Touchable do
         end
 
         context "when an attribute is provided" do
+
           let!(:touched) do
             person.touch(:lunch_time)
           end
@@ -204,6 +212,7 @@ describe Mongoid::Touchable do
         end
 
         context "when an attribute alias is provided" do
+
           let!(:touched) do
             person.touch(:aliased_timestamp)
           end
@@ -223,11 +232,13 @@ describe Mongoid::Touchable do
       end
 
       context "when an updated at is defined" do
+
         let!(:agent) do
           Agent.create!(updated_at: 2.days.ago)
         end
 
         context "when no attribute is provided" do
+
           let!(:touched) do
             agent.touch
           end
@@ -250,6 +261,7 @@ describe Mongoid::Touchable do
         end
 
         context "when an attribute is provided" do
+
           let!(:touched) do
             agent.touch(:dob)
           end
@@ -285,11 +297,13 @@ describe Mongoid::Touchable do
       end
 
       context "when record is new" do
+
         let!(:agent) do
           Agent.new(updated_at: 2.days.ago)
         end
 
         context "when no attribute is provided" do
+
           let(:touched) do
             agent.touch
           end
@@ -300,6 +314,7 @@ describe Mongoid::Touchable do
         end
 
         context "when an attribute is provided" do
+
           let(:touched) do
             agent.touch(:dob)
           end
@@ -311,6 +326,7 @@ describe Mongoid::Touchable do
       end
 
       context "when record is destroyed" do
+
         let!(:agent) do
           Agent.create!(updated_at: 2.days.ago).tap do |agent|
             agent.destroy
@@ -322,6 +338,7 @@ describe Mongoid::Touchable do
         end
 
         context "when no attribute is provided" do
+
           let(:touched) do
             agent.touch
           end
@@ -334,6 +351,7 @@ describe Mongoid::Touchable do
         end
 
         context "when an attribute is provided" do
+
           let(:touched) do
             agent.touch(:dob)
           end
@@ -347,6 +365,7 @@ describe Mongoid::Touchable do
       end
 
       context "when creating the child" do
+
         let(:time) do
           Time.utc(2012, 4, 3, 12)
         end
@@ -368,7 +387,9 @@ describe Mongoid::Touchable do
     end
 
     context "when relations have touch options" do
+
       context "when the relation is a parent of an embedded doc" do
+
         let(:page) do
           WikiPage.create!(title: "test")
         end
@@ -388,6 +409,7 @@ describe Mongoid::Touchable do
       end
 
       context "when the parent of embedded doc has cascade callbacks" do
+
         let!(:book) do
           Book.new
         end
@@ -405,6 +427,7 @@ describe Mongoid::Touchable do
       end
 
       context "when multiple embedded docs with cascade callbacks" do
+
         let!(:book) do
           Book.new
         end
@@ -424,11 +447,13 @@ describe Mongoid::Touchable do
       end
 
       context "when the relation is nil" do
+
         let!(:agent) do
           Agent.create!
         end
 
         context "when the relation autobuilds" do
+
           let!(:touched) do
             agent.touch
           end
@@ -440,6 +465,7 @@ describe Mongoid::Touchable do
       end
 
       context "when the relation is not nil" do
+
         let!(:agent) do
           Agent.create!
         end
@@ -464,6 +490,7 @@ describe Mongoid::Touchable do
       end
 
       context "when creating the child" do
+
         let!(:agency) do
           Agency.create!
         end
@@ -482,6 +509,7 @@ describe Mongoid::Touchable do
       end
 
       context "when modifying the child" do
+
         let!(:agency) do
           Agency.create!
         end
@@ -498,6 +526,7 @@ describe Mongoid::Touchable do
       end
 
       context "when destroying the child" do
+
         let!(:agency) do
           Agency.create!
         end
@@ -521,6 +550,7 @@ describe Mongoid::Touchable do
     end
 
     context "when other document attributes have been changed" do
+
       let(:band) do
         Band.create!(name: "Placebo")
       end
@@ -551,7 +581,9 @@ describe Mongoid::Touchable do
     end
 
     context "when the touch option is true" do
+
       shared_examples "updates the parent's updated_at" do
+
         let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
 
         let(:update_time) do
@@ -588,6 +620,7 @@ describe Mongoid::Touchable do
       end
 
       shared_examples "updates the child's updated_at" do
+
         let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
 
         let(:update_time) do
@@ -623,7 +656,7 @@ describe Mongoid::Touchable do
         end
       end
 
-      [:save!, :destroy, :touch].each do |meth|
+      [ :save!, :destroy, :touch].each do |meth|
         context "with #{meth} on referenced associations" do
           let(:parent_cls) { TouchableSpec::Referenced::Building }
           let(:meth) { meth }
@@ -643,6 +676,7 @@ describe Mongoid::Touchable do
     end
 
     context "when the touch option is false" do
+
       shared_examples "does not update the parent" do
         let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
         let(:update_time) { Timecop.freeze(Time.at(Time.now.to_i) + 2) }
@@ -681,7 +715,7 @@ describe Mongoid::Touchable do
         end
       end
 
-      [:save!, :destroy, :touch].each do |meth|
+      [ :save!, :destroy, :touch].each do |meth|
         context "with #{meth} on belongs_to" do
           let(:meth) { meth }
           let(:parent_cls) { TouchableSpec::Referenced::Building }
@@ -699,6 +733,7 @@ describe Mongoid::Touchable do
     end
 
     context 'multi-level' do
+
       let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
 
       let(:update_time) { Timecop.freeze(Time.at(Time.now.to_i) + 2) }
@@ -782,19 +817,22 @@ describe Mongoid::Touchable do
       end
 
       context 'parent > embedded child > embedded grandchild' do
+
         let(:parent_cls) { TouchableSpec::Embedded::Building }
 
         context 'child touch: true' do
+
           let(:child_cls) do
             TouchableSpec::Embedded::Floor
           end
 
           context 'grandchild touch: true' do
+
             let(:grandchild_cls) do
               TouchableSpec::Embedded::Sofa
             end
 
-            [:save!, :destroy, :touch].each do |meth|
+            [ :save!, :destroy, :touch ].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -806,11 +844,12 @@ describe Mongoid::Touchable do
           end
 
           context 'grandchild touch: false' do
+
             let(:grandchild_cls) do
               TouchableSpec::Embedded::Chair
             end
 
-            [:save!, :destroy, :touch].each do |meth|
+            [ :save!, :destroy, :touch ].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -823,16 +862,18 @@ describe Mongoid::Touchable do
         end
 
         context 'child touch: false' do
+
           let(:child_cls) do
             TouchableSpec::Embedded::Entrance
           end
 
           context 'grandchild touch: true' do
+
             let(:grandchild_cls) do
               TouchableSpec::Embedded::Camera
             end
 
-            [:save!, :destroy, :touch].each do |meth|
+            [ :save!, :destroy, :touch ].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -844,11 +885,12 @@ describe Mongoid::Touchable do
           end
 
           context 'grandchild touch: false' do
+
             let(:grandchild_cls) do
               TouchableSpec::Embedded::Keypad
             end
 
-            [:save!, :destroy, :touch].each do |meth|
+            [ :save!, :destroy, :touch ].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -862,19 +904,22 @@ describe Mongoid::Touchable do
       end
 
       context 'parent > referenced child > embedded grandchild' do
+
         let(:parent_cls) { TouchableSpec::Referenced::Building }
 
         context 'child touch: true' do
+
           let(:child_cls) do
             TouchableSpec::Referenced::Floor
           end
 
           context 'grandchild touch: true' do
+
             let(:grandchild_cls) do
               TouchableSpec::Referenced::Sofa
             end
 
-            [:save!, :destroy, :touch].each do |meth|
+            [ :save!, :destroy, :touch ].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -886,11 +931,12 @@ describe Mongoid::Touchable do
           end
 
           context 'grandchild touch: false' do
+
             let(:grandchild_cls) do
               TouchableSpec::Referenced::Chair
             end
 
-            [:save!, :destroy, :touch].each do |meth|
+            [ :save!, :destroy, :touch ].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -903,16 +949,18 @@ describe Mongoid::Touchable do
         end
 
         context 'child touch: false' do
+
           let(:child_cls) do
             TouchableSpec::Referenced::Entrance
           end
 
           context 'grandchild touch: true' do
+
             let(:grandchild_cls) do
               TouchableSpec::Referenced::Camera
             end
 
-            [:save!, :destroy, :touch].each do |meth|
+            [ :save!, :destroy, :touch ].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -924,11 +972,12 @@ describe Mongoid::Touchable do
           end
 
           context 'grandchild touch: false' do
+
             let(:grandchild_cls) do
               TouchableSpec::Referenced::Keypad
             end
 
-            [:save!, :destroy, :touch].each do |meth|
+            [ :save!, :destroy, :touch ].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -942,19 +991,22 @@ describe Mongoid::Touchable do
       end
 
       context 'parent > referenced child > referenced grandchild' do
+
         let(:parent_cls) { TouchableSpec::Referenced::Building }
 
         context 'child touch: true' do
+
           let(:child_cls) do
             TouchableSpec::Referenced::Floor
           end
 
           context 'grandchild touch: true' do
+
             let(:grandchild_cls) do
               TouchableSpec::Referenced::Window
             end
 
-            [:save!, :destroy, :touch].each do |meth|
+            [ :save!, :destroy, :touch ].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -966,11 +1018,12 @@ describe Mongoid::Touchable do
           end
 
           context 'grandchild touch: false' do
+
             let(:grandchild_cls) do
               TouchableSpec::Referenced::Plant
             end
 
-            [:save!, :destroy, :touch].each do |meth|
+            [ :save!, :destroy, :touch ].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -983,16 +1036,18 @@ describe Mongoid::Touchable do
         end
 
         context 'child touch: false' do
+
           let(:child_cls) do
             TouchableSpec::Referenced::Entrance
           end
 
           context 'grandchild touch: true' do
+
             let(:grandchild_cls) do
               TouchableSpec::Referenced::Window
             end
 
-            [:save!, :destroy, :touch].each do |meth|
+            [ :save!, :destroy, :touch ].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -1004,11 +1059,12 @@ describe Mongoid::Touchable do
           end
 
           context 'grandchild touch: false' do
+
             let(:grandchild_cls) do
               TouchableSpec::Referenced::Plant
             end
 
-            [:save!, :destroy, :touch].each do |meth|
+            [ :save!, :destroy, :touch ].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -1024,6 +1080,7 @@ describe Mongoid::Touchable do
   end
 
   describe "when saving a document" do
+
     let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
 
     let(:update_time) do
@@ -1035,6 +1092,7 @@ describe Mongoid::Touchable do
     end
 
     context "when only using the root document" do
+
       shared_examples "timeless is cleared" do
         it "clears the timeless option" do
           expect(doc.timeless?).to be false
@@ -1058,7 +1116,9 @@ describe Mongoid::Touchable do
       let(:doc) { Dokument.new }
 
       context "when saving a new document" do
+
         context "when not passing a touch option" do
+
           before do
             doc.save!
           end
@@ -1068,6 +1128,7 @@ describe Mongoid::Touchable do
         end
 
         context "when passing touch: true" do
+
           before do
             doc.save!(touch: true)
           end
@@ -1077,6 +1138,7 @@ describe Mongoid::Touchable do
         end
 
         context "when passing touch: false" do
+
           before do
             doc.save!(touch: false)
           end
@@ -1094,6 +1156,7 @@ describe Mongoid::Touchable do
         end
 
         context "when not passing a touch option" do
+
           before do
             doc.save!
           end
@@ -1103,6 +1166,7 @@ describe Mongoid::Touchable do
         end
 
         context "when passing touch: true" do
+
           before do
             doc.save!(touch: true)
           end
@@ -1112,6 +1176,7 @@ describe Mongoid::Touchable do
         end
 
         context "when passing touch: false" do
+
           before do
             doc.save!(touch: false)
           end
@@ -1123,6 +1188,7 @@ describe Mongoid::Touchable do
     end
 
     context "when saving embedded associations with cascading callbacks" do
+
       shared_examples "timeless is cleared" do
         it "clears the timeless option" do
           expect(book.timeless?).to be false
@@ -1159,7 +1225,7 @@ describe Mongoid::Touchable do
       end
 
       let(:book) do
-        Book.new(covers: [cover])
+        Book.new(covers: [ cover ])
       end
 
       let(:cover) do
@@ -1167,7 +1233,9 @@ describe Mongoid::Touchable do
       end
 
       context "when saving a new document" do
+
         context "when not passing a touch option" do
+
           before do
             book.save!
           end
@@ -1178,6 +1246,7 @@ describe Mongoid::Touchable do
         end
 
         context "when passing touch: true" do
+
           before do
             book.save!(touch: true)
           end
@@ -1188,6 +1257,7 @@ describe Mongoid::Touchable do
         end
 
         context "when passing touch: false" do
+
           before do
             book.save!(touch: false)
           end
@@ -1207,6 +1277,7 @@ describe Mongoid::Touchable do
         end
 
         context "when not passing a touch option" do
+
           before do
             book.save!
           end
@@ -1217,6 +1288,7 @@ describe Mongoid::Touchable do
         end
 
         context "when passing touch: true" do
+
           before do
             book.save!(touch: true)
           end
@@ -1227,6 +1299,7 @@ describe Mongoid::Touchable do
         end
 
         context "when passing touch: false" do
+
           before do
             book.save!(touch: false)
           end

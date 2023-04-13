@@ -3,7 +3,9 @@
 require "spec_helper"
 
 describe Mongoid::Criteria::Queryable::Key do
+
   describe "#initialize" do
+
     let(:key) do
       described_class.new("field", :__union__, "$all")
     end
@@ -22,17 +24,18 @@ describe Mongoid::Criteria::Queryable::Key do
   end
 
   describe "#__expr_part__" do
+
     context 'operator only' do
       let(:key) do
         described_class.new("field", :__union__, "$all")
       end
 
       let(:specified) do
-        key.__expr_part__([1, 2])
+        key.__expr_part__([ 1, 2 ])
       end
 
       it "returns the name plus operator and value" do
-        expect(specified).to eq({ "field" => { "$all" => [1, 2] } })
+        expect(specified).to eq({ "field" => { "$all" => [ 1, 2 ] }})
       end
     end
 
@@ -42,15 +45,15 @@ describe Mongoid::Criteria::Queryable::Key do
       end
 
       let(:specified) do
-        key.__expr_part__([1, 10])
+        key.__expr_part__([ 1, 10 ])
       end
 
       it "returns the query expression" do
         expect(specified).to eq({ "field" => {
-                                  '$geoIntersects' => {
-                                    '$geometry' => [1, 10],
-                                  },
-                                } })
+          '$geoIntersects' => {
+            '$geometry' => [1, 10],
+          },
+        }})
       end
     end
 
@@ -62,17 +65,17 @@ describe Mongoid::Criteria::Queryable::Key do
       end
 
       let(:specified) do
-        key.__expr_part__([1, 10])
+        key.__expr_part__([ 1, 10 ])
       end
 
       it "returns the query expression" do
         expect(specified).to eq({ "field" => {
-                                  '$geoIntersects' => {
-                                    '$geometry' => {
-                                      'type' => 'Point', 'coordinates' => [1, 10],
-                                    },
-                                  },
-                                } })
+          '$geoIntersects' => {
+            '$geometry' => {
+              'type' => 'Point', 'coordinates' => [1, 10],
+            },
+          },
+        }})
       end
     end
   end

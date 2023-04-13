@@ -2,9 +2,11 @@
 
 module Mongoid
   class Criteria
+
     # Mixin module included in Mongoid::Criteria which adds custom
     # +#inspect+ method functionality.
     module Inspectable
+
       # Get a pretty string representation of the criteria, including the
       # selector, options, matching count and documents for inspection.
       #
@@ -13,7 +15,7 @@ module Mongoid
       #
       # @return [ String ] The inspection string.
       def inspect
-        %Q{#<Mongoid::Criteria
+%Q{#<Mongoid::Criteria
   selector: #{selector.inspect}
   options:  #{options.inspect}
   class:    #{klass}

@@ -2,8 +2,10 @@
 
 module Mongoid
   module Contextual
+
     # Mixin module included in objects which represent database commands.
     module Command
+
       # @attribute [r] collection The collection to query against.
       # @attribute [r] criteria The criteria for the context.
       attr_reader :collection, :criteria

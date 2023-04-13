@@ -2,6 +2,7 @@
 
 module Mongoid
   module Fields
+
     # Represents a standard field definition (name, type, etc.)
     # used to enforce consistent schema structure to the BSON
     # documents which Mongoid persists.

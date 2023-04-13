@@ -16,6 +16,7 @@ require "mongoid/criteria/queryable/storable"
 
 module Mongoid
   class Criteria
+
     # A queryable is any object that needs queryable's dsl injected into it to build
     # MongoDB queries. For example, a Mongoid::Criteria is an Queryable.
     #
@@ -48,7 +49,6 @@ module Mongoid
       # @return [ true | false ] If the objects are equal.
       def ==(other)
         return false unless other.is_a?(Queryable)
-
         selector == other.selector && options == other.options
       end
 
