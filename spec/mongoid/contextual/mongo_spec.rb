@@ -1062,7 +1062,7 @@ describe Mongoid::Contextual::Mongo do
     context "when tallying an element from an array of hashes; with duplicate" do
 
       before do
-        Band.create!(origin: "tally", genres: [ { x: 1 }, {x: 1} ] )
+        Band.create!(origin: "tally", genres: [ { x: 1 }, {x: 1} ])
       end
 
       let(:criteria) { Band.where(origin: "tally") }

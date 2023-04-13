@@ -342,7 +342,7 @@ module Mongoid
             without_autobuild do
               if value = get_relation(name, association, object)
                 if !value.respond_to?(:substitute)
-                  value = __build__(name, value, association) 
+                  value = __build__(name, value, association)
                 end
 
                 set_relation(name, value.substitute(object.substitutable))

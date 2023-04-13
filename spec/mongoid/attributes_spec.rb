@@ -1591,7 +1591,7 @@ describe Mongoid::Attributes do
       end
 
       it "can set a Hash value with stringified keys" do
-        expect(person.map).to eq( { "somekey" => "somevalue" } )
+        expect(person.map).to eq({ "somekey" => "somevalue" })
       end
     end
 

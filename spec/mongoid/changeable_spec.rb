@@ -1363,7 +1363,7 @@ describe Mongoid::Changeable do
         context "when the document is embedded multiple levels" do
           let(:location) { address.locations.create(name: "Home") }
           before { location.name = "Work" }
-          
+
           it "returns the proper hash with locations" do
             expect(location.setters).to eq(
               { "addresses.0.locations.0.name" => "Work" }

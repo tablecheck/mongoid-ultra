@@ -1008,7 +1008,7 @@ describe Mongoid::Contextual::Atomic do
           expect(band.views).to eq [ views, given_views ].min
         end
       end
-  
+
       context 'when given value < existing value' do
         let(:given_views) { views - 1 }
         let(:given_members) { member_count - 1 }

@@ -2385,7 +2385,7 @@ describe Mongoid::Contextual::Memory do
 
     context "when tallying an element from an array of hashes; with duplicate" do
 
-      let(:band4) { Band.new(origin: "tally", genres: [ { x: 1 }, {x: 1} ] ) }
+      let(:band4) { Band.new(origin: "tally", genres: [ { x: 1 }, {x: 1} ]) }
 
       let(:criteria) do
         Band.where(origin: "tally").all.tap do |crit|

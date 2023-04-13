@@ -4103,7 +4103,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       let!(:person2) do
-        Person.create!( aliases: [ { name: "C", priority: 1 }, { name: "D", priority: 2 }])
+        Person.create!(aliases: [ { name: "C", priority: 1 }, { name: "D", priority: 2 }])
       end
 
       it "allows ordering on a key of an embedded document" do

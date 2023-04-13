@@ -240,7 +240,7 @@ describe Mongoid::Association::Referenced::HasMany::Eager do
 
         it "does not send another query when the children are accessed" do
           expect_query(0) do
-            expect(exhibitionIncludesExhibitors.exhibitors).to eq( [exhibitorPresent] )
+            expect(exhibitionIncludesExhibitors.exhibitors).to eq([exhibitorPresent])
           end
         end
       end

@@ -758,8 +758,8 @@ describe Mongoid::Scopable do
           context "when chaining scopes through more than one model" do
 
             before do
-              Author.scope(:author, -> { where(author: true) } )
-              Article.scope(:is_public, -> { where(public: true) } )
+              Author.scope(:author, -> { where(author: true) })
+              Article.scope(:is_public, -> { where(public: true) })
               Article.scope(:authored, -> {
                 author_ids = Author.author.pluck(:id)
                 where(:author_id.in => author_ids)
@@ -1238,7 +1238,7 @@ describe Mongoid::Scopable do
       it 'restores previous scope' do
         Band.with_scope(c1) do |crit|
           Band.with_scope(c2) do |crit2|
-          
+
             expect(Mongoid::Threaded.current_scope(Band).selector).to eq({
               'active' => true,
               '$and' => ['active' => false],

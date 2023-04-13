@@ -31,7 +31,7 @@ module Mongoid
     #
     # @return [ Array<Symbol> ] The full list of options defining the persistence
     #   context.
-    VALID_OPTIONS = ( Mongo::Client::VALID_OPTIONS + EXTRA_OPTIONS ).freeze
+    VALID_OPTIONS = (Mongo::Client::VALID_OPTIONS + EXTRA_OPTIONS).freeze
 
     # Initialize the persistence context object.
     #
