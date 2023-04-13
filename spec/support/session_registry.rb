@@ -3,10 +3,36 @@
 
 require 'singleton'
 
-module Mrss
+class SessionRegistry
+  include Singleton
 
-  def self.patch_mongo_for_session_registry
+  def initialize
+    @registry = {}
+  end
 
+  def register(session)
+    @registry[session.session_id] = session if session
+  end
+
+  def unregister(session)
+    return if session.ended? || !session.materialized?
+    @registry.delete(session.session_id)
+  end
+
+  def verify_sessions_ended!
+    @registry.delete_if { |_, session| session.ended? }
+
+    unless @registry.empty?
+      sessions = @registry.map { |_, session| session }
+      raise "Session registry contains live sessions: #{sessions.join(', ')}"
+    end
+  end
+
+  def clear_registry
+    @registry = {}
+  end
+
+  def self.patch_mongo
     Mongo::Client.class_eval do
       alias :get_session_without_tracking :get_session
 
@@ -32,38 +58,6 @@ module Mrss
           SessionRegistry.instance.register(self)
         end
       end
-    end
-  end
-end
-
-module Mrss
-  class SessionRegistry
-    include Singleton
-
-    def initialize
-      @registry = {}
-    end
-
-    def register(session)
-      @registry[session.session_id] = session if session
-    end
-
-    def unregister(session)
-      return if session.ended? || !session.materialized?
-      @registry.delete(session.session_id)
-    end
-
-    def verify_sessions_ended!
-      @registry.delete_if { |_, session| session.ended? }
-
-      unless @registry.empty?
-        sessions = @registry.map { |_, session| session }
-        raise "Session registry contains live sessions: #{sessions.join(', ')}"
-      end
-    end
-
-    def clear_registry
-      @registry = {}
     end
   end
 end
