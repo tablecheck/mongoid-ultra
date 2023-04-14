@@ -8,6 +8,8 @@ describe Mongoid::CollectionConfigurable do
     class CollectionConfigurableValidOptions
       include Mongoid::Document
 
+      attr_accessor :logger
+
       store_in collection_options: {
         capped: true,
         size: 2560
@@ -115,7 +117,7 @@ describe Mongoid::CollectionConfigurable do
       end
 
       before do
-        allow(subject).to receive(:logger).and_return(logger)
+        subject.logger = logger
         subject.collection.create
       end
 
@@ -134,7 +136,7 @@ describe Mongoid::CollectionConfigurable do
       end
 
       before do
-        allow(subject).to receive(:logger).and_return(logger)
+        subject.logger = logger
         subject.collection.create
       end
 

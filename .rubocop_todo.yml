@@ -1141,11 +1141,6 @@ RSpec/SubjectDeclaration:
     - 'spec/mongoid/collection_configurable_spec.rb'
     - 'spec/mongoid/contextual/mongo/documents_loader_spec.rb'
 
-# Offense count: 2
-RSpec/SubjectStub:
-  Exclude:
-    - 'spec/mongoid/collection_configurable_spec.rb'
-
 # Offense count: 3
 # Configuration parameters: EnforcedStyle, AllowedPatterns.
 # SupportedStyles: snake_case, camelCase
@@ -1216,14 +1211,6 @@ Rails/Date:
 # Configuration parameters: EnforceForPrefixed.
 Rails/Delegate:
   Enabled: false
-
-# Offense count: 2
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: slashes, arguments
-Rails/FilePath:
-  Exclude:
-    - 'lib/mongoid/railtie.rb'
-    - 'lib/mongoid/railties/database.rake'
 
 # Offense count: 91
 # Configuration parameters: Include.
