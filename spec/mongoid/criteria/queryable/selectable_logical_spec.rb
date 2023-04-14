@@ -682,8 +682,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         expect(result.selector).to eq('hello' => 'world',
           'foo' => 'bar',
           'bar' => 42,
-          'a' => 2,
-        )
+          'a' => 2,)
       end
     end
 
@@ -2058,8 +2057,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         expect(result.selector).to eq('hello' => 'world',
           'foo' => {'$ne' => 'bar'},
           'bar' => {'$ne' => 42},
-          'a' => {'$ne' => 2},
-        )
+          'a' => {'$ne' => 2},)
       end
     end
 

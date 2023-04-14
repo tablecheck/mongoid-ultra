@@ -1933,8 +1933,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         expect(selection.selector).to eq('$and' => [
             {'$text' => {'$search' => 'one'}}
           ],
-          '$text' => {'$search' => 'two'},
-        )
+          '$text' => {'$search' => 'two'},)
       end
     end
   end

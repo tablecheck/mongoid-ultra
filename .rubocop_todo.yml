@@ -94,15 +94,6 @@ Layout/MultilineHashBraceLayout:
     - 'spec/mongoid/criteria/queryable/storable_spec.rb'
     - 'spec/mongoid/criteria_spec.rb'
 
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: symmetrical, new_line, same_line
-Layout/MultilineMethodCallBraceLayout:
-  Exclude:
-    - 'spec/mongoid/criteria/queryable/selectable_logical_spec.rb'
-    - 'spec/mongoid/criteria/queryable/selectable_spec.rb'
-
 # Offense count: 7
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowForAlignment, EnforcedStyleForExponentOperator.
@@ -761,13 +752,6 @@ RSpec/EmptyLineAfterExample:
   Exclude:
     - 'spec/integration/criteria/range_spec.rb'
     - 'spec/integration/criteria/time_with_zone_spec.rb'
-
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/EmptyLineAfterExampleGroup:
-  Exclude:
-    - 'spec/mongoid/association/counter_cache_spec.rb'
-    - 'spec/mongoid/document_spec.rb'
 
 # Offense count: 121
 # This cop supports safe autocorrection (--autocorrect).
@@ -1489,14 +1473,6 @@ Style/EvenOdd:
   Exclude:
     - 'spec/mongoid/clients/options_spec.rb'
 
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-Style/ExpandPathArguments:
-  Exclude:
-    - 'Rakefile'
-    - 'lib/rails/generators/mongoid/config/config_generator.rb'
-    - 'mongoid.gemspec'
-
 # Offense count: 13
 # This cop supports safe autocorrection (--autocorrect).
 Style/ExplicitBlockArgument:
@@ -1811,16 +1787,6 @@ Style/Next:
     - 'lib/mongoid/tasks/database.rb'
     - 'spec/mongoid/interceptable_spec_models.rb'
 
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedOctalStyle.
-# SupportedOctalStyles: zero_with_o, zero_only
-Style/NumericLiteralPrefix:
-  Exclude:
-    - 'spec/mongoid/extensions/array_spec.rb'
-    - 'spec/mongoid/extensions/time_spec.rb'
-    - 'spec/mongoid/extensions/time_with_zone_spec.rb'
-
 # Offense count: 122
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: Strict, AllowedNumbers, AllowedPatterns.
@@ -1954,14 +1920,6 @@ Style/RedundantBegin:
 Style/RedundantConstantBase:
   Enabled: false
 
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantFileExtensionInRequire:
-  Exclude:
-    - 'spec/mongoid/association/embedded/embeds_many/proxy_spec.rb'
-    - 'spec/mongoid/association/referenced/belongs_to/proxy_spec.rb'
-    - 'spec/mongoid/criteria/includable_spec.rb'
-
 # Offense count: 13
 # This cop supports safe autocorrection (--autocorrect).
 Style/RedundantFreeze:
@@ -2003,12 +1961,6 @@ Style/RedundantPercentQ:
     - 'spec/mongoid/contextual/mongo_spec.rb'
     - 'spec/mongoid/criteria_spec.rb'
     - 'spec/mongoid/inspectable_spec.rb'
-
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantRegexpEscape:
-  Exclude:
-    - 'lib/mongoid/extensions/string.rb'
 
 # Offense count: 9
 # This cop supports safe autocorrection (--autocorrect).
@@ -2119,12 +2071,6 @@ Style/SoleNestedConditional:
 Style/SpecialGlobalVars:
   Exclude:
     - 'mongoid.gemspec'
-
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-Style/StderrPuts:
-  Exclude:
-    - 'spec/support/spec_config.rb'
 
 # Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
