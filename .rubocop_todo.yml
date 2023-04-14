@@ -1335,40 +1335,7 @@ RSpec/BeNil:
 
 # Offense count: 85
 RSpec/BeforeAfterAll:
-  Exclude:
-    - 'spec/integration/app_spec.rb'
-    - 'spec/integration/dots_and_dollars_spec.rb'
-    - 'spec/mongoid/association/auto_save_spec.rb'
-    - 'spec/mongoid/association/constrainable_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_many/proxy_spec.rb'
-    - 'spec/mongoid/association/macros_spec.rb'
-    - 'spec/mongoid/association/referenced/belongs_to/proxy_spec.rb'
-    - 'spec/mongoid/association/referenced/has_and_belongs_to_many/proxy_spec.rb'
-    - 'spec/mongoid/association/referenced/has_many/proxy_spec.rb'
-    - 'spec/mongoid/association/syncable_spec.rb'
-    - 'spec/mongoid/association_spec.rb'
-    - 'spec/mongoid/attributes_spec.rb'
-    - 'spec/mongoid/clients/sessions_spec.rb'
-    - 'spec/mongoid/clients/transactions_spec.rb'
-    - 'spec/mongoid/clients_spec.rb'
-    - 'spec/mongoid/collection_configurable_spec.rb'
-    - 'spec/mongoid/criteria/findable_spec.rb'
-    - 'spec/mongoid/criteria/includable_spec.rb'
-    - 'spec/mongoid/criteria/queryable/options_spec.rb'
-    - 'spec/mongoid/criteria/queryable/selectable_spec.rb'
-    - 'spec/mongoid/criteria/queryable/selectable_where_spec.rb'
-    - 'spec/mongoid/criteria/queryable/selector_spec.rb'
-    - 'spec/mongoid/document_spec.rb'
-    - 'spec/mongoid/fields/standard_spec.rb'
-    - 'spec/mongoid/fields_spec.rb'
-    - 'spec/mongoid/interceptable_spec.rb'
-    - 'spec/mongoid/persistable/creatable_spec.rb'
-    - 'spec/mongoid/reloadable_spec.rb'
-    - 'spec/mongoid/tasks/database_spec.rb'
-    - 'spec/mongoid/timestamps/timeless_spec.rb'
-    - 'spec/mongoid/traversable_spec.rb'
-    - 'spec/mongoid/validatable/numericality_spec.rb'
-    - 'spec/mongoid/validatable_spec.rb'
+  Enabled: false
 
 # Offense count: 19
 # This cop supports safe autocorrection (--autocorrect).
