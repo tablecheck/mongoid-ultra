@@ -298,7 +298,9 @@ module Mongoid
     # @return [ Mongoid::Document ] The root document in the hierarchy.
     def _root
       object = self
-      while (object._parent) { object = object._parent }
+      while object._parent
+        object = object._parent
+      end
       object
     end
 
