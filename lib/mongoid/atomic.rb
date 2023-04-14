@@ -225,8 +225,10 @@ module Mongoid
     def atomic_sets
       if updateable?
         setters
+      elsif settable?
+        { atomic_path => as_attributes }
       else
-        settable? ? { atomic_path => as_attributes } : {}
+        {}
       end
     end
 
