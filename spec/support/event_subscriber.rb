@@ -13,15 +13,11 @@ class EventSubscriber
     'server_closed_event' => Mongo::Monitoring::Event::ServerClosed
   }.freeze
 
-  attr_reader :all_events
-
-  attr_reader :started_events
-
-  attr_reader :succeeded_events
-
-  attr_reader :failed_events
-
-  attr_reader :published_events
+  attr_reader :all_events,
+              :started_events,
+              :succeeded_events,
+              :failed_events,
+              :published_events
 
   # @param [ String ] name Optional name for the event subscriber.
   def initialize(name: nil)
@@ -30,15 +26,16 @@ class EventSubscriber
     @name = name
   end
 
-  def to_s
-    %Q`#<EventSubscriber:#{@name ? "\"#{@name}\"" : '%x' % object_id} \
-started=#{started_events.length} \
-succeeded=#{succeeded_events.length} \
-failed=#{failed_events.length} \
-published=#{published_events.length}>`
+  def inspect
+    <<~INSPECT
+      #<EventSubscriber:#{@name ? "\"#{@name}\"" : object_id.to_s(16)}
+        started:   #{started_events.length}
+        succeeded: #{succeeded_events.length}
+        failed:    #{failed_events.length}
+        published: #{published_events.length}>
+    INSPECT
   end
-
-  alias :inspect :to_s
+  alias_method :to_s, :inspect
 
   # Event retrieval
 
@@ -74,10 +71,9 @@ published=#{published_events.length}>`
   end
 
   def non_auth_command_started_events
+    auth_commands = %w(authenticate getnonce saslSstart saslContinue)
     started_events.reject do |event|
-      %w(authenticate getnonce saslSstart saslContinue).any? do |cmd|
-        event.command[cmd]
-      end
+      auth_commands.any? { |cmd| event.command[cmd] }
     end
   end
 
@@ -101,7 +97,7 @@ published=#{published_events.length}>`
   def get_one_event(events, command_name, kind, database_name: nil)
     events = events.select do |event|
       event.command_name == command_name and
-      database_name.nil? || database_name == event.database_name
+        database_name.nil? || database_name == event.database_name
     end
     if events.length != 1
       raise "Expected a single '#{command_name}' #{kind} event#{database_name ? " for '#{database_name}'" : ''} but we have #{events.length}"

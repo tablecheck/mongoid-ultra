@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# encoding: utf-8
 
 # ClusterConfig requires ClientRegistry class provided by the host project.
 
@@ -54,12 +53,10 @@ class ClusterConfig
 
     if server_version >= '3.4' && !sharded_ish?
       fcv
+    elsif short_server_version == '4.1'
+      '4.2'
     else
-      if short_server_version == '4.1'
-        '4.2'
-      else
-        short_server_version
-      end
+      short_server_version
     end
   end
 
@@ -100,7 +97,7 @@ class ClusterConfig
     if @auth_enabled.nil?
       @auth_enabled = begin
         basic_client.use(:admin).command(getCmdLineOpts: 1).first["argv"].include?("--auth")
-      rescue => e
+      rescue StandardError => e
         e.message =~ /(not authorized)|(unauthorized)|(no users authenticated)|(requires authentication)/
       end
     end
@@ -113,31 +110,29 @@ class ClusterConfig
   end
 
   def storage_engine
-    @storage_engine ||= begin
-      # 2.6 does not have wired tiger
-      if short_server_version == '2.6'
-        :mmapv1
-      else
-        client = ClientRegistry.instance.global_client('root_authorized')
-        if sharded_ish?
-          shards = client.use(:admin).command(listShards: 1).first
-          if shards['shards'].empty?
-            raise 'Shards are empty'
-          end
-          shard = shards['shards'].first
-          address_str = shard['host'].sub(/^.*\//, '').sub(/,.*/, '')
-          client = ClusterTools.instance.direct_client(address_str,
-            SpecConfig.instance.test_options.merge(SpecConfig.instance.auth_options).merge(connect: :direct))
-        end
-        rv = client.use(:admin).command(serverStatus: 1).first
-        rv = rv['storageEngine']['name']
-        rv_map = {
-          'wiredTiger' => :wired_tiger,
-          'mmapv1' => :mmapv1,
-        }
-        rv_map[rv] || rv
-      end
-    end
+    # 2.6 does not have wired tiger
+    @storage_engine ||= if short_server_version == '2.6'
+                          :mmapv1
+                        else
+                          client = ClientRegistry.instance.global_client('root_authorized')
+                          if sharded_ish?
+                            shards = client.use(:admin).command(listShards: 1).first
+                            if shards['shards'].empty?
+                              raise 'Shards are empty'
+                            end
+                            shard = shards['shards'].first
+                            address_str = shard['host'].sub(%r{^.*/}, '').sub(/,.*/, '')
+                            client = ClusterTools.instance.direct_client(address_str,
+                                                                         SpecConfig.instance.test_options.merge(SpecConfig.instance.auth_options).merge(connect: :direct))
+                          end
+                          rv = client.use(:admin).command(serverStatus: 1).first
+                          rv = rv['storageEngine']['name']
+                          rv_map = {
+                            'wiredTiger' => :wired_tiger,
+                            'mmapv1' => :mmapv1,
+                          }
+                          rv_map[rv] || rv
+                        end
   end
 
   # This method returns an alternate address for connecting to the configured
@@ -152,25 +147,25 @@ class ClusterConfig
     @alternate_address ||= begin
       address = primary_address_host
       str = case address
-      when '127.0.0.1'
-        'localhost'
-      when /^(\d+\.){3}\d+$/
-        skip 'This test requires a hostname or 127.0.0.1 as address'
-      else
-        # We don't know if mongod is listening on ipv4 or ipv6, in principle.
-        # Our tests use ipv4, so hardcode that for now.
-        # To support both we need to try both addresses which will make this
-        # test more complicated.
-        #
-        # JRuby chokes on primary_address_port as the port (e.g. 27017).
-        # Since the port does not actually matter, use a common port like 80.
-        resolved_address = Addrinfo.getaddrinfo(address, 80, Socket::PF_INET).first.ip_address
-        if resolved_address.include?(':')
-          "[#{resolved_address}]"
-        else
-          resolved_address
-        end
-      end + ":#{primary_address_port}"
+            when '127.0.0.1'
+              'localhost'
+            when /^(\d+\.){3}\d+$/
+              skip 'This test requires a hostname or 127.0.0.1 as address'
+            else
+              # We don't know if mongod is listening on ipv4 or ipv6, in principle.
+              # Our tests use ipv4, so hardcode that for now.
+              # To support both we need to try both addresses which will make this
+              # test more complicated.
+              #
+              # JRuby chokes on primary_address_port as the port (e.g. 27017).
+              # Since the port does not actually matter, use a common port like 80.
+              resolved_address = Addrinfo.getaddrinfo(address, 80, Socket::PF_INET).first.ip_address
+              if resolved_address.include?(':')
+                "[#{resolved_address}]"
+              else
+                resolved_address
+              end
+            end + ":#{primary_address_port}"
       Mongo::Address.new(str)
     end
   end
@@ -194,8 +189,8 @@ class ClusterConfig
 
     @topology ||= begin
       topology = client.cluster.topology.class.name.sub(/.*::/, '')
-      topology = topology.gsub(/([A-Z])/) { |match| '_' + match.downcase }.sub(/^_/, '')
-      if topology =~ /^replica_set/
+      topology = topology.gsub(/([A-Z])/) { |match| "_#{match.downcase}" }.sub(/^_/, '')
+      if /^replica_set/.match?(topology)
         topology = 'replica_set'
       end
       topology.to_sym
@@ -210,8 +205,8 @@ class ClusterConfig
 
     @server_parameters = begin
       client.use(:admin).command(getParameter: '*').first
-    rescue => e
-      STDERR.puts("WARNING: Failed to obtain server parameters: #{e.class}: #{e.message}")
+    rescue StandardError => e
+      warn("WARNING: Failed to obtain server parameters: #{e.class}: #{e.message}")
       {}
     end
 

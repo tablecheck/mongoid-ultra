@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# encoding: utf-8
 
 autoload :ChildProcess, 'childprocess'
 autoload :Tempfile, 'tempfile'
@@ -51,12 +50,10 @@ module ChildProcessHelper
       w.close
 
       thread = Thread.new do
-        begin
-          loop do
-            output << r.readpartial(16384)
-          end
-        rescue EOFError
+        loop do
+          output << r.readpartial(16384)
         end
+      rescue EOFError # rubocop:disable Lint/SuppressedException
       end
 
       process.wait
@@ -71,7 +68,7 @@ module ChildProcessHelper
   module_function def check_output(*args)
     process, output = get_output(*args)
     unless process.exit_code == 0
-      raise SpawnError,"Failed to execute: #{args}"
+      raise SpawnError, "Failed to execute: #{args}"
     end
     output
   end

@@ -5,11 +5,6 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 autoload :Timecop, 'timecop'
 require 'support/spec_config'
-
-# TODO: what does session registry do?
-# require 'support/session_registry'
-# SessionRegistry.patch_mongo
-
 require 'mongoid'
 
 # require all shared examples
@@ -175,54 +170,3 @@ RSpec.configure do |config|
     end
   end
 end
-
-# A subscriber to be used with the Ruby driver for testing.
-# class EventSubscriber
-#
-#   # The started events.
-#   attr_reader :started_events
-#
-#   # The succeeded events.
-#   attr_reader :succeeded_events
-#
-#   # The failed events.
-#   attr_reader :failed_events
-#
-#   # Create the test event subscriber.
-#   #
-#   # @example Create the subscriber
-#   #   EventSubscriber.new
-#   def initialize
-#     @started_events = []
-#     @succeeded_events = []
-#     @failed_events = []
-#   end
-#
-#   # Cache the succeeded event.
-#   #
-#   # @param [ Event ] event The event.
-#   def succeeded(event)
-#     @succeeded_events.push(event)
-#   end
-#
-#   # Cache the started event.
-#   #
-#   # @param [ Event ] event The event.
-#   def started(event)
-#     @started_events.push(event)
-#   end
-#
-#   # Cache the failed event.
-#   #
-#   # @param [ Event ] event The event.
-#   def failed(event)
-#     @failed_events.push(event)
-#   end
-#
-#   # Clear all cached events.
-#   def clear_events!
-#     @started_events = []
-#     @succeeded_events = []
-#     @failed_events = []
-#   end
-# end
