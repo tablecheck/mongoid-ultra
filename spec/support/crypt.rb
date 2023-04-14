@@ -23,7 +23,7 @@ module Mongoid
       end
 
       let(:crypt_shared_lib_path) do
-        ENV['MONGO_RUBY_DRIVER_CRYPT_SHARED_LIB_PATH']
+        ENV.fetch('MONGO_RUBY_DRIVER_CRYPT_SHARED_LIB_PATH', nil)
       end
 
       let(:key_vault_client) do

@@ -57,7 +57,7 @@ class SpecConfig
   end
 
   def rails_version
-    v = ENV['RAILS']
+    v = ENV.fetch('RAILS', nil)
     if v == ''
       v = nil
     end
