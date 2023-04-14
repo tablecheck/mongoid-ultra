@@ -1201,20 +1201,6 @@ Performance/MapCompact:
     - 'lib/mongoid/tasks/database.rb'
     - 'spec/mongoid/association/referenced/belongs_to/eager_spec.rb'
 
-# Offense count: 11
-# This cop supports safe autocorrection (--autocorrect).
-Performance/RegexpMatch:
-  Exclude:
-    - 'lib/mongoid/association/proxy.rb'
-    - 'lib/mongoid/criteria/queryable/mergeable.rb'
-    - 'lib/mongoid/criteria/queryable/selector.rb'
-    - 'lib/mongoid/criteria/translator.rb'
-    - 'lib/mongoid/errors/invalid_query.rb'
-    - 'lib/mongoid/extensions/boolean.rb'
-    - 'lib/mongoid/extensions/hash.rb'
-    - 'lib/mongoid/reloadable.rb'
-    - 'spec/support/constraints.rb'
-
 # Offense count: 14
 # This cop supports safe autocorrection (--autocorrect).
 Performance/StringIdentifierArgument:

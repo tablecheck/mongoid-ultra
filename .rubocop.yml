@@ -31,6 +31,10 @@ Style/DocumentationMethod:
 Performance/StringInclude:
   Enabled: false
 
+Performance/RegexpMatch:
+  Exclude:
+    - 'Gemfile'
+
 # --------------------------------------------------
 # Cops with specific files skipped. These can be inlined later.
 
