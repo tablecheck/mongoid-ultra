@@ -50,6 +50,10 @@ Lint/BinaryOperatorWithIdenticalOperands:
   Exclude:
     - 'spec/mongoid/equality_spec.rb'
 
+RSpec/SubjectStub:
+  Exclude:
+    - 'spec/mongoid/collection_configurable_spec.rb'
+
 # --------------------------------------------------
 # Cops below this line are intentionally disabled.
 
