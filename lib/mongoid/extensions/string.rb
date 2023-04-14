@@ -59,7 +59,7 @@ module Mongoid
       #
       # @return [ String ] The string in collection friendly form.
       def collectionize
-        tableize.gsub("/", "_")
+        tableize.tr("/", "_")
       end
 
       # Is the string a valid value for a Mongoid id?
@@ -92,7 +92,7 @@ module Mongoid
       #
       # @return [ String ] The string stripped of "=".
       def reader
-        delete("=").sub(/\_before\_type\_cast\z/, '')
+        delete("=").delete_suffix('_before_type_cast')
       end
 
       # Is this string a writer?
