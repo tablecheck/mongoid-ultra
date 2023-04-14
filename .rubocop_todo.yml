@@ -144,12 +144,6 @@ Lint/AmbiguousBlockAssociation:
     - 'spec/mongoid/interceptable_spec.rb'
     - 'spec/mongoid/touchable_spec.rb'
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-Lint/AmbiguousOperator:
-  Exclude:
-    - 'spec/mongoid/extensions/big_decimal_spec.rb'
-
 # Offense count: 18
 # This cop supports safe autocorrection (--autocorrect).
 Lint/AmbiguousOperatorPrecedence:
@@ -164,12 +158,6 @@ Lint/AmbiguousOperatorPrecedence:
     - 'lib/mongoid/tasks/database.rb'
     - 'spec/integration/matcher_operator_spec.rb'
     - 'spec/mongoid/config/environment_spec.rb'
-
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-Lint/AmbiguousRegexpLiteral:
-  Exclude:
-    - 'spec/integration/app_spec.rb'
 
 # Offense count: 65
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -328,13 +316,6 @@ Lint/UnusedBlockArgument:
 Lint/UnusedMethodArgument:
   Enabled: false
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-Lint/UriRegexp:
-  Exclude:
-    - 'spec/mongoid/validatable/format_spec.rb'
-    - 'spec/support/models/product.rb'
-
 # Offense count: 9
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: ContextCreatingMethods, MethodCreatingMethods.
@@ -436,17 +417,6 @@ Naming/AccessorMethodName:
     - 'lib/mongoid/timestamps/timeless.rb'
     - 'spec/rails/controller_extension/controller_runtime_spec.rb'
     - 'spec/support/models/person.rb'
-
-# Offense count: 4
-# Configuration parameters: ExpectMatchingDefinition, CheckDefinitionPathHierarchy, CheckDefinitionPathHierarchyRoots, Regex, IgnoreExecutableScripts, AllowedAcronyms.
-# CheckDefinitionPathHierarchyRoots: lib, spec, test, src
-# AllowedAcronyms: CLI, DSL, ACL, API, ASCII, CPU, CSS, DNS, EOF, GUID, HTML, HTTP, HTTPS, ID, IP, JSON, LHS, QPS, RAM, RHS, RPC, SLA, SMTP, SQL, SSH, TCP, TLS, TTL, UDP, UI, UID, UUID, URI, URL, UTF8, VM, XML, XMPP, XSRF, XSS
-Naming/FileName:
-  Exclude:
-    - 'gemfiles/rails-6.0.gemfile'
-    - 'gemfiles/rails-6.1.gemfile'
-    - 'gemfiles/rails-7.0.gemfile'
-    - 'gemfiles/rails-master.gemfile'
 
 # Offense count: 11
 # Configuration parameters: EnforcedStyleForLeadingUnderscores.
@@ -1191,13 +1161,6 @@ Rails/RakeEnvironment:
     - 'lib/mongoid/railties/database.rake'
     - 'lib/mongoid/tasks/database.rake'
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-Rails/RedundantForeignKey:
-  Exclude:
-    - 'spec/support/models/account.rb'
-    - 'spec/support/models/post.rb'
-
 # Offense count: 126
 # Configuration parameters: ForbiddenMethods, AllowedMethods.
 # ForbiddenMethods: decrement!, decrement_counter, increment!, increment_counter, insert, insert!, insert_all, insert_all!, toggle!, touch, touch_all, update_all, update_attribute, update_column, update_columns, update_counters, upsert, upsert_all
@@ -1268,13 +1231,6 @@ Style/AccessorGrouping:
 Style/Alias:
   Enabled: false
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowOnlyRestArgument.
-Style/ArgumentsForwarding:
-  Exclude:
-    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
-
 # Offense count: 10
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
@@ -1321,15 +1277,6 @@ Style/ClassCheck:
     - 'lib/mongoid/matcher/eq_impl.rb'
     - 'lib/mongoid/matcher/eq_impl_with_regexp.rb'
     - 'spec/mongoid/association/referenced/has_many/enumerable_spec.rb'
-
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowedMethods, AllowedPatterns.
-# AllowedMethods: ==, equal?, eql?
-Style/ClassEqualityComparison:
-  Exclude:
-    - 'lib/mongoid/extensions/false_class.rb'
-    - 'lib/mongoid/extensions/true_class.rb'
 
 # Offense count: 7
 Style/ClassVars:
@@ -1428,12 +1375,6 @@ Style/EvalWithLocation:
     - 'spec/mongoid/criteria/queryable/extensions/range_spec.rb'
     - 'spec/mongoid/extensions/range_spec.rb'
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-Style/EvenOdd:
-  Exclude:
-    - 'spec/mongoid/clients/options_spec.rb'
-
 # Offense count: 3
 # This cop supports safe autocorrection (--autocorrect).
 Style/ExpandPathArguments:
@@ -1458,14 +1399,6 @@ Style/ExplicitBlockArgument:
     - 'lib/mongoid/scopable.rb'
     - 'lib/mongoid/touchable.rb'
     - 'spec/support/models/birthday.rb'
-
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowedVars.
-Style/FetchEnvVar:
-  Exclude:
-    - 'spec/support/crypt.rb'
-    - 'spec/support/spec_config.rb'
 
 # Offense count: 3
 # This cop supports safe autocorrection (--autocorrect).
@@ -1589,14 +1522,6 @@ Style/LineEndConcatenation:
     - 'lib/mongoid/scopable.rb'
     - 'lib/mongoid/tasks/database.rb'
     - 'lib/mongoid/tasks/encryption.rake'
-
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowedMethods, AllowedPatterns.
-Style/MethodCallWithoutArgsParentheses:
-  Exclude:
-    - 'spec/mongoid/attributes_spec.rb'
-    - 'spec/mongoid/fields/foreign_key_spec.rb'
 
 # Offense count: 4
 # This cop supports safe autocorrection (--autocorrect).
@@ -1732,13 +1657,6 @@ Style/NegatedIfElseCondition:
 Style/NestedParenthesizedCalls:
   Exclude:
     - 'spec/rails/controller_extension/controller_runtime_spec.rb'
-
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-Style/NestedTernaryOperator:
-  Exclude:
-    - 'lib/mongoid/atomic.rb'
-    - 'lib/mongoid/validatable.rb'
 
 # Offense count: 10
 # This cop supports safe autocorrection (--autocorrect).
@@ -1980,22 +1898,6 @@ Style/RedundantStringEscape:
     - 'spec/mongoid/criteria/queryable/optional_spec.rb'
     - 'spec/mongoid/criteria_spec.rb'
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, AllowInnerSlashes.
-# SupportedStyles: slashes, percent_r, mixed
-Style/RegexpLiteral:
-  Exclude:
-    - 'lib/mongoid/config/introspection.rb'
-    - 'lib/mongoid/loadable.rb'
-
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-Style/RescueModifier:
-  Exclude:
-    - 'lib/mongoid/criteria/queryable/extensions/numeric.rb'
-    - 'spec/integration/app_spec.rb'
-
 # Offense count: 34
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
@@ -2019,20 +1921,6 @@ Style/RescueStandardError:
 # AllowedMethods: present?, blank?, presence, try, try!
 Style/SafeNavigation:
   Enabled: false
-
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-Style/SelfAssignment:
-  Exclude:
-    - 'lib/mongoid/persistable/logical.rb'
-
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowAsExpressionSeparator.
-Style/Semicolon:
-  Exclude:
-    - 'lib/mongoid/criteria/scopable.rb'
-    - 'spec/mongoid/association/referenced/has_and_belongs_to_many/proxy_spec.rb'
 
 # Offense count: 9
 # This cop supports safe autocorrection (--autocorrect).
@@ -2152,60 +2040,6 @@ Style/TrailingCommaInArrayLiteral:
 # SupportedStylesForMultiline: comma, consistent_comma, no_comma
 Style/TrailingCommaInHashLiteral:
   Enabled: false
-
-# Offense count: 4
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: ExactNameMatch, AllowPredicates, AllowDSLWriters, IgnoreClassMethods, AllowedMethods.
-# AllowedMethods: to_ary, to_a, to_c, to_enum, to_h, to_hash, to_i, to_int, to_io, to_open, to_path, to_proc, to_r, to_regexp, to_str, to_s, to_sym
-Style/TrivialAccessors:
-  Exclude:
-    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
-    - 'lib/mongoid/contextual/memory.rb'
-    - 'lib/mongoid/criteria.rb'
-
-# Offense count: 4
-# This cop supports safe autocorrection (--autocorrect).
-Style/UnlessElse:
-  Exclude:
-    - 'lib/mongoid/association/referenced/has_and_belongs_to_many/proxy.rb'
-    - 'lib/mongoid/association/referenced/has_many/proxy.rb'
-    - 'lib/mongoid/attributes/projector.rb'
-    - 'lib/mongoid/criteria/queryable/pipeline.rb'
-
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-Style/WhileUntilModifier:
-  Exclude:
-    - 'lib/mongoid/traversable.rb'
-    - 'lib/mongoid/validatable/uniqueness.rb'
-
-# Offense count: 155
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: WordRegex.
-# SupportedStyles: percent, brackets
-Style/WordArray:
-  EnforcedStyle: percent
-  MinSize: 5
-
-# Offense count: 3
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: forbid_for_all_comparison_operators, forbid_for_equality_operators_only, require_for_all_comparison_operators, require_for_equality_operators_only
-Style/YodaCondition:
-  Exclude:
-    - 'lib/mongoid/extensions/string.rb'
-    - 'lib/mongoid/fields.rb'
-    - 'lib/mongoid/traversable.rb'
-
-# Offense count: 5
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/ZeroLengthPredicate:
-  Exclude:
-    - 'lib/mongoid/association/eager_loadable.rb'
-    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
-    - 'lib/mongoid/matcher/expression.rb'
-    - 'lib/mongoid/matcher/field_expression.rb'
-    - 'lib/mongoid/persistable/settable.rb'
 
 # Offense count: 212
 # This cop supports safe autocorrection (--autocorrect).
