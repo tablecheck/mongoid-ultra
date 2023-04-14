@@ -26,7 +26,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the strategy is not set" do
 
         let(:selection) do
-          query.send(query_method, first: [ 1, 2 ]).send(query_method, first: [ 3, 4 ])
+          query.send(query_method, first: [1, 2]).send(query_method, first: [3, 4])
         end
 
         it "combines the conditions with $and" do
@@ -42,7 +42,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the strategy is intersect" do
 
         let(:selection) do
-          query.send(query_method, first: [ 1, 2 ]).intersect.send(query_method, first: [ 2, 3 ])
+          query.send(query_method, first: [1, 2]).intersect.send(query_method, first: [2, 3])
         end
 
         it "intersects the conditions" do
@@ -57,7 +57,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the strategy is override" do
 
         let(:selection) do
-          query.send(query_method, first: [ 1, 2 ]).override.send(query_method, first: [ 3, 4 ])
+          query.send(query_method, first: [1, 2]).override.send(query_method, first: [3, 4])
         end
 
         it "overwrites the first condition" do
@@ -72,7 +72,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the strategy is union" do
 
         let(:selection) do
-          query.send(query_method, first: [ 1, 2 ]).union.send(query_method, first: [ 3, 4 ])
+          query.send(query_method, first: [1, 2]).union.send(query_method, first: [3, 4])
         end
 
         it "unions the conditions" do
@@ -90,7 +90,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the strategy is not set" do
 
         let(:selection) do
-          query.send(query_method, id: [ 1, 2 ]).send(query_method, _id: [ 3, 4 ])
+          query.send(query_method, id: [1, 2]).send(query_method, _id: [3, 4])
         end
 
         it "combines the conditions with $and" do
@@ -106,7 +106,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the strategy is intersect" do
 
         let(:selection) do
-          query.send(query_method, id: [ 1, 2 ]).intersect.send(query_method, _id: [ 2, 3 ])
+          query.send(query_method, id: [1, 2]).intersect.send(query_method, _id: [2, 3])
         end
 
         it "intersects the conditions" do
@@ -121,7 +121,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the strategy is override" do
 
         let(:selection) do
-          query.send(query_method, _id: [ 1, 2 ]).override.send(query_method, id: [ 3, 4 ])
+          query.send(query_method, _id: [1, 2]).override.send(query_method, id: [3, 4])
         end
 
         it "overwrites the first condition" do
@@ -136,7 +136,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the strategy is union" do
 
         let(:selection) do
-          query.send(query_method, _id: [ 1, 2 ]).union.send(query_method, id: [ 3, 4 ])
+          query.send(query_method, _id: [1, 2]).union.send(query_method, id: [3, 4])
         end
 
         it "unions the conditions" do
@@ -221,7 +221,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when existing condition has Array value" do
 
         let(:selection) do
-          query.send(query_method, foo: [ 1, 2 ]).union.send(query_method, foo: 2..4)
+          query.send(query_method, foo: [1, 2]).union.send(query_method, foo: 2..4)
         end
 
         it 'expands range to array' do
@@ -281,7 +281,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         context "when providing an array" do
 
           let(:selection) do
-            query.all(field: [ 1, 2 ])
+            query.all(field: [1, 2])
           end
 
           it "adds the $all selector" do
@@ -376,7 +376,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the criterion are for different fields" do
 
         let(:selection) do
-          query.all(first: [ 1, 2 ], second: [ 3, 4 ])
+          query.all(first: [1, 2], second: [3, 4])
         end
 
         it "adds the $all selectors" do
@@ -397,7 +397,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the criterion are for different fields" do
 
         let(:selection) do
-          query.all(first: [ 1, 2 ]).all(second: [ 3, 4 ])
+          query.all(first: [1, 2]).all(second: [3, 4])
         end
 
         it "adds the $all selectors" do
@@ -542,9 +542,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the fields differ" do
 
         let(:selection) do
-          query.
-            elem_match(users: { name: "value" }).
-            elem_match(comments: { text: "value" })
+          query.elem_match(users: { name: "value" })
+               .elem_match(comments: { text: "value" })
         end
 
         it "adds the $elemMatch expression" do
@@ -562,9 +561,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the fields are the same" do
 
         let(:selection) do
-          query.
-            elem_match(users: { name: "value" }).
-            elem_match(users: { state: "new" })
+          query.elem_match(users: { name: "value" })
+               .elem_match(users: { state: "new" })
         end
 
         it "adds an $elemMatch expression" do
@@ -678,9 +676,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the fields differ" do
 
         let(:selection) do
-          query.
-            exists(users: true).
-            exists(comments: true)
+          query.exists(users: true)
+               .exists(comments: true)
         end
 
         it "adds the $exists expression" do
@@ -709,7 +706,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the geometry is a point intersection" do
 
         let(:selection) do
-          query.geo_spatial(:location.intersects_point => [ 1, 10 ])
+          query.geo_spatial(:location.intersects_point => [1, 10])
         end
 
         it "adds the $geoIntersects expression" do
@@ -731,7 +728,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the geometry is a line intersection" do
 
         let(:selection) do
-          query.geo_spatial(:location.intersects_line => [[ 1, 10 ], [ 2, 10 ]])
+          query.geo_spatial(:location.intersects_line => [[1, 10], [2, 10]])
         end
 
         it "adds the $geoIntersects expression" do
@@ -753,7 +750,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the geometry is a polygon intersection" do
 
         let(:selection) do
-          query.geo_spatial(:location.intersects_polygon => [[[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]]])
+          query.geo_spatial(:location.intersects_polygon => [[[1, 10], [2, 10], [1, 10]]])
         end
 
         it "adds the $geoIntersects expression" do
@@ -775,7 +772,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the geometry is within a polygon" do
 
         let(:selection) do
-          query.geo_spatial(:location.within_polygon => [[[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]]])
+          query.geo_spatial(:location.within_polygon => [[[1, 10], [2, 10], [1, 10]]])
         end
 
         it "adds the $geoIntersects expression" do
@@ -793,7 +790,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         context "when used with the $box operator ($geoWithin query) " do
           let(:selection) do
-            query.geo_spatial(:location.within_box => [[ 1, 10 ], [ 2, 10 ]])
+            query.geo_spatial(:location.within_box => [[1, 10], [2, 10]])
           end
 
           it "adds the $geoIntersects expression" do
@@ -997,7 +994,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when providing an array" do
 
         let(:selection) do
-          query.in(field: [ 1, 2 ])
+          query.in(field: [1, 2])
         end
 
         it "adds the $in selector" do
@@ -1034,7 +1031,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the criterion are for different fields" do
 
         let(:selection) do
-          query.in(first: [ 1, 2 ], second: 3..4)
+          query.in(first: [1, 2], second: 3..4)
         end
 
         it "adds the $in selectors" do
@@ -1055,7 +1052,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the criterion are for different fields" do
 
         let(:selection) do
-          query.in(first: [ 1, 2 ]).in(second: [ 3, 4 ])
+          query.in(first: [1, 2]).in(second: [3, 4])
         end
 
         it "adds the $in selectors" do
@@ -1259,7 +1256,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when a $near criterion exists on the same field" do
 
         let(:selection) do
-          query.near(location: [ 1, 1 ]).max_distance(location: 50)
+          query.near(location: [1, 1]).max_distance(location: 50)
         end
 
         it "adds the $maxDistance expression" do
@@ -1285,7 +1282,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     context "when provided a criterion" do
 
       let(:selection) do
-        query.mod(value: [ 10, 1 ])
+        query.mod(value: [10, 1])
       end
 
       it "adds the $mod expression" do
@@ -1304,10 +1301,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the fields differ" do
 
         let(:selection) do
-          query.mod(
-            value: [ 10, 1 ],
-            comments: [ 10, 1 ]
-          )
+          query.mod(value: [10, 1], comments: [10, 1])
         end
 
         it "adds the $mod expression" do
@@ -1328,9 +1322,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the fields differ" do
 
         let(:selection) do
-          query.
-            mod(value: [ 10, 1 ]).
-            mod(result: [ 10, 1 ])
+          query.mod(value: [10, 1])
+               .mod(result: [10, 1])
         end
 
         it "adds the $mod expression" do
@@ -1400,9 +1393,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the fields differ" do
 
         let(:selection) do
-          query.
-            ne(value: 10).
-            ne(result: 10)
+          query.ne(value: 10)
+               .ne(result: 10)
         end
 
         it "adds the $ne expression" do
@@ -1429,7 +1421,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     context "when provided a criterion" do
 
       let(:selection) do
-        query.near(location: [ 20, 21 ])
+        query.near(location: [20, 21])
       end
 
       it "adds the $near expression" do
@@ -1448,10 +1440,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the fields differ" do
 
         let(:selection) do
-          query.near(
-            location: [ 20, 21 ],
-            comments: [ 20, 21 ]
-          )
+          query.near(location: [20, 21], comments: [20, 21])
         end
 
         it "adds the $near expression" do
@@ -1472,9 +1461,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the fields differ" do
 
         let(:selection) do
-          query.
-            near(location: [ 20, 21 ]).
-            near(comments: [ 20, 21 ])
+          query.near(location: [20, 21])
+               .near(comments: [20, 21])
         end
 
         it "adds the $near expression" do
@@ -1501,7 +1489,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     context "when provided a criterion" do
 
       let(:selection) do
-        query.near_sphere(location: [ 20, 21 ])
+        query.near_sphere(location: [20, 21])
       end
 
       it "adds the $nearSphere expression" do
@@ -1520,10 +1508,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the fields differ" do
 
         let(:selection) do
-          query.near_sphere(
-            location: [ 20, 21 ],
-            comments: [ 20, 21 ]
-          )
+          query.near_sphere(location: [20, 21], comments: [20, 21])
         end
 
         it "adds the $nearSphere expression" do
@@ -1544,9 +1529,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the fields differ" do
 
         let(:selection) do
-          query.
-            near_sphere(location: [ 20, 21 ]).
-            near_sphere(comments: [ 20, 21 ])
+          query.near_sphere(location: [20, 21])
+               .near_sphere(comments: [20, 21])
         end
 
         it "adds the $nearSphere expression" do
@@ -1576,7 +1560,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when providing an array" do
 
         let(:selection) do
-          query.nin(field: [ 1, 2 ])
+          query.nin(field: [1, 2])
         end
 
         it "adds the $nin selector" do
@@ -1613,7 +1597,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the criterion are for different fields" do
 
         let(:selection) do
-          query.nin(first: [ 1, 2 ], second: [ 3, 4 ])
+          query.nin(first: [1, 2], second: [3, 4])
         end
 
         it "adds the $nin selectors" do
@@ -1634,7 +1618,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the criterion are for different fields" do
 
         let(:selection) do
-          query.nin(first: [ 1, 2 ]).nin(second: [ 3, 4 ])
+          query.nin(first: [1, 2]).nin(second: [3, 4])
         end
 
         it "adds the $nin selectors" do
@@ -1894,7 +1878,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       it "constructs a text search document" do
-        expect(selection.selector).to eq({ '$text' => { '$search' => "testing" }})
+        expect(selection.selector).to eq({ '$text' => { '$search' => "testing" } })
       end
 
       it "returns the cloned selectable" do
@@ -1932,9 +1916,9 @@ describe Mongoid::Criteria::Queryable::Selectable do
         expect(Mongoid.logger).to receive(:warn)
         expect(selection.selector).to eq(
           '$and' => [
-            {'$text' => {'$search' => 'one'}}
+            { '$text' => { '$search' => 'one' } }
           ],
-          '$text' => {'$search' => 'two'}
+          '$text' => { '$search' => 'two' }
         )
       end
     end
@@ -2272,7 +2256,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         end
 
         it "combines conditions" do
-          expect(selection.selector).to eq("field" => 5, '$and' => [{'field' => 10}])
+          expect(selection.selector).to eq("field" => 5, '$and' => [{ 'field' => 10 }])
         end
       end
     end
@@ -2295,7 +2279,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe "chained operators" do
-    [ :eq, :elem_match, :gt, :gte, :lt, :lte, :mod, :ne, :near, :near_sphere ].each do |meth|
+    [:eq, :elem_match, :gt, :gte, :lt, :lte, :mod, :ne, :near, :near_sphere].each do |meth|
 
       context "when chaining the #{meth} method when using the same field" do
         let(:op) do
@@ -2314,7 +2298,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         end
 
         let(:criteria) do
-          Band.send(meth, {views: 1}).send(meth, {views: 2})
+          Band.send(meth, { views: 1 }).send(meth, { views: 2 })
         end
 
         it "is and-ed with the previous operators" do
