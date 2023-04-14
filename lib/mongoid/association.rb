@@ -96,6 +96,7 @@ module Mongoid
     # @return [ Symbol ] The association name.
     def association_name
       raise Errors::NoMetadata.new(self.class.name) unless _association
+
       _association.name
     end
 

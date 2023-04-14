@@ -30,6 +30,7 @@ module Mongoid
         if defined?(::Sinatra)
           return ::Sinatra::Base.environment.to_s
         end
+
         ENV["RACK_ENV"] || ENV["MONGOID_ENV"] or raise Errors::NoEnvironment
       end
 
