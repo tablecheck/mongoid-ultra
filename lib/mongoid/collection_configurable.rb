@@ -25,7 +25,7 @@ module Mongoid
           # This is most probably an anonymous class, we ignore them.
           return
         end
-        if collection_name.match(/^system\./)
+        if collection_name =~ /^system\./
           # We do not do anything with system collections.
           return
         end
