@@ -226,14 +226,14 @@ describe Mongoid::Persistable::Savable do
           Address.new(
             number: 101,
             street: 'South St',
-            locations: [ location ]
+            locations: [location]
           )
         end
 
         let!(:person) do
           Person.create!(
             title: "Blah",
-            addresses: [ address ]
+            addresses: [address]
           )
         end
 
@@ -743,7 +743,7 @@ describe Mongoid::Persistable::Savable do
 
       before do
         firefox.writer = writer
-        firefox.shapes << [ circle, square ]
+        firefox.shapes << [circle, square]
         firefox.save!
       end
 
