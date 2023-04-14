@@ -101,4 +101,3 @@ Style/NumericPredicate:
 # Enforce multiline style if it becomes available in the future.
 Style/WhileUntilModifier:
   Enabled: false
-
