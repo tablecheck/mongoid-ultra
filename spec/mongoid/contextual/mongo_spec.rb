@@ -201,7 +201,7 @@ describe Mongoid::Contextual::Mongo do
       end
     end
 
-    context "when the criteria contains a selector", :focus do
+    context "when the criteria contains a selector" do
       let(:criteria) do
         Band.where(name: "New Order")
       end
@@ -1324,7 +1324,7 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it "does not load all documents" do
-            subscriber = Mrss::EventSubscriber.new
+            subscriber = EventSubscriber.new
             context.view.client.subscribe(Mongo::Monitoring::COMMAND, subscriber)
 
             enum.next
