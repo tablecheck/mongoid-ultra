@@ -63,7 +63,7 @@ describe Mongoid::Atomic::Modifiers do
       context "when adding to an existing field" do
 
         let(:adds_two) do
-          { "preference_ids" => [ "three" ] }
+          { "preference_ids" => ["three"] }
         end
 
         before do
@@ -101,7 +101,7 @@ describe Mongoid::Atomic::Modifiers do
       context "when adding a single pull" do
 
         let(:pulls) do
-          { "addresses" => { "_id" => { "$in" => [ "one" ]}} }
+          { "addresses" => { "_id" => { "$in" => ["one"] } } }
         end
 
         before do
@@ -110,7 +110,7 @@ describe Mongoid::Atomic::Modifiers do
 
         it "adds the push all modifiers" do
           expect(modifiers).to eq(
-            { "$pull" => { "addresses" => { "_id" => { "$in" => [ "one" ]}}}}
+            { "$pull" => { "addresses" => { "_id" => { "$in" => ["one"] } } } }
           )
         end
       end
@@ -118,11 +118,11 @@ describe Mongoid::Atomic::Modifiers do
       context "when adding to an existing pull" do
 
         let(:pull_one) do
-          { "addresses" => { "_id" => { "$in" => [ "one" ]}} }
+          { "addresses" => { "_id" => { "$in" => ["one"] } } }
         end
 
         let(:pull_two) do
-          { "addresses" => { "_id" => { "$in" => [ "two" ]}} }
+          { "addresses" => { "_id" => { "$in" => ["two"] } } }
         end
 
         before do
@@ -132,7 +132,7 @@ describe Mongoid::Atomic::Modifiers do
 
         it "overwrites the previous pulls" do
           expect(modifiers).to eq(
-            { "$pull" => { "addresses" => { "_id" => { "$in" => [ "two" ]}}}}
+            { "$pull" => { "addresses" => { "_id" => { "$in" => ["two"] } } } }
           )
         end
       end
@@ -478,7 +478,7 @@ describe Mongoid::Atomic::Modifiers do
       context "when the unsets have values" do
 
         let(:unsets) do
-          [ "addresses" ]
+          ["addresses"]
         end
 
         before do

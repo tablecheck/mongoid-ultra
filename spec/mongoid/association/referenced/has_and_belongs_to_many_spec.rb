@@ -28,7 +28,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
   end
 
   let(:options) do
-    { }
+    {}
   end
 
   describe '#relation_complements' do
@@ -1022,7 +1022,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
     end
 
     let(:target) do
-      [ HasManyRightObject.new ]
+      [HasManyRightObject.new]
     end
 
     before do

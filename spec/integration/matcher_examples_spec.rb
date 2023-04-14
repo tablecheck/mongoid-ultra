@@ -153,7 +153,7 @@ describe 'Matcher' do
       end
 
       let(:actual_object_matching_condition) do
-        circuit.buses.where(number: {operator => 10}).first
+        circuit.buses.where(number: { operator => 10 }).first
       end
 
       let(:expected_object_matching_condition) do
@@ -161,7 +161,7 @@ describe 'Matcher' do
       end
 
       let(:actual_object_not_matching_condition) do
-        circuit.buses.where(number: {operator => 20}).first
+        circuit.buses.where(number: { operator => 20 }).first
       end
 
       it_behaves_like 'a field operator', '$eq'
@@ -176,7 +176,7 @@ describe 'Matcher' do
       end
 
       let(:actual_object_matching_condition) do
-        circuit.buses.where(number: {operator => 10}).first
+        circuit.buses.where(number: { operator => 10 }).first
       end
 
       let(:expected_object_matching_condition) do
@@ -184,7 +184,7 @@ describe 'Matcher' do
       end
 
       let(:actual_object_not_matching_condition) do
-        circuit.buses.where(number: {operator => 30}).first
+        circuit.buses.where(number: { operator => 30 }).first
       end
 
       it_behaves_like 'a field operator', '$ne'
@@ -194,13 +194,11 @@ describe 'Matcher' do
 
       context 'true value' do
         let!(:circuit) do
-          Circuit.new(buses: [
-            Bus.new(number: '30'),
-          ])
+          Circuit.new(buses: [Bus.new(number: '30')])
         end
 
         let(:actual_object_matching_condition) do
-          circuit.buses.where(number: {operator => true}).first
+          circuit.buses.where(number: { operator => true }).first
         end
 
         let(:expected_object_matching_condition) do
@@ -208,7 +206,7 @@ describe 'Matcher' do
         end
 
         let(:actual_object_not_matching_condition) do
-          circuit.buses.where(number: {operator => false}).first
+          circuit.buses.where(number: { operator => false }).first
         end
 
         it_behaves_like 'a field operator', '$exists'
@@ -216,13 +214,11 @@ describe 'Matcher' do
 
       context 'false value' do
         let!(:circuit) do
-          Circuit.new(buses: [
-            Bus.new,
-          ])
+          Circuit.new(buses: [Bus.new])
         end
 
         let(:actual_object_matching_condition) do
-          circuit.buses.where(number: {operator => false}).first
+          circuit.buses.where(number: { operator => false }).first
         end
 
         let(:expected_object_matching_condition) do
@@ -230,7 +226,7 @@ describe 'Matcher' do
         end
 
         let(:actual_object_not_matching_condition) do
-          circuit.buses.where(number: {operator => true}).first
+          circuit.buses.where(number: { operator => true }).first
         end
 
         it_behaves_like 'a field operator', '$exists'
@@ -240,14 +236,11 @@ describe 'Matcher' do
     describe '$gt' do
 
       let!(:circuit) do
-        Circuit.new(buses: [
-          Bus.new(number: '10'),
-          Bus.new(number: '30'),
-        ])
+        Circuit.new(buses: [Bus.new(number: '10'), Bus.new(number: '30')])
       end
 
       let(:actual_object_matching_condition) do
-        circuit.buses.where(number: {operator => 15}).first
+        circuit.buses.where(number: { operator => 15 }).first
       end
 
       let(:expected_object_matching_condition) do
@@ -256,7 +249,7 @@ describe 'Matcher' do
 
       let(:actual_object_not_matching_condition) do
         # Intentionally equal to the largest bus number
-        circuit.buses.where(number: {operator => 30}).first
+        circuit.buses.where(number: { operator => 30 }).first
       end
 
       it_behaves_like 'a field operator', '$gt'
@@ -265,15 +258,12 @@ describe 'Matcher' do
     describe '$gte' do
 
       let!(:circuit) do
-        Circuit.new(buses: [
-          Bus.new(number: '10'),
-          Bus.new(number: '30'),
-        ])
+        Circuit.new(buses: [Bus.new(number: '10'), Bus.new(number: '30')])
       end
 
       let(:actual_object_matching_condition) do
         # Intentionally equal to the largest bus number
-        circuit.buses.where(number: {operator => 30}).first
+        circuit.buses.where(number: { operator => 30 }).first
       end
 
       let(:expected_object_matching_condition) do
@@ -281,7 +271,7 @@ describe 'Matcher' do
       end
 
       let(:actual_object_not_matching_condition) do
-        circuit.buses.where(number: {operator => 31}).first
+        circuit.buses.where(number: { operator => 31 }).first
       end
 
       it_behaves_like 'a field operator', '$gte'
@@ -290,14 +280,11 @@ describe 'Matcher' do
     describe '$lt' do
 
       let!(:circuit) do
-        Circuit.new(buses: [
-          Bus.new(number: '10'),
-          Bus.new(number: '30'),
-        ])
+        Circuit.new(buses: [Bus.new(number: '10'), Bus.new(number: '30')])
       end
 
       let(:actual_object_matching_condition) do
-        circuit.buses.where(number: {operator => 15}).first
+        circuit.buses.where(number: { operator => 15 }).first
       end
 
       let(:expected_object_matching_condition) do
@@ -306,7 +293,7 @@ describe 'Matcher' do
 
       let(:actual_object_not_matching_condition) do
         # Intentionally equal to the smallest bus number
-        circuit.buses.where(number: {operator => 10}).first
+        circuit.buses.where(number: { operator => 10 }).first
       end
 
       it_behaves_like 'a field operator', '$lt'
@@ -315,15 +302,12 @@ describe 'Matcher' do
     describe '$lte' do
 
       let!(:circuit) do
-        Circuit.new(buses: [
-          Bus.new(number: '10'),
-          Bus.new(number: '30'),
-        ])
+        Circuit.new(buses: [Bus.new(number: '10'), Bus.new(number: '30')])
       end
 
       let(:actual_object_matching_condition) do
         # Intentionally equal to the smallest bus number
-        circuit.buses.where(number: {operator => 10}).first
+        circuit.buses.where(number: { operator => 10 }).first
       end
 
       let(:expected_object_matching_condition) do
@@ -331,7 +315,7 @@ describe 'Matcher' do
       end
 
       let(:actual_object_not_matching_condition) do
-        circuit.buses.where(number: {operator => 9}).first
+        circuit.buses.where(number: { operator => 9 }).first
       end
 
       it_behaves_like 'a field operator', '$lte'
@@ -340,14 +324,11 @@ describe 'Matcher' do
     describe '$in' do
 
       let!(:circuit) do
-        Circuit.new(buses: [
-          Bus.new(number: '10'),
-          Bus.new(number: '30'),
-        ])
+        Circuit.new(buses: [Bus.new(number: '10'), Bus.new(number: '30')])
       end
 
       let(:actual_object_matching_condition) do
-        circuit.buses.where(number: {operator => [10, 20]}).first
+        circuit.buses.where(number: { operator => [10, 20] }).first
       end
 
       let(:expected_object_matching_condition) do
@@ -355,7 +336,7 @@ describe 'Matcher' do
       end
 
       let(:actual_object_not_matching_condition) do
-        circuit.buses.where(number: {operator => [5]}).first
+        circuit.buses.where(number: { operator => [5] }).first
       end
 
       it_behaves_like 'a field operator', '$in'
@@ -371,7 +352,7 @@ describe 'Matcher' do
       end
 
       let(:actual_object_matching_condition) do
-        circuit.buses.where(number: {operator => [5, 10]}).first
+        circuit.buses.where(number: { operator => [5, 10] }).first
       end
 
       let(:expected_object_matching_condition) do
@@ -379,7 +360,7 @@ describe 'Matcher' do
       end
 
       let(:actual_object_not_matching_condition) do
-        circuit.buses.where(number: {operator => [10, 30]}).first
+        circuit.buses.where(number: { operator => [10, 30] }).first
       end
 
       it_behaves_like 'a field operator', '$nin'
@@ -395,7 +376,7 @@ describe 'Matcher' do
       end
 
       let(:actual_object_matching_condition) do
-        person.addresses.where('locations' => {operator => 2}).first
+        person.addresses.where('locations' => { operator => 2 }).first
       end
 
       let(:expected_object_matching_condition) do
@@ -403,7 +384,7 @@ describe 'Matcher' do
       end
 
       let(:actual_object_not_matching_condition) do
-        person.addresses.where('locations' => {operator => 3}).first
+        person.addresses.where('locations' => { operator => 3 }).first
       end
 
       it_behaves_like 'a field operator', '$size'
@@ -595,9 +576,7 @@ describe 'Matcher' do
     describe 'exact match of array element' do
 
       let!(:band) do
-        Band.create!(records: [
-          Record.new(producers: %w[Ferguson Fallon]),
-        ])
+        Band.create!(records: [Record.new(producers: %w[Ferguson Fallon])])
       end
 
       describe 'MongoDB query' do
@@ -624,9 +603,7 @@ describe 'Matcher' do
     describe 'regexp match on array element' do
 
       let!(:band) do
-        Band.create!(records: [
-          Record.new(producers: %w[Ferguson Fallon]),
-        ])
+        Band.create!(records: [Record.new(producers: %w[Ferguson Fallon])])
       end
 
       describe 'MongoDB query' do
@@ -657,7 +634,7 @@ describe 'Matcher' do
       end
 
       let!(:band) do
-        Band.create!(records: [ record ])
+        Band.create!(records: [record])
       end
 
       describe 'MongoDB query' do
@@ -672,9 +649,7 @@ describe 'Matcher' do
         context 'no match' do
 
           let!(:band) do
-            Band.create!(records: [
-              Record.new(producers: [50, 250]),
-            ])
+            Band.create!(records: [Record.new(producers: [50, 250])])
           end
 
           it 'does not find' do
@@ -707,20 +682,18 @@ describe 'Matcher' do
     context 'hash match against scalar value in embeds_many' do
       context 'string value' do
         let(:band) do
-          Band.new(records: [
-            Record.new(producers: ['Sunrise']),
-          ])
+          Band.new(records: [Record.new(producers: ['Sunrise'])])
         end
 
         it 'does not find' do
-          expect(band.records.where(producers: {'$elemMatch': {foo: 'bar'}}).first).to be nil
+          expect(band.records.where(producers: { '$elemMatch': { foo: 'bar' } }).first).to be nil
         end
 
         context 'primitive value query' do
 
           it 'does not find' do
             expect do
-              band.records.where(producers: {'$elemMatch': 'bar'}).first
+              band.records.where(producers: { '$elemMatch': 'bar' }).first
             end.to raise_error(Mongoid::Errors::InvalidQuery, /elemMatch requires a Hash operand/)
           end
         end
@@ -729,7 +702,7 @@ describe 'Matcher' do
 
           it 'does not find' do
             expect do
-              band.records.where(producers: {'$elemMatch': {'$not': 'bar'}}).first
+              band.records.where(producers: { '$elemMatch': { '$not': 'bar' } }).first
             end.to raise_error(Mongoid::Errors::InvalidQuery, /\$not argument must be a Hash or a regular expression/)
           end
         end
@@ -737,27 +710,25 @@ describe 'Matcher' do
         context '$not with regexp' do
 
           it 'finds' do
-            expect(band.records.where(producers: {'$elemMatch': {'$not': /bar/}}).count).to eq(1)
+            expect(band.records.where(producers: { '$elemMatch': { '$not': /bar/ } }).count).to eq(1)
           end
         end
 
         context '$not with operator' do
 
           it 'finds' do
-            expect(band.records.where(producers: {'$elemMatch': {'$not': {'$eq': 'bar'}}}).count).to eq(1)
+            expect(band.records.where(producers: { '$elemMatch': { '$not': { '$eq': 'bar' } } }).count).to eq(1)
           end
         end
       end
 
       context 'integer value' do
         let(:band) do
-          Band.new(records: [
-            Record.new(producers: [42]),
-          ])
+          Band.new(records: [Record.new(producers: [42])])
         end
 
         it 'does not find' do
-          expect(band.records.where(producers: {'$elemMatch': {foo: 'bar'}}).first).to be nil
+          expect(band.records.where(producers: { '$elemMatch': { foo: 'bar' } }).first).to be nil
         end
       end
     end

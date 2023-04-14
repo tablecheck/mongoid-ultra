@@ -40,7 +40,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
       end
 
       let(:patient) do
-        Patient.where('addresses.number' => {'$gt' => 100}).only('addresses.$').first
+        Patient.where('addresses.number' => { '$gt' => 100 }).only('addresses.$').first
       end
 
       it 'loads embedded association' do
