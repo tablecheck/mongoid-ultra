@@ -146,6 +146,5 @@ module Mongoid
            .sort_by { |opt| opt.name }
       end
     end
-
   end
 end

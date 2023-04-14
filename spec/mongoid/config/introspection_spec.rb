@@ -45,7 +45,7 @@ describe Mongoid::Config::Introspection do
 
         it 'should be parsed by the introspection scraper' do
           expect(option).not_to be_nil
-          expect(option.default).to eq default_value.inspect
+          expect(option.default).to eq default_value.inspect.gsub(/\A"(.+)"\z/, '\'\1\'')
           expect(option.comment.strip).not_to be_empty
         end
 
@@ -115,5 +115,4 @@ describe Mongoid::Config::Introspection do
       end
     end
   end
-
 end
