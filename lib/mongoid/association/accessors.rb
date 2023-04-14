@@ -275,12 +275,12 @@ module Mongoid
         name = association.name
         association.inverse_class.tap do |klass|
           klass.module_eval(
-            <<-EXST_MTD, __FILE__, __LINE__ + 1
+            <<-METHOD, __FILE__, __LINE__ + 1
               def #{name}?                                        # def game?
                 without_autobuild { !__send__(:#{name}).blank? }  #   without_autobuild { !__send__(:game).blank? }
               end                                                 # end
               alias :has_#{name}? :#{name}?                       # alias :has_game? :game?
-            EXST_MTD
+            METHOD
           )
         end
       end
