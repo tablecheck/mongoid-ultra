@@ -39,7 +39,7 @@ module Mongoid
       def __consolidate__(klass)
         consolidated = {}
         each_pair do |key, value|
-          if key =~ /\$/
+          if /\$/.match?(key)
             value.each_pair do |_key, _value|
               value[_key] = (key == "$rename") ? _value.to_s : mongoize_for(key, klass, _key, _value)
             end
@@ -79,9 +79,10 @@ module Mongoid
       #   conditions.
       # @api private
       def _mongoid_unsatisfiable_criteria?
-        unsatisfiable_criteria = { "_id" => { "$in" => [] }}
+        unsatisfiable_criteria = { "_id" => { "$in" => [] } }
         return true if self == unsatisfiable_criteria
         return false unless length == 1 && keys == %w($and)
+
         value = values.first
         value.is_a?(Array) && value.any? do |sub_v|
           sub_v.is_a?(Hash) && sub_v._mongoid_unsatisfiable_criteria?
@@ -135,6 +136,7 @@ module Mongoid
         value = self
         keys.each do |key|
           return nil if value.nil?
+
           value_for_key = value[key]
           if value_for_key.nil? && key.to_i.to_s == key
             value_for_key = value[key.to_i]
@@ -222,6 +224,7 @@ module Mongoid
         # @return [ Hash | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.nil?
+
           case object
           when BSON::Document
             object.dup.transform_values!(&:mongoize)

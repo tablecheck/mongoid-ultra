@@ -341,7 +341,7 @@ describe Mongoid::Validatable::PresenceValidator do
         end
 
         let!(:person) do
-          Person.create!(houses: [ house ])
+          Person.create!(houses: [house])
         end
 
         context "when the relation is loaded from the db" do
@@ -466,11 +466,11 @@ describe Mongoid::Validatable::PresenceValidator do
   context "when presence_of array attribute is updated and saved" do
 
     let(:updated_products) do
-      [ "Laptop", "Tablet", "Smartphone", "Desktop" ]
+      %w[Laptop Tablet Smartphone Desktop]
     end
 
     let(:manufacturer) do
-      Manufacturer.create!(products: [ "Laptop", "Tablet" ])
+      Manufacturer.create!(products: %w[Laptop Tablet])
     end
 
     before do
@@ -490,11 +490,11 @@ describe Mongoid::Validatable::PresenceValidator do
   context "when an array attribute has been updated" do
 
     let(:updated_products) do
-      [ "Laptop", "Tablet", "Smartphone", "Desktop" ]
+      %w[Laptop Tablet Smartphone Desktop]
     end
 
     let(:manufacturer) do
-      Manufacturer.create!(products: [ "Laptop", "Tablet" ])
+      Manufacturer.create!(products: %w[Laptop Tablet])
     end
 
     context "when retrieved, flattened and iterated" do
@@ -512,8 +512,8 @@ describe Mongoid::Validatable::PresenceValidator do
       it "maintains the list of changes" do
         expect(manufacturer.changes).to eq({
           "products" => [
-            [ "Laptop", "Tablet" ],
-            [ "Laptop", "Tablet", "Smartphone", "Desktop" ]
+            %w[Laptop Tablet],
+            %w[Laptop Tablet Smartphone Desktop]
           ]
         })
       end
@@ -556,7 +556,7 @@ describe Mongoid::Validatable::PresenceValidator do
     end
 
     it "adds the validation only to the instance" do
-      expect(validators).to eq([ described_class ])
+      expect(validators).to eq([described_class])
     end
   end
 

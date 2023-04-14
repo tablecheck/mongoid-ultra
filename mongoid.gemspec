@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-lib = File.expand_path('../lib/', __FILE__)
-$:.unshift lib unless $:.include?(lib)
+lib = File.expand_path('lib', __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require "mongoid/version"
 
@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
     'changelog_uri' => 'https://github.com/tablecheck/mongoid/releases',
     'documentation_uri' => 'https://www.mongodb.com/docs/mongoid/',
     'homepage_uri' => 'https://github.com/tablecheck/mongoid',
-    'source_code_uri' => 'https://github.com/tablecheck/mongoid',
+    'source_code_uri' => 'https://github.com/tablecheck/mongoid'
   }
 
   s.required_ruby_version = ">= 2.7"

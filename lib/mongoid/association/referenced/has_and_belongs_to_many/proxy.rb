@@ -32,6 +32,7 @@ module Mongoid
           def <<(*args)
             docs = args.flatten
             return concat(docs) if docs.size > 1
+
             if doc = docs.first
               append(doc) do
                 # We ignore the changes to the value for the foreign key in the
@@ -81,6 +82,7 @@ module Mongoid
             ids, docs, inserts = {}, [], []
             documents.each do |doc|
               next unless doc
+
               append(doc)
               if persistable? || _creating?
                 ids[doc.public_send(_association.primary_key)] = true
@@ -185,6 +187,7 @@ module Mongoid
               end
             end
             raise after_remove_error if after_remove_error
+
             many_to_many
           end
 
@@ -204,11 +207,11 @@ module Mongoid
           # @return [ Many ] The association.
           def substitute(replacement)
             purge(replacement)
-            unless replacement.blank?
-              push(replacement.compact.uniq)
-            else
+            if replacement.blank?
               reset_unloaded
               clear_foreign_key_changes
+            else
+              push(replacement.compact.uniq)
             end
             self
           end

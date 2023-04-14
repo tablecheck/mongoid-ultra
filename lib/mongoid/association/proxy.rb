@@ -10,12 +10,13 @@ module Mongoid
     class Proxy
       extend Forwardable
 
+      UNFORWARDABLE_METHODS = /\A(?:__.*|send|object_id|equal\?|respond_to\?|respond_to_missing\?|tap|public_send|extend_proxy|extend_proxies)\z/.freeze
+
       alias :extend_proxy :extend
 
       # We undefine most methods to get them sent through to the target.
       instance_methods.each do |method|
-        undef_method(method) unless
-          method =~ /\A(?:__.*|send|object_id|equal\?|respond_to\?|respond_to_missing\?|tap|public_send|extend_proxy|extend_proxies)\z/
+        undef_method(method) unless UNFORWARDABLE_METHODS.match?(method)
       end
 
       include Threaded::Lifecycle
@@ -58,7 +59,7 @@ module Mongoid
 
       # Allow extension to be an array and extend each module
       def extend_proxies(*extension)
-        extension.flatten.each {|ext| extend_proxy(ext) }
+        extension.flatten.each { |ext| extend_proxy(ext) }
       end
 
       # Get the class from the association, or return nil if no association present.

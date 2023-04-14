@@ -24,7 +24,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
       expect do
         legislator.b
       end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'b' on EmmLegislator which was not loaded/)
-      expect(legislator.attributes.keys).to eq(['_id', 'a'])
+      expect(legislator.attributes.keys).to eq(%w[_id a])
     end
 
     context 'when using only with $' do
@@ -34,13 +34,13 @@ describe Mongoid::Association::Embedded::EmbedsMany do
           title: 'Steve',
           addresses: [
             Address.new(number: '123'),
-            Address.new(number: '456'),
-          ],
+            Address.new(number: '456')
+          ]
         )
       end
 
       let(:patient) do
-        Patient.where('addresses.number' => {'$gt' => 100}).only('addresses.$').first
+        Patient.where('addresses.number' => { '$gt' => 100 }).only('addresses.$').first
       end
 
       it 'loads embedded association' do

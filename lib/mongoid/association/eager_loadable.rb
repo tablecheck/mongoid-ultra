@@ -39,7 +39,7 @@ module Mongoid
       def preload(associations, docs)
         assoc_map = associations.group_by(&:inverse_class_name)
         docs_map = {}
-        queue = [ klass.to_s ]
+        queue = [klass.to_s]
 
         while klass = queue.shift
           if as = assoc_map.delete(klass)
@@ -50,7 +50,7 @@ module Mongoid
               # for the association above it. If there is no parent association,
               # we will include documents from the documents passed to this method.
               ds = docs
-              if assoc.parent_inclusions.length > 0
+              unless assoc.parent_inclusions.empty?
                 ds = assoc.parent_inclusions.map { |p| docs_map[p].to_a }.flatten
               end
 

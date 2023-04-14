@@ -155,7 +155,7 @@ module Mongoid
         # If the list of fields was specified using #without instead of #only
         # and the provided list does not include the association, any of its
         # fields should be allowed.
-        if __selected_fields.values.all? { |v| v == 0 } &&
+        if __selected_fields.values.all?(0) &&
            __selected_fields.keys.none? { |k| k.split('.', 2).first == assoc_key }
         then
           return nil
@@ -274,12 +274,14 @@ module Mongoid
       def self.define_existence_check!(association)
         name = association.name
         association.inverse_class.tap do |klass|
-          klass.module_eval <<-END, __FILE__, __LINE__ + 1
-              def #{name}?
-                without_autobuild { !__send__(:#{name}).blank? }
-              end
-              alias :has_#{name}? :#{name}?
-          END
+          klass.module_eval(
+            <<-METHOD, __FILE__, __LINE__ + 1
+              def #{name}?                                        # def game?
+                without_autobuild { !__send__(:#{name}).blank? }  #   without_autobuild { !__send__(:game).blank? }
+              end                                                 # end
+              alias :has_#{name}? :#{name}?                       # alias :has_game? :game?
+            METHOD
+          )
         end
       end
 

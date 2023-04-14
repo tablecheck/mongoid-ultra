@@ -70,7 +70,7 @@ describe Mongoid::Config::Environment do
     subject { described_class.load_yaml(path, environment) }
 
     context 'when file not found' do
-      let(:path) { 'not/a/valid/path'}
+      let(:path) { 'not/a/valid/path' }
 
       it { expect { subject }.to raise_error(Errno::ENOENT) }
     end
@@ -154,7 +154,7 @@ describe Mongoid::Config::Environment do
                 hosts: [localhost]
                 options:
                   auto_encryption_options:
-                    schema_map: #{schema_map.to_yaml.sub(/\A---/, '').gsub(/\n/, "\n" + ' ' * 100)}
+                    schema_map: #{schema_map.to_yaml.delete_prefix('---').gsub(/\n/, "\n" + ' ' * 100)}
         FILE
       end
 

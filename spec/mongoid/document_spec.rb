@@ -36,7 +36,7 @@ describe Mongoid::Document do
     let(:new_klass) do
       Class.new do
         class << self; attr_accessor :name; end
-      end.tap {|new_klass| new_klass.name = new_klass_name}
+      end.tap { |new_klass| new_klass.name = new_klass_name }
     end
 
     let(:new_model) do
@@ -100,7 +100,7 @@ describe Mongoid::Document do
       end
 
       it "returns the document" do
-        expect(types).to eq([ "Kangaroo" ])
+        expect(types).to eq(["Kangaroo"])
       end
     end
 
@@ -538,7 +538,7 @@ describe Mongoid::Document do
       end
 
       it "returns the id in an array" do
-        expect(person.to_key).to eq([ person.id.to_s ])
+        expect(person.to_key).to eq([person.id.to_s])
       end
 
       it "can query using the key" do
@@ -555,7 +555,7 @@ describe Mongoid::Document do
       end
 
       it "returns the id in an array" do
-        expect(person.to_key).to eq([ person.id.to_s ])
+        expect(person.to_key).to eq([person.id.to_s])
       end
     end
   end
@@ -650,7 +650,7 @@ describe Mongoid::Document do
         context "when the frozen value is a hash" do
 
           let(:hash) do
-            {"foo" => {"bar" => {"baz" => [1, 2, 3]}}}
+            { "foo" => { "bar" => { "baz" => [1, 2, 3] } } }
           end
 
           let(:assign_hash) do
@@ -693,6 +693,7 @@ describe Mongoid::Document do
       expect(movie.global_set).to be_a(::Set)
     end
   end
+
   context "when a model name conflicts with a mongoid internal" do
 
     let(:scheduler) do
@@ -988,11 +989,11 @@ describe Mongoid::Document do
         end
 
         it "copies over the dirty changes" do
-          expect(person.changes["ssn"]).to eq([ nil, "123-22-1234" ])
+          expect(person.changes["ssn"]).to eq([nil, "123-22-1234"])
         end
 
         it "adds the _type change" do
-          expect(person.changes["_type"]).to eq([ "Manager", "Person" ])
+          expect(person.changes["_type"]).to eq(%w[Manager Person])
         end
       end
 
@@ -1139,11 +1140,11 @@ describe Mongoid::Document do
         end
 
         it "copies over the dirty changes" do
-          expect(manager.changes["ssn"]).to eq([ nil, "123-22-1234" ])
+          expect(manager.changes["ssn"]).to eq([nil, "123-22-1234"])
         end
 
         it "adds the _type change" do
-          expect(manager.changes["_type"]).to eq([ "Person", "Manager" ])
+          expect(manager.changes["_type"]).to eq(%w[Person Manager])
         end
       end
 

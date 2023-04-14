@@ -41,12 +41,12 @@ module Mongoid
     # This does not include aliases of _id field.
     #
     # @api private
-    IDS = [ :_id, '_id', ].freeze
+    IDS = [:_id, '_id'].freeze
 
     # BSON classes that are not supported as field types
     #
     # @api private
-    INVALID_BSON_CLASSES = [ BSON::Decimal128, BSON::Int32, BSON::Int64 ].freeze
+    INVALID_BSON_CLASSES = [BSON::Decimal128, BSON::Int32, BSON::Int64].freeze
 
     module ClassMethods
       # Returns the list of id fields for this model class, as both strings
@@ -407,7 +407,8 @@ module Mongoid
       #
       # @api private
       def database_field_name(name, relations, aliased_fields, aliased_associations)
-        return nil unless name.present?
+        return nil if name.blank?
+
         key = name.to_s
         segment, remaining = key.split('.', 2)
 
@@ -798,6 +799,7 @@ module Mongoid
         return Fields::Localized.new(name, opts) if options[:localize]
         return Fields::ForeignKey.new(name, opts) if options[:identity]
         return Fields::Encrypted.new(name, opts) if options[:encrypt]
+
         Fields::Standard.new(name, opts)
       end
 
@@ -828,6 +830,7 @@ module Mongoid
             Mongoid.logger.warn(warn_message)
           end
         end
+
         result
       end
 
@@ -840,7 +843,7 @@ module Mongoid
       #
       # @api private
       def unmapped_type(type)
-        if "Boolean" == type.to_s
+        if type.to_s == "Boolean"
           Mongoid::Boolean
         else
           type || Object

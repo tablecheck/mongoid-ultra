@@ -56,6 +56,7 @@ module Mongoid
     # @return [ true | false ] If the objects are equal.
     def ==(other)
       return super if other.respond_to?(:selector)
+
       entries == other
     end
 
@@ -137,9 +138,7 @@ module Mongoid
     # @param [ Array<Mongoid::Document> ] docs The embedded documents.
     #
     # @return [ Array<Mongoid::Document> ] The embedded documents.
-    def documents=(docs)
-      @documents = docs
-    end
+    attr_writer :documents
 
     # Is the criteria for embedded documents?
     #
@@ -292,6 +291,7 @@ module Mongoid
     def only(*args)
       args = args.flatten
       return clone if args.empty?
+
       if (args & Fields::IDS).empty?
         args.unshift(:_id)
       end
@@ -405,6 +405,7 @@ module Mongoid
       if args.length > 1
         raise ArgumentError, "Criteria#where requires zero or one arguments (given #{args.length})"
       end
+
       if args.length == 1
         expression = args.first
         if expression.is_a?(::String) && embedded?
@@ -549,7 +550,7 @@ module Mongoid
     def type_selection
       klasses = klass._types
       if klasses.size > 1
-        { klass.discriminator_key.to_sym => { "$in" => klass._types }}
+        { klass.discriminator_key.to_sym => { "$in" => klass._types } }
       else
         { klass.discriminator_key.to_sym => klass._types[0] }
       end

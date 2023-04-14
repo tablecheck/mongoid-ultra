@@ -12,7 +12,7 @@ describe Mongoid::Findable do
     end
 
     it "returns the distinct values for the field" do
-      expect(Band.distinct(:name).sort).to eq([ "Photek", "Tool" ])
+      expect(Band.distinct(:name).sort).to eq(%w[Photek Tool])
     end
   end
 
@@ -198,7 +198,7 @@ describe Mongoid::Findable do
     end
   end
 
-  [ :first, :one ].each do |method|
+  [:first, :one].each do |method|
 
     describe "##{method}" do
 
@@ -215,7 +215,7 @@ describe Mongoid::Findable do
       end
 
       it "passes the limit through" do
-        expect(Person.send(method, 1)).to eq([ person1 ])
+        expect(Person.send(method, 1)).to eq([person1])
       end
 
       it "returns nil when no documents are found" do
@@ -258,7 +258,7 @@ describe Mongoid::Findable do
     end
 
     it "passes the limit through" do
-      expect(Person.last(1)).to eq([ person2 ])
+      expect(Person.last(1)).to eq([person2])
     end
 
     it "returns nil when no documents are found" do
@@ -840,7 +840,7 @@ describe Mongoid::Findable do
       end
 
       it "returns the field values" do
-        expect(plucked).to eq([ "Depeche Mode", "Tool", "Photek" ])
+        expect(plucked).to eq(["Depeche Mode", "Tool", "Photek"])
       end
     end
 
@@ -923,7 +923,7 @@ describe Mongoid::Findable do
     end
 
     it 'loads other fields accurately' do
-      expect(User.distinct(:name)).to match_array(['Tom'])
+      expect(User.distinct(:name)).to eq(['Tom'])
     end
   end
 end

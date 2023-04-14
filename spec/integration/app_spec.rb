@@ -37,7 +37,7 @@ describe 'Mongoid application tests' do
       it 'runs' do
         clone_application(
           'https://github.com/mongoid/mongoid-demo',
-          subdir: 'sinatra-minimal',
+          subdir: 'sinatra-minimal'
         ) do
 
           # JRuby needs a long timeout
@@ -56,7 +56,7 @@ describe 'Mongoid application tests' do
       it 'runs' do
         clone_application(
           'https://github.com/mongoid/mongoid-demo',
-          subdir: 'rails-api',
+          subdir: 'rails-api'
         ) do
 
           # JRuby needs a long timeout
@@ -85,7 +85,11 @@ describe 'Mongoid application tests' do
     ensure
       # The process may have already died (due to an error exit) -
       # in this case killing it will raise an exception.
-      Process.kill('TERM', process.pid) rescue nil
+      begin
+        Process.kill('TERM', process.pid)
+      rescue StandardError
+        nil
+      end
       status = process.wait
     end
 
@@ -139,8 +143,8 @@ describe 'Mongoid application tests' do
         expect(File.exist?(mongoid_config_file)).to be true
 
         config_text = File.read(mongoid_config_file)
-        expect(config_text).to match /mongoid_test_config_development/
-        expect(config_text).to match /mongoid_test_config_test/
+        expect(config_text).to match(/mongoid_test_config_development/)
+        expect(config_text).to match(/mongoid_test_config_test/)
 
         Mongoid::Config::Introspection.options(include_deprecated: true).each do |opt|
           if opt.deprecated?
@@ -213,7 +217,7 @@ describe 'Mongoid application tests' do
 
               it 'creates an index' do
                 index = client['posts'].indexes.detect do |index|
-                  index['key'] == {'subject' => 1}
+                  index['key'] == { 'subject' => 1 }
                 end
                 expect(index).to be nil
 
@@ -222,7 +226,7 @@ describe 'Mongoid application tests' do
                            env: env)
 
                 index = client['posts'].indexes.detect do |index|
-                  index['key'] == {'subject' => 1}
+                  index['key'] == { 'subject' => 1 }
                 end
                 expect(index).to be_a(Hash)
               end
@@ -269,7 +273,7 @@ describe 'Mongoid application tests' do
       protocol: protocol,
       hosts: hosts,
       database: database,
-      query: query,
+      query: query
     }
   end
 
@@ -284,12 +288,12 @@ describe 'Mongoid application tests' do
     parts[:database] = 'mongoid_test'
     uri = build_mongodb_uri(parts)
     p uri
-    env_config = {'clients' => {'default' => {
+    env_config = { 'clients' => { 'default' => {
       # TODO massive hack, will fail if uri specifies a database name or
       # any uri options
-      'uri' => uri,
-    }}}
-    config = {'development' => env_config, 'production' => env_config}
+      'uri' => uri
+    } } }
+    config = { 'development' => env_config, 'production' => env_config }
     File.open('config/mongoid.yml', 'w') do |f|
       f << YAML.dump(config)
     end
@@ -298,7 +302,7 @@ describe 'Mongoid application tests' do
   def adjust_app_gemfile(rails_version: SpecConfig.instance.rails_version)
     remove_bundler_req
 
-    gemfile_lines = IO.readlines('Gemfile')
+    gemfile_lines = File.readlines('Gemfile')
     gemfile_lines.delete_if do |line|
       line =~ /mongoid/
     end
@@ -320,7 +324,7 @@ describe 'Mongoid application tests' do
 
   def adjust_rails_defaults(rails_version: SpecConfig.instance.rails_version)
     if File.exist?('config/application.rb')
-      lines = IO.readlines('config/application.rb')
+      lines = File.readlines('config/application.rb')
       lines.each do |line|
         line.gsub!(/config.load_defaults \d\.\d/, "config.load_defaults #{rails_version}")
       end
@@ -332,9 +336,10 @@ describe 'Mongoid application tests' do
 
   def remove_bundler_req
     return unless File.file?('Gemfile.lock')
+
     # TODO: Remove this method completely when we get rid of .lock files in
     # mongoid-demo apps.
-    lock_lines = IO.readlines('Gemfile.lock')
+    lock_lines = File.readlines('Gemfile.lock')
     # Get rid of the bundled with line so that whatever bundler is installed
     # on the system is usable with the application.
     if i = lock_lines.index("BUNDLED WITH\n")
@@ -355,7 +360,7 @@ describe 'Mongoid application tests' do
   end
 
   def clean_env
-    @clean_env ||= Hash[ENV.keys.grep(/BUNDLE|RUBYOPT/).map { |k| [k, nil ] }]
+    @clean_env ||= Hash[ENV.keys.grep(/BUNDLE|RUBYOPT/).map { |k| [k, nil] }]
   end
 
   def wait_for_port(port, timeout, process)

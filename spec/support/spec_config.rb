@@ -12,9 +12,9 @@ class SpecConfig
     if ENV['MONGODB_URI']
       @uri_str = ENV['MONGODB_URI']
     else
-      STDERR.puts "Environment variable 'MONGODB_URI' is not set, so the default url will be used."
-      STDERR.puts "This may lead to unexpected test failures because service discovery will raise unexpected warnings."
-      STDERR.puts "Please consider providing the correct uri via MONGODB_URI environment variable."
+      warn "Environment variable 'MONGODB_URI' is not set, so the default url will be used."
+      warn "This may lead to unexpected test failures because service discovery will raise unexpected warnings."
+      warn "Please consider providing the correct uri via MONGODB_URI environment variable."
       @uri_str = DEFAULT_MONGODB_URI
     end
 
@@ -57,11 +57,7 @@ class SpecConfig
   end
 
   def rails_version
-    v = ENV['RAILS']
-    if v == ''
-      v = nil
-    end
-    v || '6.1'
+    ENV['RAILS'].presence || '6.1'
   end
 
   # Scrapes the output of `gem list` to find which versions of Rails are

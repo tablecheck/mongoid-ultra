@@ -60,7 +60,7 @@ describe Mongoid::Clients::Sessions do
   end
 
   let(:other_events) do
-    subscriber.started_events.reject { |event| ['insert', 'update'].include?(event.command_name) }
+    subscriber.started_events.reject { |event| %w[insert update].include?(event.command_name) }
   end
 
   context 'when a transaction is used on a model class' do
@@ -204,8 +204,8 @@ describe Mongoid::Clients::Sessions do
               expect(Person.count).to be(2)
               expect(Post.count).to be(1)
               expect(insert_events_txn_numbers.size).to eq(2)
-              expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(0)
-              expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(1)
+              expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(0)
+              expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(1)
             end
           end
 
@@ -339,8 +339,8 @@ describe Mongoid::Clients::Sessions do
         end
 
         it 'aborts the transaction' do
-          expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(1)
-          expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(0)
+          expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(1)
+          expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(0)
         end
       end
     end
@@ -580,8 +580,8 @@ describe Mongoid::Clients::Sessions do
         end
 
         it 'aborts the transaction' do
-          expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(1)
-          expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(0)
+          expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(1)
+          expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(0)
         end
       end
     end
@@ -629,8 +629,8 @@ describe Mongoid::Clients::Sessions do
         end
 
         it 'commits the transacrion' do
-          expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(0)
-          expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(1)
+          expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(0)
+          expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(1)
         end
 
         it 'executes the commands inside the transaction' do
@@ -649,8 +649,8 @@ describe Mongoid::Clients::Sessions do
         end
 
         it 'aborts the transaction' do
-          expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(1)
-          expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(0)
+          expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(1)
+          expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(0)
         end
 
         it 'passes on the error' do
