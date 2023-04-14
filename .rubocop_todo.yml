@@ -2012,21 +2012,6 @@ RSpec/LetSetup:
     - 'spec/mongoid/touchable_spec.rb'
     - 'spec/mongoid/validatable/uniqueness_spec.rb'
 
-# Offense count: 24
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/MatchArray:
-  Exclude:
-    - 'spec/mongoid/association/embedded/embedded_in_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_many_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_one_spec.rb'
-    - 'spec/mongoid/association/referenced/belongs_to_spec.rb'
-    - 'spec/mongoid/association/referenced/has_and_belongs_to_many/proxy_spec.rb'
-    - 'spec/mongoid/association/referenced/has_and_belongs_to_many_spec.rb'
-    - 'spec/mongoid/association/referenced/has_many_spec.rb'
-    - 'spec/mongoid/association/referenced/has_one_spec.rb'
-    - 'spec/mongoid/findable_spec.rb'
-    - 'spec/mongoid/scopable_spec.rb'
-
 # Offense count: 302
 # Configuration parameters: .
 # SupportedStyles: have_received, receive
