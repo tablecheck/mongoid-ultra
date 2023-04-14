@@ -563,12 +563,6 @@ Performance/CompareWithBlock:
     - 'spec/mongoid/contextual/mongo_spec.rb'
     - 'spec/mongoid/criteria_spec.rb'
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Performance/Count:
-  Exclude:
-    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
-
 # Offense count: 3
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: SafeMultiline.
@@ -577,13 +571,6 @@ Performance/DeletePrefix:
     - 'lib/mongoid/association/embedded/embeds_many.rb'
     - 'lib/mongoid/association/embedded/embeds_one.rb'
     - 'spec/mongoid/config/environment_spec.rb'
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: SafeMultiline.
-Performance/DeleteSuffix:
-  Exclude:
-    - 'lib/mongoid/extensions/string.rb'
 
 # Offense count: 8
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -1251,12 +1238,6 @@ Rails/RedundantForeignKey:
     - 'spec/support/models/account.rb'
     - 'spec/support/models/post.rb'
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/RootPathnameMethods:
-  Exclude:
-    - 'lib/mongoid/railties/database.rake'
-
 # Offense count: 126
 # Configuration parameters: ForbiddenMethods, AllowedMethods.
 # ForbiddenMethods: decrement!, decrement_counter, increment!, increment_counter, insert, insert!, insert_all, insert_all!, toggle!, touch, touch_all, update_all, update_attribute, update_column, update_columns, update_counters, upsert, upsert_all
@@ -1304,12 +1285,6 @@ Security/IoMethods:
     - 'spec/integration/app_spec.rb'
 
 # Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Security/JSONLoad:
-  Exclude:
-    - 'spec/mongoid/criteria/findable_spec.rb'
-
-# Offense count: 1
 Security/MarshalLoad:
   Exclude:
     - 'spec/mongoid/criteria/marshalable_spec.rb'
@@ -1337,14 +1312,6 @@ Style/AccessorGrouping:
 # SupportedStyles: prefer_alias, prefer_alias_method
 Style/Alias:
   Enabled: false
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: always, conditionals
-Style/AndOr:
-  Exclude:
-    - 'lib/mongoid/attributes/nested.rb'
 
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
@@ -1614,12 +1581,6 @@ Style/HashEachMethods:
     - 'spec/mongoid/clients/transactions_spec.rb'
     - 'spec/mongoid/reloadable_spec.rb'
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/HashExcept:
-  Exclude:
-    - 'lib/mongoid/clients/factory.rb'
-
 # Offense count: 115
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle, EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
@@ -1627,12 +1588,6 @@ Style/HashExcept:
 # SupportedShorthandSyntax: always, never, either, consistent
 Style/HashSyntax:
   Enabled: false
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/HashTransformKeys:
-  Exclude:
-    - 'lib/mongoid/contextual/mongo.rb'
 
 # Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -1665,21 +1620,6 @@ Style/IfInsideElse:
 Style/IfUnlessModifier:
   Enabled: false
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: AllowedMethods.
-# AllowedMethods: nonzero?
-Style/IfWithBooleanLiteralBranches:
-  Exclude:
-    - 'spec/support/models/account.rb'
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: InverseMethods, InverseBlocks.
-Style/InverseMethods:
-  Exclude:
-    - 'lib/mongoid/validatable/uniqueness.rb'
-
 # Offense count: 9
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
@@ -1704,18 +1644,6 @@ Style/LineEndConcatenation:
     - 'lib/mongoid/scopable.rb'
     - 'lib/mongoid/tasks/database.rb'
     - 'lib/mongoid/tasks/encryption.rake'
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/MapToHash:
-  Exclude:
-    - 'lib/mongoid/attributes.rb'
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/MapToSet:
-  Exclude:
-    - 'spec/mongoid/extensions/set_spec.rb'
 
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
@@ -2098,12 +2026,6 @@ Style/RedundantReturn:
 # This cop supports safe autocorrection (--autocorrect).
 Style/RedundantSelf:
   Enabled: false
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/RedundantSelfAssignment:
-  Exclude:
-    - 'lib/mongoid/attributes/nested.rb'
 
 # Offense count: 7
 # This cop supports safe autocorrection (--autocorrect).
