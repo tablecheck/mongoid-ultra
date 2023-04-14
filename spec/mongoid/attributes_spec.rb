@@ -56,7 +56,7 @@ describe Mongoid::Attributes do
               let!(:agent) do
                 agent = Agent.new(:title => title)
                 agent.build_address(:city => city)
-                agent.save!()
+                agent.save!
                 agent
               end
               let(:from_db) do
@@ -2682,7 +2682,7 @@ describe Mongoid::Attributes do
     let(:church) { Church.create!(location: { x: 1 }) }
 
     before do
-      church[:location].merge!(y: 2)
+      church[:location][:y] = 2
       church.save!
       church.reload
     end

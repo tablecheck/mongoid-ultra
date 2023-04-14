@@ -407,7 +407,7 @@ module Mongoid
       #
       # @api private
       def database_field_name(name, relations, aliased_fields, aliased_associations)
-        return nil unless name.present?
+        return nil if name.blank?
         key = name.to_s
         segment, remaining = key.split('.', 2)
 
@@ -840,7 +840,7 @@ module Mongoid
       #
       # @api private
       def unmapped_type(type)
-        if "Boolean" == type.to_s
+        if type.to_s == "Boolean"
           Mongoid::Boolean
         else
           type || Object
