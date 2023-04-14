@@ -4619,25 +4619,19 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   context 'when substituting polymorphic documents' do
 
     before(:all) do
-      class DNS; end
-
-      class DNS
+      module DNS
         class Zone
           include Mongoid::Document
           embeds_many :rrsets, class_name: 'DNS::RRSet',  inverse_of: :zone
           embeds_one  :soa,    class_name: 'DNS::Record', as: :container
         end
-      end
 
-      module DNS
         class RRSet
           include Mongoid::Document
           embedded_in :zone, class_name: 'DNS::Zone', inverse_of: :rrsets
           embeds_many :records, class_name: 'DNS::Record', as: :container
         end
-      end
 
-      module DNS
         class Record
           include Mongoid::Document
           embedded_in :container, polymorphic: true
