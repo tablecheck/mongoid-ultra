@@ -10,7 +10,7 @@ module Mongoid
     class Proxy
       extend Forwardable
 
-      UNFORWARDABLE_METHODS = /\A(?:__.*|send|object_id|equal\?|respond_to\?|respond_to_missing\?|tap|public_send|extend_proxy|extend_proxies)\z/
+      UNFORWARDABLE_METHODS = /\A(?:__.*|send|object_id|equal\?|respond_to\?|respond_to_missing\?|tap|public_send|extend_proxy|extend_proxies)\z/.freeze
 
       alias :extend_proxy :extend
 

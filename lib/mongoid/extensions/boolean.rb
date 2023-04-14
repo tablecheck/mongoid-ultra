@@ -4,8 +4,8 @@ module Mongoid
 
   # Adds type-casting behavior to Mongoid::Boolean class.
   class Boolean
-    TRUTHY_VALUES = /\A(true|t|yes|y|on|1|1.0)\z/i
-    FALSEY_VALUES = /\A(false|f|no|n|off|0|0.0)\z/i
+    TRUTHY_VALUES = /\A(true|t|yes|y|on|1|1.0)\z/i.freeze
+    FALSY_VALUES = /\A(false|f|no|n|off|0|0.0)\z/i.freeze
 
     class << self
 
@@ -20,7 +20,7 @@ module Mongoid
         return if object.nil?
         if object.to_s&.match?(TRUTHY_VALUES)
           true
-        elsif object.to_s&.match?(FALSEY_VALUES)
+        elsif object.to_s&.match?(FALSY_VALUES)
           false
         end
       end
