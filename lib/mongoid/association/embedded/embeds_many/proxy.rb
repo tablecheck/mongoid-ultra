@@ -246,8 +246,8 @@ module Mongoid
           # @yield [ Object ] Yields each enumerable element to the block.
           #
           # @return [ Mongoid::Document | Array<Mongoid::Document> | nil ] A document or matching documents.
-          def find(*args, &block)
-            criteria.find(*args, &block)
+          def find(...)
+            criteria.find(...)
           end
 
           # Instantiate a new embeds_many association.
@@ -322,7 +322,7 @@ module Mongoid
           # @return [ Mongoid::Document | Array<Mongoid::Document> ] The shifted document(s).
           def shift(count = nil)
             if count
-              if _target.size > 0 && docs = _target[0, count]
+              if !_target.empty? && docs = _target[0, count]
                 docs.each { |doc| delete(doc) }
               end
             else
@@ -526,9 +526,7 @@ module Mongoid
           # @param [ Array<Mongoid::Document> ] docs The documents.
           #
           # @return [ Array<Mongoid::Document> ] The unscoped docs.
-          def _unscoped=(docs)
-            @_unscoped = docs
-          end
+          attr_writer :_unscoped
 
           # Returns a list of attributes hashes for each document.
           #
