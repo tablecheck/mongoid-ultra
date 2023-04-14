@@ -642,26 +642,11 @@ Performance/RangeInclude:
   Exclude:
     - 'lib/mongoid/matcher/type.rb'
 
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Performance/RedundantEqualityComparisonBlock:
-  Exclude:
-    - 'lib/mongoid/association/accessors.rb'
-    - 'spec/mongoid/interceptable_spec.rb'
-
 # Offense count: 1
 # This cop supports safe autocorrection (--autocorrect).
 Performance/RedundantMatch:
   Exclude:
     - 'lib/mongoid/collection_configurable.rb'
-
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: MaxKeyValuePairs.
-Performance/RedundantMerge:
-  Exclude:
-    - 'lib/mongoid/validatable/uniqueness.rb'
-    - 'spec/mongoid/attributes_spec.rb'
 
 # Offense count: 12
 # This cop supports safe autocorrection (--autocorrect).
@@ -1258,14 +1243,6 @@ Rails/NegateInclude:
     - 'spec/mongoid/association/options_spec.rb'
     - 'spec/spec_helper.rb'
 
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: Include.
-# Include: app/**/*.rb, config/**/*.rb, db/**/*.rb, lib/**/*.rb
-Rails/Output:
-  Exclude:
-    - 'lib/mongoid/railtie.rb'
-
 # Offense count: 16
 # This cop supports safe autocorrection (--autocorrect).
 Rails/Pluck:
@@ -1721,19 +1698,6 @@ Style/HashSyntax:
 Style/HashTransformKeys:
   Exclude:
     - 'lib/mongoid/contextual/mongo.rb'
-
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/HashTransformValues:
-  Exclude:
-    - 'lib/mongoid/contextual/mongo.rb'
-    - 'lib/mongoid/criteria/queryable/expandable.rb'
-
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/IdenticalConditionalBranches:
-  Exclude:
-    - 'lib/mongoid/interceptable.rb'
 
 # Offense count: 8
 # This cop supports safe autocorrection (--autocorrect).
@@ -2312,25 +2276,11 @@ Style/SingleLineMethods:
 Style/SoleNestedConditional:
   Enabled: false
 
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: RequireEnglish, EnforcedStyle.
-# SupportedStyles: use_perl_names, use_english_names, use_builtin_english_names
-Style/SpecialGlobalVars:
-  Exclude:
-    - 'mongoid.gemspec'
-
 # Offense count: 3
 # This cop supports safe autocorrection (--autocorrect).
 Style/StderrPuts:
   Exclude:
     - 'spec/support/spec_config.rb'
-
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/StringChars:
-  Exclude:
-    - 'lib/mongoid/matcher/bits.rb'
 
 # Offense count: 8
 # This cop supports unsafe autocorrection (--autocorrect-all).
