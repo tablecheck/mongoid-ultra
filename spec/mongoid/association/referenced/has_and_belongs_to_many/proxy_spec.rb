@@ -3064,9 +3064,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     context 'when association is not empty' do
 
       let(:person) do
-        Person.create!(preferences: [
-                         Preference.new(id: 123),
-                       ])
+        Person.create!(preferences: [Preference.new(id: 123)])
       end
 
       it "returns with a selector including association element ids" do

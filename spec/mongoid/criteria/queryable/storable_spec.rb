@@ -49,7 +49,8 @@ describe Mongoid::Criteria::Queryable::Storable do
 
         it 'adds to existing $and' do
           expect(modified.selector).to eq({
-            '$and' => [{'zoom' => 'zoom'}, {'foo' => 'bar'}]})
+            '$and' => [{ 'zoom' => 'zoom' }, { 'foo' => 'bar' }]
+          })
         end
       end
 
@@ -64,7 +65,7 @@ describe Mongoid::Criteria::Queryable::Storable do
 
         it 'adds to existing $and' do
           expect(modified.selector).to eq({
-            '$and' => [{'foo' => 'zoom'}, {'foo' => 'bar'}],
+            '$and' => [{ 'foo' => 'zoom' }, { 'foo' => 'bar' }],
           })
         end
       end
@@ -123,7 +124,8 @@ describe Mongoid::Criteria::Queryable::Storable do
 
         it 'adds to existing $or' do
           expect(modified.selector).to eq({
-            '$or' => [{'zoom' => 'zoom'}, {'foo' => 'bar'}]})
+            '$or' => [{ 'zoom' => 'zoom' }, { 'foo' => 'bar' }]
+          })
         end
       end
 

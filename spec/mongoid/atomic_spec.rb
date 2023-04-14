@@ -374,10 +374,10 @@ describe Mongoid::Atomic do
             pending 'https://jira.mongodb.org/browse/MONGOID-4982'
 
             expect(truck.atomic_updates).to eq({
-              '$set' => {'crates.0.volume' => 2},
-              '$push' => {'crates.0.toys' => {'$each' => [crate.toys.first.attributes]}},
+              '$set' => { 'crates.0.volume' => 2 },
+              '$push' => { 'crates.0.toys' => { '$each' => [crate.toys.first.attributes] } },
               conflicts: {
-                '$push' => {'crates' => {'$each' => [truck.crates.last.attributes]}},
+                '$push' => { 'crates' => { '$each' => [truck.crates.last.attributes] } },
               },
             })
           end

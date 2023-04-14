@@ -1140,7 +1140,7 @@ describe Mongoid::Criteria::Queryable::Optional do
           fields: {
             "name" => 1,
             "first" => { "$slice" => 5 },
-            "second" => { "$slice" => [ 0, 3 ] }
+            "second" => { "$slice" => [0, 3] }
           }
         })
       end

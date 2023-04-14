@@ -31,8 +31,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "combines the conditions with $and" do
           expect(selection.selector).to eq({
-            "first" => { operator => [ 1, 2 ] },
-            '$and' => [{'first' => {operator => [3, 4]}}],
+            "first" => { operator => [1, 2] },
+            '$and' => [{ 'first' => { operator => [3, 4] } }],
           })
         end
 
@@ -47,7 +47,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "intersects the conditions" do
           expect(selection.selector).to eq({
-            "first" => { operator => [ 2 ] }
+            "first" => { operator => [2] }
           })
         end
 
@@ -62,7 +62,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "overwrites the first condition" do
           expect(selection.selector).to eq({
-            "first" => { operator => [ 3, 4 ] }
+            "first" => { operator => [3, 4] }
           })
         end
 
@@ -77,7 +77,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "unions the conditions" do
           expect(selection.selector).to eq({
-            "first" => { operator => [ 1, 2, 3, 4 ] }
+            "first" => { operator => [1, 2, 3, 4] }
           })
         end
 
@@ -95,8 +95,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "combines the conditions with $and" do
           expect(selection.selector).to eq({
-            "_id" => { operator => [ 1, 2 ] },
-            '$and' => [{'_id' => {operator => [3, 4]}}],
+            "_id" => { operator => [1, 2] },
+            '$and' => [{ '_id' => { operator => [3, 4] } }],
           })
         end
 
@@ -111,7 +111,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "intersects the conditions" do
           expect(selection.selector).to eq({
-            "_id" => { operator => [ 2 ] }
+            "_id" => { operator => [2] }
           })
         end
 
@@ -126,7 +126,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "overwrites the first condition" do
           expect(selection.selector).to eq({
-            "_id" => { operator => [ 3, 4 ] }
+            "_id" => { operator => [3, 4] }
           })
         end
 
@@ -141,7 +141,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "unions the conditions" do
           expect(selection.selector).to eq({
-            "_id" => { operator => [ 1, 2, 3, 4 ] }
+            "_id" => { operator => [1, 2, 3, 4] }
           })
         end
 
@@ -164,8 +164,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "combines the conditions with $and" do
           expect(selection.selector).to eq({
-            "field" => { operator => [ 1, 2 ] },
-            '$and' => [{'field' => {operator => [3, 4]}}],
+            "field" => { operator => [1, 2] },
+            '$and' => [{ 'field' => { operator => [3, 4] } }],
           })
         end
 
@@ -180,7 +180,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "intersects the conditions" do
           expect(selection.selector).to eq({
-            "field" => { operator => [ 2 ] }
+            "field" => { operator => [2] }
           })
         end
 
@@ -198,7 +198,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it 'expands range to array' do
           expect(selection.selector).to eq({
-            "foo" => { operator => [ 2, 3, 4 ] }
+            "foo" => { operator => [2, 3, 4] }
           })
 
         end
@@ -212,7 +212,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it 'expands range to array' do
           expect(selection.selector).to eq({
-            "foo" => { operator => [ 2, 3, 4 ] }
+            "foo" => { operator => [2, 3, 4] }
           })
 
         end
@@ -226,7 +226,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it 'expands range to array' do
           expect(selection.selector).to eq({
-            "foo" => { operator => [ 1, 2, 3, 4 ] }
+            "foo" => { operator => [1, 2, 3, 4] }
           })
 
         end
@@ -240,7 +240,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it 'expands range to array' do
           expect(selection.selector).to eq({
-            "foo" => { operator => [ 1, 2, 3, 4 ] }
+            "foo" => { operator => [1, 2, 3, 4] }
           })
 
         end
@@ -286,7 +286,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           it "adds the $all selector" do
             expect(selection.selector).to eq({
-              "field" => { "$all" => [ 1, 2 ] }
+              "field" => { "$all" => [1, 2] }
             })
           end
 
@@ -303,7 +303,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           it "adds the $all selector with wrapped value" do
             expect(selection.selector).to eq({
-              "field" => { "$all" => [ 1 ] }
+              "field" => { "$all" => [1] }
             })
           end
 
@@ -343,7 +343,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           it "adds the $all selector" do
             expect(selection.selector).to eq({
-              "field" => { "$all" => [ 1, 2 ] }
+              "field" => { "$all" => [1, 2] }
             })
           end
 
@@ -360,7 +360,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           it "adds the $all selector with wrapped value" do
             expect(selection.selector).to eq({
-              "field" => { "$all" => [ 1 ] }
+              "field" => { "$all" => [1] }
             })
           end
 
@@ -381,8 +381,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $all selectors" do
           expect(selection.selector).to eq({
-            "first" => { "$all" => [ 1, 2 ] },
-            "second" => { "$all" => [ 3, 4 ] }
+            "first" => { "$all" => [1, 2] },
+            "second" => { "$all" => [3, 4] }
           })
         end
 
@@ -402,8 +402,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $all selectors" do
           expect(selection.selector).to eq({
-            "first" => { "$all" => [ 1, 2 ] },
-            "second" => { "$all" => [ 3, 4 ] }
+            "first" => { "$all" => [1, 2] },
+            "second" => { "$all" => [3, 4] }
           })
         end
 
@@ -482,7 +482,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $elemMatch expression" do
           expect(selection.selector).to eq({
-            "users" => { "$elemMatch" => { "name" => "value" }}
+            "users" => { "$elemMatch" => { "name" => "value" } }
           })
         end
 
@@ -503,7 +503,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $elemMatch expression" do
           expect(selection.selector).to eq({
-            "users" => { "$elemMatch" => { "time" => { "$gt" => time }}}
+            "users" => { "$elemMatch" => { "time" => { "$gt" => time } } }
           })
         end
 
@@ -526,8 +526,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $elemMatch expression" do
           expect(selection.selector).to eq({
-            "users" => { "$elemMatch" => { "name" => "value" }},
-            "comments" => { "$elemMatch" => { "text" => "value" }}
+            "users" => { "$elemMatch" => { "name" => "value" } },
+            "comments" => { "$elemMatch" => { "text" => "value" } }
           })
         end
 
@@ -548,8 +548,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $elemMatch expression" do
           expect(selection.selector).to eq({
-            "users" => { "$elemMatch" => { "name" => "value" }},
-            "comments" => { "$elemMatch" => { "text" => "value" }}
+            "users" => { "$elemMatch" => { "name" => "value" } },
+            "comments" => { "$elemMatch" => { "text" => "value" } }
           })
         end
 
@@ -568,7 +568,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "adds an $elemMatch expression" do
           expect(selection.selector).to eq({
             "users" => { "$elemMatch" => { "name" => "value" } },
-            "$and" => [ { "users" => { "$elemMatch" => { "state" => "new" } } } ],
+            "$and" => [{ "users" => { "$elemMatch" => { "state" => "new" } } }],
           })
         end
 
@@ -715,7 +715,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
               "$geoIntersects" => {
                 "$geometry" => {
                   "type" => "Point",
-                  "coordinates" => [ 1, 10 ]
+                  "coordinates" => [1, 10]
                 }
               }
             }
@@ -737,7 +737,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
               "$geoIntersects" => {
                 "$geometry" => {
                   "type" => "LineString",
-                  "coordinates" => [[ 1, 10 ], [ 2, 10 ]]
+                  "coordinates" => [[1, 10], [2, 10]]
                 }
               }
             }
@@ -759,7 +759,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
               "$geoIntersects" => {
                 "$geometry" => {
                   "type" => "Polygon",
-                  "coordinates" => [[[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]]]
+                  "coordinates" => [[[1, 10], [2, 10], [1, 10]]]
                 }
               }
             }
@@ -781,7 +781,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
               "$geoWithin" => {
                 "$geometry" => {
                   "type" => "Polygon",
-                  "coordinates" => [[[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]]]
+                  "coordinates" => [[[1, 10], [2, 10], [1, 10]]]
                 }
               }
             }
@@ -798,7 +798,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
               "location" => {
                 "$geoWithin" => {
                   "$box" => [
-                    [ 1, 10 ], [ 2, 10 ]
+                    [1, 10], [2, 10]
                   ]
                 }
               }
@@ -886,7 +886,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
           expect(selection.selector).to eq({
             "first" => { "$gt" => 10 },
             "$and" => [{ "first" => { "$gt" => 15 } }]
-            })
+          })
         end
 
         it "returns a cloned query" do
@@ -969,8 +969,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds a second $gte selector" do
           expect(selection.selector).to eq({
-            "first" =>  { "$gte" => 10 },
-            "$and" => [ { "first" => { "$gte" => 15 } } ]
+            "first" => { "$gte" => 10 },
+            "$and" => [{ "first" => { "$gte" => 15 } }]
           })
         end
 
@@ -999,7 +999,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $in selector" do
           expect(selection.selector).to eq({
-            "field" =>  { "$in" => [ 1, 2 ] }
+            "field" => { "$in" => [1, 2] }
           })
         end
 
@@ -1016,7 +1016,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $in selector with wrapped value" do
           expect(selection.selector).to eq({
-            "field" =>  { "$in" => [ 1 ] }
+            "field" => { "$in" => [1] }
           })
         end
 
@@ -1036,8 +1036,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $in selectors" do
           expect(selection.selector).to eq({
-            "first" =>  { "$in" => [ 1, 2 ] },
-            "second" =>  { "$in" => [ 3, 4 ] }
+            "first" => { "$in" => [1, 2] },
+            "second" => { "$in" => [3, 4] }
           })
         end
 
@@ -1057,8 +1057,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $in selectors" do
           expect(selection.selector).to eq({
-            "first" =>  { "$in" => [ 1, 2 ] },
-            "second" =>  { "$in" => [ 3, 4 ] }
+            "first" => { "$in" => [1, 2] },
+            "second" => { "$in" => [3, 4] }
           })
         end
 
@@ -1089,7 +1089,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
       it "adds the $lt selector" do
         expect(selection.selector).to eq({
-          "field" =>  { "$lt" => 10 }
+          "field" => { "$lt" => 10 }
         })
       end
 
@@ -1108,8 +1108,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $lt selectors" do
           expect(selection.selector).to eq({
-            "first" =>  { "$lt" => 10 },
-            "second" =>  { "$lt" => 15 }
+            "first" => { "$lt" => 10 },
+            "second" => { "$lt" => 15 }
           })
         end
 
@@ -1129,8 +1129,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $lt selectors" do
           expect(selection.selector).to eq({
-            "first" =>  { "$lt" => 10 },
-            "second" =>  { "$lt" => 15 }
+            "first" => { "$lt" => 10 },
+            "second" => { "$lt" => 15 }
           })
         end
 
@@ -1147,8 +1147,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds a second $lt selector" do
           expect(selection.selector).to eq({
-            "first" =>  { "$lt" => 10 },
-            "$and" => [ { "first" => { "$lt" => 15 } } ]
+            "first" => { "$lt" => 10 },
+            "$and" => [{ "first" => { "$lt" => 15 } }]
           })
         end
 
@@ -1174,7 +1174,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
       it "adds the $lte selector" do
         expect(selection.selector).to eq({
-          "field" =>  { "$lte" => 10 }
+          "field" => { "$lte" => 10 }
         })
       end
 
@@ -1193,8 +1193,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $lte selectors" do
           expect(selection.selector).to eq({
-            "first" =>  { "$lte" => 10 },
-            "second" =>  { "$lte" => 15 }
+            "first" => { "$lte" => 10 },
+            "second" => { "$lte" => 15 }
           })
         end
 
@@ -1214,8 +1214,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $lte selectors" do
           expect(selection.selector).to eq({
-            "first" =>  { "$lte" => 10 },
-            "second" =>  { "$lte" => 15 }
+            "first" => { "$lte" => 10 },
+            "second" => { "$lte" => 15 }
           })
         end
 
@@ -1232,8 +1232,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds a second $lte selector" do
           expect(selection.selector).to eq({
-            "first" =>  { "$lte" => 10 },
-            "$and" => [ { "first" => { "$lte" => 15 } } ]
+            "first" => { "$lte" => 10 },
+            "$and" => [{ "first" => { "$lte" => 15 } }]
           })
         end
 
@@ -1261,7 +1261,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $maxDistance expression" do
           expect(selection.selector).to eq({
-            "location" =>  { "$near" => [ 1, 1 ], "$maxDistance" => 50 }
+            "location" => { "$near" => [1, 1], "$maxDistance" => 50 }
           })
         end
 
@@ -1287,7 +1287,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
       it "adds the $mod expression" do
         expect(selection.selector).to eq({
-          "value" =>  { "$mod" => [ 10, 1 ] }
+          "value" => { "$mod" => [10, 1] }
         })
       end
 
@@ -1306,8 +1306,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $mod expression" do
           expect(selection.selector).to eq({
-            "value" =>  { "$mod" => [ 10, 1 ] },
-            "comments" =>  { "$mod" => [ 10, 1 ] }
+            "value" => { "$mod" => [10, 1] },
+            "comments" => { "$mod" => [10, 1] }
           })
         end
 
@@ -1328,8 +1328,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $mod expression" do
           expect(selection.selector).to eq({
-            "value" =>  { "$mod" => [ 10, 1 ] },
-            "result" =>  { "$mod" => [ 10, 1 ] }
+            "value" => { "$mod" => [10, 1] },
+            "result" => { "$mod" => [10, 1] }
           })
         end
 
@@ -1355,7 +1355,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
       it "adds the $ne expression" do
         expect(selection.selector).to eq({
-          "value" =>  { "$ne" => 10 }
+          "value" => { "$ne" => 10 }
         })
       end
 
@@ -1377,8 +1377,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $ne expression" do
           expect(selection.selector).to eq({
-            "value" =>  { "$ne" => 10 },
-            "comments" =>  { "$ne" => 10 }
+            "value" => { "$ne" => 10 },
+            "comments" => { "$ne" => 10 }
           })
         end
 
@@ -1399,8 +1399,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $ne expression" do
           expect(selection.selector).to eq({
-            "value" =>  { "$ne" => 10 },
-            "result" =>  { "$ne" => 10 }
+            "value" => { "$ne" => 10 },
+            "result" => { "$ne" => 10 }
           })
         end
 
@@ -1426,7 +1426,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
       it "adds the $near expression" do
         expect(selection.selector).to eq({
-          "location" =>  { "$near" => [ 20, 21 ] }
+          "location" => { "$near" => [20, 21] }
         })
       end
 
@@ -1445,8 +1445,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $near expression" do
           expect(selection.selector).to eq({
-            "location" =>  { "$near" => [ 20, 21 ] },
-            "comments" =>  { "$near" => [ 20, 21 ] }
+            "location" => { "$near" => [20, 21] },
+            "comments" => { "$near" => [20, 21] }
           })
         end
 
@@ -1467,8 +1467,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $near expression" do
           expect(selection.selector).to eq({
-            "location" =>  { "$near" => [ 20, 21 ] },
-            "comments" =>  { "$near" => [ 20, 21 ] }
+            "location" => { "$near" => [20, 21] },
+            "comments" => { "$near" => [20, 21] }
           })
         end
 
@@ -1494,7 +1494,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
       it "adds the $nearSphere expression" do
         expect(selection.selector).to eq({
-          "location" =>  { "$nearSphere" => [ 20, 21 ] }
+          "location" => { "$nearSphere" => [20, 21] }
         })
       end
 
@@ -1513,8 +1513,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $nearSphere expression" do
           expect(selection.selector).to eq({
-            "location" =>  { "$nearSphere" => [ 20, 21 ] },
-            "comments" =>  { "$nearSphere" => [ 20, 21 ] }
+            "location" => { "$nearSphere" => [20, 21] },
+            "comments" => { "$nearSphere" => [20, 21] }
           })
         end
 
@@ -1535,8 +1535,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $nearSphere expression" do
           expect(selection.selector).to eq({
-            "location" =>  { "$nearSphere" => [ 20, 21 ] },
-            "comments" =>  { "$nearSphere" => [ 20, 21 ] }
+            "location" => { "$nearSphere" => [20, 21] },
+            "comments" => { "$nearSphere" => [20, 21] }
           })
         end
 
@@ -1565,7 +1565,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $nin selector" do
           expect(selection.selector).to eq({
-            "field" =>  { "$nin" => [ 1, 2 ] }
+            "field" => { "$nin" => [1, 2] }
           })
         end
 
@@ -1582,7 +1582,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $nin selector with wrapped value" do
           expect(selection.selector).to eq({
-            "field" =>  { "$nin" => [ 1 ] }
+            "field" => { "$nin" => [1] }
           })
         end
 
@@ -1602,8 +1602,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $nin selectors" do
           expect(selection.selector).to eq({
-            "first" =>  { "$nin" => [ 1, 2 ] },
-            "second" =>  { "$nin" => [ 3, 4 ] }
+            "first" => { "$nin" => [1, 2] },
+            "second" => { "$nin" => [3, 4] }
           })
         end
 
@@ -1623,8 +1623,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $nin selectors" do
           expect(selection.selector).to eq({
-            "first" => { "$nin" => [ 1, 2 ] },
-            "second" => { "$nin" => [ 3, 4 ] }
+            "first" => { "$nin" => [1, 2] },
+            "second" => { "$nin" => [3, 4] }
           })
         end
 

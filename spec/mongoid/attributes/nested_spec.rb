@@ -3013,10 +3013,9 @@ describe Mongoid::Attributes::Nested do
 
                 it "raises a document not found error" do
                   expect {
-                    person.posts_attributes =
-                      { "0" =>
-                        { "id" => BSON::ObjectId.new.to_s, "title" => "Rogue" }
-                      }
+                    person.posts_attributes = {
+                      "0" => { "id" => BSON::ObjectId.new.to_s, "title" => "Rogue" }
+                    }
                   }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
                 end
               end
@@ -4332,13 +4331,11 @@ describe Mongoid::Attributes::Nested do
       context "when adding a new embedded document" do
 
         let(:attributes) do
-          { servers_attributes:
-            { "0" =>
-              {
+          {
+            servers_attributes: {
+              "0" => {
                 _id: server.id,
-                filesystems_attributes: {
-                  "0" => { name: "NFS" }
-                }
+                filesystems_attributes: { "0" => { name: "NFS" } }
               }
             }
           }
@@ -4369,11 +4366,7 @@ describe Mongoid::Attributes::Nested do
       end
 
       let(:attributes) do
-        { services_attributes:
-          { "0" =>
-            { _id: service.id, sid: service.sid, _destroy: 1 }
-          }
-        }
+        { services_attributes: { "0" => { _id: service.id, sid: service.sid, _destroy: 1 } } }
       end
 
       before do
@@ -4460,11 +4453,11 @@ describe Mongoid::Attributes::Nested do
         context "when destroying a second level document" do
 
           let(:attributes) do
-            { addresses_attributes:
-              { "0" =>
-                {
+            {
+              addresses_attributes: {
+                "0" => {
                   _id: address_one.id,
-                  locations_attributes: { "0" => { _id: location_one.id, _destroy: true }}
+                  locations_attributes: { "0" => { _id: location_one.id, _destroy: true } }
                 }
               }
             }
@@ -4510,11 +4503,11 @@ describe Mongoid::Attributes::Nested do
             end
 
             let(:attributes) do
-              { records_attributes:
-                { "0" =>
-                  {
+              {
+                records_attributes: {
+                  "0" => {
                     _id: record.id,
-                    tracks_attributes: { "0" => { _id: track.id, _destroy: true }}
+                    tracks_attributes: { "0" => { _id: track.id, _destroy: true } }
                   }
                 }
               }
@@ -4543,9 +4536,9 @@ describe Mongoid::Attributes::Nested do
           context "when no documents has previously existed" do
 
             let(:attributes) do
-              { addresses_attributes:
-                { "0" =>
-                  {
+              {
+                addresses_attributes: {
+                  "0" => {
                     street: "Alexanderstr",
                     locations_attributes: { "0" => { name: "Home" } }
                   }
@@ -4587,7 +4580,7 @@ describe Mongoid::Attributes::Nested do
             let(:attributes) do
               {
                 addresses_attributes: {
-                  a: { id: address.id, locations_attributes: { b: { name: "home" }}},
+                  a: { id: address.id, locations_attributes: { b: { name: "home" } } },
                   c: { street: "pfluger" }
                 }
               }
@@ -4614,9 +4607,9 @@ describe Mongoid::Attributes::Nested do
         context "when the nested document is new" do
 
           let(:attributes) do
-            { addresses_attributes:
-              { "0" =>
-                {
+            {
+              addresses_attributes: {
+                "0" => {
                   street: "Alexanderstr",
                   code_attributes: { name: "Home" }
                 }
@@ -4659,9 +4652,9 @@ describe Mongoid::Attributes::Nested do
           end
 
           let(:attributes) do
-            { addresses_attributes:
-              { "0" =>
-                {
+            {
+              addresses_attributes: {
+                "0" => {
                   _id: address.id,
                   number: 45,
                   code_attributes: {
@@ -4699,9 +4692,9 @@ describe Mongoid::Attributes::Nested do
             end
 
             let(:attributes) do
-              { addresses_attributes:
-                { "0" =>
-                  {
+              {
+                addresses_attributes: {
+                  "0" => {
                     _id: address.id,
                     number: 45,
                     target_attributes: {
@@ -4739,8 +4732,8 @@ describe Mongoid::Attributes::Nested do
               end
 
               let(:attributes) do
-                { name_attributes:
-                  {
+                {
+                  name_attributes: {
                     language_attributes: {
                       _id: language.id.to_s,
                       name: "deutsch"
@@ -4771,9 +4764,7 @@ describe Mongoid::Attributes::Nested do
         end
 
         let(:params) do
-          { posts_attributes:
-            { "0" => { title: "Testing" }}
-          }
+          { posts_attributes: { "0" => { title: "Testing" } } }
         end
 
         before do
@@ -4818,7 +4809,7 @@ describe Mongoid::Attributes::Nested do
 
           let!(:update) do
             node.update_attributes({
-              servers_attributes: { "0" => { "_id" => server.id, "name" => "" }}
+              servers_attributes: { "0" => { "_id" => server.id, "name" => "" } }
             })
           end
 
@@ -4893,9 +4884,7 @@ describe Mongoid::Attributes::Nested do
       context "when no additional validation is set" do
 
         let(:params) do
-          { divisions_attributes:
-            { "0" => { id: division.id.to_s, name: "New Name" }}
-          }
+          { divisions_attributes: { "0" => { id: division.id.to_s, name: "New Name" } } }
         end
 
         before do
@@ -4913,9 +4902,7 @@ describe Mongoid::Attributes::Nested do
           end
 
           let(:new_params) do
-            { divisions_attributes:
-              { "0" => { id: division.id.to_s, name: "Name" }}
-            }
+            { divisions_attributes: { "0" => { id: division.id.to_s, name: "Name" } } }
           end
 
           before do

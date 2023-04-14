@@ -84,7 +84,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the conditions to top level" do
           expect(selection.selector).to eq({
-            "field" => {'$gt' => 3},
+            "field" => { '$gt' => 3 },
           })
         end
 
@@ -120,7 +120,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it 'adds the conditions' do
           expect(selection.selector).to eq({
-            "field" => {'$gte' => Time.new(2020, 1, 1)},
+            "field" => { '$gte' => Time.new(2020, 1, 1) },
           })
         end
 
@@ -136,7 +136,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it 'adds the conditions' do
           expect(selection.selector).to eq({
-            "field" => {'$gte' => Time.utc(2020, 1, 1)},
+            "field" => { '$gte' => Time.utc(2020, 1, 1) },
           })
         end
 
@@ -152,7 +152,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it 'adds the conditions' do
           expect(selection.selector).to eq({
-            "field" => {'$gte' => Time.utc(2020, 1, 1)},
+            "field" => { '$gte' => Time.utc(2020, 1, 1) },
           })
         end
 
@@ -170,7 +170,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
       it "builds the correct selector" do
         expect(selection.selector).to eq({
-          "test" => { "$elemMatch" => { "field" => { "$in" => [ 1, 2 ] }}}
+          "test" => { "$elemMatch" => { "field" => { "$in" => [1, 2] } } }
         })
       end
 
@@ -187,8 +187,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the conditions to top level" do
           expect(selection.selector).to eq({
-            "first" => [ 1, 2 ],
-            "second" => [ 3, 4 ],
+            "first" => [1, 2],
+            "second" => [3, 4],
           })
         end
 
@@ -203,9 +203,9 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "combines via $and operator" do
           expect(selection.selector).to eq({
-            "first" => [ 1, 2 ],
+            "first" => [1, 2],
             "$and" => [
-              { "first" => [ 3, 4 ] }
+              { "first" => [3, 4] }
             ]
           })
         end
@@ -278,10 +278,10 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
       it 'combines' do
         expect(result.selector).to eq(expected_operator => [
-          {'hello' => 'world'},
-          {'foo' => 'bar'},
-          {'bar' => 42},
-          {'a' => 2},
+          { 'hello' => 'world' },
+          { 'foo' => 'bar' },
+          { 'bar' => 42 },
+          { 'a' => 2 },
         ])
       end
     end
@@ -341,7 +341,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
             expect(selection.selector).to eq({
               'first' => [1, 2],
               "$and" => [
-                { "first" => [ 1, 2 ] }
+                { "first" => [1, 2] }
               ]
             })
           end
@@ -358,7 +358,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
             expect(selection.selector).to eq({
               'first' => [1, 2],
               "$and" => [
-                { "first" => {'$gt' => 3} }
+                { "first" => { '$gt' => 3 } }
               ]
             })
           end
@@ -373,7 +373,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           it "adds all conditions" do
             expect(selection.selector).to eq({
-              'first' => {'$lt' => 5, '$gt' => 3},
+              'first' => { '$lt' => 5, '$gt' => 3 },
             })
           end
 
@@ -389,8 +389,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds all conditions to top level" do
           expect(selection.selector).to eq({
-            "first" => [ 1, 2 ],
-            "second" => [ 3, 4 ],
+            "first" => [1, 2],
+            "second" => [3, 4],
           })
         end
 
@@ -406,9 +406,9 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           it "combines via $and operator" do
             expect(selection.selector).to eq({
-              "first" => [ 1, 2 ],
+              "first" => [1, 2],
               "$and" => [
-                { "first" => [ 3, 4 ] }
+                { "first" => [3, 4] }
               ]
             })
           end
@@ -427,9 +427,9 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
             it "combines via $and operator and stringifies all keys" do
               expect(selection.selector).to eq({
-                "field" => {'$in' => [ 1, 2 ]},
+                "field" => { '$in' => [1, 2] },
                 "$and" => [
-                  { "field" => {'$in' => [ 3, 4 ] }}
+                  { "field" => { '$in' => [3, 4] } }
                 ]
               })
             end
@@ -455,7 +455,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
             it "adds the conditions to top level" do
               expect(selection.selector).to eq({
-                "field" => {'$gt' => 3, '$lt' => 5},
+                "field" => { '$gt' => 3, '$lt' => 5 },
               })
             end
 
@@ -493,7 +493,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
             it "combines conditions with $and" do
               expect(selection.selector).to eq({
                 "field" => 3,
-                '$and' => ['field' => {'$lt' => 5}],
+                '$and' => ['field' => { '$lt' => 5 }],
               })
             end
 
@@ -504,7 +504,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
             it "combines conditions with $eq" do
               expect(selection.selector).to eq({
-                "field" => {'$eq' => 3, '$lt' => 5},
+                "field" => { '$eq' => 3, '$lt' => 5 },
               })
             end
 
@@ -515,7 +515,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
             it "combines conditions with $regex" do
               expect(selection.selector).to eq({
-                "field" => {'$regex' => /t/, '$lt' => 5},
+                "field" => { '$regex' => /t/, '$lt' => 5 },
               })
             end
 
@@ -562,7 +562,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
             it "combines conditions with $and" do
               expect(selection.selector).to eq({
-                "field" => {'$gt' => 3},
+                "field" => { '$gt' => 3 },
                 '$and' => ['field' => 5],
               })
             end
@@ -574,7 +574,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
             it "combines conditions with $eq" do
               expect(selection.selector).to eq({
-                "field" => {'$gt' => 3, '$eq' => 5},
+                "field" => { '$gt' => 3, '$eq' => 5 },
               })
             end
 
@@ -585,7 +585,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
             it "combines conditions with $regex" do
               expect(selection.selector).to eq({
-                "field" => {'$gt' => 3, '$regex' => /t/},
+                "field" => { '$gt' => 3, '$regex' => /t/ },
               })
             end
 
@@ -794,8 +794,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
           expect(selection.selector).to eq({
             'foo' => 'bar',
             '$or' => [
-              {'one' => 'one'},
-              {'two' => 'two'},
+              { 'one' => 'one' },
+              { 'two' => 'two' },
             ],
           })
         end
@@ -851,7 +851,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
       it "adds the $or/$nor selector" do
         expect(selection.selector).to eq({
-          expected_operator => [{ "field" => [ 1, 2 ] }]
+          expected_operator => [{ "field" => [1, 2] }]
         })
       end
 
@@ -865,7 +865,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $or/$nor selector" do
           expect(selection.selector).to eq({
-            expected_operator => [{ "field" => [ 1, 2 ] }]
+            expected_operator => [{ "field" => [1, 2] }]
           })
         end
 
@@ -879,7 +879,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           it "adds the $or/$nor selector ignoring the nil element" do
             expect(selection.selector).to eq({
-              expected_operator => [{ "field" => [ 1, 2 ] }]
+              expected_operator => [{ "field" => [1, 2] }]
             })
           end
         end
@@ -893,7 +893,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it 'moves original conditions under $or/$nor' do
           expect(selection.selector).to eq({
-            expected_operator => [{'foo' => 'bar'}, { "field" => [ 1, 2 ] }]
+            expected_operator => [{ 'foo' => 'bar' }, { "field" => [1, 2] }]
           })
         end
       end
@@ -931,8 +931,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "adds the $or/$nor selector" do
           expect(selection.selector).to eq({
             expected_operator => [
-              { "first" => [ 1, 2 ] },
-              { "second" => [ 3, 4 ] }
+              { "first" => [1, 2] },
+              { "second" => [3, 4] }
             ]
           })
         end
@@ -947,8 +947,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "adds the $or/$nor selector" do
           expect(selection.selector).to eq({
             expected_operator => [
-              { "first" => [ 1, 2 ] },
-              { "second" => { "$gt" => 3 }}
+              { "first" => [1, 2] },
+              { "second" => { "$gt" => 3 } }
             ]
           })
         end
@@ -962,7 +962,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           it 'adds the conditions' do
             expect(selection.selector).to eq(expected_operator => [
-              "field" => {'$gte' => Time.new(2020, 1, 1)},
+              "field" => { '$gte' => Time.new(2020, 1, 1) },
             ])
           end
 
@@ -978,7 +978,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           it 'adds the conditions' do
             expect(selection.selector).to eq(expected_operator => [
-              "field" => {'$gte' => Time.utc(2020, 1, 1)},
+              "field" => { '$gte' => Time.utc(2020, 1, 1) },
             ])
           end
 
@@ -994,7 +994,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           it 'adds the conditions' do
             expect(selection.selector).to eq(expected_operator => [
-              "field" => {'$gte' => Time.utc(2020, 1, 1)},
+              "field" => { '$gte' => Time.utc(2020, 1, 1) },
             ])
           end
 
@@ -1012,7 +1012,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "adds the $or/$nor selector and aliases the field" do
           expect(selection.selector).to eq({
-            expected_operator => [ { "_id" => 1 } ]
+            expected_operator => [{ "_id" => 1 }]
           })
         end
 
@@ -1030,8 +1030,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "adds the $or/$nor selector" do
           expect(selection.selector).to eq({
             expected_operator => [
-              { "first" => [ 1, 2 ] },
-              { "second" => { "$gt" => 3 }}
+              { "first" => [1, 2] },
+              { "second" => { "$gt" => 3 } }
             ]
           })
         end
@@ -1049,8 +1049,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
           it "appends both $or/$nor expressions" do
             expect(selection.selector).to eq({
               expected_operator => [
-                { "first" => [ 1, 2 ] },
-                { "first" => [ 3, 4 ] }
+                { "first" => [1, 2] },
+                { "first" => [3, 4] }
               ]
             })
           end
@@ -1066,7 +1066,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
           it "adds all criteria" do
             expect(selection.selector).to eq({
               expected_operator => [
-                { "first" => {'$gt' => 3, '$lt' => 5} },
+                { "first" => { '$gt' => 3, '$lt' => 5 } },
               ]
             })
           end
@@ -1082,8 +1082,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
           it "adds all criteria" do
             expect(selection.selector).to eq({
               expected_operator => [
-                { "first" => {'$gt' => 3} },
-                { "first" => {'$lt' => 5} },
+                { "first" => { '$gt' => 3 } },
+                { "first" => { '$lt' => 5 } },
               ]
             })
           end
@@ -1104,8 +1104,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "adds the $or/$nor selectors" do
           expect(selection.selector).to eq({
             expected_operator => [
-              { "first" => [ 1, 2 ] },
-              { "second" => [ 3, 4 ] }
+              { "first" => [1, 2] },
+              { "second" => [3, 4] }
             ]
           })
         end
@@ -1122,8 +1122,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "appends both $or/$nor expressions" do
           expect(selection.selector).to eq({
             expected_operator => [
-              { "first" => [ 1, 2 ] },
-              { "first" => [ 3, 4 ] }
+              { "first" => [1, 2] },
+              { "first" => [3, 4] }
             ]
           })
         end
@@ -1140,7 +1140,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it 'combines conditions with $eq' do
           expect(selection.selector).to eq({
             expected_operator => [
-              'field' => {'$eq' => 1, '$gt' => 0},
+              'field' => { '$eq' => 1, '$gt' => 0 },
             ]
           })
         end
@@ -1154,7 +1154,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it 'combines conditions with $regex' do
           expect(selection.selector).to eq({
             expected_operator => [
-              'field' => {'$regex' => /t/, '$gt' => 0},
+              'field' => { '$regex' => /t/, '$gt' => 0 },
             ]
           })
         end
@@ -1388,8 +1388,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "adds the $or selector" do
           expect(selection.selector).to eq({
             "$or" => [
-              { "first" => [ 1, 2 ] },
-              { "second" => [ 3, 4 ] }
+              { "first" => [1, 2] },
+              { "second" => [3, 4] }
             ]
           })
         end
@@ -1404,8 +1404,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "adds the $or selector" do
           expect(selection.selector).to eq({
             "$or" => [
-              { "first" => [ 1, 2 ] },
-              { "second" => { "$gt" => 3 }}
+              { "first" => [1, 2] },
+              { "second" => { "$gt" => 3 } }
             ]
           })
         end
@@ -1419,8 +1419,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
           it "adds conditions with $or" do
             expect(selection.selector).to eq({
               '$or' => [
-                {'field' => 3},
-                {'field' => {'$lt' => 5}},
+                { 'field' => 3 },
+                { 'field' => { '$lt' => 5 } },
               ],
             })
           end
@@ -1497,8 +1497,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
           it "adds conditions with $or" do
             expect(selection.selector).to eq({
               '$or' => [
-                {'field' => {'$gt' => 3}},
-                {'field' => 5},
+                { 'field' => { '$gt' => 3 } },
+                { 'field' => 5 },
               ],
             })
           end
@@ -1589,8 +1589,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "adds the $or selector" do
           expect(selection.selector).to eq({
             "$or" => [
-              { "first" => [ 1, 2 ] },
-              { "second" => { "$gt" => 3 }}
+              { "first" => [1, 2] },
+              { "second" => { "$gt" => 3 } }
             ]
           })
         end
@@ -1607,8 +1607,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "appends both $or expressions" do
           expect(selection.selector).to eq({
             "$or" => [
-              { "first" => [ 1, 2 ] },
-              { "first" => [ 3, 4 ] }
+              { "first" => [1, 2] },
+              { "first" => [3, 4] }
             ]
           })
         end
@@ -1982,7 +1982,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it "does not double the $not selector" do
           expect(selection.selector).to eq({
-            "first" =>  { "$not" => /1/ }
+            "first" => { "$not" => /1/ }
           })
         end
 
@@ -2083,7 +2083,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it 'combines conditions with $eq' do
           expect(selection.selector).to eq({
-            '$and' => [{ '$nor' => [{ 'field' => {'$eq' => 1, '$gt' => 0} }] }]
+            '$and' => [{ '$nor' => [{ 'field' => { '$eq' => 1, '$gt' => 0 } }] }]
           })
         end
       end
@@ -2096,7 +2096,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it 'combines conditions with $regex' do
           expect(selection.selector).to eq({
             '$and' => ['$nor' => [
-              'field' => {'$regex' => /t/, '$gt' => 0}
+              'field' => { '$regex' => /t/, '$gt' => 0 }
             ]]
           })
         end
@@ -2295,8 +2295,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "adds the $nor selector" do
           expect(selection.selector).to eq({
             "$nor" => [
-              { "first" => [ 1, 2 ] },
-              { "second" => [ 3, 4 ] }
+              { "first" => [1, 2] },
+              { "second" => [3, 4] }
             ]
           })
         end
@@ -2310,7 +2310,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "adds the $nor selector" do
           expect(selection.selector).to eq({
             "$nor" => [
-              { "first" => [ 1, 2 ] },
+              { "first" => [1, 2] },
               { "second" => { "$gt" => 3 } }
             ]
           })
@@ -2324,8 +2324,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
           it "adds conditions with $nor" do
             expect(selection.selector).to eq({
               '$nor' => [
-                {'field' => 3},
-                {'field' => {'$lt' => 5} }
+                { 'field' => 3 },
+                { 'field' => { '$lt' => 5 } }
               ]
             })
           end
@@ -2336,7 +2336,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         shared_examples_for 'combines conditions with $eq' do
           it "combines conditions with $eq" do
             expect(selection.selector).to eq({
-              '$nor' => [ { 'field' => { '$eq' => 3, '$lt' => 5 } } ]
+              '$nor' => [{ 'field' => { '$eq' => 3, '$lt' => 5 } }]
             })
           end
 
@@ -2346,7 +2346,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         shared_examples_for 'combines conditions with $regex' do
           it 'combines conditions with $regex' do
             expect(selection.selector).to eq({
-              '$nor' => [ { 'field' => { '$regex' => /t/, '$lt' => 5 } } ]
+              '$nor' => [{ 'field' => { '$regex' => /t/, '$lt' => 5 } }]
             })
           end
 
@@ -2453,8 +2453,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it 'adds the $ nor selector' do
           expect(selection.selector).to eq({
             '$nor' => [
-              { 'first' => [ 1, 2 ] },
-              { 'second' => { '$gt' => 3 }}
+              { 'first' => [1, 2] },
+              { 'second' => { '$gt' => 3 } }
             ]
           })
         end
@@ -2470,8 +2470,8 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it 'appends both $nor expressions' do
           expect(selection.selector).to eq({
             "$nor" => [
-              { "first" => [ 1, 2 ] },
-              { "first" => [ 3, 4 ] }
+              { "first" => [1, 2] },
+              { "first" => [3, 4] }
             ]
           })
         end

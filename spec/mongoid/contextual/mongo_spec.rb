@@ -2973,8 +2973,8 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire raw results" do
         expect(ordered_results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }},
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } },
+          { "_id" => "Tool", "value" => { "likes" => 100 } }
         ])
       end
 
@@ -3035,7 +3035,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire raw results" do
         expect(ordered_results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         ])
       end
 
@@ -3107,8 +3107,8 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire raw results" do
         expect(ordered_results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }},
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } },
+          { "_id" => "Tool", "value" => { "likes" => 100 } }
         ])
       end
     end
@@ -3142,7 +3142,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire raw results" do
         expect(results["results"]).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         ])
       end
     end
@@ -3167,7 +3167,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire results" do
         expect(results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         ])
       end
     end
@@ -3192,7 +3192,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire results" do
         expect(results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         ])
       end
     end
@@ -3217,7 +3217,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire results" do
         expect(results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         ])
       end
     end
@@ -3252,7 +3252,7 @@ describe Mongoid::Contextual::Mongo do
 
         it "contains the entire results" do
           expect(results).to eq([
-            { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+            { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
           ])
         end
 
@@ -3273,7 +3273,7 @@ describe Mongoid::Contextual::Mongo do
 
         it "contains the entire results" do
           expect(results).to eq([
-            { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+            { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
           ])
         end
 
@@ -3332,7 +3332,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire results" do
         expect(results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200, "extra" => true }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200, "extra" => true } }
         ])
       end
     end

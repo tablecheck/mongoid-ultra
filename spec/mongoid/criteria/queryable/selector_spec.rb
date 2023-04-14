@@ -66,8 +66,8 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         it "combines the two $nin queries into one" do
           expect(selector).to eq({
-                                   "field" => { "$nin" => %w[foo bar] }
-                                 })
+            "field" => { "$nin" => %w[foo bar] }
+          })
         end
       end
     end
@@ -94,8 +94,8 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         it "intersects the $in values" do
           expect(selector).to eq({
-                                   "field" => { "$in" => [1] }
-                                 })
+            "field" => { "$in" => [1] }
+          })
         end
       end
 
@@ -111,8 +111,8 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         it "intersects the $in values" do
           expect(selector).to eq({
-                                   "field" => { "$in" => [] }
-                                 })
+            "field" => { "$in" => [] }
+          })
         end
       end
     end

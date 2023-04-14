@@ -1965,7 +1965,7 @@ describe Mongoid::Changeable do
     it "marks field changes" do
       expect(person.changes).to eq({
         "title" => %w[MC DJ],
-        "ssn" => [ nil, "222-22-2222" ],
+        "ssn" => [nil, "222-22-2222"],
         "some_dynamic_field" => %w[blah bloop]
       })
     end

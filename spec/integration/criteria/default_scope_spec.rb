@@ -34,10 +34,12 @@ describe 'Criteria and default scope' do
         end
 
         it 'adds new condition in parallel to default scope conditions' do
-          expect(criteria.selector).to eq({'$or' => [
-            {'active' => true},
-            {'timed' => true},
-          ]})
+          expect(criteria.selector).to eq({
+            '$or' => [
+              { 'active' => true },
+              { 'timed' => true },
+            ]
+          })
         end
       end
 
@@ -61,10 +63,12 @@ describe 'Criteria and default scope' do
         end
 
         it 'adds new condition in parallel to default scope conditions' do
-          expect(criteria.selector).to eq({'$or' => [
-            {'active' => true},
-            {'timed' => true},
-          ]})
+          expect(criteria.selector).to eq({
+            '$or' => [
+              { 'active' => true },
+              { 'timed' => true },
+            ]
+          })
         end
       end
     end

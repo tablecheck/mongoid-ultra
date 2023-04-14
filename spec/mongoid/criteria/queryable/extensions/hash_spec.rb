@@ -92,8 +92,8 @@ describe Hash do
 
         it "merges in the new hash" do
           expect(hash).to eq({
-            "$all" => [ 1, 2, 3 ],
-            "$in" => [ 1, 2 ]
+            "$all" => [1, 2, 3],
+            "$in" => [1, 2]
           })
         end
       end
@@ -226,8 +226,8 @@ describe Hash do
 
         it "merges in the new hash" do
           expect(hash).to eq({
-            "$all" => [ 1, 2, 3 ],
-            "$in" => [ 1, 2 ]
+            "$all" => [1, 2, 3],
+            "$in" => [1, 2]
           })
         end
       end
@@ -304,8 +304,8 @@ describe Hash do
 
         it "merges in the new hash" do
           expect(hash).to eq({
-            "$all" => [ 1, 2, 3 ],
-            "$in" => [ 1, 2 ]
+            "$all" => [1, 2, 3],
+            "$in" => [1, 2]
           })
         end
       end

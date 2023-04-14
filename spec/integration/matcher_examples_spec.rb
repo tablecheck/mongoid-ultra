@@ -403,10 +403,12 @@ describe 'Matcher' do
       end
 
       let(:actual_object_matching_condition) do
-        person.addresses.where(operator => [
-          {'locations.name' => 'Hall'},
-          {'locations.number' => 1},
-        ]).first
+        person.addresses.where({
+          operator => [
+            { 'locations.name' => 'Hall' },
+            { 'locations.number' => 1 },
+          ]
+        }).first
       end
 
       let(:expected_object_matching_condition) do
@@ -414,10 +416,12 @@ describe 'Matcher' do
       end
 
       let(:actual_object_not_matching_condition) do
-        person.addresses.where(operator => [
-          {'locations.name' => 'Hall'},
-          {'locations.number' => 2},
-        ]).first
+        person.addresses.where({
+          operator => [
+            { 'locations.name' => 'Hall' },
+            { 'locations.number' => 2 },
+          ]
+        }).first
       end
 
       it_behaves_like 'a field operator', '$and'
@@ -441,10 +445,14 @@ describe 'Matcher' do
 
         context 'when $and is on field level' do
           let(:actual_object_matching_condition) do
-            person.addresses.where('locations' => {operator => [
-              {'name' => 'Hall'},
-              {'number' => 1},
-            ]}).first
+            person.addresses.where({
+              'locations' => {
+                operator => [
+                  { 'name' => 'Hall' },
+                  { 'number' => 1 },
+                ]
+              }
+            }).first
           end
 
           it 'is prohibited' do
@@ -469,10 +477,12 @@ describe 'Matcher' do
       end
 
       let(:actual_object_matching_condition) do
-        person.addresses.where(operator => [
-          {'locations.name' => 'Hall'},
-          {'locations.number' => 4},
-        ]).first
+        person.addresses.where({
+          operator => [
+            { 'locations.name' => 'Hall' },
+            { 'locations.number' => 4 },
+          ]
+        }).first
       end
 
       let(:expected_object_matching_condition) do
@@ -480,10 +490,12 @@ describe 'Matcher' do
       end
 
       let(:actual_object_not_matching_condition) do
-        person.addresses.where(operator => [
-          {'locations.name' => 'Town'},
-          {'locations.number' => 4},
-        ]).first
+        person.addresses.where({
+          operator => [
+            { 'locations.name' => 'Town' },
+            { 'locations.number' => 4 },
+          ]
+        }).first
       end
 
       it_behaves_like 'a field operator', '$or'
@@ -493,10 +505,14 @@ describe 'Matcher' do
 
         context 'when $or is on field level' do
           let(:actual_object_matching_condition) do
-            person.addresses.where('locations' => {operator => [
-              {'name' => 'Hall'},
-              {'number' => 1},
-            ]}).first
+            person.addresses.where({
+              'locations' => {
+                operator => [
+                  { 'name' => 'Hall' },
+                  { 'number' => 1 },
+                ]
+              }
+            }).first
           end
 
           it 'is prohibited' do
@@ -520,8 +536,8 @@ describe 'Matcher' do
       end
 
       let(:actual_object_matching_condition) do
-        person.addresses.where('locations.name' => {operator =>
-          {'$eq' => 'City'},
+        person.addresses.where({
+          'locations.name' => { operator => { '$eq' => 'City' } }
         }).first
       end
 
@@ -530,8 +546,8 @@ describe 'Matcher' do
       end
 
       let(:actual_object_not_matching_condition) do
-        person.addresses.where('locations.name' => {operator =>
-          {'$eq' => 'Hall'},
+        person.addresses.where({
+          'locations.name' => { operator => { '$eq' => 'Hall' } }
         }).first
       end
 
@@ -556,10 +572,14 @@ describe 'Matcher' do
 
         context 'when $not is on field level' do
           let(:actual_object_matching_condition) do
-            person.addresses.where('locations' => {operator => [
-              {'name' => 'Hall'},
-              {'number' => 1},
-            ]}).first
+            person.addresses.where({
+              'locations' => {
+                operator => [
+                  { 'name' => 'Hall' },
+                  { 'number' => 1 },
+                ]
+              }
+            }).first
           end
 
           it 'is prohibited' do

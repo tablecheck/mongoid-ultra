@@ -49,11 +49,13 @@ describe Mongoid::Criteria::Queryable::Key do
       end
 
       it "returns the query expression" do
-        expect(specified).to eq({ "field" => {
-          '$geoIntersects' => {
-            '$geometry' => [1, 10],
-          },
-        }})
+        expect(specified).to eq({
+          "field" => {
+            '$geoIntersects' => {
+              '$geometry' => [1, 10],
+            },
+          }
+        })
       end
     end
 
@@ -69,13 +71,13 @@ describe Mongoid::Criteria::Queryable::Key do
       end
 
       it "returns the query expression" do
-        expect(specified).to eq({ "field" => {
-          '$geoIntersects' => {
-            '$geometry' => {
-              'type' => 'Point', 'coordinates' => [1, 10],
-            },
-          },
-        }})
+        expect(specified).to eq({
+          "field" => {
+            '$geoIntersects' => {
+              '$geometry' => { 'type' => 'Point', 'coordinates' => [1, 10] }
+            }
+          }
+        })
       end
     end
   end

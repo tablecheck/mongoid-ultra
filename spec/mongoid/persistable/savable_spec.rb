@@ -194,8 +194,8 @@ describe Mongoid::Persistable::Savable do
               "name" => "King",
               "scribe.name" => "Tosh"
             },
-            "$push"=> {
-              "birthdays" => { '$each' => [ { "_id" => birthday.id, "title" => "First" } ] }
+            "$push" => {
+              "birthdays" => { '$each' => [{ "_id" => birthday.id, "title" => "First" }] }
             }
           })
         end

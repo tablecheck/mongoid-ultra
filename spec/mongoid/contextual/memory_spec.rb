@@ -1820,7 +1820,7 @@ describe Mongoid::Contextual::Memory do
 
       it "returns the correct hash" do
         expect(plucked).to eq([
-          [ [ 1, 2 ] ], [ [ 1, 2 ] ], [ [ 1, 3 ] ]
+          [[1, 2]], [[1, 2]], [[1, 3]]
         ])
       end
     end

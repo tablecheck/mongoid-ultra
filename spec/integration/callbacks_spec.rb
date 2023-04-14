@@ -396,7 +396,7 @@ describe 'callbacks integration tests' do
         # Field values are nil before create
         [nil, nil],
         [title, age]
-        ])
+      ])
     end
   end
 
