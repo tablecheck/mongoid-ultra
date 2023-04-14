@@ -7,7 +7,7 @@ describe Mongoid::Criteria::Queryable::Options do
   describe "#__deep_copy__" do
 
     let(:sort) do
-      [[ :name, :asc ]]
+      [[:name, :asc]]
     end
 
     let(:options) do
@@ -131,7 +131,7 @@ describe Mongoid::Criteria::Queryable::Options do
     end
   end
 
-  [ :store, :[]= ].each do |method|
+  [:store, :[]=].each do |method|
 
     describe "##{method}" do
 

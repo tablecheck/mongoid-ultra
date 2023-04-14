@@ -7,7 +7,7 @@ describe Mongoid::Criteria::Queryable::Pipeline do
   describe "#__deep_copy" do
 
     let(:project) do
-      { "$project" => { "name" => 1 }}
+      { "$project" => { "name" => 1 } }
     end
 
     let(:pipeline) do
