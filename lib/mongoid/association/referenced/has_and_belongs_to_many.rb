@@ -32,7 +32,7 @@ module Mongoid
           :primary_key,
           :inverse_primary_key,
           :inverse_foreign_key,
-          :scope,
+          :scope
         ].freeze
 
         # The complete list of valid options for this association, including

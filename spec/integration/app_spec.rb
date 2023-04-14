@@ -37,7 +37,7 @@ describe 'Mongoid application tests' do
       it 'runs' do
         clone_application(
           'https://github.com/mongoid/mongoid-demo',
-          subdir: 'sinatra-minimal',
+          subdir: 'sinatra-minimal'
         ) do
 
           # JRuby needs a long timeout
@@ -56,7 +56,7 @@ describe 'Mongoid application tests' do
       it 'runs' do
         clone_application(
           'https://github.com/mongoid/mongoid-demo',
-          subdir: 'rails-api',
+          subdir: 'rails-api'
         ) do
 
           # JRuby needs a long timeout
@@ -273,7 +273,7 @@ describe 'Mongoid application tests' do
       protocol: protocol,
       hosts: hosts,
       database: database,
-      query: query,
+      query: query
     }
   end
 
@@ -291,7 +291,7 @@ describe 'Mongoid application tests' do
     env_config = { 'clients' => { 'default' => {
       # TODO massive hack, will fail if uri specifies a database name or
       # any uri options
-      'uri' => uri,
+      'uri' => uri
     } } }
     config = { 'development' => env_config, 'production' => env_config }
     File.open('config/mongoid.yml', 'w') do |f|

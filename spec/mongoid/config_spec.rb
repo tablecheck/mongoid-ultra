@@ -556,15 +556,15 @@ describe Mongoid::Config do
                   'message' => { 'encrypt' => {
                     'algorithm' => 'AEAD_AES_256_CBC_HMAC_SHA_512-Deterministic',
                     'bsonType' => 'string',
-                    'keyId' => [BSON::Binary.new("G\xF0 5\xCC@HX\xA2%b\x97\xA9a\xA8\xE7", :uuid)],
-                  } },
-                },
+                    'keyId' => [BSON::Binary.new("G\xF0 5\xCC@HX\xA2%b\x97\xA9a\xA8\xE7", :uuid)]
+                  } }
+                }
               } }
             },
             database: 'mongoid_test',
             platform: "mongoid-#{Mongoid::VERSION}",
             wrapping_libraries: [
-              { 'name' => 'Mongoid', 'version' => Mongoid::VERSION },
+              { 'name' => 'Mongoid', 'version' => Mongoid::VERSION }
             ]
           }
         )

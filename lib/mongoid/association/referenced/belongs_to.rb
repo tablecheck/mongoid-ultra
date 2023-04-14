@@ -30,7 +30,7 @@ module Mongoid
           :touch,
           :optional,
           :required,
-          :scope,
+          :scope
         ].freeze
 
         # The complete list of valid options for this association, including

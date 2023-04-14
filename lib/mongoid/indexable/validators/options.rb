@@ -28,7 +28,7 @@ module Mongoid
           :version,
           :partial_filter_expression,
           :collation,
-          :wildcard_projection,
+          :wildcard_projection
         ]
 
         VALID_TYPES = [

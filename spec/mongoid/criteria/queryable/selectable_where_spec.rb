@@ -56,7 +56,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it 'combines conditions' do
           expect(selection.selector).to eq(
-            "$where" => "this.value = 10", '$and' => [{ '$where' => 'foo.bar' }],
+            "$where" => "this.value = 10", '$and' => [{ '$where' => 'foo.bar' }]
           )
         end
       end
@@ -69,7 +69,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it 'combines conditions' do
           expect(selection.selector).to eq(
-            "$where" => "this.value = 10", 'foo' => 'bar',
+            "$where" => "this.value = 10", 'foo' => 'bar'
           )
         end
       end
@@ -82,7 +82,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         it 'combines conditions' do
           expect(selection.selector).to eq(
-            'foo' => 'bar', "$where" => "this.value = 10",
+            'foo' => 'bar', "$where" => "this.value = 10"
           )
         end
       end
@@ -94,7 +94,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
             it 'combines conditions' do
               expect(selection.selector).to eq(
                 'foo' => { '$in' => [1] },
-                '$and' => ['foo' => { '$in' => [2] }],
+                '$and' => ['foo' => { '$in' => [2] }]
               )
             end
           end
@@ -548,7 +548,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it 'adds conditions to existing query' do
           expect(selection.selector).to eq({
             'test' => 1,
-            mql_operator => ['hello' => 'world'],
+            mql_operator => ['hello' => 'world']
           })
         end
       end
@@ -557,7 +557,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it 'adds conditions to existing query' do
           expect(selection.selector).to eq({
             'test' => 1,
-            mql_operator => ['hello' => 'world'],
+            mql_operator => ['hello' => 'world']
           })
         end
       end

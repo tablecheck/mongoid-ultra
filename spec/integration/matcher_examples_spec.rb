@@ -14,7 +14,7 @@ describe 'Matcher' do
       let!(:slave) do
         Slave.create!(address_numbers: [
           AddressNumber.new(number: '123'),
-          AddressNumber.new(number: '456'),
+          AddressNumber.new(number: '456')
         ])
       end
 
@@ -44,7 +44,7 @@ describe 'Matcher' do
       let!(:slave) do
         Slave.create!(address_numbers: [
           AddressNumber.new(number: '123'),
-          AddressNumber.new(number: '456'),
+          AddressNumber.new(number: '456')
         ])
       end
 
@@ -74,7 +74,7 @@ describe 'Matcher' do
       let!(:circuit) do
         Circuit.create!(buses: [
           Bus.new(number: 10),
-          Bus.new(number: 30),
+          Bus.new(number: 30)
         ])
       end
 
@@ -148,7 +148,7 @@ describe 'Matcher' do
       let!(:circuit) do
         Circuit.new(buses: [
           Bus.new(number: '10'),
-          Bus.new(number: '30'),
+          Bus.new(number: '30')
         ])
       end
 
@@ -171,7 +171,7 @@ describe 'Matcher' do
 
       let!(:circuit) do
         Circuit.new(buses: [
-          Bus.new(number: '30'),
+          Bus.new(number: '30')
         ])
       end
 
@@ -347,7 +347,7 @@ describe 'Matcher' do
       let!(:circuit) do
         Circuit.new(buses: [
           Bus.new(number: '10'),
-          Bus.new(number: '30'),
+          Bus.new(number: '30')
         ])
       end
 
@@ -371,7 +371,7 @@ describe 'Matcher' do
       let!(:person) do
         Person.new(addresses: [
           Address.new(locations: [Location.new]),
-          Address.new(locations: [Location.new, Location.new]),
+          Address.new(locations: [Location.new, Location.new])
         ])
       end
 
@@ -397,8 +397,8 @@ describe 'Matcher' do
           Address.new(locations: [
             # Both criteria are on the same object
             Location.new(name: 'Hall', number: 1),
-            Location.new(number: 3),
-          ]),
+            Location.new(number: 3)
+          ])
         ])
       end
 
@@ -406,7 +406,7 @@ describe 'Matcher' do
         person.addresses.where({
           operator => [
             { 'locations.name' => 'Hall' },
-            { 'locations.number' => 1 },
+            { 'locations.number' => 1 }
           ]
         }).first
       end
@@ -419,7 +419,7 @@ describe 'Matcher' do
         person.addresses.where({
           operator => [
             { 'locations.name' => 'Hall' },
-            { 'locations.number' => 2 },
+            { 'locations.number' => 2 }
           ]
         }).first
       end
@@ -432,8 +432,8 @@ describe 'Matcher' do
             Address.new(locations: [Location.new(name: 'City')]),
             Address.new(locations: [
               Location.new(name: 'Hall'),
-              Location.new(number: 1),
-            ]),
+              Location.new(number: 1)
+            ])
           ])
         end
 
@@ -449,7 +449,7 @@ describe 'Matcher' do
               'locations' => {
                 operator => [
                   { 'name' => 'Hall' },
-                  { 'number' => 1 },
+                  { 'number' => 1 }
                 ]
               }
             }).first
@@ -471,8 +471,8 @@ describe 'Matcher' do
           Address.new(locations: [
             # Both criteria are on the same object
             Location.new(name: 'Hall', number: 1),
-            Location.new(number: 3),
-          ]),
+            Location.new(number: 3)
+          ])
         ])
       end
 
@@ -480,7 +480,7 @@ describe 'Matcher' do
         person.addresses.where({
           operator => [
             { 'locations.name' => 'Hall' },
-            { 'locations.number' => 4 },
+            { 'locations.number' => 4 }
           ]
         }).first
       end
@@ -493,7 +493,7 @@ describe 'Matcher' do
         person.addresses.where({
           operator => [
             { 'locations.name' => 'Town' },
-            { 'locations.number' => 4 },
+            { 'locations.number' => 4 }
           ]
         }).first
       end
@@ -509,7 +509,7 @@ describe 'Matcher' do
               'locations' => {
                 operator => [
                   { 'name' => 'Hall' },
-                  { 'number' => 1 },
+                  { 'number' => 1 }
                 ]
               }
             }).first
@@ -530,8 +530,8 @@ describe 'Matcher' do
           Address.new(locations: [
             # Both criteria are on the same object
             Location.new(name: 'Hall', number: 1),
-            Location.new(number: 3),
-          ]),
+            Location.new(number: 3)
+          ])
         ])
       end
 
@@ -559,8 +559,8 @@ describe 'Matcher' do
             Address.new(locations: [Location.new(name: 'City')]),
             Address.new(locations: [
               Location.new(name: 'Hall'),
-              Location.new(number: 1),
-            ]),
+              Location.new(number: 1)
+            ])
           ])
         end
 
@@ -576,7 +576,7 @@ describe 'Matcher' do
               'locations' => {
                 operator => [
                   { 'name' => 'Hall' },
-                  { 'number' => 1 },
+                  { 'number' => 1 }
                 ]
               }
             }).first

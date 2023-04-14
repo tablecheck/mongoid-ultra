@@ -62,7 +62,7 @@ module Mongoid
           Symbol,
           # BSON::Binary occur as keyId values for FLE (more precisely,
           # the keyIds are UUIDs).
-          BSON::Binary,
+          BSON::Binary
         ]
 
         result = ERB.new(contents).result

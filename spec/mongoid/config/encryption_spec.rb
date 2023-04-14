@@ -50,7 +50,7 @@ describe Mongoid::Config::Encryption do
                     }
                   }
                 }
-              },
+              }
             }
           }
         end

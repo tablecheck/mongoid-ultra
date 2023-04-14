@@ -25,7 +25,7 @@ module Mongoid
           :dependent,
           :foreign_key,
           :primary_key,
-          :scope,
+          :scope
         ].freeze
 
         # The complete list of valid options for this association, including

@@ -343,7 +343,7 @@ describe Mongoid::Atomic do
             expect(person.atomic_updates).to eq(
               {
                 "$set" => {
-                  "title" => "Sir",
+                  "title" => "Sir"
                 },
                 "$push" => {
                   "addresses" => { '$each' => [{
@@ -377,8 +377,8 @@ describe Mongoid::Atomic do
               '$set' => { 'crates.0.volume' => 2 },
               '$push' => { 'crates.0.toys' => { '$each' => [crate.toys.first.attributes] } },
               conflicts: {
-                '$push' => { 'crates' => { '$each' => [truck.crates.last.attributes] } },
-              },
+                '$push' => { 'crates' => { '$each' => [truck.crates.last.attributes] } }
+              }
             })
           end
         end

@@ -35,7 +35,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
     let(:expected_complements) do
       [
-        Mongoid::Association::Referenced::BelongsTo,
+        Mongoid::Association::Referenced::BelongsTo
       ]
     end
 

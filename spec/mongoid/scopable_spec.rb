@@ -881,12 +881,12 @@ describe Mongoid::Scopable do
           expect(criteria.selector).to eq({
             "$or" => [
               { "ccc" => nil },
-              { "ccc" => { "$gt" => 1.0 } },
+              { "ccc" => { "$gt" => 1.0 } }
             ],
             '$and' => ['$or' => [
               { "aaa" => { "$gt" => 0.0 } },
               { "bbb" => { "$gt" => 0.0 } }
-            ]],
+            ]]
           })
         end
       end
@@ -1241,12 +1241,12 @@ describe Mongoid::Scopable do
 
             expect(Mongoid::Threaded.current_scope(Band).selector).to eq({
               'active' => true,
-              '$and' => ['active' => false],
+              '$and' => ['active' => false]
             })
           end
 
           expect(Mongoid::Threaded.current_scope(Band).selector).to eq({
-            'active' => true,
+            'active' => true
           })
         end
       end
@@ -1262,7 +1262,7 @@ describe Mongoid::Scopable do
           end
 
           expect(Mongoid::Threaded.current_scope(Band).selector).to eq({
-            'active' => true,
+            'active' => true
           })
         end
       end

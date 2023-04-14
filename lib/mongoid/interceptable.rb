@@ -27,7 +27,7 @@ module Mongoid
       :before_save,
       :before_update,
       :before_upsert,
-      :before_validation,
+      :before_validation
     ].freeze
 
     included do

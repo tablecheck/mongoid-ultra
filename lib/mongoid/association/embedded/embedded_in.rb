@@ -21,7 +21,7 @@ module Mongoid
           :autobuild,
           :cyclic,
           :polymorphic,
-          :touch,
+          :touch
         ].freeze
 
         # The complete list of valid options for this association, including

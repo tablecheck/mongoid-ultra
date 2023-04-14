@@ -668,7 +668,7 @@ describe Mongoid::Association::Accessors do
 
         let!(:person) do
           Person.create!(phone_numbers: [
-            Phone.new(number: '111-111-1111', landline: true),
+            Phone.new(number: '111-111-1111', landline: true)
           ])
         end
 

@@ -10,8 +10,8 @@ describe 'Server queries' do
     let!(:document) do
       Survey.create!(
         questions: [Question.new(
-          answers: [Answer.new(position: 3)],
-        )],
+          answers: [Answer.new(position: 3)]
+        )]
       )
     end
 
@@ -29,9 +29,9 @@ describe 'Server queries' do
       Bar.create!(
         questions: [
           answers: [
-            position: [3],
-          ],
-        ],
+            position: [3]
+          ]
+        ]
       )
     end
 
@@ -83,9 +83,9 @@ describe 'Server queries' do
         Bar.create!(
           questions: [
             answers: [
-              position: [[3]],
-            ],
-          ],
+              position: [[3]]
+            ]
+          ]
         )
       end
 
@@ -103,9 +103,9 @@ describe 'Server queries' do
         Bar.create!(
           questions: [
             answers: [
-              position: [3],
-            ],
-          ],
+              position: [3]
+            ]
+          ]
         )
       end
 
@@ -123,9 +123,9 @@ describe 'Server queries' do
         Bar.create!(
           questions: [
             answers: [
-              position: 3,
-            ],
-          ],
+              position: 3
+            ]
+          ]
         )
       end
 

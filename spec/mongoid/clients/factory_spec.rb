@@ -17,7 +17,7 @@ describe Mongoid::Clients::Factory do
       [
         configured_address,
         configured_address.sub(/\Alocalhost:/, '127.0.0.1:'),
-        configured_address.sub(/\A127\.0\.0\.1:/, 'localhost:'),
+        configured_address.sub(/\A127\.0\.0\.1:/, 'localhost:')
       ].uniq
     end
 
@@ -98,8 +98,8 @@ describe Mongoid::Clients::Factory do
                   hosts: SpecConfig.instance.addresses,
                   database: database_id,
                   options: {
-                    wrapping_libraries: [{ name: 'Foo' }],
-                  },
+                    wrapping_libraries: [{ name: 'Foo' }]
+                  }
                 }
               }
             end
@@ -107,7 +107,7 @@ describe Mongoid::Clients::Factory do
             it 'adds Mongoid as another wrapping library' do
               expected = [
                 BSON::Document.new(Mongoid::Clients::Factory::MONGOID_WRAPPING_LIBRARY),
-                { 'name' => 'Foo' },
+                { 'name' => 'Foo' }
               ]
               expect(client.options[:wrapping_libraries]).to eq(expected)
             end

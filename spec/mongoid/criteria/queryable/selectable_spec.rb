@@ -32,7 +32,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "combines the conditions with $and" do
           expect(selection.selector).to eq({
             "first" => { operator => [1, 2] },
-            '$and' => [{ 'first' => { operator => [3, 4] } }],
+            '$and' => [{ 'first' => { operator => [3, 4] } }]
           })
         end
 
@@ -96,7 +96,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "combines the conditions with $and" do
           expect(selection.selector).to eq({
             "_id" => { operator => [1, 2] },
-            '$and' => [{ '_id' => { operator => [3, 4] } }],
+            '$and' => [{ '_id' => { operator => [3, 4] } }]
           })
         end
 
@@ -165,7 +165,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "combines the conditions with $and" do
           expect(selection.selector).to eq({
             "field" => { operator => [1, 2] },
-            '$and' => [{ 'field' => { operator => [3, 4] } }],
+            '$and' => [{ 'field' => { operator => [3, 4] } }]
           })
         end
 
@@ -568,7 +568,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         it "adds an $elemMatch expression" do
           expect(selection.selector).to eq({
             "users" => { "$elemMatch" => { "name" => "value" } },
-            "$and" => [{ "users" => { "$elemMatch" => { "state" => "new" } } }],
+            "$and" => [{ "users" => { "$elemMatch" => { "state" => "new" } } }]
           })
         end
 

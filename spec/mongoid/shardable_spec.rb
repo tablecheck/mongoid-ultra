@@ -35,8 +35,8 @@ describe Mongoid::Shardable do
             key: { age: 1, gender: 'hashed' },
             options: {
               unique: true,
-              numInitialChunks: 2,
-            },
+              numInitialChunks: 2
+            }
           })
         end
 
@@ -53,7 +53,7 @@ describe Mongoid::Shardable do
         it 'sets shard config' do
           expect(SmActor.shard_config).to eq({
             key: { age: 1, gender: 'hashed', hello: 'hashed' },
-            options: {},
+            options: {}
           })
         end
 
@@ -66,7 +66,7 @@ describe Mongoid::Shardable do
         it 'uses foreign key as shard key in shard config' do
           expect(SmDriver.shard_config).to eq({
             key: { age: 1, agency_id: 'hashed' },
-            options: {},
+            options: {}
           })
         end
 
@@ -93,7 +93,7 @@ describe Mongoid::Shardable do
         it 'uses foreign key as shard key in shard config' do
           expect(SmDirector.shard_config).to eq({
             key: { agency_id: 1 },
-            options: {},
+            options: {}
           })
         end
 

@@ -263,7 +263,7 @@ describe Mongoid::Changeable do
                     "stack1" => [4, 3, 2, 1],
                     "stack2" => [1, 2, 3, 4],
                     "stack3" => [1, 2, 3, 4]
-                  },
+                  }
                 ]
               )
             end

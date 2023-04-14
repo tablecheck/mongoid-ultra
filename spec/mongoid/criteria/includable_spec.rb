@@ -1403,7 +1403,7 @@ describe Mongoid::Criteria::Includable do
         posts: [
           IncBlogPost.create(author: IncAuthor.create),
           IncBlogPost.create(author: IncAuthor.create),
-          IncBlogPost.create(author: IncAuthor.create),
+          IncBlogPost.create(author: IncAuthor.create)
         ],
         highlighted_post: IncBlogPost.create(author: IncAuthor.create)
       )
@@ -1435,7 +1435,7 @@ describe Mongoid::Criteria::Includable do
         posts: [
           IncBlogPost.create(author: IncAuthor.create),
           IncBlogPost.create(author: IncAuthor.create),
-          IncBlogPost.create(author: IncAuthor.create),
+          IncBlogPost.create(author: IncAuthor.create)
         ],
         highlighted_post: IncBlogPost.create(author: IncAuthor.create),
         pinned_post: IncBlogPost.create(author: IncAuthor.create)

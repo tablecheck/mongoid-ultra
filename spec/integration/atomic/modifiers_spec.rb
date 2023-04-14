@@ -50,7 +50,7 @@ describe Mongoid::Atomic::Modifiers do
           "$pull" => {
             "addresses.0.locations" => { "street" => "Bond St" },
             "dresses" => { "color" => "red" },
-            "ses.0.foo" => { "baz" => "qux" },
+            "ses.0.foo" => { "baz" => "qux" }
           }
         })
       end
@@ -64,7 +64,7 @@ describe Mongoid::Atomic::Modifiers do
           "$pullAll" => {
             "addresses.0.locations" => { "street" => "Bond St" },
             "dresses" => { "color" => "red" },
-            "ses.0.foo" => { "baz" => "qux" },
+            "ses.0.foo" => { "baz" => "qux" }
           }
         })
       end
@@ -92,7 +92,7 @@ describe Mongoid::Atomic::Modifiers do
           "$set" => {
             "addresses.0.locations" => { "street" => "Bond St" },
             "dresses" => { "color" => "red" },
-            "ses.0.foo" => { "baz" => "qux" },
+            "ses.0.foo" => { "baz" => "qux" }
           }
         })
       end
@@ -118,7 +118,7 @@ describe Mongoid::Atomic::Modifiers do
           "$unset" => {
             foobar: true,
             foo: true,
-            bar: true,
+            bar: true
           }
         })
       end

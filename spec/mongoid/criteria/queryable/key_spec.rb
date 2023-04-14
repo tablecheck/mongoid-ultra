@@ -52,8 +52,8 @@ describe Mongoid::Criteria::Queryable::Key do
         expect(specified).to eq({
           "field" => {
             '$geoIntersects' => {
-              '$geometry' => [1, 10],
-            },
+              '$geometry' => [1, 10]
+            }
           }
         })
       end

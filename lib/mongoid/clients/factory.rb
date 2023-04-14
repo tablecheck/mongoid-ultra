@@ -88,7 +88,7 @@ module Mongoid
 
       MONGOID_WRAPPING_LIBRARY = {
         name: 'Mongoid',
-        version: VERSION,
+        version: VERSION
       }.freeze
 
       def driver_version

@@ -105,7 +105,7 @@ describe Mongoid::Attributes do
 
               let(:expected) do
                 { 'dates' => { 'y' => {
-                  '2016' => 'Berlin',
+                  '2016' => 'Berlin'
                 } } }
               end
 
@@ -120,14 +120,14 @@ describe Mongoid::Attributes do
                 { 'dates' => { 'y' => {
                   '2016' => 'Berlin',
                   '2017' => 'Munich',
-                  '2018' => 'Krakow',
+                  '2018' => 'Krakow'
                 } } }
               end
 
               let(:expected) do
                 { 'dates' => { 'y' => {
                   '2016' => 'Berlin',
-                  '2018' => 'Krakow',
+                  '2018' => 'Krakow'
                 } } }
               end
 

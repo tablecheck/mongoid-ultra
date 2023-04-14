@@ -72,7 +72,7 @@ describe 'Matcher operators' do
     context 'embeds_one' do
       let(:document) do
         Canvas.new(
-          writer: Writer.new(speed: 3),
+          writer: Writer.new(speed: 3)
         )
       end
 
@@ -139,7 +139,7 @@ describe 'Matcher operators' do
         context 'hash field' do
           let(:document) do
             Bar.new(
-              writer: { speed: 3 },
+              writer: { speed: 3 }
             )
           end
 
@@ -168,9 +168,9 @@ describe 'Matcher operators' do
           questions: [Question.new(
             answers: [
               Answer.new(position: 3),
-              Answer.new(position: 4),
-            ],
-          )],
+              Answer.new(position: 4)
+            ]
+          )]
         )
       end
 

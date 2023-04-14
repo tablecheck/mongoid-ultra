@@ -35,7 +35,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
     let(:expected_complements) do
       [
-        Mongoid::Association::Referenced::HasAndBelongsToMany,
+        Mongoid::Association::Referenced::HasAndBelongsToMany
       ]
     end
 

@@ -151,7 +151,7 @@ module Mongoid
               while batched_changes = conflicting_change_groups.map(&:pop).compact.to_h.presence
                 coll.find(selector).update_one(
                   positionally(selector, modifier => batched_changes),
-                  session: _session,
+                  session: _session
                 )
               end
             end

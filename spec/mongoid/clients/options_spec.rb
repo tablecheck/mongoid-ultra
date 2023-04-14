@@ -354,8 +354,8 @@ describe Mongoid::Clients::Options, retry: 3 do
             analytics: {
               uri: "mongodb://#{SpecConfig.instance.addresses.first}/analytics-db",
               options: {
-                server_selection_timeout: 0.5,
-              },
+                server_selection_timeout: 0.5
+              }
             }
           }
         end

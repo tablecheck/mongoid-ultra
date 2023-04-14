@@ -35,7 +35,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
 
     let(:expected_complements) do
       [
-        Mongoid::Association::Embedded::EmbeddedIn,
+        Mongoid::Association::Embedded::EmbeddedIn
       ]
     end
 

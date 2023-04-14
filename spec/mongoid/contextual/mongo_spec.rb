@@ -899,7 +899,7 @@ describe Mongoid::Contextual::Mongo do
         it "returns the translation for the current locale" do
           expect(tallied).to eq(
             %w[en1 en2] => 1,
-            %w[en1 en3] => 1,
+            %w[en1 en3] => 1
           )
         end
 
@@ -922,7 +922,7 @@ describe Mongoid::Contextual::Mongo do
         it "returns the translation for the the specific locale" do
           expect(tallied).to eq(
             %w[de1 de2] => 1,
-            %w[de1 de3] => 1,
+            %w[de1 de3] => 1
           )
         end
 
@@ -945,7 +945,7 @@ describe Mongoid::Contextual::Mongo do
         it "returns the correct hash" do
           expect(tallied).to eq(
             [{ "de" => "de1", "en" => "en1" }, { "de" => "de2", "en" => "en2" }] => 1,
-            [{ "de" => "de1", "en" => "en1" }, { "de" => "de3", "en" => "en3" }] => 1,
+            [{ "de" => "de1", "en" => "en1" }, { "de" => "de3", "en" => "en3" }] => 1
           )
         end
 
@@ -1074,7 +1074,7 @@ describe Mongoid::Contextual::Mongo do
         expect(tally).to eq(
           [1, 2] => 2,
           [1, 3] => 1,
-          [1, 1] => 1,
+          [1, 1] => 1
         )
       end
 

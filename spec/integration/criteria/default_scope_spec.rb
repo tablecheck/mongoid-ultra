@@ -37,7 +37,7 @@ describe 'Criteria and default scope' do
           expect(criteria.selector).to eq({
             '$or' => [
               { 'active' => true },
-              { 'timed' => true },
+              { 'timed' => true }
             ]
           })
         end
@@ -66,7 +66,7 @@ describe 'Criteria and default scope' do
           expect(criteria.selector).to eq({
             '$or' => [
               { 'active' => true },
-              { 'timed' => true },
+              { 'timed' => true }
             ]
           })
         end

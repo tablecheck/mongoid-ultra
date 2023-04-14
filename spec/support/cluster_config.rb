@@ -130,7 +130,7 @@ class ClusterConfig
                           rv = rv['storageEngine']['name']
                           rv_map = {
                             'wiredTiger' => :wired_tiger,
-                            'mmapv1' => :mmapv1,
+                            'mmapv1' => :mmapv1
                           }
                           rv_map[rv] || rv
                         end
