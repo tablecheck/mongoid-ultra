@@ -463,13 +463,6 @@ Naming/BinaryOperatorParameterName:
   Exclude:
     - 'lib/mongoid/config/introspection.rb'
 
-# Offense count: 1
-# Configuration parameters: AllowedNames.
-# AllowedNames: module_parent
-Naming/ClassAndModuleCamelCase:
-  Exclude:
-    - 'lib/mongoid/criteria/queryable/extensions/regexp.rb'
-
 # Offense count: 4
 # Configuration parameters: ExpectMatchingDefinition, CheckDefinitionPathHierarchy, CheckDefinitionPathHierarchyRoots, Regex, IgnoreExecutableScripts, AllowedAcronyms.
 # CheckDefinitionPathHierarchyRoots: lib, spec, test, src
@@ -480,13 +473,6 @@ Naming/FileName:
     - 'gemfiles/rails-6.1.gemfile'
     - 'gemfiles/rails-7.0.gemfile'
     - 'gemfiles/rails-master.gemfile'
-
-# Offense count: 1
-# Configuration parameters: ForbiddenDelimiters.
-# ForbiddenDelimiters: (?i-mx:(^|\s)(EO[A-Z]{1}|END)(\s|$))
-Naming/HeredocDelimiterNaming:
-  Exclude:
-    - 'lib/mongoid/association/accessors.rb'
 
 # Offense count: 11
 # Configuration parameters: EnforcedStyleForLeadingUnderscores.
@@ -725,11 +711,6 @@ RSpec/AnyInstance:
     - 'spec/mongoid/warnings_spec.rb'
     - 'spec/support/expectations.rb'
 
-# Offense count: 1
-RSpec/AroundBlock:
-  Exclude:
-    - 'spec/support/constraints.rb'
-
 # Offense count: 7
 RSpec/Be:
   Exclude:
@@ -930,11 +911,6 @@ RSpec/HooksBeforeExamples:
     - 'spec/mongoid/association/depending_spec.rb'
     - 'spec/mongoid/association/macros_spec.rb'
 
-# Offense count: 1
-RSpec/IdenticalEqualityAssertion:
-  Exclude:
-    - 'spec/mongoid/equality_spec.rb'
-
 # Offense count: 72
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
@@ -946,12 +922,6 @@ RSpec/ImplicitSubject:
     - 'spec/mongoid/criteria/queryable/extensions/range_spec.rb'
     - 'spec/mongoid/extensions/range_spec.rb'
     - 'spec/mongoid/extensions/raw_value_spec.rb'
-
-# Offense count: 1
-# Configuration parameters: AssignmentOnly.
-RSpec/InstanceVariable:
-  Exclude:
-    - 'spec/integration/callbacks_spec.rb'
 
 # Offense count: 17
 RSpec/IteratedExpectation:
@@ -1049,11 +1019,6 @@ RSpec/NoExpectationExample:
 # SupportedStyles: not_to, to_not
 RSpec/NotToNot:
   Enabled: false
-
-# Offense count: 1
-RSpec/PendingWithoutReason:
-  Exclude:
-    - 'spec/mongoid/config/introspection_spec.rb'
 
 # Offense count: 15
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -1172,11 +1137,6 @@ RSpec/VerifiedDoubles:
     - 'spec/mongoid/threaded_spec.rb'
     - 'spec/mongoid/validatable/associated_spec.rb'
     - 'spec/rails/mongoid_spec.rb'
-
-# Offense count: 1
-RSpec/VoidExpect:
-  Exclude:
-    - 'spec/mongoid/contextual/mongo_spec.rb'
 
 # Offense count: 61
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -1379,11 +1339,6 @@ Security/JSONLoad:
   Exclude:
     - 'spec/mongoid/criteria/findable_spec.rb'
 
-# Offense count: 1
-Security/MarshalLoad:
-  Exclude:
-    - 'spec/mongoid/criteria/marshalable_spec.rb'
-
 # Offense count: 32
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle, AllowModifiersOnSymbols.
@@ -1492,11 +1447,6 @@ Style/ClassVars:
     - 'spec/mongoid/clients/transactions_spec_models.rb'
     - 'spec/mongoid/contextual/mongo/documents_loader_spec.rb'
 
-# Offense count: 1
-Style/CombinableLoops:
-  Exclude:
-    - 'spec/mongoid/clients/factory_spec.rb'
-
 # Offense count: 5
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: Keywords, RequireColon.
@@ -1543,11 +1493,6 @@ Style/ConditionalAssignment:
     - 'lib/mongoid/fields.rb'
     - 'lib/mongoid/loadable.rb'
     - 'spec/integration/app_spec.rb'
-
-# Offense count: 1
-Style/DocumentDynamicEvalDefinition:
-  Exclude:
-    - 'lib/mongoid/association/accessors.rb'
 
 # Offense count: 6
 # This cop supports safe autocorrection (--autocorrect).
