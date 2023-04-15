@@ -1852,7 +1852,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          book.update_attributes!({ 'pages' => nil }); rescue StandardError
+          book.update_attributes!({ 'pages' => nil })
+        rescue StandardError
         end
 
         it 'does not delete the embedded relation' do

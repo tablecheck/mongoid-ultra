@@ -3752,7 +3752,10 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
       before do
         expect(artist).to receive(:before_add_album).and_raise
-        begin; artist.albums << album; rescue StandardError; end
+        begin
+          artist.albums << album
+        rescue StandardError
+        end
       end
 
       it 'does not add the document to the association' do
@@ -3780,7 +3783,10 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
       before do
         expect(artist).to receive(:after_add_album).and_raise
-        begin; artist.albums << album; rescue StandardError; end
+        begin
+          artist.albums << album
+        rescue StandardError
+        end
       end
 
       it 'adds the document to the association' do
@@ -3862,7 +3868,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         describe '#delete' do
 
           before do
-            artist.albums.delete(album); rescue StandardError
+            artist.albums.delete(album)
+          rescue StandardError
           end
 
           it 'does not remove the document from the association' do
@@ -3873,7 +3880,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         describe '#clear' do
 
           before do
-            artist.albums.clear; rescue StandardError
+            artist.albums.clear
+          rescue StandardError
           end
 
           it 'does not clear the association' do
@@ -3933,7 +3941,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       describe '#delete' do
 
         before do
-          artist.albums.delete(album); rescue StandardError
+          artist.albums.delete(album)
+        rescue StandardError
         end
 
         it 'removes the documents from the association' do
@@ -3944,7 +3953,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       describe '#clear' do
 
         before do
-          artist.albums.clear; rescue StandardError
+          artist.albums.clear
+        rescue StandardError
         end
 
         it 'removes the documents from the association' do

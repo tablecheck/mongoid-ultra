@@ -559,9 +559,7 @@ module Mongoid
               end
               _mongoid_expand_keys(new_s).each do |k, v|
                 k = k.to_s
-                if c.selector[k] || k.start_with?('$')
-                  c = c.send(:__multi__, [{ '$nor' => [{ k => v }] }], '$and')
-                elsif v.is_a?(Hash)
+                if c.selector[k] || k.start_with?('$') || v.is_a?(Hash)
                   c = c.send(:__multi__, [{ '$nor' => [{ k => v }] }], '$and')
                 else
                   negated_operator = if v.is_a?(Regexp)
