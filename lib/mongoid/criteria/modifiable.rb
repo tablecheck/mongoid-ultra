@@ -173,9 +173,9 @@ module Mongoid
       def create_document(method, attrs = nil, &block)
         attrs = (create_attrs || {}).merge(attrs || {})
         attributes = selector.each_with_object(attrs) do |(key, value), hash|
-          unless invalid_key?(hash, key) || invalid_embedded_doc?(value)
-            hash[key] = value
-          end
+          next if invalid_key?(hash, key) || invalid_embedded_doc?(value)
+
+          hash[key] = value
         end
         if embedded?
           attributes[:_parent] = parent_document
