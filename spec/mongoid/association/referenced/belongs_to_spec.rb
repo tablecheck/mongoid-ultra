@@ -1322,9 +1322,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'raises a Mongoid::Errors::AmbiguousRelationship exception' do
-          expect {
+          expect do
             association.inverses
-          }.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
+          end.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
         end
       end
 
@@ -1474,9 +1474,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'raises a Mongoid::Errors::AmbiguousRelationship exception' do
-          expect {
+          expect do
             association.inverse
-          }.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
+          end.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
         end
       end
 

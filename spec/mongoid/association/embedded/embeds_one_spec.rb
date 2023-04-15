@@ -872,9 +872,9 @@ describe Mongoid::Association::Embedded::EmbedsOne do
   describe '#criteria' do
 
     it 'does not respond to the method' do
-      expect {
+      expect do
         association.criteria
-      }.to raise_exception(NoMethodError)
+      end.to raise_exception(NoMethodError)
     end
   end
 
@@ -930,7 +930,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
   describe '#path' do
 
     it 'returns an instance of Mongoid::Atomic::Paths::Root' do
-      expect(association.path(double(:_parent => true))).to be_a(Mongoid::Atomic::Paths::Embedded::One)
+      expect(association.path(double(_parent: true))).to be_a(Mongoid::Atomic::Paths::Embedded::One)
     end
   end
 

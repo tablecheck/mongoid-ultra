@@ -860,7 +860,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
   describe '#path' do
 
     it 'returns an instance of Mongoid::Atomic::Paths::Root' do
-      expect(association.path(double(:_parent => true))).to be_a(Mongoid::Atomic::Paths::Embedded::Many)
+      expect(association.path(double(_parent: true))).to be_a(Mongoid::Atomic::Paths::Embedded::Many)
     end
   end
 

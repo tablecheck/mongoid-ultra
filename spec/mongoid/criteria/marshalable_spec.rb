@@ -10,9 +10,9 @@ describe Mongoid::Criteria::Marshalable do
     end
 
     it 'does not error' do
-      expect {
+      expect do
         Marshal.dump(criteria)
-      }.not_to raise_error
+      end.not_to raise_error
     end
   end
 

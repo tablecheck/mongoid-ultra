@@ -18,7 +18,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     Person.reset_callbacks(:destroy)
   end
 
-  [:<<, :push].each do |method|
+  %i[<< push].each do |method|
 
     describe "##{method}" do
 
@@ -1034,7 +1034,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
   end
 
-  [:build, :new].each do |method|
+  %i[build new].each do |method|
 
     describe "##{method}" do
 
@@ -1994,7 +1994,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
   end
 
-  [:create, :create!].each do |method|
+  %i[create create!].each do |method|
 
     describe "##{method}" do
 
@@ -2022,9 +2022,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it 'raises an unsaved document error' do
-            expect {
+            expect do
               person.preferences.send(method, name: 'Testing')
-            }.to raise_error(Mongoid::Errors::UnsavedDocument)
+            end.to raise_error(Mongoid::Errors::UnsavedDocument)
           end
         end
 
@@ -2089,9 +2089,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       context 'when the relation is not polymorphic' do
 
         it 'raises an error' do
-          expect {
+          expect do
             person.preferences.create!(name: 'a')
-          }.to raise_error(Mongoid::Errors::Validations)
+          end.to raise_error(Mongoid::Errors::Validations)
         end
       end
     end
@@ -2369,7 +2369,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
   end
 
-  [:delete_all, :destroy_all].each do |method|
+  %i[delete_all destroy_all].each do |method|
 
     describe "##{method}" do
 
@@ -2530,9 +2530,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it 'raises an error' do
-            expect {
+            expect do
               preference
-            }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
+            end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
           end
         end
 
@@ -2542,9 +2542,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             config_override :raise_not_found_error, true
 
             it 'raises an error' do
-              expect {
+              expect do
                 person.preferences.find(BSON::ObjectId.new)
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
             end
           end
 
@@ -2584,9 +2584,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it 'raises an error' do
-            expect {
+            expect do
               preferences
-            }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
+            end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
           end
         end
 
@@ -2596,9 +2596,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             config_override :raise_not_found_error, true
 
             it 'raises an error' do
-              expect {
+              expect do
                 person.preferences.find([BSON::ObjectId.new])
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
             end
           end
 
@@ -2698,9 +2698,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         context 'when validation fails' do
 
           it 'raises an error' do
-            expect {
+            expect do
               person.preferences.find_or_create_by!(name: 'A')
-            }.to raise_error(Mongoid::Errors::Validations)
+            end.to raise_error(Mongoid::Errors::Validations)
           end
         end
       end
@@ -3091,7 +3091,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
   end
 
-  [:size, :length].each do |method|
+  %i[size length].each do |method|
 
     describe "##{method}" do
 
@@ -3419,9 +3419,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
 
     it 'does not delete the target from the database' do
-      expect {
+      expect do
         preference.reload
-      }.not_to raise_error
+      end.not_to raise_error
     end
   end
 
