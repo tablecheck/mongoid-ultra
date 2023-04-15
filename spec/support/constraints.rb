@@ -57,7 +57,7 @@ module Constraints
 
   def min_driver_version(version)
     before(:all) do
-      if min_version?(Mongo::VERSION, version)
+      if Constraints.min_version?(Mongo::VERSION, version)
         skip "Driver version #{version} or higher is required"
       end
     end
@@ -65,7 +65,7 @@ module Constraints
 
   def max_driver_version(version)
     before(:all) do
-      if max_version?(Mongo::VERSION, version)
+      if Constraints.max_version?(Mongo::VERSION, version)
         skip "Driver version #{version} or lower is required"
       end
     end
@@ -73,7 +73,7 @@ module Constraints
 
   def min_bson_version(version)
     before(:all) do
-      if min_version?(BSON::VERSION, version)
+      if Constraints.min_version?(BSON::VERSION, version)
         skip "bson-ruby version #{version} or higher is required"
       end
     end
@@ -81,7 +81,7 @@ module Constraints
 
   def max_bson_version(version)
     before(:all) do
-      if max_version?(BSON::VERSION, version)
+      if Constraints.max_version?(BSON::VERSION, version)
         skip "bson-ruby version #{version} or lower is required"
       end
     end
@@ -89,7 +89,7 @@ module Constraints
 
   def min_ruby_version(version)
     before(:all) do
-      if min_version?(RUBY_VERSION, version)
+      if Constraints.min_version?(RUBY_VERSION, version)
         skip "Ruby version #{version} or higher required, we have #{RUBY_VERSION}"
       end
     end
@@ -97,7 +97,7 @@ module Constraints
 
   def max_ruby_version(version)
     before(:all) do
-      if max_version?(RUBY_VERSION, version)
+      if Constraints.max_version?(RUBY_VERSION, version)
         skip "Ruby version #{version} or higher required, we have #{RUBY_VERSION}"
       end
     end
@@ -105,7 +105,7 @@ module Constraints
 
   def min_rails_version(version)
     before(:all) do
-      if min_version?(RAILS_VERSION, version)
+      if Constraints.min_version?(RAILS_VERSION, version)
         skip "Rails version #{version} or higher required, we have #{RAILS_VERSION}"
       end
     end
@@ -113,7 +113,7 @@ module Constraints
 
   def max_rails_version(version)
     before(:all) do
-      if max_version?(RAILS_VERSION, version)
+      if Constraints.max_version?(RAILS_VERSION, version)
         skip "Rails version #{version} or lower required, we have #{RAILS_VERSION}"
       end
     end
@@ -123,7 +123,7 @@ module Constraints
     current_version = ClusterConfig.instance.server_version
 
     before(:all) do
-      if min_version?(current_version, version)
+      if Constraints.min_version?(current_version, version)
         skip "Server version #{version} or higher required, we have #{current_version}"
       end
     end
@@ -133,7 +133,7 @@ module Constraints
     current_version = ClusterConfig.instance.server_version
 
     before(:all) do
-      if max_version?(current_version, version)
+      if Constraints.max_version?(current_version, version)
         skip "Server version #{version} or lower required, we have #{current_version}"
       end
     end
@@ -143,7 +143,7 @@ module Constraints
     current_version = ClusterConfig.instance.fcv_ish
 
     before(:all) do
-      if min_version?(current_version, version)
+      if Constraints.min_version?(current_version, version)
         skip "FCV #{version} or higher required, we have #{current_version} (server #{ClusterConfig.instance.server_version})"
       end
     end
@@ -153,7 +153,7 @@ module Constraints
     current_version = ClusterConfig.instance.fcv_ish
 
     before(:all) do
-      if max_version?(current_version, version)
+      if Constraints.max_version?(current_version, version)
         skip "FCV #{version} or lower required, we have #{current_version} (server #{ClusterConfig.instance.server_version})"
       end
     end
@@ -248,7 +248,7 @@ module Constraints
     current_version = Mongo::Crypt::Binding.mongocrypt_version(nil)
 
     before(:all) do
-      if min_version?(current_version, version)
+      if Constraints.min_version?(current_version, version)
         skip "libmongocrypt version #{version} required, but version #{current_version} is available"
       end
     end
@@ -259,7 +259,7 @@ module Constraints
     current_version = Mongo::Crypt::Binding.mongocrypt_version(nil)
 
     before(:all) do
-      if max_version?(current_version, version)
+      if Constraints.max_version?(current_version, version)
         skip "libmongocrypt version #{version} required, but version #{current_version} is available"
       end
     end
@@ -273,19 +273,20 @@ module Constraints
     end
   end
 
-  private
-
   def min_version?(current_version, required_version)
     version_comparator(current_version, required_version) >= 0
   end
+  module_function :min_version?
 
   def max_version?(current_version, required_version)
     version_comparator(current_version, required_version) <= 0
   end
+  module_function :max_version?
 
   def version_comparator(current_version, required_version)
     required_version = required_version.split('.').map(&:to_i)
     current_version = current_version.split('.').first(required_version.length).map(&:to_i)
     current_version <=> required_version
   end
+  module_function :version_comparator
 end
