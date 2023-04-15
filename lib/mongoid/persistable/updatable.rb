@@ -196,13 +196,11 @@ module Mongoid
         # (somehow?) create the address with a nil _id first, before then
         # saving it *again* with the correct _id.
 
-        if _id_changed? && !_id_was.nil? && persisted?
-          if Mongoid::Config.immutable_ids
-            raise Errors::ImmutableAttribute.new(:_id, _id)
-          else
-            Mongoid::Warnings.warn_mutable_ids
-          end
-        end
+        return unless _id_changed? && !_id_was.nil? && persisted?
+
+        raise Errors::ImmutableAttribute.new(:_id, _id) if Mongoid::Config.immutable_ids
+
+        Mongoid::Warnings.warn_mutable_ids
       end
 
       # Consolidates all the callback invocations into a single place, to

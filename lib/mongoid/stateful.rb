@@ -15,9 +15,7 @@ module Mongoid
     # @return [ true | false ] The set value.
     def new_record=(new_value)
       @new_record ||= false
-      if @new_record && !new_value
-        @previously_new_record = true
-      end
+      @previously_new_record = true if @new_record && !new_value
       @new_record = new_value
     end
 

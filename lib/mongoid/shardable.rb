@@ -137,9 +137,7 @@ module Mongoid
         spec, options = args
 
         spec = spec.to_h do |name, value|
-          if value.is_a?(Symbol)
-            value = value.to_s
-          end
+          value = value.to_s if value.is_a?(Symbol)
           [database_field_name(name).to_sym, value]
         end
 

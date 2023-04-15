@@ -45,10 +45,10 @@ module Mongoid
             # We already have a restriction by the field we are trying
             # to restrict, combine the restrictions.
             if value.is_a?(Hash) && selector[field].is_a?(Hash) &&
-               value.keys.all? { |key|
+               value.keys.all? do |key|
                  key_s = key.to_s
                  key_s.start_with?('$') && !selector[field].key?(key_s)
-               }
+               end
               # Multiple operators can be combined on the same field by
               # adding them to the existing hash.
               new_value = selector[field].merge(value)
@@ -190,7 +190,7 @@ module Mongoid
             raise ArgumentError, "Operator must begin with $: #{operator}"
           end
 
-          if %w($and $nor $or).include?(operator)
+          if %w[$and $nor $or].include?(operator)
             return add_logical_operator_expression(operator, op_expr)
           end
 
