@@ -323,9 +323,7 @@ module Mongoid
         # @return [ Mongoid::Criteria::Queryable ] The cloned queryable.
         def option(*args)
           clone.tap do |query|
-            unless args.compact.empty?
-              yield(query.options, query)
-            end
+            yield(query.options, query) unless args.compact.empty?
           end
         end
 
@@ -358,7 +356,7 @@ module Mongoid
           #
           # @return [ Array<Symbol> ] The names of the forwardable methods.
           def forwardables
-            public_instance_methods(false) - [:options, :options=]
+            public_instance_methods(false) - %i[options options=]
           end
         end
       end

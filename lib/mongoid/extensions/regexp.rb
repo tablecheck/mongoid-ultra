@@ -34,4 +34,4 @@ module Mongoid
   end
 end
 
-::Regexp.extend(Mongoid::Extensions::Regexp::ClassMethods)
+Regexp.extend(Mongoid::Extensions::Regexp::ClassMethods)
