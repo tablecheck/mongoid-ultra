@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -7,6 +9,8 @@ module Mongoid
     #
     # @api private
     module Size
+
+      extend self
 
       # Returns whether a value satisfies a $size expression.
       #
@@ -18,7 +22,7 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      module_function def matches?(exists, value, condition)
+      def matches?(exists, value, condition)
         case condition
         when Float
           raise Errors::InvalidQuery, "$size argument must be a non-negative integer: #{Errors::InvalidQuery.truncate_expr(condition)}"
@@ -30,7 +34,7 @@ module Mongoid
           raise Errors::InvalidQuery, "$size argument must be a non-negative integer: #{Errors::InvalidQuery.truncate_expr(condition)}"
         end
 
-        if Array === value
+        if value.is_a?(Array)
           value.length == condition
         else
           false

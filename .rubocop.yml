@@ -105,6 +105,9 @@ Layout/FirstArrayElementIndentation:
 Layout/FirstHashElementIndentation:
   EnforcedStyle: consistent
 
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
 Style/FetchEnvVar:
   Enabled: false
 
@@ -121,3 +124,9 @@ Style/NumericPredicate:
 # Enforce multiline style if it becomes available in the future.
 Style/WhileUntilModifier:
   Enabled: false
+
+# See: https://github.com/rubocop/rubocop/issues/11802
+Style/SymbolArray:
+  Exclude:
+    - 'spec/mongoid/criteria/queryable/selector_spec.rb'
+    - 'spec/mongoid/criteria/queryable/options_spec.rb'

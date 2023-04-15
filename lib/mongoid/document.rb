@@ -84,7 +84,7 @@ module Mongoid
     #
     # @return [ Array ] An array containing [document.class, document._id]
     def identity
-      [self.class, self._id]
+      [self.class, _id]
     end
 
     # Instantiate a new +Document+, setting the Document's attributes if
@@ -240,7 +240,8 @@ module Mongoid
 
       embedded_relations.each_pair do |name, meta|
         without_autobuild do
-          relation, stored = send(name), meta.store_as
+          relation = send(name)
+          stored = meta.store_as
           if attributes.key?(stored) || !relation.blank?
             if relation.nil?
               attributes.delete(stored)
@@ -298,7 +299,7 @@ module Mongoid
           doc.run_callbacks(:initialize) unless doc._initialize_callbacks.empty?
         else
           yield(doc) if block_given?
-          doc.pending_callbacks += [:apply_defaults, :find, :initialize]
+          doc.pending_callbacks += %i[apply_defaults find initialize]
         end
 
         doc

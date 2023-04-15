@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -7,6 +9,8 @@ module Mongoid
     # @api private
     module Expression
 
+      extend self
+
       # Returns whether a document satisfies a query expression.
       #
       # @param [ Mongoid::Document ] document The document.
@@ -15,11 +19,12 @@ module Mongoid
       # @return [ true | false ] Whether the document matches.
       #
       # @api private
-      module_function def matches?(document, expr)
+      def matches?(document, expr)
         if expr.nil?
           raise Errors::InvalidQuery, 'Nil condition in expression context'
         end
-        unless Hash === expr
+
+        unless unless expr.is_a?(Hash)
           raise Errors::InvalidQuery, 'MQL query must be provided as a Hash'
         end
 

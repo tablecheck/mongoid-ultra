@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -10,6 +12,8 @@ module Mongoid
     # @api private
     module EqImpl
 
+      extend self
+
       # Returns whether a value satisfies an $eq (or similar) expression.
       #
       # @param [ true | false ] exists Not used.
@@ -20,7 +24,7 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      module_function def matches?(exists, value, condition, original_operator)
+      def matches?(exists, value, condition, original_operator)
         case condition
         when Range
           # Since $ne invokes $eq, the exception message needs to handle
@@ -40,10 +44,12 @@ module Mongoid
             end.include?(time_rounded_to_millis(condition))
           else
             value == condition ||
-            value.is_a?(Array) && value.include?(condition)
+              value.is_a?(Array) && value.include?(condition)
           end
         end
       end
+
+      private
 
       # Per https://www.mongodb.com/docs/ruby-driver/current/tutorials/bson-v4/#time-instances,
       # > Times in BSON (and MongoDB) can only have millisecond precision. When Ruby Time instances
@@ -59,7 +65,7 @@ module Mongoid
       # @param [ Time ] time_b The second time value.
       #
       # @return [ true | false ] Whether the two times are equal to the millisecond.
-      module_function def time_eq?(time_a, time_b)
+      def time_eq?(time_a, time_b)
         time_rounded_to_millis(time_a) == time_rounded_to_millis(time_b)
       end
 
@@ -68,7 +74,7 @@ module Mongoid
       # @param [ Time ] time The time value.
       #
       # @return [ true | false ] The time rounded to the millisecond.
-      module_function def time_rounded_to_millis(time)
+      def time_rounded_to_millis(time)
         time._bson_to_i * 1000 + time.usec.divmod(1000).first
       end
     end

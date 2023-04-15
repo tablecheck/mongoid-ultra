@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -8,6 +10,8 @@ module Mongoid
     # @api private
     module Regex
 
+      extend self
+
       # Returns whether a value satisfies a $regex expression.
       #
       # @param [ true | false ] exists Not used.
@@ -17,7 +21,7 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      module_function def matches?(exists, value, condition)
+      def matches?(exists, value, condition)
         condition = case condition
                     when Regexp
                       condition
@@ -50,8 +54,8 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      module_function def matches_array_or_scalar?(value, condition)
-        if Array === value
+      def matches_array_or_scalar?(value, condition)
+        if value.is_a?(Array)
           value.any? do |v|
             matches?(true, v, condition)
           end

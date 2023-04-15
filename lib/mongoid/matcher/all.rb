@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -8,6 +10,8 @@ module Mongoid
     # @api private
     module All
 
+      extend self
+
       # Returns whether a value satisfies an $all expression.
       #
       # @param [ true | false ] exists Not used.
@@ -17,8 +21,8 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      module_function def matches?(exists, value, condition)
-        unless Array === condition
+      def matches?(exists, value, condition)
+        unless condition.is_a?(Array)
           raise Errors::InvalidQuery, "$all argument must be an array: #{Errors::InvalidQuery.truncate_expr(condition)}"
         end
 

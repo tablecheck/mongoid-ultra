@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -8,6 +10,8 @@ module Mongoid
     # @api private
     module Nor
 
+      extend self
+
       # Returns whether a document satisfies a $nor expression.
       #
       # @param [ Mongoid::Document ] document The document.
@@ -16,7 +20,7 @@ module Mongoid
       # @return [ true | false ] Whether the document matches.
       #
       # @api private
-      module_function def matches?(document, expr)
+      def matches?(document, expr)
         unless expr.is_a?(Array)
           raise Errors::InvalidQuery, "$nor argument must be an array: #{Errors::InvalidQuery.truncate_expr(expr)}"
         end
@@ -26,9 +30,7 @@ module Mongoid
         end
 
         expr.each do |sub_expr|
-          if Expression.matches?(document, sub_expr)
-            return false
-          end
+          return false if Expression.matches?(document, sub_expr)
         end
 
         expr.any?

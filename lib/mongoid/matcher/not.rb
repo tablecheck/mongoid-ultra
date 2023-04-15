@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -7,6 +9,8 @@ module Mongoid
     #
     # @api private
     module Not
+
+      extend self
 
       # Returns whether a value satisfies an $not expression.
       #
@@ -18,7 +22,7 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      module_function def matches?(exists, value, condition)
+      def matches?(exists, value, condition)
         case condition
         when ::Regexp, BSON::Regexp::Raw
           !Regex.matches?(exists, value, condition)
@@ -29,6 +33,7 @@ module Mongoid
 
           condition.all? do |(k, cond_v)|
             k = k.to_s
+
             unless k.start_with?('$')
               raise Errors::InvalidQuery, "$not arguments must be operators: #{Errors::InvalidQuery.truncate_expr(k)}"
             end

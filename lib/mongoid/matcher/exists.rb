@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -8,6 +10,8 @@ module Mongoid
     # @api private
     module Exists
 
+      extend self
+
       # Returns whether an $exists expression is satisfied.
       #
       # @param [ true | false ] exists Whether the value exists.
@@ -17,7 +21,7 @@ module Mongoid
       # @return [ true | false ] Whether the existence condition is met.
       #
       # @api private
-      module_function def matches?(exists, value, condition)
+      def matches?(exists, value, condition)
         case condition
         when Range
           raise Errors::InvalidQuery, "$exists argument cannot be a Range: #{Errors::InvalidQuery.truncate_expr(condition)}"

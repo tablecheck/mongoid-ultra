@@ -27,7 +27,8 @@ module Mongoid
         return unless index_specifications
 
         index_specifications.each do |spec|
-          key, options = spec.key, spec.options
+          key = spec.key
+          options = spec.options
           if database = options[:database]
             with(database: database) do |klass|
               klass.collection.indexes(session: _session).create_one(key, options.except(:database))
@@ -92,9 +93,9 @@ module Mongoid
       # @return [ Hash ] The index options.
       def index(spec, options = nil)
         specification = Specification.new(self, spec, options)
-        unless index_specifications.include?(specification)
-          index_specifications.push(specification)
-        end
+        return if index_specifications.include?(specification)
+
+        index_specifications.push(specification)
       end
 
       # Get an index specification for the provided key.
