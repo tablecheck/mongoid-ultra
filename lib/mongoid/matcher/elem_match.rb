@@ -23,7 +23,7 @@ module Mongoid
       # @api private
       def matches?(exists, value, condition)
         unless condition.is_a?(Hash)
-          raise Errors::InvalidQuery, "$elemMatch requires a Hash operand: #{Errors::InvalidQuery.truncate_expr(condition)}"
+          raise Errors::InvalidQuery.new("$elemMatch requires a Hash operand: #{Errors::InvalidQuery.truncate_expr(condition)}")
         end
 
         if value.is_a?(Array) && !value.empty?

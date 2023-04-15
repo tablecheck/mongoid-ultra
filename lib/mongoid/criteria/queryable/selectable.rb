@@ -789,11 +789,11 @@ module Mongoid
         # @api private
         def expr_query(criterion)
           if criterion.nil?
-            raise ArgumentError, 'Criterion cannot be nil here'
+            raise ArgumentError.new('Criterion cannot be nil here')
           end
 
           unless Hash === criterion
-            raise Errors::InvalidQuery, "Expression must be a Hash: #{Errors::InvalidQuery.truncate_expr(criterion)}"
+            raise Errors::InvalidQuery.new("Expression must be a Hash: #{Errors::InvalidQuery.truncate_expr(criterion)}")
           end
 
           normalized = _mongoid_expand_keys(criterion)

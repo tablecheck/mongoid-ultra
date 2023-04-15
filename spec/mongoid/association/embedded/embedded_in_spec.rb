@@ -814,7 +814,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
     context 'when a block is passed' do
 
       let(:association) do
-        embedded_class.embedded_in name, options do; end
+        embedded_class.embedded_in(name, options) { }
       end
 
       it 'defines an extension module' do

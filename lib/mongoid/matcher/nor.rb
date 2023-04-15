@@ -22,11 +22,11 @@ module Mongoid
       # @api private
       def matches?(document, expr)
         unless expr.is_a?(Array)
-          raise Errors::InvalidQuery, "$nor argument must be an array: #{Errors::InvalidQuery.truncate_expr(expr)}"
+          raise Errors::InvalidQuery.new("$nor argument must be an array: #{Errors::InvalidQuery.truncate_expr(expr)}")
         end
 
         if expr.empty?
-          raise Errors::InvalidQuery, "$nor argument must be a non-empty array: #{Errors::InvalidQuery.truncate_expr(expr)}"
+          raise Errors::InvalidQuery.new("$nor argument must be a non-empty array: #{Errors::InvalidQuery.truncate_expr(expr)}")
         end
 
         expr.each do |sub_expr|

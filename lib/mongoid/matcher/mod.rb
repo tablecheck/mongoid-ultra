@@ -24,11 +24,11 @@ module Mongoid
       # @api private
       def matches?(exists, value, condition)
         unless condition.is_a?(Array)
-          raise Errors::InvalidQuery, "Unknown $mod argument #{condition}"
+          raise Errors::InvalidQuery.new("Unknown $mod argument #{condition}")
         end
 
         if condition.length != 2
-          raise Errors::InvalidQuery, "Malformed $mod argument #{condition}, should have 2 elements"
+          raise Errors::InvalidQuery.new("Malformed $mod argument #{condition}, should have 2 elements")
         end
 
         condition[1] == value % condition[0]

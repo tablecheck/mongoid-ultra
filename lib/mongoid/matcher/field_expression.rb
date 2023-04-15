@@ -28,7 +28,7 @@ module Mongoid
             if k.start_with?('$')
               if %w[$regex $options].include?(k)
                 unless condition.key?('$regex')
-                  raise Errors::InvalidQuery, "$regex is required if $options is given: #{Errors::InvalidQuery.truncate_expr(condition)}"
+                  raise Errors::InvalidQuery.new("$regex is required if $options is given: #{Errors::InvalidQuery.truncate_expr(condition)}")
                 end
 
                 if k == '$regex'

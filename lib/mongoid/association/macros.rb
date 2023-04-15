@@ -218,7 +218,7 @@ module Mongoid
             assoc.setup!
             self.relations = relations.merge(name => assoc)
             if assoc.embedded? && assoc.respond_to?(:store_as) && assoc.store_as != name
-              self.aliased_associations[assoc.store_as] = name
+              aliased_associations[assoc.store_as] = name
             end
           end
         end

@@ -400,7 +400,7 @@ module Mongoid
       # arguments through this method. This API can be reconsidered in the
       # future.
       if args.length > 1
-        raise ArgumentError, "Criteria#where requires zero or one arguments (given #{args.length})"
+        raise ArgumentError.new("Criteria#where requires zero or one arguments (given #{args.length})")
       end
 
       if args.length == 1

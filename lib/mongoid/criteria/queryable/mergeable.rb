@@ -256,7 +256,7 @@ module Mongoid
         # @return [ BSON::Document ] The expanded criteria.
         def _mongoid_expand_keys(expr)
           unless expr.is_a?(Hash)
-            raise ArgumentError, 'Argument must be a Hash'
+            raise ArgumentError.new('Argument must be a Hash')
           end
 
           result = BSON::Document.new

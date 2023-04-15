@@ -75,20 +75,8 @@ RSpec/SubjectStub:
     - 'spec/mongoid/collection_configurable_spec.rb'
 
 # --------------------------------------------------
-# These cops are intentionally disabled due to incompatibility.
-
-# Mongoid behavior differs from ActiveRecord
-Rails/RedundantPresenceValidationOnBelongsTo:
-  Enabled: false
-
-# --------------------------------------------------
-# These cops are intentionally disabled due to style preference.
-
-Bundler/OrderedGems:
-  Enabled: false
-
-Gemspec/OrderedDependencies:
-  Enabled: false
+# These cops are disabled by default, but should be periodically
+# checked and cleaned up.
 
 Layout/EmptyLinesAroundBlockBody:
   Enabled: false
@@ -97,6 +85,25 @@ Layout/EmptyLinesAroundClassBody:
   Enabled: false
 
 Layout/EmptyLinesAroundModuleBody:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+# --------------------------------------------------
+# These cops are intentionally disabled due to incompatibility.
+
+# Mongoid behavior differs from ActiveRecord
+Rails/RedundantPresenceValidationOnBelongsTo:
+  Enabled: false
+
+# --------------------------------------------------
+# These cops are intentionally configured due to style preference.
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Gemspec/OrderedDependencies:
   Enabled: false
 
 Layout/FirstArrayElementIndentation:

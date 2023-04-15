@@ -258,7 +258,7 @@ describe 'Mongoid application tests' do
     pre, query = uri.split('?', 2)
 
     unless pre =~ %r{\A(mongodb(?:.*?))://([^/]+)(?:/(.*))?\z}
-      raise ArgumentError, "Invalid MongoDB URI: #{uri}" 
+      raise ArgumentError.new("Invalid MongoDB URI: #{uri}") 
     end
     {
       protocol: Regexp.last_match(1),

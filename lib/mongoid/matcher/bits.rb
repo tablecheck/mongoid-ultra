@@ -33,22 +33,22 @@ module Mongoid
           int_matches?(value, int_cond)
         when Integer
           if condition < 0
-            raise Errors::InvalidQuery, "Invalid value for $#{operator_name} argument: negative integers are not allowed: #{condition}"
+            raise Errors::InvalidQuery.new("Invalid value for $#{operator_name} argument: negative integers are not allowed: #{condition}")
           end
 
           int_matches?(value, condition)
         when Float
           unless (int_cond = condition.to_i).to_f == condition
-            raise Errors::InvalidQuery, "Invalid type for $#{operator_name} argument: not representable as an integer: #{condition}"
+            raise Errors::InvalidQuery.new("Invalid type for $#{operator_name} argument: not representable as an integer: #{condition}")
           end
 
           if int_cond < 0
-            raise Errors::InvalidQuery, "Invalid value for $#{operator_name} argument: negative numbers are not allowed: #{condition}"
+            raise Errors::InvalidQuery.new("Invalid value for $#{operator_name} argument: negative numbers are not allowed: #{condition}")
           end
 
           int_matches?(value, int_cond)
         else
-          raise Errors::InvalidQuery, "Invalid type for $#{operator_name} argument: #{condition}"
+          raise Errors::InvalidQuery.new("Invalid type for $#{operator_name} argument: #{condition}")
         end
       end
 

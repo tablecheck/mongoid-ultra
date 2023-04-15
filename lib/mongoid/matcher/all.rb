@@ -23,7 +23,7 @@ module Mongoid
       # @api private
       def matches?(exists, value, condition)
         unless condition.is_a?(Array)
-          raise Errors::InvalidQuery, "$all argument must be an array: #{Errors::InvalidQuery.truncate_expr(condition)}"
+          raise Errors::InvalidQuery.new("$all argument must be an array: #{Errors::InvalidQuery.truncate_expr(condition)}")
         end
 
         !condition.empty? && condition.all? do |c|

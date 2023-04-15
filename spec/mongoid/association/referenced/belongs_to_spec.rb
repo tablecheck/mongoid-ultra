@@ -1879,7 +1879,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     context 'when a block is passed' do
 
       let(:association) do
-        belonging_class.belongs_to name, options do; end
+        belonging_class.belongs_to(name, options) { }
       end
 
       it 'defines an extension module' do

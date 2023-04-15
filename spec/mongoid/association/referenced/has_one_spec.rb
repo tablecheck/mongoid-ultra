@@ -1201,7 +1201,7 @@ describe Mongoid::Association::Referenced::HasOne do
     context 'when a block is passed' do
 
       let(:association) do
-        has_one_class.embeds_one name, options do; end
+        has_one_class.embeds_one(name, options) { }
       end
 
       it 'defines an extension module' do

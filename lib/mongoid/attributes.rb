@@ -340,7 +340,7 @@ module Mongoid
       # @param [ Symbol ] name The aliased field name to remove.
       def unalias_attribute(name)
         unless aliased_fields.delete(name.to_s)
-          raise AttributeError, "Field #{name} is not an aliased field"
+          raise AttributeError.new("Field #{name} is not an aliased field")
         end
 
         remove_method name

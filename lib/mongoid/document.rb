@@ -149,7 +149,7 @@ module Mongoid
     # @return [ Mongoid::Document ] An instance of the specified class.
     def becomes(klass)
       unless klass.include?(Mongoid::Document)
-        raise ArgumentError, 'A class which includes Mongoid::Document is expected'
+        raise ArgumentError.new('A class which includes Mongoid::Document is expected')
       end
 
       became = klass.new(clone_document)

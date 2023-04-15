@@ -847,7 +847,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
     context 'when a block is passed' do
 
       let(:association) do
-        embeds_one_class.embeds_one name, options do; end
+        embeds_one_class.embeds_one(name, options) { }
       end
 
       it 'defines an extension module' do

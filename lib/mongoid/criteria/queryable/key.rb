@@ -112,7 +112,7 @@ module Mongoid
         # @param [ String ] expanded The Mongo expanded operator.
         def initialize(name, strategy, operator, expanded = nil, &block)
           unless operator.is_a?(String) || operator.is_a?(Integer)
-            raise ArgumentError, "Operator must be a string or an integer: #{operator.inspect}"
+            raise ArgumentError.new("Operator must be a string or an integer: #{operator.inspect}")
           end
 
           @name = name

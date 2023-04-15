@@ -21,11 +21,11 @@ module Mongoid
       # @api private
       def matches?(document, expr)
         if expr.nil?
-          raise Errors::InvalidQuery, 'Nil condition in expression context'
+          raise Errors::InvalidQuery.new('Nil condition in expression context')
         end
 
         unless expr.is_a?(Hash)
-          raise Errors::InvalidQuery, 'MQL query must be provided as a Hash'
+          raise Errors::InvalidQuery.new('MQL query must be provided as a Hash')
         end
 
         expr.all? do |k, expr_v|

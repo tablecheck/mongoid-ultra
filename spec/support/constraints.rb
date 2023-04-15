@@ -163,7 +163,7 @@ module Constraints
     invalid_topologies = topologies - %i[single replica_set sharded load_balanced]
 
     unless invalid_topologies.empty?
-      raise ArgumentError, "Invalid topologies requested: #{invalid_topologies.join(', ')}"
+      raise ArgumentError.new("Invalid topologies requested: #{invalid_topologies.join(', ')}")
     end
 
     before(:all) do
