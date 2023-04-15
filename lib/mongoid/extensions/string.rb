@@ -163,7 +163,7 @@ module Mongoid
         def mongoize(object)
           object.try(:to_s)
         end
-        alias :demongoize :mongoize
+        alias_method :demongoize, :mongoize
       end
     end
   end

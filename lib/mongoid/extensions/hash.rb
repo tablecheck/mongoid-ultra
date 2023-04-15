@@ -100,7 +100,7 @@ module Mongoid
       # @return [ true | false ] Whether hash contains known unsatisfiable
       #   conditions.
       # @deprecated
-      alias blank_criteria? _mongoid_unsatisfiable_criteria?
+      alias_method :blank_criteria?, :_mongoid_unsatisfiable_criteria?
 
       # Deletes an id value from the hash.
       #

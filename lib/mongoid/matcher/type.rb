@@ -29,7 +29,7 @@ module Mongoid
                      when Integer
                        [condition]
                      else
-                       raise Errors::InvalidQuery, "Unknown $type argument: #{condition}"
+                       raise Errors::InvalidQuery.new("Unknown $type argument: #{condition}")
                      end
 
         conditions.each do |condition|
@@ -117,7 +117,7 @@ module Mongoid
           # maxKey
           value.is_a?(BSON::MaxKey)
         else
-          raise Errors::InvalidQuery, "Unknown $type argument: #{condition}"
+          raise Errors::InvalidQuery.new("Unknown $type argument: #{condition}")
         end
       end
     end

@@ -40,7 +40,7 @@ module ChildProcessHelper
 
   def check_output(*args)
     process, output = get_output(*args)
-    raise SpawnError, "Failed to execute: #{args}" unless process.exit_code == 0
+    raise SpawnError.new("Failed to execute: #{args}") unless process.exit_code == 0
 
     output
   end
@@ -59,6 +59,6 @@ module ChildProcessHelper
     process = call(cmd, env: env, cwd: cwd)
     return if process.exit_code == 0
 
-    raise SpawnError, "Failed to execute: #{cmd}"
+    raise SpawnError.new("Failed to execute: #{cmd}")
   end
 end

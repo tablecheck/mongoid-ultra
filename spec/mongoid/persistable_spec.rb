@@ -199,7 +199,7 @@ describe Mongoid::Persistable do
                 doc2.inc(member_count: 10)
               end
               doc.inc likes: 1
-              raise PersistableSpecTestException, 'oops'
+              raise PersistableSpecTestException.new('oops')
             end
           end
 
@@ -261,7 +261,7 @@ describe Mongoid::Persistable do
                 doc.atomically(join_context: true) do |doc3|
                   doc.inc likes: 1
                 end
-                raise PersistableSpecTestException, 'oops'
+                raise PersistableSpecTestException.new('oops')
               end
             rescue PersistableSpecTestException
             end

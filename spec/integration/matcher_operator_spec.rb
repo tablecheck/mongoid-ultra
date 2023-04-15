@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 def mop_error?(spec, kind)
-  raise ArgumentError, "Bogus kind: #{kind}" unless %w[matcher driver dsl].include?(kind)
+  raise ArgumentError.new("Bogus kind: #{kind}") unless %w[matcher driver dsl].include?(kind)
 
   spec['error'] == true || spec['error'] == kind ||
     spec['error'].is_a?(Array) && spec['error'].include?(kind)

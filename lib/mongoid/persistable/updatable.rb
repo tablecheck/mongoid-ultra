@@ -40,7 +40,7 @@ module Mongoid
         assign_attributes(attributes)
         save
       end
-      alias :update_attributes :update
+      alias_method :update_attributes, :update
 
       # Update the document attributes in the database and raise an error if
       # validation failed.
@@ -62,7 +62,7 @@ module Mongoid
         end
         result
       end
-      alias :update_attributes! :update!
+      alias_method :update_attributes!, :update!
 
       private
 

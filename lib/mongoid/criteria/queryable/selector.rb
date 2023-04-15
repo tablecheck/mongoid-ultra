@@ -56,7 +56,7 @@ module Mongoid
           end
           super(store_name, store_value)
         end
-        alias :[]= :store
+        alias_method :[]=, :store
 
         # Convert the selector to an aggregation pipeline entry.
         #

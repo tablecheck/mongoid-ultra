@@ -46,7 +46,7 @@ module Mongoid
             object.try(:to_f)
           end
         end
-        alias :demongoize :mongoize
+        alias_method :demongoize, :mongoize
       end
     end
   end

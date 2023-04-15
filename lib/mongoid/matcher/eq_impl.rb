@@ -29,7 +29,7 @@ module Mongoid
         when Range
           # Since $ne invokes $eq, the exception message needs to handle
           # both operators.
-          raise Errors::InvalidQuery, "Range is not supported as an argument to '#{original_operator}'"
+          raise Errors::InvalidQuery.new("Range is not supported as an argument to '#{original_operator}'")
         else
           # When doing a comparison with Time objects, compare using millisecond precision
           if value.is_a?(Time) && condition.is_a?(Time)
