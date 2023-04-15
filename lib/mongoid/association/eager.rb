@@ -100,9 +100,7 @@ module Mongoid
       def grouped_docs
         @grouped_docs[@association.name] ||= @docs.group_by do |doc|
           doc.send(group_by_key) if doc.respond_to?(group_by_key)
-        end.reject do |k, v|
-          k.nil?
-        end
+        end.reject { |k, _| k.nil? }
       end
 
       # Group the documents and return the keys.

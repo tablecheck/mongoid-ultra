@@ -521,7 +521,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
             before do
               expect(post).to receive(:before_add_tag).and_raise
-              begin; post.tags.send(method, tag); rescue; end
+              begin
+                post.tags.send(method, tag)
+              rescue StandardError
+              end
             end
 
             it 'does not add the document to the relation' do
@@ -541,7 +544,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
             before do
               expect(post).to receive(:after_add_tag).and_raise
-              begin; post.tags.send(method, tag); rescue; end
+              begin
+                post.tags.send(method, tag)
+              rescue StandardError
+              end
             end
 
             it 'adds the document to the relation' do
@@ -1242,7 +1248,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
           before do
             expect(post).to receive(:before_remove_tag).and_raise
-            begin; post.tags.clear; rescue; end
+            begin
+              post.tags.clear
+            rescue StandardError
+            end
           end
 
           it 'does not remove the document from the relation' do
@@ -1272,7 +1281,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
           before do
             expect(post).to receive(:after_remove_tag).and_raise
-            begin; post.tags.clear; rescue; end
+            begin
+              post.tags.clear
+            rescue StandardError
+            end
           end
 
           it 'removes the document from the relation' do
@@ -1296,7 +1308,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       let(:result) do
-        person.preferences.concat([preference])
+        person.preferences.push(preference)
       end
 
       it 'returns an array of loaded documents' do
@@ -1315,7 +1327,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       let(:result) do
-        person.preferences.concat([preference])
+        person.preferences.push(preference)
       end
 
       it 'returns an array of loaded documents' do
@@ -1336,7 +1348,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          person.houses.concat([house])
+          person.houses.push(house)
         end
 
         it 'appends the document to the relation' do
@@ -1356,7 +1368,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
         let!(:person) do
           Person.create! do |doc|
-            doc.preferences.concat([preference])
+            doc.preferences.push(preference)
           end
         end
 
@@ -1398,7 +1410,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           before do
-            person.preferences.concat([preference])
+            person.preferences.push(preference)
           end
 
           it 'adds the documents to the relation' do
@@ -1424,7 +1436,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           context 'when appending a second time' do
 
             before do
-              person.preferences.concat([preference])
+              person.preferences.push(preference)
             end
 
             it 'does not allow the document to be added again' do
@@ -1448,7 +1460,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           before do
-            person.preferences.concat([preference])
+            person.preferences.push(preference)
             person.save!
           end
 
@@ -1528,7 +1540,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          person.preferences.concat([preference])
+          person.preferences.push(preference)
         end
 
         it 'adds the documents to the relation' do
@@ -1566,7 +1578,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           before do
-            person.preferences.concat([preference_two])
+            person.preferences.push(preference_two)
           end
 
           it 'adds the documents to the relation' do
@@ -1610,7 +1622,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          person.administrated_events.concat([event])
+          person.administrated_events.push(event)
         end
 
         it 'sets the front side of the relation' do
@@ -1667,7 +1679,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          artwork.exhibitors.concat([exhibitor])
+          artwork.exhibitors.push(exhibitor)
         end
 
         it 'creates a single artwork object' do
@@ -1686,7 +1698,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          tag_one.related.concat([tag_two])
+          tag_one.related.push(tag_two)
         end
 
         it 'sets the front side of the relation' do
@@ -2310,7 +2322,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
           before do
             expect(post).to receive(:before_remove_tag).and_raise
-            begin; post.tags.delete(tag); rescue; end
+            begin
+              post.tags.delete(tag)
+            rescue StandardError
+            end
           end
 
           it 'does not remove the document from the relation' do
@@ -2340,7 +2355,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
           before do
             expect(post).to receive(:after_remove_tag).and_raise
-            begin; post.tags.delete(tag); rescue; end
+            begin
+              post.tags.delete(tag)
+            rescue StandardError
+            end
           end
 
           it 'removes the document from the relation' do
@@ -3799,7 +3817,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     let!(:signature) { HabtmmSignature.first }
 
     before do
-      contract.signature_ids.concat([signature.id])
+      contract.signature_ids.push(signature.id)
     end
 
     it 'works on the first attempt' do

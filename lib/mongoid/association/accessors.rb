@@ -102,7 +102,7 @@ module Mongoid
       # @param [ true | false ] reload If the association is to be reloaded.
       #
       # @return [ Mongoid::Association::Proxy ] The association.
-      def get_relation(name, association, object, reload = false)
+      def get_relation(name, association, object, reload = false) # rubocop:disable Style/OptionalBooleanParameter
         field_name = database_field_name(name)
 
         # As per the comments under MONGOID-5034, I've decided to only raise on

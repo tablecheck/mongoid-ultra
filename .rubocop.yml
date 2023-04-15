@@ -108,6 +108,12 @@ Layout/FirstHashElementIndentation:
 Style/FetchEnvVar:
   Enabled: false
 
+Style/ModuleFunction:
+  EnforcedStyle: extend_self
+
+Style/NumericLiterals:
+  Enabled: false
+
 Style/NumericPredicate:
   Enabled: false
 

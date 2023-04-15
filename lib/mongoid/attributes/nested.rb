@@ -14,9 +14,9 @@ module Mongoid
 
       module ClassMethods
 
-        REJECT_ALL_BLANK_PROC = ->(attributes) {
+        REJECT_ALL_BLANK_PROC = lambda do |attributes|
           attributes.all? { |key, value| key == '_destroy' || value.blank? }
-        }
+        end
 
         # Used when needing to update related models from a parent association. Can
         # be used on embedded or referenced associations.

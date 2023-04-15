@@ -49,7 +49,7 @@ module Mongoid
   extend Clients::Sessions::ClassMethods
 
   # A string added to the platform details of Ruby driver client handshake documents.
-  PLATFORM_DETAILS = "mongoid-#{VERSION}".freeze
+  PLATFORM_DETAILS = "mongoid-#{VERSION}".freeze # rubocop:disable Style/RedundantFreeze
 
   # The minimum MongoDB version supported.
   MONGODB_VERSION = '2.6.0'

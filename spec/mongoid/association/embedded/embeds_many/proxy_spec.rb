@@ -4264,7 +4264,10 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
       before do
         expect(artist).to receive(:before_add_song).and_raise
-        begin; artist.songs << song; rescue; end
+        begin
+          artist.songs << song
+        rescue StandardError
+        end
       end
 
       it 'does not add the document to the relation' do
@@ -4292,7 +4295,10 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
       before do
         expect(artist).to receive(:after_add_label).and_raise
-        begin; artist.labels << label; rescue; end
+        begin
+          artist.labels << label
+        rescue StandardError
+        end
       end
 
       it 'adds the document to the relation' do
@@ -4381,7 +4387,10 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       describe '#delete' do
 
         it 'does not remove the document from the relation' do
-          begin; artist.songs.delete(song); rescue; end
+          begin
+            artist.songs.delete(song)
+          rescue StandardError
+          end
           expect(artist.songs).to eq([song])
         end
       end
@@ -4389,7 +4398,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       describe '#clear' do
 
         before do
-          begin; artist.songs.clear; rescue; end
+          artist.songs.clear
+        rescue StandardError
         end
 
         it 'removes the documents from the relation' do
@@ -4400,7 +4410,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       describe '#pop' do
 
         before do
-          begin; artist.songs.pop; rescue; end
+          artist.songs.pop
+        rescue StandardError
         end
 
         it 'should remove from collection' do
@@ -4411,7 +4422,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       describe '#shift' do
 
         before do
-          begin; artist.songs.shift; rescue; end
+          artist.songs.shift
+        rescue StandardError
         end
 
         it 'should remove from collection' do
@@ -4493,7 +4505,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       describe '#delete' do
 
         before do
-          begin; artist.labels.delete(label); rescue; end
+          artist.labels.delete(label)
+        rescue StandardError
         end
 
         it 'removes the document from the relation' do
@@ -4504,7 +4517,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       describe '#clear' do
 
         before do
-          begin; artist.labels.clear; rescue; end
+          artist.labels.clear
+        rescue StandardError
         end
 
         it 'should remove from collection' do
@@ -4515,7 +4529,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       describe '#pop' do
 
         before do
-          begin; artist.labels.pop; rescue; end
+          artist.labels.pop
+        rescue StandardError
         end
 
         it 'should remove from collection' do
@@ -4526,7 +4541,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       describe '#shift' do
 
         before do
-          begin; artist.labels.shift; rescue; end
+          artist.labels.shift
+        rescue StandardError
         end
 
         it 'should remove from collection' do
