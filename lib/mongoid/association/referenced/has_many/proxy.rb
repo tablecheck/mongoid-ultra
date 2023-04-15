@@ -55,7 +55,8 @@ module Mongoid
           #
           # @return [ Array<Mongoid::Document> ] The documents.
           def concat(documents)
-            docs, inserts = [], []
+            docs = []
+            inserts = []
             documents.each do |doc|
               next unless doc
 
@@ -291,8 +292,9 @@ module Mongoid
           # @return [ Many ] The association.
           def substitute(replacement)
             if replacement
-              new_docs, docs = replacement.compact, []
-              new_ids = new_docs.map { |doc| doc._id }
+              new_docs = replacement.compact
+              docs = []
+              new_ids = new_docs.map(&:_id)
               remove_not_in(new_ids)
               new_docs.each do |doc|
                 docs.push(doc) if doc.send(foreign_key) != _base.send(_association.primary_key)
@@ -404,15 +406,15 @@ module Mongoid
           #
           # @return [ true | false ] If the association is destructive.
           def cascade!(document)
-            if persistable?
-              case _association.dependent
-              when :delete_all
-                document.delete
-              when :destroy
-                document.destroy
-              else
-                document.save
-              end
+            return unless persistable?
+
+            case _association.dependent
+            when :delete_all
+              document.delete
+            when :destroy
+              document.destroy
+            else
+              document.save
             end
           end
 
@@ -446,13 +448,13 @@ module Mongoid
           # @param [ Array<Mongoid::Document> ] docs The delayed inserts.
           # @param [ Array<Hash> ] inserts The raw insert document.
           def persist_delayed(docs, inserts)
-            unless docs.empty?
-              collection.insert_many(inserts, session: _session)
-              docs.each do |doc|
-                doc.new_record = false
-                doc.run_after_callbacks(:create, :save) unless _association.autosave?
-                doc.post_persist
-              end
+            return if docs.empty?
+
+            collection.insert_many(inserts, session: _session)
+            docs.each do |doc|
+              doc.new_record = false
+              doc.run_after_callbacks(:create, :save) unless _association.autosave?
+              doc.post_persist
             end
           end
 
@@ -509,9 +511,7 @@ module Mongoid
 
               unbind_one(doc)
               _target.delete(doc)
-              if _association.destructive?
-                doc.destroyed = true
-              end
+              doc.destroyed = true if _association.destructive?
             end
           end
 

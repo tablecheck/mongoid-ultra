@@ -49,9 +49,9 @@ module Constraints
 
   def require_mri
     before(:all) do
-      return if SpecConfig.instance.mri?
-
-      skip "MRI required, we have #{SpecConfig.instance.platform}"
+      unless SpecConfig.instance.mri?
+        skip "MRI required, we have #{SpecConfig.instance.platform}"
+      end
     end
   end
 
@@ -60,19 +60,20 @@ module Constraints
     actual_version = driver_version(required_version.length)
 
     before(:all) do
-      return if (actual_version <=> required_version) >= 0
-
-      skip "Driver version #{version} or higher is required"
+      if actual_version < required_version
+        skip "Driver version #{version} or higher is required"
+      end
     end
   end
 
   def max_driver_version(version)
     required_version = version.split('.').map(&:to_i)
     actual_version = driver_version(required_version.length)
-    before(:all) do
-      return if (actual_version <=> required_version) <= 0
 
-      skip "Driver version #{version} or lower is required"
+    before(:all) do
+      if actual_version > required_version
+        skip "Driver version #{version} or lower is required"
+      end
     end
   end
 
@@ -83,20 +84,23 @@ module Constraints
   def min_bson_version(version)
     required_version = version.split('.').map(&:to_i)
     actual_version = bson_version(required_version.length)
-    before(:all) do
-      return if (actual_version <=> required_version) >= 0
 
-      skip "bson-ruby version #{version} or higher is required"
+    before(:all) do
+      if actual_version < required_version
+        skip "bson-ruby version #{version} or higher is required"
+      end
+
     end
   end
 
   def max_bson_version(version)
     required_version = version.split('.').map(&:to_i)
     actual_version = bson_version(required_version.length)
-    before(:all) do
-      return if (actual_version <=> required_version) <= 0
 
-      skip "bson-ruby version #{version} or lower is required"
+    before(:all) do
+      if actual_version > required_version
+        skip "bson-ruby version #{version} or lower is required"
+      end
     end
   end
 
@@ -106,17 +110,17 @@ module Constraints
 
   def min_ruby_version(version)
     before(:all) do
-      return if RUBY_VERSION >= version
-
-      skip "Ruby version #{version} or higher required, we have #{RUBY_VERSION}"
+      if RUBY_VERSION < version
+        skip "Ruby version #{version} or higher required, we have #{RUBY_VERSION}"
+      end
     end
   end
 
   def max_ruby_version(version)
     before(:all) do
-      return if RUBY_VERSION <= version
-
-      skip "Ruby version #{version} or higher required, we have #{RUBY_VERSION}"
+      if RUBY_VERSION > version
+        skip "Ruby version #{version} or higher required, we have #{RUBY_VERSION}"
+      end
     end
   end
 
@@ -126,9 +130,9 @@ module Constraints
     end
 
     before(:all) do
-      return if RAILS_VERSION >= version
-
-      skip "Rails version #{version} or higher required, we have #{RAILS_VERSION}"
+      if RAILS_VERSION < version
+        skip "Rails version #{version} or higher required, we have #{RAILS_VERSION}"
+      end
     end
   end
 
@@ -138,9 +142,9 @@ module Constraints
     end
 
     before(:all) do
-      return if RAILS_VERSION <= version
-
-      skip "Rails version #{version} or lower required, we have #{RAILS_VERSION}"
+      if RAILS_VERSION > version
+        skip "Rails version #{version} or lower required, we have #{RAILS_VERSION}"
+      end
     end
   end
 
@@ -148,9 +152,9 @@ module Constraints
     parsed_version = Gem::Version.new(version)
 
     before(:all) do
-      return if Gem::Version.new(ClusterConfig.instance.server_version) >= parsed_version
-
-      skip "Server version #{version} or higher required, we have #{ClusterConfig.instance.server_version}"
+      if Gem::Version.new(ClusterConfig.instance.server_version) < parsed_version
+        skip "Server version #{version} or higher required, we have #{ClusterConfig.instance.server_version}"
+      end
     end
   end
 
@@ -158,9 +162,9 @@ module Constraints
     parsed_version = Gem::Version.new(version)
 
     before(:all) do
-      return if Gem::Version.new(ClusterConfig.instance.server_version) <= parsed_version
-
-      skip "Server version #{version} or lower required, we have #{ClusterConfig.instance.server_version}"
+      if Gem::Version.new(ClusterConfig.instance.server_version) > parsed_version
+        skip "Server version #{version} or lower required, we have #{ClusterConfig.instance.server_version}"
+      end
     end
   end
 
@@ -168,9 +172,9 @@ module Constraints
     parsed_version = Gem::Version.new(version)
 
     before(:all) do
-      return if Gem::Version.new(ClusterConfig.instance.fcv_ish) >= parsed_version
-
-      skip "FCV #{version} or higher required, we have #{ClusterConfig.instance.fcv_ish} (server #{ClusterConfig.instance.server_version})"
+      if Gem::Version.new(ClusterConfig.instance.fcv_ish) < parsed_version
+        skip "FCV #{version} or higher required, we have #{ClusterConfig.instance.fcv_ish} (server #{ClusterConfig.instance.server_version})"
+      end
     end
   end
 
@@ -178,9 +182,9 @@ module Constraints
     parsed_version = Gem::Version.new(version)
 
     before(:all) do
-      return if Gem::Version.new(ClusterConfig.instance.fcv_ish) <= parsed_version
-
-      skip "FCV #{version} or lower required, we have #{ClusterConfig.instance.fcv_ish} (server #{ClusterConfig.instance.server_version})"
+      if Gem::Version.new(ClusterConfig.instance.fcv_ish) > parsed_version
+        skip "FCV #{version} or lower required, we have #{ClusterConfig.instance.fcv_ish} (server #{ClusterConfig.instance.server_version})"
+      end
     end
   end
 
@@ -251,9 +255,9 @@ module Constraints
 
   def require_enterprise
     before(:all) do
-      return if ClusterConfig.instance.enterprise?
-
-      skip 'Test requires enterprise build of MongoDB'
+      unless ClusterConfig.instance.enterprise?
+        skip 'Test requires enterprise build of MongoDB'
+      end
     end
   end
 
@@ -261,30 +265,29 @@ module Constraints
     before(:all) do
       # If FLE is set in environment, the entire test run is supposed to
       # include FLE therefore run the FLE tests.
-      return if ENV['LIBMONGOCRYPT_PATH'].blank? && ENV['FLE'].blank?
-
-      skip 'Test requires path to libmongocrypt to be specified in LIBMONGOCRYPT_PATH env variable'
+      unless ENV['LIBMONGOCRYPT_PATH'].present? || ENV['FLE'].present?
+        skip 'Test requires path to libmongocrypt to be specified in LIBMONGOCRYPT_PATH env variable'
+      end
     end
   end
 
   def min_libmongocrypt_version(version)
     require_libmongocrypt
+    actual_version = Gem::Version.new(Mongo::Crypt::Binding.mongocrypt_version(nil))
+    min_version = Gem::Version.new(version)
 
     before(:all) do
-      actual_version = Gem::Version.new(Mongo::Crypt::Binding.mongocrypt_version(nil))
-      min_version = Gem::Version.new(version)
-
-      return if actual_version >= min_version
-
-      skip "libmongocrypt version #{min_version} required, but version #{actual_version} is available"
+      if actual_version < min_version
+        skip "libmongocrypt version #{min_version} required, but version #{actual_version} is available"
+      end
     end
   end
 
   def require_no_libmongocrypt
     before(:all) do
-      return if ENV['LIBMONGOCRYPT_PATH'].blank?
-
-      skip 'Test requires libmongocrypt to not be configured' 
+      if ENV['LIBMONGOCRYPT_PATH'].present?
+        skip 'Test requires libmongocrypt to not be configured'
+      end
     end
   end
 end

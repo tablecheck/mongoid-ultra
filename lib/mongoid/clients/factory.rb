@@ -63,6 +63,7 @@ module Mongoid
         database = config.delete(:database)
         hosts = config.delete(:hosts)
         opts = config.delete(:options) || {}
+
         if opts[:auto_encryption_options]
           if opts[:auto_encryption_options].key?(:schema_map)
             Mongoid.logger.warn(
@@ -73,9 +74,9 @@ module Mongoid
             opts[:auto_encryption_options][:schema_map] = Mongoid.config.encryption_schema_map(database)
           end
         end
-        unless config.empty?
-          default_logger.warn("Unknown config options detected: #{config}.")
-        end
+
+        default_logger.warn("Unknown config options detected: #{config}.") unless config.empty?
+
         if uri
           Mongo::Client.new(uri, options(opts))
         else
