@@ -3,7 +3,9 @@
 # on 2023-04-15 23:05:14 UTC using RuboCop version 1.49.0.
 # The point is for the user to remove these configuration records
 # one by one as the offenses are removed from the code base.
-# Note that cha
+
+Layout/EmptyLines:
+  Enabled: false
 
 # Offense count: 8
 # Configuration parameters: AllowedMethods, AllowedPatterns.
