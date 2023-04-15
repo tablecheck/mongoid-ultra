@@ -64,7 +64,7 @@ module Mongoid
             unsynced(_base, foreign_key) and self
           end
 
-          alias :push :<<
+          alias_method :push, :<<
 
           # Appends an array of documents to the association. Performs a batch
           # insert of the documents instead of persisting one at a time.
@@ -121,7 +121,7 @@ module Mongoid
             doc
           end
 
-          alias :new :build
+          alias_method :new, :build
 
           # Delete the document from the association. This will set the foreign key
           # on the document to nil. If the dependent options on the association are
@@ -191,9 +191,9 @@ module Mongoid
             many_to_many
           end
 
-          alias :nullify_all :nullify
-          alias :clear :nullify
-          alias :purge :nullify
+          alias_method :nullify_all, :nullify
+          alias_method :clear, :nullify
+          alias_method :purge, :nullify
 
           # Substitutes the supplied target documents for the existing documents
           # in the association. If the new target is nil, perform the necessary

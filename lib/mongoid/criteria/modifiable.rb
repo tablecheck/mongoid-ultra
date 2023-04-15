@@ -25,7 +25,7 @@ module Mongoid
       def build(attrs = {}, &block)
         create_document(:new, attrs, &block)
       end
-      alias :new :build
+      alias_method :new, :build
 
       # Create a document in the database given the selector and return it.
       # Complex criteria, such as $in and $or operations will get ignored.

@@ -88,7 +88,7 @@ module Mongoid
 
           name == other.name && operator == other.operator && expanded == other.expanded
         end
-        alias :eql? :==
+        alias_method :eql?, :==
 
         # Calculate the hash code for a key.
         #
@@ -161,7 +161,7 @@ module Mongoid
         def __sort_option__
           { name => operator }
         end
-        alias :__sort_pair__ :__sort_option__
+        alias_method :__sort_pair__, :__sort_option__
 
         # Convert the key to a string.
         #

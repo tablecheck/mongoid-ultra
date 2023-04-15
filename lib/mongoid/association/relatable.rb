@@ -149,7 +149,7 @@ module Mongoid
       def relation_class_name
         @class_name ||= @options[:class_name] || ActiveSupport::Inflector.classify(name)
       end
-      alias :class_name :relation_class_name
+      alias_method :class_name, :relation_class_name
 
       # The class of the association object(s).
       #
@@ -171,7 +171,7 @@ module Mongoid
           resolve_name(inverse_class, cls_name)
         end
       end
-      alias :klass :relation_class
+      alias_method :klass, :relation_class
 
       # The class name of the object owning this association.
       #
@@ -186,7 +186,7 @@ module Mongoid
       def inverse_class
         @owner_class
       end
-      alias :inverse_klass :inverse_class
+      alias_method :inverse_klass, :inverse_class
 
       # The foreign key field if this association stores a foreign key.
       # Otherwise, the primary key.

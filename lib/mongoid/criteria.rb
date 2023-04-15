@@ -22,14 +22,14 @@ module Mongoid
     include Enumerable
 
     # @api private
-    alias :_enumerable_find :find
+    alias_method :_enumerable_find, :find
 
     include Contextual
     include Queryable
     include Findable
 
     # @api private
-    alias :_findable_find :find
+    alias_method :_findable_find, :find
 
     include Inspectable
     include Includable
@@ -338,7 +338,7 @@ module Mongoid
       super || klass.respond_to?(name) || CHECK.respond_to?(name, include_private)
     end
 
-    alias :to_ary :to_a
+    alias_method :to_ary, :to_a
 
     # Convenience for objects that want to be merged into a criteria.
     #

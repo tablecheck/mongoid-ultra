@@ -12,7 +12,7 @@ module Mongoid
 
       UNFORWARDABLE_METHODS = /\A(?:__.*|send|object_id|equal\?|respond_to\?|respond_to_missing\?|tap|public_send|extend_proxy|extend_proxies)\z/.freeze
 
-      alias :extend_proxy :extend
+      alias_method :extend_proxy, :extend
 
       # We undefine most methods to get them sent through to the target.
       instance_methods.each do |method|

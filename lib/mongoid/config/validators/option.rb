@@ -16,7 +16,7 @@ module Mongoid
         def validate(option)
           return if Config.settings.keys.include?(option.to_sym)
 
-          raise Errors::InvalidConfigOption, option
+          raise Errors::InvalidConfigOption.new(option)
         end
       end
     end

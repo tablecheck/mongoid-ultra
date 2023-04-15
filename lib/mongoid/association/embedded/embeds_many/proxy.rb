@@ -37,7 +37,7 @@ module Mongoid
             self
           end
 
-          alias :push :<<
+          alias_method :push, :<<
 
           # Get this association as as its representation in the database.
           #
@@ -84,7 +84,7 @@ module Mongoid
             doc
           end
 
-          alias :new :build
+          alias_method :new, :build
 
           # Clear the association. Will delete the documents from the db
           # if they are already persisted.

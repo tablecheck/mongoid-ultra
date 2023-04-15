@@ -274,7 +274,7 @@ module Mongoid
                     if (v.keys & existing.keys).empty?
                       existing.update(v)
                     else
-                      raise NotImplementedError, 'Ruby does not allow same symbol operator with different values'
+                      raise NotImplementedError.new('Ruby does not allow same symbol operator with different values')
                       result['$and'] ||= []
                       result['$and'] << { k => v }
                     end
@@ -295,7 +295,7 @@ module Mongoid
                     # expression and add it to the existing hash. Otherwise
                     # add the new condition with $and to the top level.
                     if existing.key?(op)
-                      raise NotImplementedError, 'Ruby does not allow same symbol operator with different values'
+                      raise NotImplementedError.new('Ruby does not allow same symbol operator with different values')
                       result['$and'] ||= []
                       result['$and'] << { k => v }
                     else
@@ -314,7 +314,7 @@ module Mongoid
                   if v.is_a?(Hash) && !v.key?(op)
                     result[k] = { op => existing }.update(v)
                   else
-                    raise NotImplementedError, 'Ruby does not allow same symbol operator with different values'
+                    raise NotImplementedError.new('Ruby does not allow same symbol operator with different values')
                     result['$and'] ||= []
                     result['$and'] << { k => v }
                   end

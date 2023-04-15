@@ -28,7 +28,7 @@ module Mongoid
       attrs = clone_document.except(*self.class.id_fields)
       Copyable.clone_with_hash(self.class, attrs)
     end
-    alias :dup :clone
+    alias_method :dup, :clone
 
     private
 

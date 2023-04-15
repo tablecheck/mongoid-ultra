@@ -322,7 +322,7 @@ module Mongoid
     end
 
     def clients=(clients)
-      raise Errors::NoClientsConfig.new unless clients
+      raise Errors::NoClientsConfig unless clients
 
       c = clients.with_indifferent_access
       Validators::Client.validate(c)

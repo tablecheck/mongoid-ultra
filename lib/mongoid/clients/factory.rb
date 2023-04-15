@@ -56,7 +56,7 @@ module Mongoid
       #
       # @return [ Mongo::Client ] The client.
       def create_client(configuration)
-        raise Errors::NoClientsConfig.new unless configuration
+        raise Errors::NoClientsConfig unless configuration
 
         config = configuration.dup
         uri = config.delete(:uri)

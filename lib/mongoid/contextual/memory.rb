@@ -57,7 +57,7 @@ module Mongoid
         end
         deleted
       end
-      alias :delete_all :delete
+      alias_method :delete_all, :delete
 
       # Destroy all documents in the database that match the selector.
       #
@@ -73,7 +73,7 @@ module Mongoid
         end
         deleted
       end
-      alias :destroy_all :destroy
+      alias_method :destroy_all, :destroy
 
       # Get the distinct values in the db for the provided field.
       #
@@ -145,8 +145,8 @@ module Mongoid
           eager_load([documents.first]).first
         end
       end
-      alias :one :first
-      alias :find_first :first
+      alias_method :one, :first
+      alias_method :find_first, :first
 
       # Get the first document in the database for the criteria's selector or
       # raise an error if none is found.
@@ -233,7 +233,7 @@ module Mongoid
       def length
         documents.length
       end
-      alias :size :length
+      alias_method :size, :length
 
       # Limits the number of documents that are returned.
       #

@@ -18,7 +18,7 @@ module Mongoid
         #
         # @param [ Hash ] clients The clients config.
         def validate(clients)
-          raise Errors::NoDefaultClient, clients.keys unless clients.key?(:default)
+          raise Errors::NoDefaultClient.new(clients.keys) unless clients.key?(:default)
 
           clients.each_pair do |name, config|
             validate_client_database(name, config)

@@ -53,7 +53,7 @@ module Mongoid
         #
         # @api private
         def expand_condition_to_array_values(criterion)
-          raise ArgumentError, 'Criterion cannot be nil here' if criterion.nil?
+          raise ArgumentError.new('Criterion cannot be nil here') if criterion.nil?
 
           criterion.transform_values(&:__array__)
         end

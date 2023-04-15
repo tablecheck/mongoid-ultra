@@ -337,9 +337,9 @@ module Mongoid
       def length
         entries.length
       end
-      alias :size :length
-      alias :find_first :first
-      alias :one :first
+      alias_method :size, :length
+      alias_method :find_first, :first
+      alias_method :one, :first
 
       private
 

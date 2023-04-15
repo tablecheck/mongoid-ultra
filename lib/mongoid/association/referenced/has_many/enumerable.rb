@@ -63,7 +63,7 @@ module Mongoid
             self
           end
 
-          alias :push :<<
+          alias_method :push, :<<
 
           # Clears out all the documents in this enumerable. If passed a block it
           # will yield to each document that is in memory.
@@ -343,7 +343,7 @@ module Mongoid
           #   enumerable.load_all!
           #
           # @return [ true ] That the enumerable is _loaded.
-          alias :load_all! :entries
+          alias_method :load_all!, :entries
 
           # Has the enumerable been _loaded? This will be true if the criteria has
           # been executed or we manually load the entire thing.
@@ -429,7 +429,7 @@ module Mongoid
             end
           end
 
-          alias :length :size
+          alias_method :length, :size
 
           # Send #to_json to the entries.
           #

@@ -41,7 +41,7 @@ module Mongoid
           def __evolve_time__
             self
           end
-          alias :__evolve_date__ :__evolve_time__
+          alias_method :__evolve_date__, :__evolve_time__
 
           # Add this object to nil.
           #

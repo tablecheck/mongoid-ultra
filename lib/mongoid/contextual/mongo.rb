@@ -77,9 +77,9 @@ module Mongoid
       # @return [ Integer ] The number of matches.
       def estimated_count(options = {})
         unless criteria.selector.empty?
-          raise Mongoid::Errors::InvalidEstimatedCountScoping, klass if klass.default_scoping?
+          raise Mongoid::Errors::InvalidEstimatedCountScoping.new(klass) if klass.default_scoping?
 
-          raise Mongoid::Errors::InvalidEstimatedCountCriteria, klass
+          raise Mongoid::Errors::InvalidEstimatedCountCriteria.new(klass)
         end
 
         view.estimated_document_count(options)
@@ -94,7 +94,7 @@ module Mongoid
       def delete
         view.delete_many.deleted_count
       end
-      alias :delete_all :delete
+      alias_method :delete_all, :delete
 
       # Destroy all documents in the database that match the selector.
       #
@@ -109,7 +109,7 @@ module Mongoid
           count
         end
       end
-      alias :destroy_all :destroy
+      alias_method :destroy_all, :destroy
 
       # Get the distinct values in the db for the provided field.
       #
@@ -279,7 +279,7 @@ module Mongoid
       def length
         count
       end
-      alias :size :length
+      alias_method :size, :length
 
       # Limits the number of documents that are returned from the database.
       #
@@ -553,7 +553,7 @@ module Mongoid
           retrieve_nth_with_limit(0, limit)
         end
       end
-      alias :one :first
+      alias_method :one, :first
 
       # Get the first document in the database for the criteria's selector or
       # raise an error if none is found.
