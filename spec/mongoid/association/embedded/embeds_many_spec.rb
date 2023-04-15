@@ -786,7 +786,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
     context 'when a block is passed' do
 
       let(:association) do
-        embeds_many_class.embeds_one(name, options) { }
+        embeds_many_class.embeds_one(name, options) {}
       end
 
       it 'defines an extension module' do

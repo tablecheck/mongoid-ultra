@@ -1092,7 +1092,7 @@ describe Mongoid::Association::Referenced::HasMany do
     context 'when a block is passed' do
 
       let(:association) do
-        has_many_class.embeds_one(name, options) { }
+        has_many_class.embeds_one(name, options) {}
       end
 
       it 'defines an extension module' do
