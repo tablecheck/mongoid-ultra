@@ -53,9 +53,9 @@ module Mongoid
       Factory.build(klass, attrs).tap do |object|
         dynamic_attrs.each do |attr_name, value|
           assoc = object.embedded_relations[attr_name]
-          if assoc&.one? && Hash === value
+          if assoc&.one? && value.is_a?(Hash)
             object.send("#{attr_name}=", clone_with_hash(assoc.klass, value))
-          elsif assoc&.many? && Array === value
+          elsif assoc&.many? && value.is_a?(Array)
             docs = value.map { |h| clone_with_hash(assoc.klass, h) }
             object.send("#{attr_name}=", docs)
           elsif object.respond_to?("#{attr_name}=")

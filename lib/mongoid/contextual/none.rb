@@ -138,7 +138,8 @@ module Mongoid
       #
       # @param [ Mongoid::Criteria ] criteria The criteria.
       def initialize(criteria)
-        @criteria, @klass = criteria, criteria.klass
+        @criteria = criteria
+        @klass = criteria.klass
       end
 
       # Always returns nil.
@@ -337,7 +338,6 @@ module Mongoid
         entries.length
       end
       alias :size :length
-
       alias :find_first :first
       alias :one :first
 
