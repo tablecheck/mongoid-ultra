@@ -56,10 +56,7 @@ module Mongoid
                 #    See MONGOID-4843 for a longer discussion about this.
                 reset_foreign_key_changes do
                   _base.add_to_set(foreign_key => doc.public_send(_association.primary_key))
-
-                  if child_persistable?(doc)
-                    doc.save
-                  end
+                  doc.save if child_persistable?(doc)
                   reset_unloaded
                 end
               end
@@ -79,7 +76,10 @@ module Mongoid
           #
           # @return [ Array<Mongoid::Document> ] The documents.
           def concat(documents)
-            ids, docs, inserts = {}, [], []
+            ids = {}
+            docs = []
+            inserts = []
+
             documents.each do |doc|
               next unless doc
 
@@ -94,9 +94,8 @@ module Mongoid
                 end
               end
             end
-            if persistable? || _creating?
-              _base.push(foreign_key => ids.keys)
-            end
+
+            _base.push(foreign_key => ids.keys) if persistable? || _creating?
             persist_delayed(docs, inserts)
             self
           end
@@ -156,6 +155,7 @@ module Mongoid
             _target.each do |doc|
               execute_callback :before_remove, doc
             end
+
             unless _association.forced_nil_inverse?
               ipk = if (field = _association.options[:inverse_primary_key])
                       _base.public_send(field)
@@ -171,21 +171,21 @@ module Mongoid
                 criteria.pull(inverse_foreign_key => ipk)
               end
             end
-            if persistable?
-              _base.set(foreign_key => _base.public_send(foreign_key).clear)
-            end
+
+            _base.set(foreign_key => _base.public_send(foreign_key).clear) if persistable?
+
             after_remove_error = nil
+
             many_to_many = _target.clear do |doc|
               unbind_one(doc)
-              unless _association.forced_nil_inverse?
-                doc.changed_attributes.delete(inverse_foreign_key)
-              end
+              doc.changed_attributes.delete(inverse_foreign_key) unless _association.forced_nil_inverse?
               begin
                 execute_callback :after_remove, doc
               rescue StandardError => e
                 after_remove_error = e
               end
             end
+
             raise after_remove_error if after_remove_error
 
             many_to_many
