@@ -35,6 +35,10 @@ Performance/RegexpMatch:
   Exclude:
     - 'Gemfile'
 
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - 'Gemfile'
+
 # --------------------------------------------------
 # Cops with specific files skipped. These can be inlined later.
 
