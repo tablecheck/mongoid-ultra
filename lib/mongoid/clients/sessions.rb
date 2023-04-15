@@ -45,16 +45,16 @@ module Mongoid
         rescue Mongo::Error::InvalidSession => ex
           if Mongo::Error::SessionsNotSupported === ex
             raise Mongoid::Errors::SessionsNotSupported.new
-          else
-            raise ex
           end
+
+          raise ex
         rescue Mongo::Error::OperationFailure => ex
           if (ex.code == 40415 && ex.server_message =~ /startTransaction/) ||
              (ex.code == 20 && ex.server_message =~ /Transaction/)
             raise Mongoid::Errors::TransactionsNotSupported
-          else
-            raise ex
           end
+
+          raise ex
         ensure
           Threaded.clear_session(client: persistence_context.client)
         end

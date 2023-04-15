@@ -792,7 +792,7 @@ module Mongoid
             raise ArgumentError.new('Criterion cannot be nil here')
           end
 
-          unless Hash === criterion
+          unless criterion.is_a?(Hash)
             raise Errors::InvalidQuery.new("Expression must be a Hash: #{Errors::InvalidQuery.truncate_expr(criterion)}")
           end
 

@@ -195,8 +195,7 @@ module Mongoid
 
           typed_value
         end
-      else
-        # TODO: MONGOID-5072
+        # else TODO: MONGOID-5072
       end
     end
     alias_method :[]=, :write_attribute

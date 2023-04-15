@@ -118,6 +118,12 @@ Style/Alias:
 Style/FetchEnvVar:
   Enabled: false
 
+Style/GuardClause:
+  AllowConsecutiveConditionals: true
+  Exclude:
+    - 'Gemfile'
+    - 'gemfiles/**/*'
+
 Style/ModuleFunction:
   EnforcedStyle: extend_self
 
