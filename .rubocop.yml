@@ -120,6 +120,9 @@ Style/NumericLiterals:
 Style/NumericPredicate:
   Enabled: false
 
+Style/RaiseArgs:
+  EnforcedStyle: compact
+
 # See: https://github.com/rubocop/rubocop/issues/11798
 # Enforce multiline style if it becomes available in the future.
 Style/WhileUntilModifier:

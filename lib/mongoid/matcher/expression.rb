@@ -24,18 +24,15 @@ module Mongoid
           raise Errors::InvalidQuery, 'Nil condition in expression context'
         end
 
-        unless unless expr.is_a?(Hash)
+        unless expr.is_a?(Hash)
           raise Errors::InvalidQuery, 'MQL query must be provided as a Hash'
         end
 
         expr.all? do |k, expr_v|
           k = k.to_s
           if k == '$comment'
-            # Nothing
-            return true
-          end
-
-          if k.start_with?('$')
+            true
+          elsif k.start_with?('$')
             ExpressionOperator.get(k).matches?(document, expr_v)
           else
             values = Matcher.extract_attribute(document, k)
