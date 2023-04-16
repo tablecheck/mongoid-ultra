@@ -29,45 +29,6 @@ Lint/AmbiguousOperatorPrecedence:
     - 'lib/mongoid/tasks/database.rb'
     - 'spec/integration/matcher_operator_spec.rb'
 
-# Offense count: 51
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: AllowSafeAssignment.
-Lint/AssignmentInCondition:
-  Exclude:
-    - 'lib/mongoid/association/accessors.rb'
-    - 'lib/mongoid/association/depending.rb'
-    - 'lib/mongoid/association/eager_loadable.rb'
-    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
-    - 'lib/mongoid/association/nested/many.rb'
-    - 'lib/mongoid/association/referenced/auto_save.rb'
-    - 'lib/mongoid/association/referenced/counter_cache.rb'
-    - 'lib/mongoid/association/referenced/has_and_belongs_to_many.rb'
-    - 'lib/mongoid/association/referenced/has_and_belongs_to_many/binding.rb'
-    - 'lib/mongoid/association/referenced/has_and_belongs_to_many/proxy.rb'
-    - 'lib/mongoid/association/referenced/has_many/proxy.rb'
-    - 'lib/mongoid/attributes/processing.rb'
-    - 'lib/mongoid/changeable.rb'
-    - 'lib/mongoid/collection_configurable.rb'
-    - 'lib/mongoid/config/options.rb'
-    - 'lib/mongoid/contextual/memory.rb'
-    - 'lib/mongoid/contextual/mongo.rb'
-    - 'lib/mongoid/copyable.rb'
-    - 'lib/mongoid/criteria/includable.rb'
-    - 'lib/mongoid/criteria/queryable/mergeable.rb'
-    - 'lib/mongoid/criteria/queryable/smash.rb'
-    - 'lib/mongoid/criteria/queryable/storable.rb'
-    - 'lib/mongoid/extensions/hash.rb'
-    - 'lib/mongoid/fields.rb'
-    - 'lib/mongoid/fields/standard.rb'
-    - 'lib/mongoid/indexable.rb'
-    - 'lib/mongoid/matcher/field_expression.rb'
-    - 'lib/mongoid/persistable/updatable.rb'
-    - 'lib/mongoid/scopable.rb'
-    - 'lib/mongoid/serializable.rb'
-    - 'lib/mongoid/timestamps/timeless.rb'
-    - 'lib/mongoid/touchable.rb'
-    - 'spec/integration/app_spec.rb'
-
 # Offense count: 211
 # Configuration parameters: AllowedMethods.
 # AllowedMethods: enums

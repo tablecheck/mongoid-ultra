@@ -36,7 +36,7 @@ module Mongoid
             docs = args.flatten
             return concat(docs) if docs.size > 1
 
-            if doc = docs.first
+            if (doc = docs.first)
               append(doc)
               doc.save if persistable? && !_assigning? && !doc.validated?
             end

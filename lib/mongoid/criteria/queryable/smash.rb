@@ -116,7 +116,7 @@ module Mongoid
         #
         # @return [ Object ] The serializer.
         def get_serializer(name)
-          if s = serializers[name]
+          if (s = serializers[name])
             s
           else
             Fields.traverse_association_tree(name, serializers, associations, aliased_associations)

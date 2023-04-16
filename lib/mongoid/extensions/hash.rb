@@ -23,7 +23,7 @@ module Mongoid
       #
       # @return [ Hash ] The converted hash.
       def __mongoize_object_id__
-        if id = self['$oid']
+        if (id = self['$oid'])
           BSON::ObjectId.from_string(id)
         else
           transform_values!(&:__mongoize_object_id__)
