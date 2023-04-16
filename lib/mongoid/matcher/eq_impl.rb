@@ -49,8 +49,6 @@ module Mongoid
         end
       end
 
-      private
-
       # Per https://www.mongodb.com/docs/ruby-driver/current/tutorials/bson-v4/#time-instances,
       # > Times in BSON (and MongoDB) can only have millisecond precision. When Ruby Time instances
       # are serialized to BSON or Extended JSON, the times are floored to the nearest millisecond.
@@ -65,15 +63,21 @@ module Mongoid
       # @param [ Time ] time_b The second time value.
       #
       # @return [ true | false ] Whether the two times are equal to the millisecond.
+      #
+      # @api private
       def time_eq?(time_a, time_b)
         time_rounded_to_millis(time_a) == time_rounded_to_millis(time_b)
       end
+
+      private
 
       # Rounds a time value to nearest millisecond.
       #
       # @param [ Time ] time The time value.
       #
       # @return [ true | false ] The time rounded to the millisecond.
+      #
+      # @api private
       def time_rounded_to_millis(time)
         time._bson_to_i * 1000 + time.usec.divmod(1000).first
       end
