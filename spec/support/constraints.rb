@@ -274,12 +274,12 @@ module Constraints
   end
 
   def min_version?(current_version, required_version)
-    version_comparator(current_version, required_version) >= 0
+    version_comparator(current_version, required_version) <= 0
   end
   module_function :min_version?
 
   def max_version?(current_version, required_version)
-    version_comparator(current_version, required_version) <= 0
+    version_comparator(current_version, required_version) >= 0
   end
   module_function :max_version?
 
