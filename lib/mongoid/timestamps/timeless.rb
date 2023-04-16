@@ -58,7 +58,6 @@ module Mongoid
         def_delegators :timeless_table, :[]=, :[]
       end
 
-      private
 
       module ClassMethods
 

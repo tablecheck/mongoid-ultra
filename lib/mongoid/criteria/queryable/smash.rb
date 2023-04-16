@@ -105,8 +105,6 @@ module Mongoid
           [name, get_serializer(name)]
         end
 
-        private
-
         # Retrieves the serializer for the given name. If the name exists in
         # the serializers hash then return that immediately, otherwise
         # recursively look through the associations and find the appropriate

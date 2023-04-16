@@ -713,8 +713,6 @@ module Mongoid
         doc.destroyed = true
       end
 
-      private
-
       def _session
         @criteria.send(:_session)
       end
