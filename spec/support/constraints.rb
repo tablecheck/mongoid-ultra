@@ -37,7 +37,7 @@ module Constraints
     [:fcv, 'MongoDB Server FCV', -> { ClusterConfig.instance.fcv_ish }],
     [:libmongocrypt, 'libmongocrypt', -> { Mongo::Crypt::Binding.mongocrypt_version(nil) }]
   ].each do |meth, name, current_version|
-    %i[min max].each do |dir|
+    %i[min max].each do |dir| # rubocop:disable Performance/CollectionLiteralInLoop
       define_method(:"#{dir}_#{meth}_version") do |version|
         current_version = current_version.call if current_version.is_a?(Proc)
         before(:all) do
