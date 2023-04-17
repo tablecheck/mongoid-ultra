@@ -23,10 +23,8 @@ module Mongoid
       #
       # @api private
       def matches?(exists, value, condition)
-        error_msg = "$size argument must be a non-negative integer: #{Errors::InvalidQuery.truncate_expr(condition)}"
-
         unless condition.is_a?(Numeric) && !condition.is_a?(Float) && condition >= 0
-          raise Errors::InvalidQuery.new(error_msg)
+          raise Errors::InvalidQuery.new("$size argument must be a non-negative integer: #{Errors::InvalidQuery.truncate_expr(condition)}")
         end
 
         return false unless value.is_a?(Array)
