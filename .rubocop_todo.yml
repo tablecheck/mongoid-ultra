@@ -13,12 +13,6 @@ Lint/DuplicateBranch:
     - 'lib/mongoid/matcher/size.rb'
     - 'lib/mongoid/railtie.rb'
 
-# Offense count: 4
-Lint/HashCompareByIdentity:
-  Exclude:
-    - 'lib/mongoid/persistence_context.rb'
-    - 'lib/mongoid/threaded.rb'
-
 # Offense count: 12
 Lint/IneffectiveAccessModifier:
   Exclude:
