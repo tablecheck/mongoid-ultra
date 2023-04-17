@@ -23,22 +23,13 @@ module Mongoid
       #
       # @api private
       def matches?(exists, value, condition)
-        case condition
-        when Float
-          raise Errors::InvalidQuery.new("$size argument must be a non-negative integer: #{Errors::InvalidQuery.truncate_expr(condition)}")
-        when Numeric
-          if condition < 0
-            raise Errors::InvalidQuery.new("$size argument must be a non-negative integer: #{Errors::InvalidQuery.truncate_expr(condition)}")
-          end
-        else
-          raise Errors::InvalidQuery.new("$size argument must be a non-negative integer: #{Errors::InvalidQuery.truncate_expr(condition)}")
-        end
+        error_msg = "$size argument must be a non-negative integer: #{Errors::InvalidQuery.truncate_expr(condition)}"
 
-        if value.is_a?(Array)
-          value.length == condition
-        else
-          false
-        end
+        raise Errors::InvalidQuery.new(error_msg) unless condition.is_a?(Integer) && condition >= 0
+
+        return false unless value.is_a?(Array)
+
+        value.length == condition
       end
     end
   end
