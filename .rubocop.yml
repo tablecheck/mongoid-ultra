@@ -118,7 +118,9 @@ Layout/FirstHashElementIndentation:
 
 Lint/AmbiguousBlockAssociation:
   Exclude:
-    - 'spec/**/*'
+    - 'spec/mongoid/association/referenced/has_many/proxy_spec.rb'
+    - 'spec/mongoid/interceptable_spec.rb'
+    - 'spec/mongoid/touchable_spec.rb'
 
 Style/Alias:
   EnforcedStyle: prefer_alias_method
