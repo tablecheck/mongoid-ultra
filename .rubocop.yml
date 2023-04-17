@@ -50,6 +50,10 @@ Layout/LineContinuationLeadingSpace:
   Exclude:
     - 'spec/integration/app_spec.rb'
 
+Lint/EmptyBlock:
+  Exclude:
+    - 'spec/**/*'
+
 Lint/RedundantCopDisableDirective:
   Exclude:
     - 'spec/mongoid/version_spec.rb'
@@ -108,6 +112,12 @@ Style/IfUnlessModifier:
 # Mongoid behavior differs from ActiveRecord
 Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false
+
+# False positives
+Lint/HashCompareByIdentity:
+  Exclude:
+    - 'lib/mongoid/persistence_context.rb'
+    - 'lib/mongoid/threaded.rb'
 
 # --------------------------------------------------
 # These cops are intentionally configured due to style preference.
