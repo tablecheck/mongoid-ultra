@@ -814,7 +814,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
 
       let(:block) { proc {} }
       let(:association) do
-        embedded_class.embedded_in(name, options, &block)
+        embedded_class.embedded_in(name, options) { 1 }
       end
 
       it 'defines an extension module' do
