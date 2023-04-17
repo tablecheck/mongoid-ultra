@@ -121,11 +121,6 @@ Lint/EmptyClass:
     - 'spec/support/models/bed.rb'
     - 'spec/support/models/other_owner_object.rb'
 
-# Offense count: 1
-Lint/FloatComparison:
-  Exclude:
-    - 'lib/mongoid/matcher/bits.rb'
-
 # Offense count: 4
 Lint/HashCompareByIdentity:
   Exclude:
