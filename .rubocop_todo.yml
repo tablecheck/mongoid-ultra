@@ -85,11 +85,6 @@ Lint/UnderscorePrefixedVariableName:
     - 'spec/mongoid/persistable/updatable_spec.rb'
     - 'spec/support/models/animal.rb'
 
-# Offense count: 1
-Lint/UnmodifiedReduceAccumulator:
-  Exclude:
-    - 'lib/mongoid/criteria/queryable/selectable.rb'
-
 # Offense count: 6
 Lint/UnreachableCode:
   Exclude:
