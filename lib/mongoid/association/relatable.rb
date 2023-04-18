@@ -42,13 +42,13 @@ module Mongoid
       # @param [ Symbol ] name The name of the association.
       # @param [ Hash ] opts The association options.
       # @param [ Block ] block The optional block.
-      def initialize(_class, name, opts = {}, &block)
-        @owner_class = _class
+      def initialize(klass, name, opts = {}, &block)
+        @owner_class = klass
         @name = name
         @options = opts
         @extension = nil
 
-        @module_path = _class.name ? _class.name.split('::')[0..-2].join('::') : ''
+        @module_path = klass.name ? klass.name.split('::')[0..-2].join('::') : ''
         @module_path << '::' unless @module_path.empty?
 
         create_extension!(&block)

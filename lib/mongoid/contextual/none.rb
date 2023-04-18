@@ -99,8 +99,8 @@ module Mongoid
       #
       # @return [ Enumerator | None ] An enumerator, or the context
       #   if a block was given.
-      def pluck_each(*_fields, &block)
-        enum = pluck(*_fields).each(&block)
+      def pluck_each(*fields, &block)
+        enum = pluck(*fields).each(&block)
         block_given? ? self : enum
       end
 
