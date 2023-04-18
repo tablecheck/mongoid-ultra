@@ -1717,15 +1717,6 @@ Style/ClassVars:
     - 'spec/mongoid/clients/transactions_spec_models.rb'
     - 'spec/mongoid/contextual/mongo/documents_loader_spec.rb'
 
-# Offense count: 63
-# This cop supports safe autocorrection (--autocorrect).
-Style/EvalWithLocation:
-  Exclude:
-    - 'spec/integration/criteria/range_spec.rb'
-    - 'spec/integration/persistence/range_field_spec.rb'
-    - 'spec/mongoid/criteria/queryable/extensions/range_spec.rb'
-    - 'spec/mongoid/extensions/range_spec.rb'
-
 # Offense count: 3
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.

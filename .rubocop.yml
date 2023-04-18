@@ -98,6 +98,10 @@ RSpec/SubjectStub:
   Exclude:
     - 'spec/mongoid/collection_configurable_spec.rb'
 
+Style/EvalWithLocation:
+  Exclude:
+    - 'spec/**/*'
+
 # --------------------------------------------------
 # These cops are disabled by default, but should be periodically
 # checked and cleaned up.
