@@ -109,14 +109,6 @@ Lint/UselessAssignment:
     - 'spec/spec_helper.rb'
     - 'spec/support/immutable_ids.rb'
 
-# Offense count: 6
-# Configuration parameters: CheckForMethodsWithNoSideEffects.
-Lint/Void:
-  Exclude:
-    - 'lib/mongoid/tasks/database.rb'
-    - 'spec/mongoid/association/referenced/has_many/enumerable_spec.rb'
-    - 'spec/mongoid/timestamps_spec.rb'
-
 # Offense count: 120
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes.
 Metrics/AbcSize:
@@ -1694,37 +1686,6 @@ Rake/Desc:
   Exclude:
     - 'lib/mongoid/railties/database.rake'
     - 'lib/mongoid/tasks/database.rake'
-
-# Offense count: 25
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowOnConstant, AllowOnSelfClass.
-Style/CaseEquality:
-  Exclude:
-    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
-    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
-    - 'lib/mongoid/clients/sessions.rb'
-    - 'spec/mongoid/association/embedded/embedded_in/proxy_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_one/proxy_spec.rb'
-    - 'spec/mongoid/association/referenced/has_many/enumerable_spec.rb'
-    - 'spec/mongoid/criteria_spec.rb'
-    - 'spec/mongoid/equality_spec.rb'
-    - 'spec/support/event_subscriber.rb'
-
-# Offense count: 7
-Style/ClassVars:
-  Exclude:
-    - 'lib/mongoid/contextual/mongo/documents_loader.rb'
-    - 'spec/mongoid/clients/transactions_spec_models.rb'
-    - 'spec/mongoid/contextual/mongo/documents_loader_spec.rb'
-
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: format, sprintf, percent
-Style/FormatString:
-  Exclude:
-    - 'lib/mongoid/matcher/bits.rb'
-    - 'lib/mongoid/railties/controller_runtime.rb'
 
 # Offense count: 5
 Style/MissingRespondToMissing:
