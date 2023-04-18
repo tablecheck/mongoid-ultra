@@ -94,6 +94,18 @@ RSpec/SubjectStub:
   Exclude:
     - 'spec/mongoid/collection_configurable_spec.rb'
 
+Style/ClassVars:
+  Exclude:
+    - 'lib/mongoid/contextual/mongo/documents_loader.rb'
+    - 'spec/mongoid/clients/transactions_spec_models.rb'
+    - 'spec/mongoid/contextual/mongo/documents_loader_spec.rb'
+
+Style/CaseEquality:
+  Exclude:
+    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
+    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
+    - 'spec/**/*'
+
 # --------------------------------------------------
 # These cops are disabled by default, but should be periodically
 # checked and cleaned up.
