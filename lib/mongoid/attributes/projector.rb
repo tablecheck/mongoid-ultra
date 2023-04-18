@@ -75,7 +75,7 @@ module Mongoid
           # This handles the case when, for example, the projection was
           # {"foo.bar" => true} and we want to know if foo is allowed.
           # (It is as a container of bars.)
-          item, value = content_projection.detect do |path, value|
+          item, _value = content_projection.detect do |path, _value|
             "#{path}.".start_with?("#{name}.")
           end
 
