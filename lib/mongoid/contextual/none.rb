@@ -93,7 +93,7 @@ module Mongoid
       # @example Iterate through the values for null context.
       #   context.pluck_each(:name) { |name| puts name }
       #
-      # @param [ [ String | Symbol ]... ] *_fields Field(s) to pluck.
+      # @param [ [ String | Symbol ]... ] *fields Field(s) to pluck.
       # @param [ Proc ] &block The block which will not be called
       #   due to null context.
       #
