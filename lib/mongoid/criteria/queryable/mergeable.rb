@@ -275,8 +275,6 @@ module Mongoid
                       existing.update(v)
                     else
                       raise NotImplementedError.new('Ruby does not allow same symbol operator with different values')
-                      result['$and'] ||= []
-                      result['$and'] << { k => v }
                     end
                   else
                     # The new value is a simple value.
@@ -296,8 +294,6 @@ module Mongoid
                     # add the new condition with $and to the top level.
                     if existing.key?(op)
                       raise NotImplementedError.new('Ruby does not allow same symbol operator with different values')
-                      result['$and'] ||= []
-                      result['$and'] << { k => v }
                     else
                       existing.update(op => v)
                     end
@@ -315,8 +311,6 @@ module Mongoid
                     result[k] = { op => existing }.update(v)
                   else
                     raise NotImplementedError.new('Ruby does not allow same symbol operator with different values')
-                    result['$and'] ||= []
-                    result['$and'] << { k => v }
                   end
                 end
               else
