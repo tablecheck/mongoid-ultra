@@ -30,8 +30,6 @@ module Mongoid
     end
     alias_method :dup, :clone
 
-    private
-
     # Create clone of a document of the given klass with the given attributes
     # hash. This is used recursively so that embedded associations are cloned
     # safely.
@@ -42,9 +40,9 @@ module Mongoid
     # @return [ Mongoid::Document ] The new document.
     def self.clone_with_hash(klass, attrs)
       dynamic_attrs = {}
-      _attribute_names = klass.attribute_names
+      attribute_names = klass.attribute_names
       attrs.reject! do |attr_name, value|
-        unless _attribute_names.include?(attr_name)
+        unless attribute_names.include?(attr_name)
           dynamic_attrs[attr_name] = value
           true
         end
@@ -66,6 +64,8 @@ module Mongoid
         end
       end
     end
+
+    private
 
     # Clone the document attributes
     #

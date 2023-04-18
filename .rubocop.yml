@@ -70,6 +70,10 @@ Lint/ConstantDefinitionInBlock:
   Exclude:
     - 'spec/**/*'
 
+Lint/SuppressedException:
+  Exclude:
+    - 'spec/**/*'
+
 Lint/UnmodifiedReduceAccumulator:
   Exclude:
     - 'lib/mongoid/criteria/queryable/selectable.rb'
@@ -143,6 +147,17 @@ Lint/AmbiguousBlockAssociation:
     - 'spec/mongoid/association/referenced/has_many/proxy_spec.rb'
     - 'spec/mongoid/interceptable_spec.rb'
     - 'spec/mongoid/touchable_spec.rb'
+
+Lint/MissingSuper:
+  Exclude:
+    - 'lib/mongoid/association/embedded/embedded_in/proxy.rb'
+    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
+    - 'lib/mongoid/association/embedded/embeds_one/proxy.rb'
+    - 'lib/mongoid/association/referenced/belongs_to/proxy.rb'
+    - 'lib/mongoid/association/referenced/has_many/proxy.rb'
+    - 'lib/mongoid/association/referenced/has_one/proxy.rb'
+    - 'lib/mongoid/criteria/queryable/pipeline.rb'
+    - 'lib/mongoid/criteria/queryable/smash.rb'
 
 Style/Alias:
   EnforcedStyle: prefer_alias_method
