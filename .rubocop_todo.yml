@@ -6,36 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 12
-Lint/IneffectiveAccessModifier:
-  Exclude:
-    - 'lib/mongoid/association/accessors.rb'
-    - 'lib/mongoid/association/builders.rb'
-    - 'lib/mongoid/copyable.rb'
-
-# Offense count: 8
-Lint/MissingSuper:
-  Exclude:
-    - 'lib/mongoid/association/embedded/embedded_in/proxy.rb'
-    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
-    - 'lib/mongoid/association/embedded/embeds_one/proxy.rb'
-    - 'lib/mongoid/association/referenced/belongs_to/proxy.rb'
-    - 'lib/mongoid/association/referenced/has_many/proxy.rb'
-    - 'lib/mongoid/association/referenced/has_one/proxy.rb'
-    - 'lib/mongoid/criteria/queryable/pipeline.rb'
-    - 'lib/mongoid/criteria/queryable/smash.rb'
-
-# Offense count: 11
-Lint/ShadowingOuterLocalVariable:
-  Exclude:
-    - 'lib/mongoid/association/many.rb'
-    - 'lib/mongoid/attributes/projector.rb'
-    - 'lib/mongoid/config/encryption.rb'
-    - 'lib/mongoid/matcher/type.rb'
-    - 'spec/integration/app_spec.rb'
-    - 'spec/mongoid/clients_spec.rb'
-    - 'spec/mongoid/criteria/includable_spec.rb'
-
 # Offense count: 54
 # Configuration parameters: AllowKeywordBlockArguments.
 Lint/UnderscorePrefixedVariableName:
