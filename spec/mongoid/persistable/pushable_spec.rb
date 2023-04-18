@@ -95,6 +95,7 @@ describe Mongoid::Persistable::Pushable do
         context 'when attribute exists' do
           let(:person) do
             Person.create!(aliases: [2])
+            Person.last
           end
 
           it 'records the change' do
@@ -107,6 +108,7 @@ describe Mongoid::Persistable::Pushable do
         context 'when attribute does not exist' do
           let(:person) do
             Person.create!
+            Person.last
           end
 
           it 'records the change' do
