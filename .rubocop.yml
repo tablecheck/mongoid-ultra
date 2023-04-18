@@ -74,6 +74,11 @@ Lint/SuppressedException:
   Exclude:
     - 'spec/**/*'
 
+Lint/Void:
+  Exclude:
+    - 'spec/mongoid/association/referenced/has_many/enumerable_spec.rb'
+    - 'spec/mongoid/timestamps_spec.rb'
+
 RSpec/AroundBlock:
   Exclude:
     - 'spec/support/constraints.rb'

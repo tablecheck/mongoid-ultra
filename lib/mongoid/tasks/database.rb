@@ -122,7 +122,6 @@ module Mongoid
           rescue Mongo::Error::OperationFailure
             next
           end
-          model
         end.compact
       end
 
