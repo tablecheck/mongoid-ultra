@@ -38,7 +38,7 @@ module Mongoid
 
       # Initialize the Association.
       #
-      # @param [ Class ] _class The class of the model who owns this association.
+      # @param [ Class ] klass The class of the model who owns this association.
       # @param [ Symbol ] name The name of the association.
       # @param [ Hash ] opts The association options.
       # @param [ Block ] block The optional block.
