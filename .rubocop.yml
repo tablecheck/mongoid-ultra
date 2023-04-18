@@ -70,6 +70,10 @@ Lint/ConstantDefinitionInBlock:
   Exclude:
     - 'spec/**/*'
 
+Lint/SuppressedException:
+  Exclude:
+    - 'spec/**/*'
+
 RSpec/AroundBlock:
   Exclude:
     - 'spec/support/constraints.rb'
@@ -89,6 +93,18 @@ Security/MarshalLoad:
 RSpec/SubjectStub:
   Exclude:
     - 'spec/mongoid/collection_configurable_spec.rb'
+
+Style/ClassVars:
+  Exclude:
+    - 'lib/mongoid/contextual/mongo/documents_loader.rb'
+    - 'spec/mongoid/clients/transactions_spec_models.rb'
+    - 'spec/mongoid/contextual/mongo/documents_loader_spec.rb'
+
+Style/CaseEquality:
+  Exclude:
+    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
+    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
+    - 'spec/**/*'
 
 # --------------------------------------------------
 # These cops are disabled by default, but should be periodically
@@ -139,6 +155,17 @@ Lint/AmbiguousBlockAssociation:
     - 'spec/mongoid/association/referenced/has_many/proxy_spec.rb'
     - 'spec/mongoid/interceptable_spec.rb'
     - 'spec/mongoid/touchable_spec.rb'
+
+Lint/MissingSuper:
+  Exclude:
+    - 'lib/mongoid/association/embedded/embedded_in/proxy.rb'
+    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
+    - 'lib/mongoid/association/embedded/embeds_one/proxy.rb'
+    - 'lib/mongoid/association/referenced/belongs_to/proxy.rb'
+    - 'lib/mongoid/association/referenced/has_many/proxy.rb'
+    - 'lib/mongoid/association/referenced/has_one/proxy.rb'
+    - 'lib/mongoid/criteria/queryable/pipeline.rb'
+    - 'lib/mongoid/criteria/queryable/smash.rb'
 
 Style/Alias:
   EnforcedStyle: prefer_alias_method

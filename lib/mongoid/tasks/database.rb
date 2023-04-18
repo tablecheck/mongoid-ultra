@@ -78,7 +78,8 @@ module Mongoid
             undefined_by_model[model] ||= []
             undefined_by_model[model] << index
           end
-        rescue Mongo::Error::OperationFailure
+        rescue Mongo::Error::OperationFailure => e
+          logger.info("MONGOID: Could not get indexes for #{model}: #{e.message}")
         end
 
         undefined_by_model
@@ -111,9 +112,9 @@ module Mongoid
       # @example Remove all the indexes.
       #   Mongoid::Tasks::Database.remove_indexes
       #
-      # @return [ Array<Class> ] The un-indexed models.
+      # @return [ Array<Class> ] The model classes whose indexes were successfully removed.
       def remove_indexes(models = ::Mongoid.models)
-        models.each do |model|
+        models.map do |model|
           next if model.embedded?
 
           begin
@@ -121,6 +122,7 @@ module Mongoid
           rescue Mongo::Error::OperationFailure
             next
           end
+          
           model
         end.compact
       end
