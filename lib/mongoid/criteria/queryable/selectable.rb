@@ -750,7 +750,7 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def where(*criteria)
-          criteria.inject(clone) do |query, criterion|
+          criteria.inject(clone) do |_query, criterion|
             raise Errors::CriteriaArgumentRequired.new(:where) if criterion.nil?
 
             # We need to save the criterion in an instance variable so
