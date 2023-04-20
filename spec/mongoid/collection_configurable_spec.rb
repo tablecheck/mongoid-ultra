@@ -72,7 +72,7 @@ describe Mongoid::CollectionConfigurable do
       end
 
       it 'passes collection options' do
-        expect(coll_options.dig('options', 'capped')).to eq(true)
+        expect(coll_options.dig('options', 'capped')).to be(true)
         expect(coll_options.dig('options', 'size')).to eq(2560)
       end
     end
@@ -150,7 +150,7 @@ describe Mongoid::CollectionConfigurable do
 
       it 'passes collection options' do
         subject.create_collection(force: true)
-        expect(coll_options.dig('options', 'capped')).to eq(true)
+        expect(coll_options.dig('options', 'capped')).to be(true)
         expect(coll_options.dig('options', 'size')).to eq(2560)
       end
     end

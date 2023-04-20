@@ -1277,7 +1277,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         context 'when inverse_of is not specified' do
 
           it 'returns nil' do
-            expect(association.inverses).to eq(nil)
+            expect(association.inverses).to be_nil
           end
         end
       end
@@ -1429,7 +1429,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         context 'when inverse_of is not specified' do
 
           it 'returns nil' do
-            expect(association.inverse).to eq(nil)
+            expect(association.inverse).to be_nil
           end
         end
       end

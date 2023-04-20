@@ -73,7 +73,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
           end
 
           it 'returns nil' do
-            expect(document).to eq(nil)
+            expect(document).to be_nil
           end
         end
       end

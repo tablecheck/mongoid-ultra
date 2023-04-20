@@ -129,7 +129,7 @@ describe Mongoid::Extensions::Integer do
   describe '#numeric?' do
 
     it 'returns true' do
-      expect(number.numeric?).to eq(true)
+      expect(number.numeric?).to be(true)
     end
   end
 end

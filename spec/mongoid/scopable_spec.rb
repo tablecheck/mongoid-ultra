@@ -276,7 +276,7 @@ describe Mongoid::Scopable do
       context 'when the class is not embedded' do
 
         it 'returns a criteria with embedded set to nil' do
-          expect(Band.queryable.embedded).to be(nil)
+          expect(Band.queryable.embedded).to be_nil
         end
       end
 
@@ -1258,7 +1258,7 @@ describe Mongoid::Scopable do
       it 'restores previous scope' do
         Band.with_scope(c1) do
           Band.unscoped do
-            expect(Mongoid::Threaded.current_scope(Band)).to be nil
+            expect(Mongoid::Threaded.current_scope(Band)).to be_nil
           end
 
           expect(Mongoid::Threaded.current_scope(Band).selector).to eq({

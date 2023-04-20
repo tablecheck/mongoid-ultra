@@ -26,14 +26,14 @@ describe Mongoid::PersistenceContext do
 
       it 'sets the persistence context for the object on the current thread' do
         expect(described_class.get(object)).to be(persistence_context)
-        expect(described_class.get(object)).not_to be(nil)
+        expect(described_class.get(object)).not_to be_nil
         expect(described_class.get(object).collection.name).to eq('other')
       end
 
       it 'only sets persistence context for the object on the current thread' do
         Thread.new do
           expect(described_class.get(object)).not_to be(persistence_context)
-          expect(described_class.get(object)).to be(nil)
+          expect(described_class.get(object)).to be_nil
         end.value
       end
     end
@@ -59,7 +59,7 @@ describe Mongoid::PersistenceContext do
       it 'does not get persistence context for the object from another thread' do
         Thread.new do
           expect(described_class.get(object)).not_to be(persistence_context)
-          expect(described_class.get(object)).to be(nil)
+          expect(described_class.get(object)).to be_nil
         end.value
       end
     end
@@ -84,7 +84,7 @@ describe Mongoid::PersistenceContext do
           described_class.clear(object)
         rescue StandardError
         end
-        expect(described_class.get(object)).to be(nil)
+        expect(described_class.get(object)).to be_nil
       end
     end
 
@@ -101,7 +101,7 @@ describe Mongoid::PersistenceContext do
         end
 
         it 'clears the persistence context for the object on the current thread' do
-          expect(described_class.get(object)).to be(nil)
+          expect(described_class.get(object)).to be_nil
         end
       end
 

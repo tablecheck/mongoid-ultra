@@ -322,7 +322,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       end
 
       it 'returns nil' do
-        expect(max).to be(nil)
+        expect(max).to be_nil
       end
     end
 
@@ -377,9 +377,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       context 'when provided a block' do
 
         let(:max) do
-          context.max do |a, b|
-            a.likes <=> b.likes
-          end
+          context.max_by(&:likes)
         end
 
         it 'returns the document with the max value for the field' do
@@ -442,9 +440,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       context 'when provided a block' do
 
         let(:min) do
-          context.min do |a, b|
-            a.likes <=> b.likes
-          end
+          context.min_by(&:likes)
         end
 
         it 'returns the document with the min value for the field' do

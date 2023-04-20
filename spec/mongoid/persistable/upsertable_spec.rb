@@ -61,7 +61,7 @@ describe Mongoid::Persistable::Upsertable do
             expect(Band.count).to eq(1)
 
             existing.reload
-            expect(existing.views).to be nil
+            expect(existing.views).to be_nil
             expect(existing.name).to eq('Tool')
           end
         end

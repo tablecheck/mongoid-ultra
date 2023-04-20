@@ -93,7 +93,7 @@ describe Mongoid::Indexable do
 
       it 'creates the indexes' do
         index = klass.collection.indexes.get(_type: 1)
-        expect(index[:unique]).to eq(true)
+        expect(index[:unique]).to be(true)
       end
     end
 

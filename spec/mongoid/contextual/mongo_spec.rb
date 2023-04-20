@@ -839,9 +839,7 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it 'tallies the correct type' do
-            expect(tally.keys.map(&:class).sort do |a, b|
-              a.to_s <=> b.to_s
-            end).to eq([BSON::Decimal128, BSON::Regexp::Raw])
+            expect(tally.keys.map(&:class).sort_by(&:to_s)).to eq([BSON::Decimal128, BSON::Regexp::Raw])
           end
         end
 
@@ -854,9 +852,7 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it 'tallies the correct type' do
-            expect(tally.keys.map(&:class).sort do |a, b|
-              a.to_s <=> b.to_s
-            end).to eq([BigDecimal, BSON::Regexp::Raw])
+            expect(tally.keys.map(&:class).sort_by(&:to_s)).to eq([BigDecimal, BSON::Regexp::Raw])
           end
         end
       end

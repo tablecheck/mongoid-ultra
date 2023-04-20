@@ -323,7 +323,7 @@ describe Mongoid::Attributes do
           end
 
           it 'returns nil' do
-            expect(from_db[:undefined_field]).to be nil
+            expect(from_db[:undefined_field]).to be_nil
           end
         end
       end
@@ -453,7 +453,7 @@ describe Mongoid::Attributes do
       end
 
       it 'returns the set value' do
-        expect(terms).to eq(true)
+        expect(terms).to be(true)
       end
     end
 
@@ -1120,7 +1120,7 @@ describe Mongoid::Attributes do
         end
 
         it 'returns nil' do
-          expect(from_db.read_attribute(:undefined_field)).to be nil
+          expect(from_db.read_attribute(:undefined_field)).to be_nil
         end
       end
     end

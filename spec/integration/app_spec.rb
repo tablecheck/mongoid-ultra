@@ -219,7 +219,7 @@ describe 'Mongoid application tests' do
                 index = client['posts'].indexes.detect do |idx|
                   idx['key'] == { 'subject' => 1 }
                 end
-                expect(index).to be nil
+                expect(index).to be_nil
 
                 check_call(%w[bundle exec rake db:mongoid:create_indexes -t],
                            cwd: APP_PATH,

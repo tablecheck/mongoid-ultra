@@ -768,7 +768,7 @@ describe Mongoid::Document do
       end
 
       it 'allows the creation' do
-        Object.const_set 'Anonymous', model
+        Object.const_set :Anonymous, model
       end
     end
   end

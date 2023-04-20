@@ -247,7 +247,7 @@ describe Mongoid::Config do
       let(:conf) { CONFIG }
 
       it 'it is set to its default' do
-        expect(Mongoid.send(option)).to eq(nil)
+        expect(Mongoid.send(option)).to be_nil
       end
     end
 
@@ -430,11 +430,11 @@ describe Mongoid::Config do
       end
 
       it 'sets the Mongo.broken_view_options option' do
-        expect(Mongo.broken_view_options).to eq(false)
+        expect(Mongo.broken_view_options).to be(false)
       end
 
       it 'does not override the unset Mongo.validate_update_replace option' do
-        expect(Mongo.validate_update_replace).to eq(false)
+        expect(Mongo.validate_update_replace).to be(false)
       end
     end
 

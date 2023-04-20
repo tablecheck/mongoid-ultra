@@ -4937,7 +4937,7 @@ describe Mongoid::Attributes::Nested do
     end
 
     it 'is able to access the parent in the after_destroy callback' do
-      expect(school.after_destroy_triggered).to eq(true)
+      expect(school.after_destroy_triggered).to be(true)
     end
   end
 
@@ -4962,7 +4962,7 @@ describe Mongoid::Attributes::Nested do
     end
 
     it 'is able to access the parent in the after_destroy callback' do
-      expect(school.reload.after_destroy_triggered).to eq(true)
+      expect(school.reload.after_destroy_triggered).to be(true)
     end
   end
 

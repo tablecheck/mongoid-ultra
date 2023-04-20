@@ -574,7 +574,7 @@ describe Mongoid::Persistable::Settable do
           agent.set(number: '008')
         end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'number' on Agent which was not loaded/)
 
-        expect(agent.reload.read_attribute(:number)).to be nil
+        expect(agent.reload.read_attribute(:number)).to be_nil
       end
     end
   end

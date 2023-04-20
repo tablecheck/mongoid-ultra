@@ -898,7 +898,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
       let(:inverse_assoc) { hatch._association.inverse_association }
 
       it 'does not find the inverse' do
-        expect(inverse_assoc).to be nil
+        expect(inverse_assoc).to be_nil
       end
     end
 

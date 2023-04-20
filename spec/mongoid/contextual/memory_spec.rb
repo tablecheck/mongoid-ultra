@@ -1798,7 +1798,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       it 'returns nil' do
-        expect(plucked.first).to eq(nil)
+        expect(plucked.first).to be_nil
       end
     end
 

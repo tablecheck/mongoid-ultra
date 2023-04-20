@@ -466,7 +466,7 @@ describe Mongoid::Interceptable do
     end
 
     it 'does not run the before callbacks' do
-      expect(object.before_save_called).to be nil
+      expect(object.before_save_called).to be_nil
     end
   end
 
@@ -485,7 +485,7 @@ describe Mongoid::Interceptable do
     end
 
     it 'does not run the after callbacks' do
-      expect(object.after_save_called).to be nil
+      expect(object.after_save_called).to be_nil
     end
   end
 

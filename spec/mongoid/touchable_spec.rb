@@ -606,7 +606,7 @@ describe Mongoid::Touchable do
         end
 
         it 'the parent is not nil' do
-          expect(floor.building).to_not be nil
+          expect(floor.building).to_not be_nil
         end
 
         it "updates the parent's timestamp" do
@@ -643,7 +643,7 @@ describe Mongoid::Touchable do
         end
 
         it 'the parent is not nil' do
-          expect(floor.building).to_not be nil
+          expect(floor.building).to_not be_nil
         end
 
         it "updates the child's timestamp" do
@@ -1376,8 +1376,8 @@ describe Mongoid::Touchable do
 
     it 'calls touch callbacks on parent' do
       parent.touch
-      expect(parent.before_touch_called).to eq(true)
-      expect(parent.after_touch_called).to eq(true)
+      expect(parent.before_touch_called).to be(true)
+      expect(parent.after_touch_called).to be(true)
     end
 
     context 'when touch is calles on a child' do
@@ -1386,13 +1386,13 @@ describe Mongoid::Touchable do
       end
 
       it 'calls touch callbacks on parent' do
-        expect(parent.before_touch_called).to eq(true)
-        expect(parent.after_touch_called).to eq(true)
+        expect(parent.before_touch_called).to be(true)
+        expect(parent.after_touch_called).to be(true)
       end
 
       it 'calls touch callbacks on child' do
-        expect(child.before_touch_called).to eq(true)
-        expect(child.after_touch_called).to eq(true)
+        expect(child.before_touch_called).to be(true)
+        expect(child.after_touch_called).to be(true)
       end
     end
   end

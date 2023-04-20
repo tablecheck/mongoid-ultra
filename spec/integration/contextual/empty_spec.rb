@@ -74,25 +74,25 @@ describe 'Contextual classes when dealing with empty result set' do
 
     context '#first' do
       it 'is nil' do
-        expect(context.first).to be nil
+        expect(context.first).to be_nil
       end
     end
 
     context '#find_first' do
       it 'is nil' do
-        expect(context.find_first).to be nil
+        expect(context.find_first).to be_nil
       end
     end
 
     context '#one' do
       it 'is nil' do
-        expect(context.one).to be nil
+        expect(context.one).to be_nil
       end
     end
 
     context '#last' do
       it 'is nil' do
-        expect(context.last).to be nil
+        expect(context.last).to be_nil
       end
     end
   end

@@ -1712,10 +1712,10 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       it 'does not mutate receiver' do
-        expect(query.negating).to be nil
+        expect(query.negating).to be_nil
 
         selection
-        expect(query.negating).to be nil
+        expect(query.negating).to be_nil
       end
 
       shared_examples_for 'negates the next condition' do

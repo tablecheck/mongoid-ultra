@@ -49,7 +49,7 @@ describe BSON::Binary do
         let(:value) { nil }
 
         it 'returns nil' do
-          expect(evaluated).to eq(nil)
+          expect(evaluated).to be_nil
         end
       end
 

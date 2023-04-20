@@ -82,7 +82,7 @@ describe Mongoid::Copyable do
           end
 
           it 'contains legacy attributes that are nil' do
-            expect(cloned.attributes.key?('this_legacy_field_is_nil')).to eq(true)
+            expect(cloned.attributes.key?('this_legacy_field_is_nil')).to be(true)
           end
 
           it 'copies the known attributes' do
@@ -660,7 +660,7 @@ describe Mongoid::Copyable do
           before do
             # When embedded class is the root in hierarchy, their
             # discriminator value is not explicitly stored.
-            expect(child_cls.discriminator_mapping[child_cls.name]).to be nil
+            expect(child_cls.discriminator_mapping[child_cls.name]).to be_nil
           end
 
           it 'works' do
@@ -677,7 +677,7 @@ describe Mongoid::Copyable do
           before do
             # When embedded class is a leaf in hierarchy, their
             # discriminator value is explicitly stored.
-            expect(child_cls.discriminator_mapping[child_cls.name]).not_to be nil
+            expect(child_cls.discriminator_mapping[child_cls.name]).not_to be_nil
           end
 
           it 'works' do

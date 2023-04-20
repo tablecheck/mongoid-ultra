@@ -110,7 +110,7 @@ describe Mongoid::Extensions::Range do
       let(:hash) { { 'min^' => 'a', 'max^' => 'z', 'exclude_end^' => true } }
 
       it 'returns nil' do
-        is_expected.to be nil
+        is_expected.to be_nil
       end
     end
 

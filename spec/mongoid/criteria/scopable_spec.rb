@@ -519,7 +519,7 @@ describe Mongoid::Criteria::Scopable do
 
     shared_examples_for 'restricts to both' do
       it 'restricts to both' do
-        expect(result.selector['foo']).to eq(true)
+        expect(result.selector['foo']).to be(true)
         expect(result.selector['hello']).to eq('world')
       end
     end

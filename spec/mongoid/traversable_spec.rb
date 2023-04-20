@@ -1052,7 +1052,7 @@ describe Mongoid::Traversable do
         it 'is not retrieved from the sibling' do
           expect(
             Piano.get_discriminator_mapping('some string instrument')
-          ).to be nil
+          ).to be_nil
         end
       end
 
@@ -1086,13 +1086,13 @@ describe Mongoid::Traversable do
         it 'is not retrieved from the child: Guitar' do
           expect(
             Guitar.get_discriminator_mapping('musical thingy')
-          ).to be nil
+          ).to be_nil
         end
 
         it 'is not retrieved from the child: Piano' do
           expect(
             Piano.get_discriminator_mapping('musical thingy')
-          ).to be nil
+          ).to be_nil
         end
       end
 
@@ -1159,7 +1159,7 @@ describe Mongoid::Traversable do
         it 'is not retrieved from the grandchild' do
           expect(
             Firefox.get_discriminator_mapping('something')
-          ).to be nil
+          ).to be_nil
         end
       end
 
@@ -1201,7 +1201,7 @@ describe Mongoid::Traversable do
         it 'is not retrieved from the sibling' do
           expect(
             Piano.get_discriminator_mapping('string instrument')
-          ).to be nil
+          ).to be_nil
         end
       end
 
@@ -1236,13 +1236,13 @@ describe Mongoid::Traversable do
         it 'is not retrieved from the child: Guitar' do
           expect(
             Guitar.get_discriminator_mapping('musical thingy')
-          ).to be nil
+          ).to be_nil
         end
 
         it 'ris not retrieved from the child: Piano' do
           expect(
             Piano.get_discriminator_mapping('musical thingy')
-          ).to be nil
+          ).to be_nil
         end
       end
     end
@@ -1304,13 +1304,13 @@ describe Mongoid::Traversable do
       it 'can be retrieved from the child: Guitar' do
         expect(
           Guitar.get_discriminator_mapping('some_dmap')
-        ).to be nil
+        ).to be_nil
       end
 
       it 'can be retrieved from the child: Piano' do
         expect(
           Piano.get_discriminator_mapping('some_dmap')
-        ).to be nil
+        ).to be_nil
       end
     end
 
@@ -1338,7 +1338,7 @@ describe Mongoid::Traversable do
       it 'is not retrieved from the sibling' do
         expect(
           Piano.get_discriminator_mapping('something')
-        ).to be nil
+        ).to be_nil
       end
     end
 
@@ -1367,7 +1367,7 @@ describe Mongoid::Traversable do
       it 'is not retrieved from the sibling' do
         expect(
           Piano.get_discriminator_mapping('something else')
-        ).to be nil
+        ).to be_nil
       end
 
       it 'retrieves the old value from the parent' do
@@ -1385,7 +1385,7 @@ describe Mongoid::Traversable do
       it 'does not retrieves the old value from the sibling' do
         expect(
           Piano.get_discriminator_mapping('something')
-        ).to be nil
+        ).to be_nil
       end
     end
   end

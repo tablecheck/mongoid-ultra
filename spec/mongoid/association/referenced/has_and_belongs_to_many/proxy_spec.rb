@@ -2766,9 +2766,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
 
     let(:max) do
-      person.preferences.max do |a, b|
-        a.ranking <=> b.ranking
-      end
+      person.preferences.max_by(&:ranking)
     end
 
     it 'returns the document with the max value of the supplied field' do
@@ -2922,9 +2920,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
 
     let(:min) do
-      person.preferences.min do |a, b|
-        a.ranking <=> b.ranking
-      end
+      person.preferences.min_by(&:ranking)
     end
 
     it 'returns the min value of the supplied field' do
@@ -3778,7 +3774,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     let!(:signature) { contract.signatures.create! }
 
     it 'is nil' do
-      expect(signature.favorite_signature).to be nil
+      expect(signature.favorite_signature).to be_nil
     end
   end
 

@@ -1828,12 +1828,12 @@ describe Mongoid::Fields do
 
     context 'given nil' do
       subject { Person.database_field_name(nil) }
-      it { is_expected.to eq nil }
+      it { is_expected.to be_nil }
     end
 
     context 'given an empty String' do
       subject { Person.database_field_name('') }
-      it { is_expected.to eq nil }
+      it { is_expected.to be_nil }
     end
 
     context 'given a String' do
@@ -1972,7 +1972,7 @@ describe Mongoid::Fields do
       end
 
       it 'assigns the value' do
-        expect(product.title).to eq(nil)
+        expect(product.title).to be_nil
       end
 
       it 'populates the translations hash' do
@@ -1992,7 +1992,7 @@ describe Mongoid::Fields do
       end
 
       it 'assigns the value' do
-        expect(product.title).to eq(nil)
+        expect(product.title).to be_nil
       end
 
       it 'populates the translations hash' do
@@ -2012,7 +2012,7 @@ describe Mongoid::Fields do
       end
 
       it 'assigns the value' do
-        expect(product.title).to eq(nil)
+        expect(product.title).to be_nil
       end
 
       it 'populates the translations hash' do
@@ -2028,7 +2028,7 @@ describe Mongoid::Fields do
       end
 
       it 'assigns the value' do
-        expect(product.title).to eq(nil)
+        expect(product.title).to be_nil
       end
 
       it 'populates the translations hash' do
@@ -2048,7 +2048,7 @@ describe Mongoid::Fields do
       let(:from_db) { Product.first }
 
       it 'assigns the value' do
-        expect(product.title).to eq(nil)
+        expect(product.title).to be_nil
       end
 
       it 'populates the translations hash' do

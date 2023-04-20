@@ -2657,9 +2657,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     let(:max) do
-      person.addresses.max do |a, b|
-        a.number <=> b.number
-      end
+      person.addresses.max_by(&:number)
     end
 
     it 'returns the document with the max value of the supplied field' do
@@ -2817,9 +2815,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     let(:min) do
-      person.addresses.min do |a, b|
-        a.number <=> b.number
-      end
+      person.addresses.min_by(&:number)
     end
 
     it 'returns the min value of the supplied field' do
@@ -3731,7 +3727,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       it 'does not lose the parent reference' do
-        expect(account.save).to eq false
+        expect(account.save).to be false
         expect(from_db.memberships.first.account).to eq(account)
       end
     end

@@ -238,7 +238,7 @@ describe Mongoid::Extensions::Hash do
         { '100' => { 'name' => false } }
       end
       it 'should retrieve the falsey nested value under the provided key' do
-        expect(nested).to eq false
+        expect(nested).to be false
       end
     end
 
@@ -247,7 +247,7 @@ describe Mongoid::Extensions::Hash do
         { '100' => { 0 => "Please don't return this value!" } }
       end
       it 'should retrieve the nil nested value under the provided key' do
-        expect(nested).to eq nil
+        expect(nested).to be_nil
       end
     end
   end
@@ -277,7 +277,7 @@ describe Mongoid::Extensions::Hash do
     end
 
     it 'should return nil' do
-      expect(nested).to eq(nil)
+      expect(nested).to be_nil
     end
   end
 

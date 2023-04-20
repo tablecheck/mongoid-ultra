@@ -3156,9 +3156,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     let(:max) do
-      person.posts.max do |a, b|
-        a.rating <=> b.rating
-      end
+      person.posts.max_by(&:rating)
     end
 
     it 'returns the document with the max value of the supplied field' do
@@ -3286,9 +3284,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     let(:min) do
-      person.posts.min do |a, b|
-        a.rating <=> b.rating
-      end
+      person.posts.min_by(&:rating)
     end
 
     it 'returns the min value of the supplied field' do
@@ -3808,7 +3804,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       it 'does not execute the callback when the association is accessed' do
-        expect(reloaded_album.artist.after_add_referenced_called).to be(nil)
+        expect(reloaded_album.artist.after_add_referenced_called).to be_nil
       end
     end
   end

@@ -1523,7 +1523,7 @@ describe Mongoid::Changeable do
         end
 
         it 'resets to the default value' do
-          expect(person.pets).to eq(false)
+          expect(person.pets).to be(false)
         end
       end
 
@@ -1538,7 +1538,7 @@ describe Mongoid::Changeable do
         end
 
         it 'resets to the default value' do
-          expect(person.pets).to eq(false)
+          expect(person.pets).to be(false)
         end
 
         it 'flags the document dirty' do
@@ -1638,7 +1638,7 @@ describe Mongoid::Changeable do
     context 'when the document has not been saved' do
 
       it 'returns no changes' do
-        expect(person.title_previous_change).to eq(nil)
+        expect(person.title_previous_change).to be_nil
       end
     end
   end
@@ -1746,10 +1746,10 @@ describe Mongoid::Changeable do
     end
 
     it 'correctly detects changes' do
-      expect(person.will_save_change_to_attribute?(:title)).to eq(true)
-      expect(person.will_save_change_to_title?).to eq(true)
-      expect(person.will_save_change_to_attribute?(:score)).to eq(false)
-      expect(person.will_save_change_to_score?).to eq(false)
+      expect(person.will_save_change_to_attribute?(:title)).to be(true)
+      expect(person.will_save_change_to_title?).to be(true)
+      expect(person.will_save_change_to_attribute?(:score)).to be(false)
+      expect(person.will_save_change_to_score?).to be(false)
     end
 
   end
