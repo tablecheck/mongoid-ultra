@@ -222,12 +222,9 @@ module Mongoid
           #
           # @return [ true | false ] True is persisted documents exist, false if not.
           def exists?(id_or_conditions = :none)
-            case id_or_conditions
-            when :none then _target.any?(&:persisted?)
-            when nil, false then false
-            when Hash then criteria.where(id_or_conditions).exists?
-            else criteria.where(_id: id_or_conditions).exists?
-            end
+            return _target.any?(&:persisted?) if id_or_conditions == :none
+
+            criteria.exists?(id_or_conditions)
           end
 
           # Finds a document in this association through several different
