@@ -74,6 +74,17 @@ Lint/SuppressedException:
   Exclude:
     - 'spec/**/*'
 
+Naming/AccessorMethodName:
+  Exclude:
+    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
+    - 'lib/mongoid/atomic/modifiers.rb'
+    - 'lib/mongoid/clients/options.rb'
+    - 'lib/mongoid/criteria/options.rb'
+    - 'lib/mongoid/encryptable.rb'
+    - 'lib/mongoid/fields/encrypted.rb'
+    - 'lib/mongoid/persistence_context.rb'
+    - 'lib/mongoid/timestamps/timeless.rb'
+
 RSpec/AroundBlock:
   Exclude:
     - 'spec/support/constraints.rb'

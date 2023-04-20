@@ -38,8 +38,6 @@ module Mongoid
       # @attribute [r] view The Mongo collection view.
       attr_reader :view
 
-      attr_reader :documents_loader
-
       # Get the number of documents matching the query.
       #
       # @example Get the number of matching documents.
@@ -771,12 +769,25 @@ module Mongoid
       # immediately on the caller's thread, or can be scheduled for an
       # asynchronous execution.
       #
+      # @return [ Mongoid::Contextual::Mongo::DocumentsLoader ] The memoized
+      #   documents loader.
+      #
       # @api private
       def load_async
-        @documents_loader ||= DocumentsLoader.new(view, klass, criteria) # rubcop:disable Naming/MemoizedInstanceVariableName
+        documents_loader
       end
 
       private
+
+      # Returns a memoized documents loader.
+      #
+      # @return [ Mongoid::Contextual::Mongo::DocumentsLoader ] The memoized
+      #   documents loader.
+      #
+      # @api private
+      def documents_loader
+        @documents_loader ||= DocumentsLoader.new(view, klass, criteria)
+      end
 
       # Update the documents for the provided method.
       #
