@@ -47,13 +47,12 @@ describe Mongoid::Copyable do
         let!(:band) do
           Band.create!(name: 'Tool')
         end
+        let!(:cloned) do
+          band.reload.send(method)
+        end
 
         before do
           Band.collection.find(_id: band.id).update_one('$set' => { 'id' => 1234 })
-        end
-
-        let!(:cloned) do
-          band.reload.send(method)
         end
 
         it 'does not set the id field as the _id' do
@@ -99,7 +98,7 @@ describe Mongoid::Copyable do
           let(:cls) { CopyableSpec::Reg }
 
           before do
-            expect(cls).not_to include(Mongoid::Attributes::Dynamic)
+            expect(cls).to_not include(Mongoid::Attributes::Dynamic)
           end
 
           include_examples 'behaves as expected'
@@ -128,7 +127,7 @@ describe Mongoid::Copyable do
               t.build_store_as_dup_test2(name: 'there')
               t.save!
               copy = t.send(method)
-              expect(copy.object_id).not_to eq(t.object_id)
+              expect(copy.object_id).to_not eq(t.object_id)
               expect(copy.store_as_dup_test2.name).to eq(t.store_as_dup_test2.name)
             end
           end
@@ -140,9 +139,9 @@ describe Mongoid::Copyable do
               t.store_as_dup_test4s << StoreAsDupTest4.new
               t.save!
               copy = t.send(method)
-              expect(copy.object_id).not_to eq(t.object_id)
-              expect(copy.store_as_dup_test4s).not_to be_empty
-              expect(copy.store_as_dup_test4s.first.object_id).not_to eq(t.store_as_dup_test4s.first.object_id)
+              expect(copy.object_id).to_not eq(t.object_id)
+              expect(copy.store_as_dup_test4s).to_not be_empty
+              expect(copy.store_as_dup_test4s.first.object_id).to_not eq(t.store_as_dup_test4s.first.object_id)
             end
           end
         end
@@ -212,19 +211,17 @@ describe Mongoid::Copyable do
         let!(:shipment_address) do
           person.addresses.build({ shipping_name: 'Title' }, ShipmentAddress)
         end
+        let!(:from_db) do
+          Person.find(person.id)
+        end
+        let(:copy) do
+          from_db.send(method)
+        end
 
         before do
           I18n.locale = 'pt_BR'
           person.addresses.type(ShipmentAddress).each { |address| address.shipping_name = 'Título' }
           person.save!
-        end
-
-        let!(:from_db) do
-          Person.find(person.id)
-        end
-
-        let(:copy) do
-          from_db.send(method)
         end
 
         it 'sets embedded translations' do
@@ -233,7 +230,6 @@ describe Mongoid::Copyable do
             expect(address.shipping_name).to eq('Título')
           end
         end
-
       end
 
       context 'when cloning a loaded document' do
@@ -625,17 +621,15 @@ describe Mongoid::Copyable do
         let!(:shipment_address) do
           person.addresses.build({}, ShipmentAddress)
         end
-
-        before do
-          person.save!
-        end
-
         let!(:from_db) do
           Person.find(person.id)
         end
-
         let(:copy) do
           from_db.send(method)
+        end
+
+        before do
+          person.save!
         end
 
         it 'copys embeds many documents' do
@@ -665,7 +659,7 @@ describe Mongoid::Copyable do
 
           it 'works' do
             expect(copy.class).to be original.class
-            expect(copy.object_id).not_to eq(original.object_id)
+            expect(copy.object_id).to_not eq(original.object_id)
           end
         end
 
@@ -677,12 +671,12 @@ describe Mongoid::Copyable do
           before do
             # When embedded class is a leaf in hierarchy, their
             # discriminator value is explicitly stored.
-            expect(child_cls.discriminator_mapping[child_cls.name]).not_to be_nil
+            expect(child_cls.discriminator_mapping[child_cls.name]).to_not be_nil
           end
 
           it 'works' do
             expect(copy.class).to be original.class
-            expect(copy.object_id).not_to eq(original.object_id)
+            expect(copy.object_id).to_not eq(original.object_id)
           end
         end
       end

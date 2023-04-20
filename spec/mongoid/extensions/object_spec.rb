@@ -238,13 +238,12 @@ describe Mongoid::Extensions::Object do
       let(:document) do
         Person.new
       end
+      let!(:removal) do
+        document.remove_ivar('testing')
+      end
 
       before do
         document.instance_variable_set(:@_testing, 'testing')
-      end
-
-      let!(:removal) do
-        document.remove_ivar('testing')
       end
 
       it 'removes the instance variable' do

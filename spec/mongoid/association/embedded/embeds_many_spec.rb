@@ -100,7 +100,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
       end
 
       it 'does not set up validation' do
-        expect(embeds_many_class).not_to receive(:validates_associated)
+        expect(embeds_many_class).to_not receive(:validates_associated)
         association.setup!
       end
     end

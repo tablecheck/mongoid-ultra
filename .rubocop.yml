@@ -167,10 +167,16 @@ Lint/MissingSuper:
     - 'lib/mongoid/criteria/queryable/pipeline.rb'
     - 'lib/mongoid/criteria/queryable/smash.rb'
 
+Lint/UnusedMethodArgument:
+  AllowUnusedKeywordArguments: true
+
 Metrics/BlockLength:
   Exclude:
     - '**/Rakefile'
     - '**/*.rake'
+
+RSpec/NotToNot:
+  EnforcedStyle: to_not
 
 Style/Alias:
   EnforcedStyle: prefer_alias_method
@@ -208,8 +214,3 @@ Style/SymbolArray:
   Exclude:
     - 'spec/mongoid/criteria/queryable/selector_spec.rb'
     - 'spec/mongoid/criteria/queryable/options_spec.rb'
-
-# See: https://github.com/rubocop/rubocop/issues/11811
-Lint/UnusedMethodArgument:
-  Exclude:
-    - 'lib/mongoid/contextual/none.rb'

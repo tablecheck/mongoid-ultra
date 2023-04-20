@@ -44,7 +44,7 @@ describe Mongoid::CollectionConfigurable do
     Object.send(:remove_const, :CollectionConfigurableInvalidOptions)
   end
 
-  after(:each) do
+  after do
     [
       CollectionConfigurableValidOptions,
       CollectionConfigurableUnknownOptions
@@ -58,17 +58,16 @@ describe Mongoid::CollectionConfigurable do
       let(:subject) do
         CollectionConfigurableValidOptions
       end
-
-      before(:each) do
-        subject.create_collection
-      end
-
       let(:coll_options) do
         subject.collection.database.list_collections(filter: { name: subject.collection_name.to_s }).first
       end
 
+      before do
+        subject.create_collection
+      end
+
       it 'creates the collection' do
-        expect(coll_options).not_to be_nil
+        expect(coll_options).to_not be_nil
       end
 
       it 'passes collection options' do
@@ -139,13 +138,13 @@ describe Mongoid::CollectionConfigurable do
       end
 
       it 'does not log a message' do
-        expect(logger).to receive(:debug).never.with(/Collection '#{subject.collection_name}' already exist/)
+        expect(logger).to receive(:debug).to_not(/Collection '#{subject.collection_name}' already exist/)
         subject.create_collection(force: true)
       end
 
       it 'creates the collection' do
         subject.create_collection(force: true)
-        expect(coll_options).not_to be_nil
+        expect(coll_options).to_not be_nil
       end
 
       it 'passes collection options' do

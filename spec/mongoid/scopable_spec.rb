@@ -158,6 +158,9 @@ describe Mongoid::Scopable do
       let(:criteria) do
         Band.where('tags.foo' => 'bar')
       end
+      let!(:band) do
+        Band.create!
+      end
 
       before do
         Band.default_scope -> { criteria }
@@ -165,10 +168,6 @@ describe Mongoid::Scopable do
 
       after do
         Band.default_scoping = nil
-      end
-
-      let!(:band) do
-        Band.create!
       end
 
       it 'adds the scope as a dotted key attribute' do
@@ -193,6 +192,9 @@ describe Mongoid::Scopable do
       let(:criteria) do
         Band.where('tags.foo' => { '$eq' => 'bar' })
       end
+      let!(:band) do
+        Band.create!('tags' => { 'foo' => 'bar' })
+      end
 
       before do
         Band.default_scope -> { criteria }
@@ -200,10 +202,6 @@ describe Mongoid::Scopable do
 
       after do
         Band.default_scoping = nil
-      end
-
-      let!(:band) do
-        Band.create!('tags' => { 'foo' => 'bar' })
       end
 
       it 'does not add the scope as a dotted key attribute' do
@@ -1012,6 +1010,9 @@ describe Mongoid::Scopable do
       let(:criteria) do
         Band.where(name: 'Depeche Mode')
       end
+      let(:scoped) do
+        Band.scoped
+      end
 
       before do
         Band.default_scope -> { criteria }
@@ -1019,10 +1020,6 @@ describe Mongoid::Scopable do
 
       after do
         Band.default_scoping = nil
-      end
-
-      let(:scoped) do
-        Band.scoped
       end
 
       it 'allows the default scope to be added' do
@@ -1286,7 +1283,7 @@ describe Mongoid::Scopable do
 
     it "does not affect other models' default scopes within the given block" do
       Appointment.without_default_scope do
-        expect(Audio.all.selector).not_to be_empty
+        expect(Audio.all.selector).to_not be_empty
       end
     end
   end

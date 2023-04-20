@@ -416,6 +416,9 @@ describe Mongoid::Criteria do
       let(:band) do
         Band.new
       end
+      let(:clone) do
+        criteria.send(method)
+      end
 
       let(:criteria) do
         Band.where(name: 'Depeche Mode').asc(:name).includes(:records).read(mode: :secondary)
@@ -424,10 +427,6 @@ describe Mongoid::Criteria do
       before do
         criteria.documents = [band]
         criteria.context
-      end
-
-      let(:clone) do
-        criteria.send(method)
       end
 
       it 'contains an equal selector' do
@@ -3364,7 +3363,7 @@ describe Mongoid::Criteria do
         expect(criteria.minor).to be_empty
         expect do
           criteria.older_than(age: 25)
-        end.not_to raise_error
+        end.to_not raise_error
       end
     end
 
@@ -3393,7 +3392,7 @@ describe Mongoid::Criteria do
     context 'when the method does not exist' do
 
       before do
-        expect(criteria).to receive(:entries).never
+        expect(criteria).to_not receive(:entries)
       end
 
       it 'raises an error' do

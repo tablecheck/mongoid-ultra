@@ -229,7 +229,7 @@ describe Mongoid::Extensions::Hash do
       hash.__nested__('100.name')
     end
 
-    it 'should retrieve a nested value under the provided key' do
+    it 'retrieves a nested value under the provided key' do
       expect(nested).to eq 'hundred'
     end
 
@@ -237,7 +237,8 @@ describe Mongoid::Extensions::Hash do
       let(:hash) do
         { '100' => { 'name' => false } }
       end
-      it 'should retrieve the falsey nested value under the provided key' do
+
+      it 'retrieves the falsey nested value under the provided key' do
         expect(nested).to be false
       end
     end
@@ -246,7 +247,8 @@ describe Mongoid::Extensions::Hash do
       let(:hash) do
         { '100' => { 0 => "Please don't return this value!" } }
       end
-      it 'should retrieve the nil nested value under the provided key' do
+
+      it 'retrieves the nil nested value under the provided key' do
         expect(nested).to be_nil
       end
     end
@@ -261,7 +263,7 @@ describe Mongoid::Extensions::Hash do
       hash.__nested__('100.name')
     end
 
-    it 'should retrieve a nested value under the provided key' do
+    it 'retrieves a nested value under the provided key' do
       expect(nested).to eq('hundred')
     end
   end
@@ -276,7 +278,7 @@ describe Mongoid::Extensions::Hash do
       hash.__nested__('100.name')
     end
 
-    it 'should return nil' do
+    it 'returns nil' do
       expect(nested).to be_nil
     end
   end

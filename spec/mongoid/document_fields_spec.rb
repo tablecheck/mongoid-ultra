@@ -17,7 +17,7 @@ describe Mongoid::Document do
       it 'does not freeze the specified data' do
         registry
 
-        expect(data).not_to be_frozen
+        expect(data).to_not be_frozen
       end
 
       it 'persists' do
@@ -107,7 +107,7 @@ describe Mongoid::Document do
       it 'does not freeze the specified data' do
         registry
 
-        expect(obj_id).not_to be_frozen
+        expect(obj_id).to_not be_frozen
       end
 
       it 'persists' do

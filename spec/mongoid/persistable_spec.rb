@@ -64,11 +64,6 @@ describe Mongoid::Persistable do
           },
            { session: nil }]
         end
-
-        before do
-          expect_any_instance_of(Mongo::Collection::View).to receive(:update_one).with(*operations).and_call_original
-        end
-
         let!(:update) do
           document.atomically do
             document.inc(member_count: 10)
@@ -76,6 +71,10 @@ describe Mongoid::Persistable do
             document.set(name: 'Placebo')
             document.unset(:origin)
           end
+        end
+
+        before do
+          expect_any_instance_of(Mongo::Collection::View).to receive(:update_one).with(*operations).and_call_original
         end
 
         it_behaves_like 'an atomically updatable root document'
@@ -92,11 +91,6 @@ describe Mongoid::Persistable do
           },
            { session: nil }]
         end
-
-        before do
-          expect_any_instance_of(Mongo::Collection::View).to receive(:update_one).with(*operations).and_call_original
-        end
-
         let!(:update) do
           document.atomically do
             document
@@ -105,6 +99,10 @@ describe Mongoid::Persistable do
               .set(name: 'Placebo')
               .unset(:origin)
           end
+        end
+
+        before do
+          expect_any_instance_of(Mongo::Collection::View).to receive(:update_one).with(*operations).and_call_original
         end
 
         it_behaves_like 'an atomically updatable root document'
@@ -121,11 +119,6 @@ describe Mongoid::Persistable do
           },
            { session: nil }]
         end
-
-        before do
-          expect_any_instance_of(Mongo::Collection::View).to receive(:update_one).with(*operations).and_call_original
-        end
-
         let!(:update) do
           document.atomically do
             document
@@ -135,6 +128,10 @@ describe Mongoid::Persistable do
               .set(name: 'Placebo')
               .unset(:origin)
           end
+        end
+
+        before do
+          expect_any_instance_of(Mongo::Collection::View).to receive(:update_one).with(*operations).and_call_original
         end
 
         it_behaves_like 'an atomically updatable root document'
@@ -159,11 +156,6 @@ describe Mongoid::Persistable do
           },
            { session: nil }]
         end
-
-        before do
-          expect_any_instance_of(Mongo::Collection::View).to receive(:update_one).with(*operations).and_call_original
-        end
-
         let!(:update) do
           document.atomically do |doc|
             doc
@@ -172,6 +164,10 @@ describe Mongoid::Persistable do
               .set(name: 'Placebo')
               .unset(:origin)
           end
+        end
+
+        before do
+          expect_any_instance_of(Mongo::Collection::View).to receive(:update_one).with(*operations).and_call_original
         end
 
         it_behaves_like 'an atomically updatable root document'
@@ -274,7 +270,7 @@ describe Mongoid::Persistable do
       end
     end
 
-    context 'when providing no block ' do
+    context 'when providing no block' do
 
       it 'returns true' do
         expect(document.atomically).to be true

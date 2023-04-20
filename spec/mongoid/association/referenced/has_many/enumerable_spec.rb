@@ -309,7 +309,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         expect(enumerable._loaded?).to be true
       end
 
-      it 'it does not call #exists? on the unloaded scope' do
+      it 'does not call #exists? on the unloaded scope' do
         expect(enumerable._unloaded).to_not receive(:exists?)
         expect(enumerable.empty?).to be false
       end
@@ -329,7 +329,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         expect(enumerable._loaded?).to be false
       end
 
-      it 'it calls #exists? on the unloaded scope' do
+      it 'calls #exists? on the unloaded scope' do
         expect(enumerable._unloaded).to receive(:exists?)
         expect(enumerable.empty?).to be true
       end
@@ -344,7 +344,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
           expect(enumerable._loaded?).to be false
         end
 
-        it 'it does not call #exists? on the unloaded scope' do
+        it 'does not call #exists? on the unloaded scope' do
           expect(enumerable._unloaded).to_not receive(:exists?)
           expect(enumerable.empty?).to be false
         end
@@ -430,7 +430,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         expect(enumerable._loaded?).to be true
       end
 
-      it 'it does not call #exists? on the unloaded scope' do
+      it 'does not call #exists? on the unloaded scope' do
         expect(enumerable._unloaded).to_not receive(:exists?)
         expect(enumerable.any?).to be true
       end
@@ -484,7 +484,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         expect(enumerable._loaded?).to be false
       end
 
-      it 'it calls #exists? on the unloaded scope' do
+      it 'calls #exists? on the unloaded scope' do
         expect(enumerable._unloaded).to receive(:exists?)
         expect(enumerable.any?).to be false
       end
@@ -499,7 +499,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
           expect(enumerable._loaded?).to be false
         end
 
-        it 'it does not call #exists? on the unloaded scope' do
+        it 'does not call #exists? on the unloaded scope' do
           expect(enumerable._unloaded).to_not receive(:exists?)
           expect(enumerable.any?).to be true
         end
@@ -546,6 +546,11 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     let(:person) do
       Person.create!
     end
+    let!(:clear) do
+      enumerable.clear do |doc|
+        expect(doc).to be_a(Post)
+      end
+    end
 
     let!(:post) do
       Post.create!(person_id: person.id)
@@ -568,12 +573,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       enumerable << post
     end
 
-    let!(:clear) do
-      enumerable.clear do |doc|
-        expect(doc).to be_a(Post)
-      end
-    end
-
     it 'clears out the loaded docs' do
       expect(enumerable._loaded).to be_empty
     end
@@ -591,6 +590,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
     let(:person) do
       Person.create!
+    end
+    let(:cloned) do
+      enumerable.clone
     end
 
     let!(:post) do
@@ -612,10 +614,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     before do
       enumerable << post
       enumerable << post_two
-    end
-
-    let(:cloned) do
-      enumerable.clone
     end
 
     it 'does not retain the first id' do
@@ -661,6 +659,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       let!(:post) do
         Post.new
       end
+      let!(:deleted) do
+        enumerable.delete(post)
+      end
 
       let(:criteria) do
         Person.where(person_id: person.id)
@@ -672,10 +673,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
       before do
         enumerable << post
-      end
-
-      let!(:deleted) do
-        enumerable.delete(post)
       end
 
       it 'removes the document from the added docs' do
@@ -774,6 +771,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       let!(:post) do
         Post.new
       end
+      let!(:deleted) do
+        enumerable.delete_if { |doc| doc == post }
+      end
 
       let(:criteria) do
         Person.where(person_id: person.id)
@@ -785,10 +785,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
       before do
         enumerable << post
-      end
-
-      let!(:deleted) do
-        enumerable.delete_if { |doc| doc == post }
       end
 
       it 'removes the document from the added docs' do
@@ -1050,13 +1046,12 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       let!(:post) do
         Post.create!(person_id: person.id)
       end
+      let(:entries) do
+        enumerable.entries
+      end
 
       before do
         enumerable << post
-      end
-
-      let(:entries) do
-        enumerable.entries
       end
 
       it 'yields to the in memory documents first' do
@@ -1112,6 +1107,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
           let!(:post) do
             Post.create!(person_id: person.id)
           end
+          let(:first) do
+            enumerable.first
+          end
 
           let(:post_two) do
             Post.new(person_id: person.id)
@@ -1119,10 +1117,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
           before do
             enumerable << post_two
-          end
-
-          let(:first) do
-            enumerable.first
           end
 
           context 'when a perviously persisted unloaded doc exists' do
@@ -1143,13 +1137,12 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         let!(:post) do
           Post.new(person_id: person.id)
         end
+        let(:first) do
+          enumerable.first
+        end
 
         before do
           enumerable << post
-        end
-
-        let(:first) do
-          enumerable.first
         end
 
         it 'returns the first loaded doc' do
@@ -1203,6 +1196,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         let!(:post) do
           Post.create!(person_id: person.id)
         end
+        let(:first) do
+          enumerable.first
+        end
 
         let(:enumerable) do
           described_class.new([])
@@ -1210,10 +1206,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
         before do
           enumerable << post
-        end
-
-        let(:first) do
-          enumerable.first
         end
 
         it 'returns the first added doc' do
@@ -1336,6 +1328,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         let!(:enumerable) do
           described_class.new([])
         end
+        let!(:included) do
+          enumerable.include?(post_three)
+        end
 
         let(:post_three) do
           Post.new(person_id: person)
@@ -1343,10 +1338,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
         before do
           enumerable.push(post_three)
-        end
-
-        let!(:included) do
-          enumerable.include?(post_three)
         end
 
         it 'returns true' do
@@ -1454,6 +1445,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       let(:post) do
         Post.new
       end
+      let(:in_memory) do
+        enumerable.in_memory
+      end
 
       let(:enumerable) do
         described_class.new([post])
@@ -1467,10 +1461,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         enumerable << post_two
       end
 
-      let(:in_memory) do
-        enumerable.in_memory
-      end
-
       it 'returns the loaded and added docs' do
         expect(in_memory).to eq([post, post_two])
       end
@@ -1480,6 +1470,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
       let(:post) do
         Post.new(person_id: person.id)
+      end
+      let(:in_memory) do
+        enumerable.in_memory
       end
 
       let(:enumerable) do
@@ -1492,10 +1485,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
       before do
         enumerable << post_two
-      end
-
-      let(:in_memory) do
-        enumerable.in_memory
       end
 
       it 'returns the added docs' do
@@ -1591,13 +1580,12 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         let!(:post) do
           Post.new(person_id: person.id)
         end
+        let(:last) do
+          enumerable.last
+        end
 
         before do
           enumerable << post
-        end
-
-        let(:last) do
-          enumerable.last
         end
 
         it 'returns the last unloaded doc' do
@@ -1673,6 +1661,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         let!(:post) do
           Post.create!(person_id: person.id)
         end
+        let(:last) do
+          enumerable.last
+        end
 
         let(:enumerable) do
           described_class.new([])
@@ -1680,10 +1671,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
         before do
           enumerable << post
-        end
-
-        let(:last) do
-          enumerable.last
         end
 
         it 'returns the last added doc' do
@@ -1802,6 +1789,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     let(:person) do
       Person.create!
     end
+    let!(:reset) do
+      enumerable.reset
+    end
 
     let(:post) do
       Post.create!(person_id: person.id)
@@ -1817,10 +1807,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
     before do
       enumerable << post_two
-    end
-
-    let!(:reset) do
-      enumerable.reset
     end
 
     it 'is not loaded' do
@@ -1893,6 +1879,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       let(:enumerable) do
         described_class.new([post])
       end
+      let(:size) do
+        enumerable.size
+      end
 
       let(:post_two) do
         Post.new(person_id: person.id)
@@ -1900,10 +1889,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
       before do
         enumerable << post_two
-      end
-
-      let(:size) do
-        enumerable.size
       end
 
       it 'returns the loaded size plus added size' do
@@ -1926,13 +1911,12 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         let(:post_two) do
           Post.new(person_id: person.id)
         end
+        let(:size) do
+          enumerable.size
+        end
 
         before do
           enumerable << post_two
-        end
-
-        let(:size) do
-          enumerable.size
         end
 
         it 'returns the unloaded count plus added new size' do
@@ -1945,13 +1929,12 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         let(:post_two) do
           Post.create!(person_id: person.id)
         end
+        let(:size) do
+          enumerable.size
+        end
 
         before do
           enumerable << post_two
-        end
-
-        let(:size) do
-          enumerable.size
         end
 
         it 'returns the unloaded count plus added new size' do
@@ -1965,6 +1948,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
     let(:person) do
       Person.create!
+    end
+    let!(:json) do
+      enumerable.to_json
     end
 
     let!(:post) do
@@ -1981,10 +1967,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
     before do
       enumerable << post
-    end
-
-    let!(:json) do
-      enumerable.to_json
     end
 
     it 'serializes the enumerable' do
@@ -2020,6 +2002,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     let(:person) do
       Person.create!
     end
+    let!(:json) do
+      enumerable.as_json
+    end
 
     let!(:post) do
       Post.create!(title: 'test', person_id: person.id)
@@ -2035,10 +2020,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
     before do
       enumerable << post
-    end
-
-    let!(:json) do
-      enumerable.as_json
     end
 
     it 'serializes the enumerable' do
@@ -2079,6 +2060,9 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     let(:person) do
       Person.create!
     end
+    let!(:uniq) do
+      enumerable.uniq
+    end
 
     let!(:post) do
       Post.create!(person_id: person.id)
@@ -2095,10 +2079,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     before do
       enumerable << post
       enumerable._loaded[post.id] = post
-    end
-
-    let!(:uniq) do
-      enumerable.uniq
     end
 
     it 'returns the unique documents' do

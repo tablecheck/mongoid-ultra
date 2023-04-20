@@ -1708,7 +1708,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       it 'returns a cloned query' do
-        expect(selection).not_to equal(query)
+        expect(selection).to_not equal(query)
       end
 
       it 'does not mutate receiver' do
@@ -2356,22 +2356,26 @@ describe Mongoid::Criteria::Queryable::Selectable do
         context 'criteria are provided in the same hash' do
           context 'non-regexp argument' do
             let(:selection) { query.none_of(:field => 3, :field.lt => 5) }
+
             it_behaves_like 'combines conditions with $eq'
           end
 
           context 'regexp argument' do
             let(:selection) { query.none_of(:field => /t/, :field.lt => 5) }
+
             it_behaves_like 'combines conditions with $regex'
           end
         end
 
         context 'criteria are provided in separate hashes' do
           let(:selection) { query.none_of({ field: 3 }, { :field.lt => 5 }) }
+
           it_behaves_like 'adds conditions with $nor'
         end
 
         context 'when the criterion is wrapped in an array' do
           let(:selection) { query.none_of([field: 3], [:field.lt => 5]) }
+
           it_behaves_like 'adds conditions with $nor'
         end
       end
@@ -2413,22 +2417,26 @@ describe Mongoid::Criteria::Queryable::Selectable do
         context 'criteria are provided in the same hash' do
           context 'non-regexp argument' do
             let(:selection) { query.none_of(:field.gt => 3, :field => 5) }
+
             it_behaves_like 'combines conditions with $eq'
           end
 
           context 'regexp argument' do
             let(:selection) { query.none_of(:field.gt => 3, :field => /t/) }
+
             it_behaves_like 'combines conditions with $regex'
           end
         end
 
         context 'criteria are provided in separate hashes' do
           let(:selection) { query.none_of({ :field.gt => 3 }, { field: 5 }) }
+
           it_behaves_like 'adds conditions with $nor'
         end
 
         context 'when the criterion is wrapped in an array' do
           let(:selection) { query.none_of([:field.gt => 3], [field: 5]) }
+
           it_behaves_like 'adds conditions with $nor'
         end
       end

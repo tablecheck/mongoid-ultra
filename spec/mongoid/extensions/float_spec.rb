@@ -38,7 +38,7 @@ describe Mongoid::Extensions::Float do
 
           context 'when the value is small' do
 
-            it 'it returns the float' do
+            it 'returns the float' do
               expect(Float.send(method, 3)).to eq(3)
             end
 

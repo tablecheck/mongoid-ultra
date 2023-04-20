@@ -15,6 +15,8 @@ describe 'Mongoid::Railties::ControllerRuntime' do
     set_metric 0
   end
 
+  let(:controller) { controller_class.new }
+
   describe 'Collector' do
 
     it 'stores the metric in thread-safe manner' do
@@ -68,8 +70,6 @@ describe 'Mongoid::Railties::ControllerRuntime' do
   controller_class = Class.new reference_controller_class do
     include controller_runtime::ControllerExtension
   end
-
-  let(:controller) { controller_class.new }
 
   it 'resets the metric before each action' do
     set_metric 42

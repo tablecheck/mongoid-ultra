@@ -125,7 +125,7 @@ describe Mongoid::Reloadable do
 
           expect do
             agent.reload
-          end.not_to raise_error
+          end.to_not raise_error
 
           expect(agent.title).to eq('007')
         end
@@ -145,6 +145,11 @@ describe Mongoid::Reloadable do
           let(:person) do
             Person.with(collection: 'other', &:create!)
           end
+          let!(:reloaded) do
+            person.with(collection: 'other') do
+              person.addresses.first.reload
+            end
+          end
 
           let!(:address) do
             person.with(collection: 'other') do |person_object|
@@ -158,16 +163,9 @@ describe Mongoid::Reloadable do
             ).update_one({ '$set' => { 'addresses.0.number' => 3 } })
           end
 
-          let!(:reloaded) do
-            person.with(collection: 'other') do
-              person.addresses.first.reload
-            end
-          end
-
           it 'reloads the embedded document attributes' do
             expect(reloaded.number).to eq(3)
           end
-
         end
 
         context 'when the relation is an embeds many' do
@@ -175,15 +173,14 @@ describe Mongoid::Reloadable do
           let!(:address) do
             person.addresses.create!(street: 'Abbey Road', number: 4)
           end
+          let!(:reloaded) do
+            address.reload
+          end
 
           before do
             Person.collection.find(
               { '_id' => person.id }
             ).update_one({ '$set' => { 'addresses.0.number' => 3 } })
-          end
-
-          let!(:reloaded) do
-            address.reload
           end
 
           it 'reloads the embedded document attributes' do
@@ -204,14 +201,13 @@ describe Mongoid::Reloadable do
           let!(:name) do
             person.create_name(first_name: 'Syd')
           end
+          let!(:reloaded) do
+            name.reload
+          end
 
           before do
             Person.collection.find({ '_id' => person.id })
                   .update_one({ '$set' => { 'name.last_name' => 'Vicious' } })
-          end
-
-          let!(:reloaded) do
-            name.reload
           end
 
           it 'reloads the embedded document attributes' do
@@ -233,6 +229,9 @@ describe Mongoid::Reloadable do
         let!(:address) do
           person.addresses.create!(street: 'Abbey Road', number: 3)
         end
+        let!(:reloaded) do
+          location.reload
+        end
 
         let!(:location) do
           address.locations.create!(name: 'home')
@@ -241,10 +240,6 @@ describe Mongoid::Reloadable do
         before do
           Person.collection.find({ '_id' => person.id })
                 .update_one({ '$set' => { 'addresses.0.locations.0.name' => 'work' } })
-        end
-
-        let!(:reloaded) do
-          location.reload
         end
 
         it 'reloads the embedded document attributes' do
@@ -333,6 +328,9 @@ describe Mongoid::Reloadable do
       let(:palette) do
         Palette.new
       end
+      let(:reload) do
+        palette.reload
+      end
 
       let(:canvas) do
         Canvas.create!(palette: palette)
@@ -340,10 +338,6 @@ describe Mongoid::Reloadable do
 
       before do
         canvas.palette = nil
-      end
-
-      let(:reload) do
-        palette.reload
       end
 
       it 'raises a document not found error' do
@@ -555,9 +549,9 @@ describe Mongoid::Reloadable do
           band.reload
 
           expect(band.name).to be_nil
-          expect(band.id).not_to be_nil
+          expect(band.id).to_not be_nil
           # _id changes
-          expect(band.id).not_to eq(original_id)
+          expect(band.id).to_not eq(original_id)
         end
       end
     end
@@ -596,7 +590,7 @@ describe Mongoid::Reloadable do
 
         it 'resets previous changes' do
           expect(person.title_previously_was).to be_nil
-          expect(person).not_to be_previously_persisted
+          expect(person).to_not be_previously_persisted
         end
       end
 
@@ -610,7 +604,7 @@ describe Mongoid::Reloadable do
         end
 
         it 'resets previous changes' do
-          expect(person).not_to be_previously_new_record
+          expect(person).to_not be_previously_new_record
         end
       end
     end

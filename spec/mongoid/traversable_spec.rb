@@ -63,7 +63,7 @@ describe Mongoid::Traversable do
       end
 
       it 'does not include embedded documents multiple levels deep' do
-        expect(person._children).not_to include(location)
+        expect(person._children).to_not include(location)
       end
     end
   end
@@ -431,7 +431,7 @@ describe Mongoid::Traversable do
         Guitar.discriminator_key = 'hello3'
       end
 
-      before :each do
+      before do
         set_discriminator_key
       rescue StandardError
       end
@@ -478,7 +478,7 @@ describe Mongoid::Traversable do
       end
     end
 
-    context '.fields' do
+    describe '.fields' do
       context 'when the discriminator key is not changed' do
         it 'creates a _type field in the parent' do
           expect(Instrument.fields.keys).to include('_type')

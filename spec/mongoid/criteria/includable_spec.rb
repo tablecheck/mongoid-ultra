@@ -76,15 +76,14 @@ describe Mongoid::Criteria::Includable do
       let!(:user) do
         User.create!
       end
+      let(:result) do
+        User.includes(posts: [:alerts]).first
+      end
 
       before do
         p = Post.create!(alerts: [Alert.create!])
         user.posts = [p]
         user.save!
-      end
-
-      let(:result) do
-        User.includes(posts: [:alerts]).first
       end
 
       it 'executes the query' do
@@ -567,6 +566,9 @@ describe Mongoid::Criteria::Includable do
           let!(:new_criteria) do
             Person.where(id: person.id)
           end
+          let!(:from_db) do
+            new_criteria.first
+          end
 
           let!(:new_context) do
             new_criteria.context
@@ -574,10 +576,6 @@ describe Mongoid::Criteria::Includable do
 
           before do
             expect(new_context).to receive(:eager_load).with([person]).once.and_call_original
-          end
-
-          let!(:from_db) do
-            new_criteria.first
           end
 
           it 'does not duplicate documents in the relation' do
@@ -618,6 +616,9 @@ describe Mongoid::Criteria::Includable do
         let(:criteria) do
           Person.asc(:age).all
         end
+        let!(:from_db) do
+          criteria.last
+        end
 
         let!(:context) do
           criteria.context
@@ -625,10 +626,6 @@ describe Mongoid::Criteria::Includable do
 
         before do
           expect(context).to receive(:eager_load).with([person]).once.and_call_original
-        end
-
-        let!(:from_db) do
-          criteria.last
         end
 
         it 'returns the correct documents' do
@@ -886,6 +883,9 @@ describe Mongoid::Criteria::Includable do
         let!(:person_two) do
           Person.create!
         end
+        let!(:documents) do
+          criteria.entries
+        end
 
         let!(:post_three) do
           person_two.posts.create!(title: 'three')
@@ -901,10 +901,6 @@ describe Mongoid::Criteria::Includable do
 
         before do
           expect(context).to receive(:eager_load).with([person]).once.and_call_original
-        end
-
-        let!(:documents) do
-          criteria.entries
         end
 
         it 'returns the correct documents' do
@@ -928,6 +924,9 @@ describe Mongoid::Criteria::Includable do
         let!(:criteria) do
           Person.asc(:age).includes(:game)
         end
+        let!(:documents) do
+          criteria.entries
+        end
 
         let(:context) do
           criteria.context
@@ -935,10 +934,6 @@ describe Mongoid::Criteria::Includable do
 
         before do
           expect(context).to receive(:eager_load).with([person]).once.and_call_original
-        end
-
-        let!(:documents) do
-          criteria.entries
         end
 
         it 'returns the correct documents' do
@@ -950,6 +945,9 @@ describe Mongoid::Criteria::Includable do
 
         let!(:person_two) do
           Person.create!(age: 2)
+        end
+        let!(:documents) do
+          criteria.entries
         end
 
         let!(:game_three) do
@@ -966,10 +964,6 @@ describe Mongoid::Criteria::Includable do
 
         before do
           expect(context).to receive(:eager_load).with([person]).once.and_call_original
-        end
-
-        let!(:documents) do
-          criteria.entries
         end
 
         it 'returns the correct documents' do
@@ -997,6 +991,9 @@ describe Mongoid::Criteria::Includable do
         let!(:criteria) do
           Game.includes(:person)
         end
+        let!(:documents) do
+          criteria.entries
+        end
 
         let(:context) do
           criteria.context
@@ -1004,10 +1001,6 @@ describe Mongoid::Criteria::Includable do
 
         before do
           expect(context).to receive(:preload).twice.and_call_original
-        end
-
-        let!(:documents) do
-          criteria.entries
         end
 
         it 'returns the correct documents' do
@@ -1020,6 +1013,9 @@ describe Mongoid::Criteria::Includable do
         let!(:criteria) do
           Game.where(id: game_one.id).includes(:person).asc(:_id).limit(1)
         end
+        let!(:documents) do
+          criteria.entries
+        end
 
         let(:context) do
           criteria.context
@@ -1027,10 +1023,6 @@ describe Mongoid::Criteria::Includable do
 
         before do
           expect(context).to receive(:eager_load).with([game_one]).once.and_call_original
-        end
-
-        let!(:documents) do
-          criteria.entries
         end
 
         it 'returns the correct documents' do
@@ -1043,6 +1035,9 @@ describe Mongoid::Criteria::Includable do
 
       let!(:post_one) do
         person.posts.create!(title: 'one')
+      end
+      let!(:documents) do
+        criteria.entries
       end
 
       let!(:post_two) do
@@ -1067,10 +1062,6 @@ describe Mongoid::Criteria::Includable do
 
       before do
         expect(context).to receive(:preload).twice.and_call_original
-      end
-
-      let!(:documents) do
-        criteria.entries
       end
 
       it 'returns the correct documents' do
@@ -1253,15 +1244,14 @@ describe Mongoid::Criteria::Includable do
           end
 
           let(:c2) { C.create! }
+          let!(:results) do
+            A.includes(b: { c: :d }, c: :d).first
+          end
           let(:d2) { D.create! }
 
           before do
             a.c = c2
             a.c.d = d2
-          end
-
-          let!(:results) do
-            A.includes(b: { c: :d }, c: :d).first
           end
 
           it 'finds the right document' do

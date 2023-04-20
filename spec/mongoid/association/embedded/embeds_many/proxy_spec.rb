@@ -967,6 +967,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         let(:cough) do
           Symptom.new(name: 'cough')
         end
+        let(:document) do
+          person.reload.symptoms.as_document
+        end
 
         let(:headache) do
           Symptom.new(name: 'headache')
@@ -974,10 +977,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
         before do
           person.symptoms.push(headache, cough)
-        end
-
-        let(:document) do
-          person.reload.symptoms.as_document
         end
 
         it 'returns the unscoped documents as an array of hashes' do
@@ -990,6 +989,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         let(:active) do
           Appointment.new
         end
+        let(:document) do
+          person.reload.appointments.as_document
+        end
 
         let(:inactive) do
           Appointment.new(active: false)
@@ -997,10 +999,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
         before do
           person.appointments.push(active, inactive)
-        end
-
-        let(:document) do
-          person.reload.appointments.as_document
         end
 
         it 'returns the unscoped documents as an array of hashes' do
@@ -2643,6 +2641,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     let(:person) do
       Person.new
     end
+    let(:max) do
+      person.addresses.max_by(&:number)
+    end
 
     let(:address_one) do
       Address.new(number: 5)
@@ -2654,10 +2655,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     before do
       person.addresses.push(address_one, address_two)
-    end
-
-    let(:max) do
-      person.addresses.max_by(&:number)
     end
 
     it 'returns the document with the max value of the supplied field' do
@@ -2670,6 +2667,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     let(:person) do
       Person.new
     end
+    let(:max) do
+      person.addresses.max_by(&:number)
+    end
 
     let(:address_one) do
       Address.new(number: 5)
@@ -2681,10 +2681,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     before do
       person.addresses.push(address_one, address_two)
-    end
-
-    let(:max) do
-      person.addresses.max_by(&:number)
     end
 
     it 'returns the document with the max value of the supplied field' do
@@ -2801,6 +2797,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     let(:person) do
       Person.new
     end
+    let(:min) do
+      person.addresses.min_by(&:number)
+    end
 
     let(:address_one) do
       Address.new(number: 5)
@@ -2812,10 +2811,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     before do
       person.addresses.push(address_one, address_two)
-    end
-
-    let(:min) do
-      person.addresses.min_by(&:number)
     end
 
     it 'returns the min value of the supplied field' do
@@ -2828,6 +2823,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     let(:person) do
       Person.new
     end
+    let(:min) do
+      person.addresses.min_by(&:number)
+    end
 
     let(:address_one) do
       Address.new(number: 5)
@@ -2839,10 +2837,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     before do
       person.addresses.push(address_one, address_two)
-    end
-
-    let(:min) do
-      person.addresses.min_by(&:number)
     end
 
     it 'returns the min value of the supplied field' do
@@ -3127,7 +3121,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
     end
 
-    Mongoid::Association::Embedded::EmbedsMany::Proxy.public_instance_methods.each do |method|
+    described_class.public_instance_methods.each do |method|
 
       context "when checking #{method}" do
 
@@ -3148,7 +3142,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     it "supports 'include_private = boolean'" do
-      expect { addresses.respond_to?(:Rational, true) }.not_to raise_error
+      expect { addresses.respond_to?(:Rational, true) }.to_not raise_error
     end
   end
 
@@ -3371,6 +3365,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       let(:quiz) do
         Quiz.new
       end
+      let(:question) do
+        quiz.pages.first.page_questions.first
+      end
 
       let(:page) do
         Page.new
@@ -3383,10 +3380,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       before do
         quiz.pages << page
         page.page_questions << page_question
-      end
-
-      let(:question) do
-        quiz.pages.first.page_questions.first
       end
 
       it 'sets up the hierarchy' do
@@ -3868,6 +3861,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       let(:active) do
         Appointment.new
       end
+      let(:relation) do
+        person.reload.appointments
+      end
 
       let(:inactive) do
         Appointment.new(active: false)
@@ -3875,10 +3871,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
       before do
         person.appointments.push(inactive, active)
-      end
-
-      let(:relation) do
-        person.reload.appointments
       end
 
       it 'retains the unscoped index for the excluded document' do
@@ -4067,6 +4059,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     let(:person) do
       Person.create!
     end
+    let(:criteria) do
+      person.messages.order_by(:body.asc, :priority.desc)
+    end
 
     let(:message_one) do
       Message.new(priority: 5, body: 'This is a test')
@@ -4082,10 +4077,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     before do
       person.messages.push(message_one, message_two, message_three)
-    end
-
-    let(:criteria) do
-      person.messages.order_by(:body.asc, :priority.desc)
     end
 
     it 'properly orders the related objects' do
@@ -4147,6 +4138,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       let(:from_db) do
         Person.find(person.id)
       end
+      let(:updated) do
+        person.reload.addresses.first.locations.first
+      end
 
       before do
         from_db.update!(
@@ -4154,10 +4148,6 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
             { locations: [{ name: 'work' }] }
           ]
         )
-      end
-
-      let(:updated) do
-        person.reload.addresses.first.locations.first
       end
 
       it 'updates the nested document' do
@@ -4303,7 +4293,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
   end
 
-  context '#delete, or #clear, or #pop, or #shift with before_remove callback' do
+  describe '#delete, or #clear, or #pop, or #shift with before_remove callback' do
 
     let(:artist) do
       Artist.new
@@ -4410,7 +4400,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         rescue StandardError
         end
 
-        it 'should remove from collection' do
+        it 'removes from collection' do
           expect(artist.songs).to eq([song])
         end
       end
@@ -4422,14 +4412,14 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         rescue StandardError
         end
 
-        it 'should remove from collection' do
+        it 'removes from collection' do
           expect(artist.songs).to eq([song])
         end
       end
     end
   end
 
-  context '#delete, or #clear, or #pop, or #shift with after_remove callback' do
+  describe '#delete, or #clear, or #pop, or #shift with after_remove callback' do
 
     let(:artist) do
       Artist.new
@@ -4517,7 +4507,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         rescue StandardError
         end
 
-        it 'should remove from collection' do
+        it 'removes from collection' do
           expect(artist.labels).to be_empty
         end
       end
@@ -4529,7 +4519,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         rescue StandardError
         end
 
-        it 'should remove from collection' do
+        it 'removes from collection' do
           expect(artist.labels).to be_empty
         end
       end
@@ -4541,7 +4531,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         rescue StandardError
         end
 
-        it 'should remove from collection' do
+        it 'removes from collection' do
           expect(artist.labels).to be_empty
         end
       end
@@ -4744,13 +4734,12 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     context 'in an embeds_many relation' do
 
       let(:band) { Band.create! }
+      let(:reloaded_band) { Band.collection.find(_id: band._id).first }
 
       before do
         band.labels = []
         band.save!
       end
-
-      let(:reloaded_band) { Band.collection.find(_id: band._id).first }
 
       it 'persists the empty list' do
         expect(reloaded_band).to have_key(:labels)
@@ -4761,13 +4750,12 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     context 'in a nested embeds_many relation' do
 
       let(:survey) { Survey.create!(questions: [Question.new]) }
+      let(:reloaded_survey) { Survey.collection.find(_id: survey._id).first }
 
       before do
         survey.questions.first.answers = []
         survey.save!
       end
-
-      let(:reloaded_survey) { Survey.collection.find(_id: survey._id).first }
 
       it 'persists the empty list' do
         expect(reloaded_survey).to have_key(:questions)
