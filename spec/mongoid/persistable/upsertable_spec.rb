@@ -156,7 +156,7 @@ describe Mongoid::Persistable::Upsertable do
       let!(:new_document) { Band.new(name: 'Panic! at the Disco') }
 
       context 'with `replace: true`' do
-        it 'should raise an ArgumentError' do
+        it 'raises an ArgumentError' do
           existing_document.name = 'John and John'
           expect do
             existing_document.upsert(replace: true, set_on_insert: { member_count: 1 })

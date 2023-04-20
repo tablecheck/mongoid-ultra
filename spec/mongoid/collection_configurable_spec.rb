@@ -139,7 +139,7 @@ describe Mongoid::CollectionConfigurable do
       end
 
       it 'does not log a message' do
-        expect(logger).to receive(:debug).never.with(/Collection '#{subject.collection_name}' already exist/)
+        expect(logger).to_not receive(:debug)
         subject.create_collection(force: true)
       end
 

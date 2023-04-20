@@ -136,18 +136,6 @@ Performance/CollectionLiteralInLoop:
     - 'spec/mongoid/criteria/queryable/selector_spec.rb'
     - 'spec/mongoid/interceptable_spec_models.rb'
 
-# Offense count: 8
-# This cop supports safe autocorrection (--autocorrect).
-Performance/StringIdentifierArgument:
-  Exclude:
-    - 'spec/rails/controller_extension/controller_runtime_spec.rb'
-
-# Offense count: 5
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Performance/TimesMap:
-  Exclude:
-    - 'spec/mongoid/criteria/includable_spec.rb'
-
 # Offense count: 25
 RSpec/AnyInstance:
   Exclude:
@@ -360,27 +348,6 @@ RSpec/DescribeClass:
 # Configuration parameters: CountAsOne.
 RSpec/ExampleLength:
   Max: 42
-
-# Offense count: 24
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: CustomTransform, IgnoredWords, DisallowedExamples.
-# DisallowedExamples: works
-RSpec/ExampleWording:
-  Exclude:
-    - 'spec/integration/associations/belongs_to_spec.rb'
-    - 'spec/integration/criteria/logical_spec.rb'
-    - 'spec/integration/stringified_symbol_field_spec.rb'
-    - 'spec/mongoid/association/referenced/belongs_to/eager_spec.rb'
-    - 'spec/mongoid/association/referenced/has_many/enumerable_spec.rb'
-    - 'spec/mongoid/copyable_spec.rb'
-    - 'spec/mongoid/persistable/upsertable_spec.rb'
-    - 'spec/mongoid/tasks/database_rake_spec.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/ExcessiveDocstringSpacing:
-  Exclude:
-    - 'spec/mongoid/persistable_spec.rb'
 
 # Offense count: 3
 # This cop supports safe autocorrection (--autocorrect).
@@ -711,12 +678,6 @@ RSpec/PendingWithoutReason:
     - 'spec/mongoid/association/referenced/has_one_spec.rb'
     - 'spec/mongoid/criteria/queryable/aggregable_spec.rb'
     - 'spec/mongoid/serializable_spec.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/ReceiveNever:
-  Exclude:
-    - 'spec/mongoid/collection_configurable_spec.rb'
 
 # Offense count: 17
 RSpec/RepeatedDescription:
