@@ -151,31 +151,9 @@ RSpec/AnyInstance:
     - 'spec/mongoid/warnings_spec.rb'
     - 'spec/support/expectations.rb'
 
-# Offense count: 7
-RSpec/Be:
-  Exclude:
-    - 'spec/mongoid/criteria/queryable/extensions/symbol_spec.rb'
-    - 'spec/mongoid/errors/mongoid_error_spec.rb'
-
 # Offense count: 84
 RSpec/BeforeAfterAll:
   Enabled: false
-
-# Offense count: 19
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: be_a, be_kind_of
-RSpec/ClassCheck:
-  Exclude:
-    - 'spec/mongoid/association/accessors_spec.rb'
-    - 'spec/mongoid/association/builders_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_many/buildable_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_one/buildable_spec.rb'
-    - 'spec/mongoid/association/macros_spec.rb'
-    - 'spec/mongoid/contextual/map_reduce_spec.rb'
-    - 'spec/mongoid/extensions/date_time_spec.rb'
-    - 'spec/mongoid/persistable/creatable_spec.rb'
-    - 'spec/mongoid/persistable/savable_spec.rb'
 
 # Offense count: 832
 # Configuration parameters: Prefixes, AllowedPatterns.
@@ -343,17 +321,6 @@ RSpec/DescribeClass:
     - 'spec/mongoid/mongoizable_spec.rb'
     - 'spec/mongoid/railties/console_sandbox_spec.rb'
     - 'spec/mongoid/tasks/database_rake_spec.rb'
-
-# Offense count: 260
-# Configuration parameters: CountAsOne.
-RSpec/ExampleLength:
-  Max: 42
-
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/ExpectActual:
-  Exclude:
-    - 'spec/mongoid/clients/factory_spec.rb'
 
 # Offense count: 133
 RSpec/ExpectInHook:
@@ -587,15 +554,6 @@ RSpec/MultipleDescribes:
     - 'spec/mongoid/association/embedded/dirty_spec.rb'
     - 'spec/mongoid/tasks/database_rake_spec.rb'
 
-# Offense count: 709
-RSpec/MultipleExpectations:
-  Max: 16
-
-# Offense count: 1052
-# Configuration parameters: AllowSubject.
-RSpec/MultipleMemoizedHelpers:
-  Max: 31
-
 # Offense count: 234
 # Configuration parameters: EnforcedStyle, IgnoreSharedExamples.
 # SupportedStyles: always, named_only
@@ -771,13 +729,6 @@ RSpec/SubjectDeclaration:
     - 'spec/mongoid/clients/transactions_spec.rb'
     - 'spec/mongoid/collection_configurable_spec.rb'
     - 'spec/mongoid/contextual/mongo/documents_loader_spec.rb'
-
-# Offense count: 3
-# Configuration parameters: EnforcedStyle, AllowedPatterns.
-# SupportedStyles: snake_case, camelCase
-RSpec/VariableName:
-  Exclude:
-    - 'spec/mongoid/association/referenced/has_many/eager_spec.rb'
 
 # Offense count: 28
 # Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
