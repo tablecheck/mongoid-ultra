@@ -125,13 +125,13 @@ module Mongoid
       end
 
       def _dependent_restrict_with_exception!(association)
-        return unless (relation = send(association.name)) && !relation.blank?
+        return unless (relation = send(association.name)) && relation.present?
 
         raise Errors::DeleteRestriction.new(relation, association.name)
       end
 
       def _dependent_restrict_with_error!(association)
-        return unless (relation = send(association.name)) && !relation.blank?
+        return unless (relation = send(association.name)) && relation.present?
 
         errors.add(association.name, :destroy_restrict_with_error_dependencies_exist)
         throw(:abort, false)
