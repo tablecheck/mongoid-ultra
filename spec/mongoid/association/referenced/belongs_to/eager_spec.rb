@@ -381,7 +381,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
 
     context 'when setting the foreign key id directly' do
 
-      it 'works' do
+      it 'assigns the foreign key' do
         id = BSON::ObjectId.new
         game = Game.new(person_id: id)
         expect(game.person_id).to eql(id)

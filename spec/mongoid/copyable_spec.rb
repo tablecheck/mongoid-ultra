@@ -149,7 +149,7 @@ describe Mongoid::Copyable do
       end
 
       context 'nested embeds_many' do
-        it 'works' do
+        it 'clones the nested fields' do
           a = CopyableSpec::A.new
           a.locations << CopyableSpec::Location.new
           a.locations.first.buildings << CopyableSpec::Building.new
@@ -663,7 +663,7 @@ describe Mongoid::Copyable do
             expect(child_cls.discriminator_mapping[child_cls.name]).to be_nil
           end
 
-          it 'works' do
+          it 'instantiates a new object' do
             expect(copy.class).to be original.class
             expect(copy.object_id).to_not eq(original.object_id)
           end
@@ -680,7 +680,7 @@ describe Mongoid::Copyable do
             expect(child_cls.discriminator_mapping[child_cls.name]).to_not be_nil
           end
 
-          it 'works' do
+          it 'instantiates a new object' do
             expect(copy.class).to be original.class
             expect(copy.object_id).to_not eq(original.object_id)
           end
