@@ -8,16 +8,28 @@ describe 'StringifiedSymbol fields' do
     Order.destroy_all
   end
 
-  # Using command monitoring to test that StringifiedSymbol sends a string and returns a symbol
-  let(:client) { Order.collection.client }
-
   before do
     client.subscribe(Mongo::Monitoring::COMMAND, subscriber)
+  end
+
+  before do
+    subscriber.clear_events!
   end
 
   after do
     client.unsubscribe(Mongo::Monitoring::COMMAND, subscriber)
   end
+
+  let!(:document1) do
+    Order.create!(saved_status: :test)
+  end
+
+  let!(:document2) do
+    Order.where(query).first
+  end
+
+  # Using command monitoring to test that StringifiedSymbol sends a string and returns a symbol
+  let(:client) { Order.collection.client }
 
   let(:subscriber) do
     EventSubscriber.new
@@ -35,20 +47,8 @@ describe 'StringifiedSymbol fields' do
     subscriber.started_events.select { |event| event.command_name.to_s == 'update' }
   end
 
-  before do
-    subscriber.clear_events!
-  end
-
   let(:query) do
     { 'saved_status' => { '$eq' => 'test' } }
-  end
-
-  let!(:document1) do
-    Order.create!(saved_status: :test)
-  end
-
-  let!(:document2) do
-    Order.where(query).first
   end
 
   context 'when querying the database' do
