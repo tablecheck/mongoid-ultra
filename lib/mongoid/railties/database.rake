@@ -86,7 +86,7 @@ namespace :db do
   end
 
   namespace :mongoid do
-    task :load_models do
+    task load_models: :environment do
       Rails.application.eager_load! if defined?(Rails)
     end
   end

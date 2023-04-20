@@ -2,7 +2,7 @@
 
 namespace :db do
   namespace :mongoid do
-    task :load_models do
+    task load_models: :environment do
       Mongoid.load_models
     end
 

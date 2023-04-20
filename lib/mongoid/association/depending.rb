@@ -60,7 +60,7 @@ module Mongoid
             klass.dependents_owner = klass
           end
 
-          if association.dependent && !klass.dependents.include?(association)
+          if association.dependent && klass.dependents.exclude?(association)
             klass.dependents.push(association)
           end
         end

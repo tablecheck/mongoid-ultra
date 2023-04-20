@@ -1245,11 +1245,11 @@ describe Mongoid::Attributes::Nested do
                 end
 
                 it 'updates the first existing document' do
-                  expect(person.addresses.collect { |a| a['street'] }).to include('Maybachufer')
+                  expect(person.addresses.pluck('street')).to include('Maybachufer')
                 end
 
                 it 'updates the second existing document' do
-                  expect(person.addresses.collect { |a| a['street'] }).to include('Alexander Platz')
+                  expect(person.addresses.pluck('street')).to include('Alexander Platz')
                 end
 
                 it 'does not add new documents' do
@@ -1268,11 +1268,11 @@ describe Mongoid::Attributes::Nested do
                 end
 
                 it 'updates the first existing document' do
-                  expect(person.addresses.collect { |a| a['street'] }).to include('Maybachufer')
+                  expect(person.addresses.pluck('street')).to include('Maybachufer')
                 end
 
                 it 'updates the second existing document' do
-                  expect(person.addresses.collect { |a| a['street'] }).to include('Alexander Platz')
+                  expect(person.addresses.pluck('street')).to include('Alexander Platz')
                 end
 
                 it 'does not add new documents' do
@@ -1292,11 +1292,11 @@ describe Mongoid::Attributes::Nested do
               end
 
               it 'updates the first existing document' do
-                expect(person.addresses.collect { |a| a['street'] }).to include('Maybachufer')
+                expect(person.addresses.pluck('street')).to include('Maybachufer')
               end
 
               it 'updates the second existing document' do
-                expect(person.addresses.collect { |a| a['street'] }).to include('Alexander Platz')
+                expect(person.addresses.pluck('street')).to include('Alexander Platz')
               end
 
               it 'does not add new documents' do
@@ -1315,11 +1315,11 @@ describe Mongoid::Attributes::Nested do
               end
 
               it 'updates the first existing document' do
-                expect(person.addresses.collect { |a| a['street'] }).to include('Maybachufer')
+                expect(person.addresses.pluck('street')).to include('Maybachufer')
               end
 
               it 'updates the second existing document' do
-                expect(person.addresses.collect { |a| a['street'] }).to include('Alexander Platz')
+                expect(person.addresses.pluck('street')).to include('Alexander Platz')
               end
 
               it 'does not add new documents' do
@@ -1338,11 +1338,11 @@ describe Mongoid::Attributes::Nested do
               end
 
               it 'updates the first existing document' do
-                expect(person.addresses.collect { |a| a['street'] }).to include('Maybachufer')
+                expect(person.addresses.pluck('street')).to include('Maybachufer')
               end
 
               it 'updates the second existing document' do
-                expect(person.addresses.collect { |a| a['street'] }).to include('Alexander Platz')
+                expect(person.addresses.pluck('street')).to include('Alexander Platz')
               end
 
               it 'does not add new documents' do
