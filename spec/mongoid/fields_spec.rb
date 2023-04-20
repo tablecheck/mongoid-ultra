@@ -56,7 +56,7 @@ describe Mongoid::Fields do
         end
       end
 
-      it "has alias method #{field}_t" do
+      it 'has alias method {field}_t' do
         expect(product.method(:name_t)).to eq product.method(:name_translations)
       end
     end
@@ -169,7 +169,7 @@ describe Mongoid::Fields do
         end
       end
 
-      it "has alias method #{field}_t=" do
+      it 'has alias method {field}_t=' do
         expect(product.method(:name_t=)).to eq product.method(:name_translations=)
       end
     end
