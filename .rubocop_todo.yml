@@ -1337,13 +1337,6 @@ RSpec/VerifiedDoubles:
     - 'spec/mongoid/validatable/associated_spec.rb'
     - 'spec/rails/mongoid_spec.rb'
 
-# Offense count: 5
-# This cop supports safe autocorrection (--autocorrect).
-Rails/BelongsTo:
-  Exclude:
-    - 'spec/mongoid/association/referenced/belongs_to_models.rb'
-    - 'spec/mongoid/timestamps_spec_models.rb'
-
 # Offense count: 11
 # Configuration parameters: EnforcedStyle, AllowToTime.
 # SupportedStyles: strict, flexible
