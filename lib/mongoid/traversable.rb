@@ -15,18 +15,18 @@ module Mongoid
     #
     # @api private
     def _parent
-      @__parent ||= nil
+      @_parent ||= nil
     end
 
     # Sets the parent document.
     #
-    # @param [ Mongoid::Document ] p The parent document to set.
+    # @param [ Mongoid::Document ] value The parent document to set.
     #
     # @returns [ Mongoid::Document ] The parent document.
     #
     # @api private
-    def _parent=(p)
-      @__parent = p
+    def _parent=(value)
+      @_parent = value
     end
 
     # Module used for prepending to the various discriminator_*= methods
@@ -143,7 +143,7 @@ module Mongoid
     #
     # @api private
     def _children
-      @__children ||= collect_children
+      @_children ||= collect_children
     end
 
     # Get all descendant +Documents+ of this +Document+ recursively.
@@ -157,7 +157,7 @@ module Mongoid
     #
     # @api private
     def _descendants
-      @__descendants ||= collect_descendants
+      @_descendants ||= collect_descendants
     end
 
     # Collect all the children of this document.
@@ -280,8 +280,8 @@ module Mongoid
     # @api private
     def _reset_memoized_descendants!
       _parent&._reset_memoized_descendants!
-      @__children = nil
-      @__descendants = nil
+      @_children = nil
+      @_descendants = nil
     end
 
     # Return the root document in the object graph. If the current document

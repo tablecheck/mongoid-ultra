@@ -773,7 +773,7 @@ module Mongoid
       #
       # @api private
       def load_async
-        @documents_loader ||= DocumentsLoader.new(view, klass, criteria)
+        @documents_loader ||= DocumentsLoader.new(view, klass, criteria) # rubcop:disable Naming/MemoizedInstanceVariableName
       end
 
       private
@@ -956,6 +956,7 @@ module Mongoid
         raise Errors::DocumentNotFound.new(klass, nil, nil)
       end
 
+      # rubocop:disable Naming/MethodParameterName
       def retrieve_nth(n)
         retrieve_nth_with_limit(n, 1).first
       end
@@ -979,6 +980,7 @@ module Mongoid
         raw_docs = v.to_a.reverse
         process_raw_docs(raw_docs, limit)
       end
+      # rubocop:enable Naming/MethodParameterName
     end
   end
 end

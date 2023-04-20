@@ -224,7 +224,7 @@ module Mongoid
     #
     # @return [ String ] The model key.
     def model_key
-      @model_cache_key ||= self.class.model_name.cache_key
+      @model_key ||= self.class.model_name.cache_key
     end
 
     # Returns a hash of the attributes.
@@ -326,10 +326,10 @@ module Mongoid
       #
       # @return [ Array<Class> ] All subclasses of the current document.
       def _types
-        @_type ||= (descendants + [self]).uniq.map(&:discriminator_value)
+        @_types ||= (descendants + [self]).uniq.map(&:discriminator_value)
       end
 
-      # Clear the @_type cache. This is generally called when changing the discriminator
+      # Clear the @_types cache. This is generally called when changing the discriminator
       # key/value on a class.
       #
       # @example Get the types.
@@ -337,7 +337,7 @@ module Mongoid
       #
       # @api private
       def _mongoid_clear_types
-        @_type = nil
+        @_types = nil
         superclass._mongoid_clear_types if hereditary?
       end
 
