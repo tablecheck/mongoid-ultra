@@ -8,31 +8,6 @@ describe 'StringifiedSymbol fields' do
     Order.destroy_all
   end
 
-  context 'when querying the database' do
-
-    let!(:document) do
-      Order.create!(saved_status: :test)
-    end
-
-    let(:string_query) do
-      { 'saved_status' => { '$eq' => 'test' } }
-    end
-
-    let(:symbol_query) do
-      { 'saved_status' => { '$eq' => :test } }
-    end
-
-    it 'can be queried with a string' do
-      doc = Order.where(string_query).first
-      expect(doc.saved_status).to eq(:test)
-    end
-
-    it 'can be queried with a symbol' do
-      doc = Order.where(symbol_query).first
-      expect(doc.saved_status).to eq(:test)
-    end
-  end
-
   # Using command monitoring to test that StringifiedSymbol sends a string and returns a symbol
   let(:client) { Order.collection.client }
 
@@ -74,6 +49,31 @@ describe 'StringifiedSymbol fields' do
 
   let!(:document2) do
     Order.where(query).first
+  end
+
+  context 'when querying the database' do
+
+    let!(:document) do
+      Order.create!(saved_status: :test)
+    end
+
+    let(:string_query) do
+      { 'saved_status' => { '$eq' => 'test' } }
+    end
+
+    let(:symbol_query) do
+      { 'saved_status' => { '$eq' => :test } }
+    end
+
+    it 'can be queried with a string' do
+      doc = Order.where(string_query).first
+      expect(doc.saved_status).to eq(:test)
+    end
+
+    it 'can be queried with a symbol' do
+      doc = Order.where(symbol_query).first
+      expect(doc.saved_status).to eq(:test)
+    end
   end
 
   context 'when inserting document' do
@@ -192,7 +192,7 @@ describe 'StringifiedSymbol fields' do
 
   context 'when StringifiedSymbol is embedded' do
 
-    describe 'When the embedded field is not unique' do
+    describe 'when the embedded field is not unique' do
 
       it 'is invalid' do
         order = Order.new
