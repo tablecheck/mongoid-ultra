@@ -472,7 +472,7 @@ describe Mongoid::Persistable::Updatable do
 
         it 'raises an error' do
           expect do
-            person.update_attributes!(map: { '$bad.key' => 'value' })
+            person.update!(map: { '$bad.key' => 'value' })
           end.to raise_error(Mongo::Error::OperationFailure)
         end
       end
@@ -708,7 +708,7 @@ describe Mongoid::Persistable::Updatable do
 
       context 'when the _id is one of the fields' do
         def invoke_operation!
-          object.update_attributes _id: new_id_value
+          object.update _id: new_id_value
         end
 
         it_behaves_like 'persisted _ids are immutable'
@@ -745,7 +745,7 @@ describe Mongoid::Persistable::Updatable do
     it 'calls update_attributes' do
       expect(person).to receive(:update_attributes).with(attributes).and_call_original
       expect do
-        person.update_attributes!(attributes)
+        person.update!(attributes)
       end.not_to raise_error
     end
   end

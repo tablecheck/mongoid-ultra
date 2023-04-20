@@ -158,7 +158,7 @@ module Mongoid
           if association.embedded?
             doc.assign_attributes(attrs)
           else
-            doc.update_attributes(attrs)
+            doc.update(attrs)
           end
         end
 
