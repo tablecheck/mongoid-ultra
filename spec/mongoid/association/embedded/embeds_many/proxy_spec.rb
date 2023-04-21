@@ -2306,11 +2306,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       Person.new
     end
 
-    let!(:address1_1) do
+    let!(:address1_persisted) do
       person1.addresses.create!(street: 'Bond St')
     end
 
-    let!(:address1_2) do
+    let!(:address1_not_persisted) do
       person1.addresses.build(street: 'Hyde Park Dr')
     end
 
@@ -2381,7 +2381,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
           it 'returns true' do
             expect_no_queries do
-              expect(person1.addresses.exists?(address1_1._id)).to be true
+              expect(person1.addresses.exists?(address1_persisted._id)).to be true
             end
           end
         end
@@ -2390,7 +2390,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
           it 'returns false' do
             expect_no_queries do
-              expect(person1.addresses.exists?(address1_2._id)).to be false
+              expect(person1.addresses.exists?(address1_not_persisted._id)).to be false
             end
           end
         end
@@ -2420,7 +2420,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
           it 'returns true' do
             expect_no_queries do
-              expect(person1.addresses.exists?(address1_1._id.to_s)).to be true
+              expect(person1.addresses.exists?(address1_persisted._id.to_s)).to be true
             end
           end
         end
@@ -2429,7 +2429,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
           it 'returns false' do
             expect_no_queries do
-              expect(person1.addresses.exists?(address1_2._id.to_s)).to be false
+              expect(person1.addresses.exists?(address1_not_persisted._id.to_s)).to be false
             end
           end
         end
@@ -2460,7 +2460,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
         it 'returns true' do
           expect_no_queries do
-            expect(person1.addresses.exists?(street: address1_1.street)).to be true
+            expect(person1.addresses.exists?(street: address1_persisted.street)).to be true
           end
         end
       end
@@ -2469,7 +2469,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
         it 'returns false' do
           expect_no_queries do
-            expect(person1.addresses.exists?(street: address1_2.street)).to be false
+            expect(person1.addresses.exists?(street: address1_not_persisted.street)).to be false
           end
         end
       end
