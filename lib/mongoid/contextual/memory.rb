@@ -116,14 +116,19 @@ module Mongoid
       # @example Do any documents exist for given conditions.
       #   context.exists?(name: "...")
       #
-      # @param [ Hash | Object | false ] id_or_conditions an _id to
-      #   search for, a hash of conditions, nil or false.
+      # @example Always return false.
+      #   context.exists?(false)
+      #
+      # @param [ :none | Hash | BSON::ObjectId | nil | false ] id_or_conditions
+      #   May optionally supply search conditions as a hash or an object id.
+      #   Will always return false when given nil or false. The symbol :none is
+      #   the default when argument is not supplied.
       #
       # @return [ true | false ] If the count is more than zero.
       #   Always false if passed nil or false.
       def exists?(id_or_conditions = :none)
         case id_or_conditions
-        when :none then any?
+        when :none then any?(&:persisted?)
         when nil, false then false
         when Hash then Memory.new(criteria.where(id_or_conditions)).exists?
         else Memory.new(criteria.where(_id: id_or_conditions)).exists?

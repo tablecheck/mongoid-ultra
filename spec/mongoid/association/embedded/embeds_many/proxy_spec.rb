@@ -2294,29 +2294,229 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
   describe '#exists?' do
 
-    let!(:person) do
+    let!(:person1) do
       Person.create!
     end
 
-    context 'when documents exist in the database' do
+    let!(:person2) do
+      Person.create!
+    end
 
-      before do
-        person.addresses.create!(street: 'Bond St')
+    let!(:person3) do
+      Person.new
+    end
+
+    let!(:address1_persisted) do
+      person1.addresses.create!(street: 'Bond St')
+    end
+
+    let!(:address1_not_persisted) do
+      person1.addresses.build(street: 'Hyde Park Dr')
+    end
+
+    let!(:address2) do
+      person2.addresses.build(street: 'Hyde Park Dr')
+    end
+
+    let!(:address3) do
+      person3.addresses.build(street: 'Hyde Park Dr')
+    end
+
+    context 'when not passing args' do
+
+      context 'when documents exist in the database' do
+
+        it 'returns true' do
+          expect_no_queries do
+            expect(person1.addresses.exists?).to be true
+          end
+        end
       end
 
-      it 'returns true' do
-        expect(person.addresses.exists?).to be true
+      context 'when no documents exist in the database' do
+
+        it 'returns false' do
+          expect_no_queries do
+            expect(person2.addresses.exists?).to be false
+          end
+        end
+      end
+
+      context 'when parent object not persisted' do
+
+        it 'returns false' do
+          expect_no_queries do
+            expect(person3.addresses.exists?).to be false
+          end
+        end
       end
     end
 
-    context 'when no documents exist in the database' do
+    context 'when passing :none' do
 
-      before do
-        person.addresses.build(street: 'Hyde Park Dr')
+      context 'when documents exist in the database' do
+
+        it 'returns true' do
+          expect_no_queries do
+            expect(person1.addresses.exists?(:none)).to be true
+          end
+        end
       end
 
+      context 'when no documents exist in the database' do
+
+        it 'returns false' do
+          expect_no_queries do
+            expect(person2.addresses.exists?(:none)).to be false
+          end
+        end
+      end
+    end
+
+    context 'when passing an _id' do
+
+      context 'when its of type BSON::ObjectId' do
+
+        context 'when embedded object persisted' do
+
+          it 'returns true' do
+            expect_no_queries do
+              expect(person1.addresses.exists?(address1_persisted._id)).to be true
+            end
+          end
+        end
+
+        context 'when embedded object not persisted' do
+
+          it 'returns false' do
+            expect_no_queries do
+              expect(person1.addresses.exists?(address1_not_persisted._id)).to be false
+            end
+          end
+        end
+
+        context 'when parent object not persisted' do
+
+          it 'returns false' do
+            expect_no_queries do
+              expect(person3.addresses.exists?(address3._id)).to be false
+            end
+          end
+        end
+
+        context 'when the id does not exist' do
+
+          it 'returns false' do
+            expect_no_queries do
+              expect(person1.addresses.exists?(BSON::ObjectId.new)).to be false
+            end
+          end
+        end
+      end
+
+      context 'when its of type String' do
+
+        context 'when embedded object persisted' do
+
+          it 'returns true' do
+            expect_no_queries do
+              expect(person1.addresses.exists?(address1_persisted._id.to_s)).to be true
+            end
+          end
+        end
+
+        context 'when embedded object not persisted' do
+
+          it 'returns false' do
+            expect_no_queries do
+              expect(person1.addresses.exists?(address1_not_persisted._id.to_s)).to be false
+            end
+          end
+        end
+
+        context 'when parent object not persisted' do
+
+          it 'returns false' do
+            expect_no_queries do
+              expect(person3.addresses.exists?(address3._id.to_s)).to be false
+            end
+          end
+        end
+
+        context 'when the id does not exist' do
+
+          it 'returns false' do
+            expect_no_queries do
+              expect(person1.addresses.exists?(BSON::ObjectId.new.to_s)).to be false
+            end
+          end
+        end
+      end
+    end
+
+    context 'when passing a hash' do
+
+      context 'when embedded object persisted' do
+
+        it 'returns true' do
+          expect_no_queries do
+            expect(person1.addresses.exists?(street: address1_persisted.street)).to be true
+          end
+        end
+      end
+
+      context 'when embedded object not persisted' do
+
+        it 'returns false' do
+          expect_no_queries do
+            expect(person1.addresses.exists?(street: address1_not_persisted.street)).to be false
+          end
+        end
+      end
+
+      context 'when parent object not persisted' do
+
+        it 'returns false' do
+          expect_no_queries do
+            expect(person3.addresses.exists?(street: address3.street)).to be false
+          end
+        end
+      end
+
+      context 'when the value does not exist' do
+
+        it 'returns false' do
+          expect_no_queries do
+            expect(person1.addresses.exists?(street: 'Foobar')).to be false
+          end
+        end
+      end
+    end
+
+    context 'when passing false' do
+
       it 'returns false' do
-        expect(person.addresses.exists?).to be false
+        expect_no_queries do
+          expect(person1.addresses.exists?(false)).to be false
+        end
+      end
+    end
+
+    context 'when passing nil' do
+
+      it 'returns false' do
+        expect_no_queries do
+          expect(person1.addresses.exists?(nil)).to be false
+        end
+      end
+    end
+
+    context 'when the limit is 0' do
+
+      it 'returns false' do
+        expect_no_queries do
+          expect(person1.addresses.limit(0).exists?).to be false
+        end
       end
     end
   end
