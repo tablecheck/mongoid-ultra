@@ -105,17 +105,6 @@ module Mongoid
         end
       end
 
-      # Is the enumerable of matching documents empty?
-      #
-      # @example Is the context empty?
-      #   context.blank?
-      #
-      # @return [ true | false ] If the context is empty.
-      def blank?
-        !any?
-      end
-      alias_method :empty?, :blank?
-
       # Do any documents exist for the context.
       #
       # @example Do any documents exist for the context.

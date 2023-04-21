@@ -19,7 +19,7 @@ module Mongoid
       #
       # @return [ true | false ] If the context is empty.
       def blank?
-        !exists?
+        !any?
       end
       alias_method :empty?, :blank?
     end
