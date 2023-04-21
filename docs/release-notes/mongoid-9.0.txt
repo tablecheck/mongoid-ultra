@@ -370,6 +370,12 @@ Bug Fixes and Improvements
 
 This section will be for smaller bug fixes and improvements:
 
+- The ``exists?`` method on relations now accepts the same arguments
+  as ``Criteria#exists?``.
+  `MONGOID-5608 <https://jira.mongodb.org/browse/MONGOID-5608>`_.
+- Calling ``exists?`` on an embedded relation nil now return ``false``
+  when the relation is not persisted in the database.
+  `MONGOID-5610 <https://jira.mongodb.org/browse/MONGOID-5610>`_.
 - The ``.tally`` method can now take a keyword arg :unwind
   which tallies array values individually (using the ``$unwind`` operator.)
   `MONGOID-5556 <https://jira.mongodb.org/browse/MONGOID-5556>`_.

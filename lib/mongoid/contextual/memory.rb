@@ -128,7 +128,7 @@ module Mongoid
       #   Always false if passed nil or false.
       def exists?(id_or_conditions = :none)
         case id_or_conditions
-        when :none then any?
+        when :none then any?(&:persisted?)
         when nil, false then false
         when Hash then Memory.new(criteria.where(id_or_conditions)).exists?
         else Memory.new(criteria.where(_id: id_or_conditions)).exists?
