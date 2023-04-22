@@ -68,19 +68,22 @@ module Mongoid
         def mongoize(object)
           return if object.blank?
 
-          begin
-            time = if object.is_a?(String)
-                     # https://jira.mongodb.org/browse/MONGOID-4460
-                     ::Time.parse(object)
-                   else
-                     object.__mongoize_time__
-                   end
+          time = begin
+            if object.is_a?(String)
+              # https://jira.mongodb.org/browse/MONGOID-4460
+              ::Time.parse(object)
+            else
+              object.__mongoize_time__
+            end
           rescue ArgumentError
             nil
           end
-          return unless time.acts_like?(:time)
 
-          ::Time.utc(time.year, time.month, time.day)
+          if time&.acts_like?(:time)
+            return ::Time.utc(time.year, time.month, time.day)
+          end
+
+          Mongoid::RawValue(object, 'Date')
         end
       end
     end

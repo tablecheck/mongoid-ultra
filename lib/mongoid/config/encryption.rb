@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'mongoid/extensions/boolean'
-require 'mongoid/stringified_symbol'
+require 'mongoid/extensions/stringified_symbol'
 
 module Mongoid
   module Config
