@@ -94,6 +94,35 @@ The following previously deprecated functionality is now removed:
   definitions without replacement.
 
 
+Symbol query operator syntax deprecated
+---------------------------------------
+
+The following query syntax which monkey-patches the Symbol class is
+deprecated as of Mongoid 9. It will be removed in Mongoid 10.
+
+.. code-block:: ruby
+
+  # Deprecated symbol operator query syntax
+  Band.where(:founded.gt => 1980)
+
+Please replace this syntax with one of the following:
+
+.. code-block:: ruby
+
+  # Field query syntax
+  Band.gt(founded: 1980)
+
+  # MQL query syntax
+  Band.where(founded: { '$gt' => 1980 })
+
+Note that the above syntaxes can equivalently do everything
+the symbol operator syntax can.
+
+Although we strongly recommend to migrate your code,
+if you would like to continue using the deprecated syntax,
+please add the 'mongoid-symbol-operators' gem to your Gemfile.
+
+
 ``touch`` method now clears changed state
 -----------------------------------------
 
