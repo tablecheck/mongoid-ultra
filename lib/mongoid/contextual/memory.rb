@@ -688,12 +688,18 @@ module Mongoid
       #
       # @param [ Hash ] values The field/direction sorting pairs.
       def in_place_sort(values)
-        documents.sort! do |a, b|
-          values.map do |field, direction|
-            a_value = a[field]
-            b_value = b[field]
-            direction * compare(a_value.__sortable__, b_value.__sortable__)
-          end.find { |value| !value.zero? } || 0
+        documents.sort! { |a, b| compare_documents(a, b, values) }
+      end
+
+      def compare_documents(doc_a, doc_b, sort_values)
+        sort_values.inject(0) do |memo, (field, direction)|
+          a_value = doc_a[field]
+          b_value = doc_b[field]
+          comparison = direction * compare(a_value.__sortable__, b_value.__sortable__)
+
+          break comparison if comparison.nonzero?
+
+          memo
         end
       end
 

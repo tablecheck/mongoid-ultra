@@ -34,9 +34,11 @@ describe Mongoid::Document do
     end
 
     let(:new_klass) do
-      Class.new do
+      klass = Class.new do
         class << self; attr_accessor :name; end
-      end.tap { |new_klass| new_klass.name = new_klass_name }
+      end
+
+      klass.tap { |new_klass| new_klass.name = new_klass_name }
     end
 
     let(:new_model) do

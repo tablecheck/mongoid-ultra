@@ -819,15 +819,6 @@ Style/MissingRespondToMissing:
     - 'lib/mongoid/attributes/dynamic.rb'
     - 'lib/mongoid/criteria.rb'
 
-# Offense count: 6
-Style/MultilineBlockChain:
-  Exclude:
-    - 'lib/mongoid/association/eager.rb'
-    - 'lib/mongoid/association/referenced/has_many/proxy.rb'
-    - 'lib/mongoid/contextual/memory.rb'
-    - 'spec/mongoid/changeable_spec.rb'
-    - 'spec/mongoid/document_spec.rb'
-
 # Offense count: 4
 Style/OpenStructUse:
   Exclude:
