@@ -63,8 +63,8 @@ module Mongoid
           # @param [ true | false ] negating If the selection should be negated.
           #
           # @return [ Hash ] The selection.
-          def __expr_part__(value, negating = false)
-            ::String.__expr_part__(self, value, negating)
+          def __expr_part__(value, negating: false)
+            ::String.__expr_part__(self, value, negating: negating)
           end
 
           module ClassMethods
@@ -79,7 +79,7 @@ module Mongoid
             # @param [ true | false ] negating If the selection should be negated.
             #
             # @return [ Hash ] The selection.
-            def __expr_part__(key, value, negating = false)
+            def __expr_part__(key, value, negating: false)
               if negating
                 { key => { "$#{value.regexp? ? 'not' : 'ne'}" => value } }
               else

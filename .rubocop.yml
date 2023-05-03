@@ -238,6 +238,12 @@ Style/NumericLiterals:
 Style/NumericPredicate:
   Enabled: false
 
+Style/OptionalBooleanParameter:
+  AllowedMethods:
+    - respond_to?
+    - respond_to_missing?
+    - set_parent=
+
 Style/RaiseArgs:
   EnforcedStyle: compact
 

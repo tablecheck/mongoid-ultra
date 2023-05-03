@@ -131,8 +131,8 @@ module Mongoid
         # @param [ true | false ] negating If the selection should be negated.
         #
         # @return [ Hash ] The raw MongoDB selector.
-        def __expr_part__(object, negating = false)
-          { name.to_s => transform_value(object, negating) }
+        def __expr_part__(object, negating: false)
+          { name.to_s => transform_value(object, negating: negating) }
         end
 
         # Gets the raw selector condition that would be passed to Mongo.
@@ -144,7 +144,7 @@ module Mongoid
         # @param [ true | false ] negating If the selection should be negated.
         #
         # @return [ Hash ] The raw MongoDB selector.
-        def transform_value(value, negating = false)
+        def transform_value(value, negating: false)
           expr = block ? block[value] : value
           expr = { expanded => expr } if expanded
           expr = { operator => expr }

@@ -261,7 +261,7 @@ module Mongoid
 
           result = BSON::Document.new
           expr.each do |field, value|
-            field.__expr_part__(value.__expand_complex__, negating?).each do |k, v|
+            field.__expr_part__(value.__expand_complex__, negating: negating?).each do |k, v|
               if (existing = result[k])
                 if existing.is_a?(Hash)
                   # Existing value is an operator.

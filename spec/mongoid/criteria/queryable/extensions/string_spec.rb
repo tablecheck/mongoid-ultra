@@ -207,7 +207,7 @@ describe String do
       context 'with a regexp' do
 
         let(:specified) do
-          'field'.__expr_part__(/test/, true)
+          'field'.__expr_part__(/test/, negating: true)
         end
 
         it 'returns the string with the value negated' do
@@ -219,7 +219,7 @@ describe String do
       context 'with anything else' do
 
         let(:specified) do
-          'field'.__expr_part__('test', true)
+          'field'.__expr_part__('test', negating: true)
         end
 
         it 'returns the string with the value negated' do
