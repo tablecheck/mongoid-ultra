@@ -113,8 +113,8 @@ describe Range do
     end
 
     context 'when the range are dates' do
-      let(:min) { Time.new(2010, 1, 1, 12, 0, 0) }
-      let(:max) { Time.new(2010, 1, 3, 12, 0, 0) }
+      let(:min) { Time.zone.local(2010, 1, 1, 12, 0, 0) }
+      let(:max) { Time.zone.local(2010, 1, 3, 12, 0, 0) }
       let(:expected_min) { Time.new(2010, 1, 1, 12, 0, 0).utc }
       let(:expected_max) { Time.new(2010, 1, 3, 12, 0, 0).utc }
 
@@ -128,8 +128,8 @@ describe Range do
     end
 
     context 'when the range are strings' do
-      let(:min) { Time.new(2010, 1, 1, 12, 0, 0).to_s }
-      let(:max) { Time.new(2010, 1, 3, 12, 0, 0).to_s }
+      let(:min) { Time.zone.local(2010, 1, 1, 12, 0, 0).to_s }
+      let(:max) { Time.zone.local(2010, 1, 3, 12, 0, 0).to_s }
 
       it 'returns a selection of times' do
         expect(subject).to eq('$gte' => min.to_time, '$lte' => max.to_time)
@@ -296,10 +296,10 @@ describe Range do
     end
 
     context 'when provided Time objects' do
-      let(:range) { Time.at(0)..Time.at(1) }
+      let(:range) { Time.zone.at(0)..Time.zone.at(1) }
 
       it 'returns the range as Time objects' do
-        expect(subject).to eq({ '$gte' => Time.at(0), '$lte' => Time.at(1) })
+        expect(subject).to eq({ '$gte' => Time.zone.at(0), '$lte' => Time.zone.at(1) })
         expect(subject['$gte'].utc?).to be(true)
         expect(subject['$lte'].utc?).to be(true)
       end
@@ -309,7 +309,7 @@ describe Range do
       let(:range) { Time.at(0).in_time_zone..Time.at(1).in_time_zone }
 
       it 'returns the range as Time objects' do
-        expect(subject).to eq({ '$gte' => Time.at(0), '$lte' => Time.at(1) })
+        expect(subject).to eq({ '$gte' => Time.zone.at(0), '$lte' => Time.zone.at(1) })
         expect(subject['$gte'].utc?).to be(true)
         expect(subject['$lte'].utc?).to be(true)
       end
@@ -326,10 +326,10 @@ describe Range do
     end
 
     context 'when provided mixed Time and Date objects' do
-      let(:range) { Time.at(0)..Date.new(2010, 1, 3) }
+      let(:range) { Time.zone.at(0)..Date.new(2010, 1, 3) }
 
       it 'returns the range as Time objects' do
-        expect(subject).to eq({ '$gte' => Time.at(0), '$lte' => Time.utc(2010, 1, 3, 0, 0, 0, 0) })
+        expect(subject).to eq({ '$gte' => Time.zone.at(0), '$lte' => Time.utc(2010, 1, 3, 0, 0, 0, 0) })
         expect(subject['$gte'].utc?).to be(true)
         expect(subject['$lte'].utc?).to be(true)
       end
@@ -339,7 +339,7 @@ describe Range do
       let(:range) { Time.at(0).in_time_zone..Time.at(1).in_time_zone }
 
       it 'returns the range as Time objects' do
-        expect(subject).to eq({ '$gte' => Time.at(0), '$lte' => Time.at(1) })
+        expect(subject).to eq({ '$gte' => Time.zone.at(0), '$lte' => Time.zone.at(1) })
         expect(subject['$gte'].utc?).to be(true)
         expect(subject['$lte'].utc?).to be(true)
       end

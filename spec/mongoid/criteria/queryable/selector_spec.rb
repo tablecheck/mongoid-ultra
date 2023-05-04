@@ -145,7 +145,7 @@ describe Mongoid::Criteria::Queryable::Selector do
       end
 
       let(:selection) do
-        { '$lt' => Time.now }
+        { '$lt' => Time.zone.now }
       end
 
       let(:other) do

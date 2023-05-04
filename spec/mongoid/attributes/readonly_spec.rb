@@ -57,7 +57,7 @@ describe Mongoid::Attributes::Readonly do
       end
 
       let(:person) do
-        Person.create!(title: 'sir', terms: true, aliased_timestamp: Time.at(42))
+        Person.create!(title: 'sir', terms: true, aliased_timestamp: Time.zone.at(42))
       end
 
       it 'sets the first readonly value' do
@@ -69,7 +69,7 @@ describe Mongoid::Attributes::Readonly do
       end
 
       it 'sets the third readonly value' do
-        expect(person.aliased_timestamp).to eq(Time.at(42))
+        expect(person.aliased_timestamp).to eq(Time.zone.at(42))
       end
 
       it 'persists the first readonly value' do
@@ -81,7 +81,7 @@ describe Mongoid::Attributes::Readonly do
       end
 
       it 'persists the third readonly value' do
-        expect(person.reload.aliased_timestamp).to eq(Time.at(42))
+        expect(person.reload.aliased_timestamp).to eq(Time.zone.at(42))
       end
     end
 
@@ -92,7 +92,7 @@ describe Mongoid::Attributes::Readonly do
       end
 
       let(:person) do
-        Person.create!(title: 'sir', terms: true, score: 1, aliased_timestamp: Time.at(42))
+        Person.create!(title: 'sir', terms: true, score: 1, aliased_timestamp: Time.zone.at(42))
       end
 
       context 'when updating via the setter' do
@@ -104,9 +104,9 @@ describe Mongoid::Attributes::Readonly do
         end
 
         it 'does not update the second field' do
-          person.aliased_timestamp = Time.at(43)
+          person.aliased_timestamp = Time.zone.at(43)
           person.save!
-          expect(person.reload.aliased_timestamp).to eq(Time.at(42))
+          expect(person.reload.aliased_timestamp).to eq(Time.zone.at(42))
         end
       end
 
@@ -163,9 +163,9 @@ describe Mongoid::Attributes::Readonly do
         end
 
         it 'does not update the second field' do
-          person[:aliased_timestamp] = Time.at(43)
+          person[:aliased_timestamp] = Time.zone.at(43)
           person.save!
-          expect(person.reload.aliased_timestamp).to eq(Time.at(42))
+          expect(person.reload.aliased_timestamp).to eq(Time.zone.at(42))
         end
       end
 
@@ -178,39 +178,39 @@ describe Mongoid::Attributes::Readonly do
         end
 
         it 'does not update the second field' do
-          person.write_attribute(:aliased_timestamp, Time.at(43))
+          person.write_attribute(:aliased_timestamp, Time.zone.at(43))
           person.save!
-          expect(person.reload.aliased_timestamp).to eq(Time.at(42))
+          expect(person.reload.aliased_timestamp).to eq(Time.zone.at(42))
         end
       end
 
       context 'when updating via update_attributes' do
 
         it 'does not update the first field' do
-          person.update!(title: 'mr', aliased_timestamp: Time.at(43))
+          person.update!(title: 'mr', aliased_timestamp: Time.zone.at(43))
           person.save!
           expect(person.reload.title).to eq('sir')
         end
 
         it 'does not update the second field' do
-          person.update!(title: 'mr', aliased_timestamp: Time.at(43))
+          person.update!(title: 'mr', aliased_timestamp: Time.zone.at(43))
           person.save!
-          expect(person.reload.aliased_timestamp).to eq(Time.at(42))
+          expect(person.reload.aliased_timestamp).to eq(Time.zone.at(42))
         end
       end
 
       context 'when updating via update_attributes!' do
 
         it 'does not update the first field' do
-          person.update!(title: 'mr', aliased_timestamp: Time.at(43))
+          person.update!(title: 'mr', aliased_timestamp: Time.zone.at(43))
           person.save!
           expect(person.reload.title).to eq('sir')
         end
 
         it 'does not update the second field' do
-          person.update!(title: 'mr', aliased_timestamp: Time.at(43))
+          person.update!(title: 'mr', aliased_timestamp: Time.zone.at(43))
           person.save!
-          expect(person.reload.aliased_timestamp).to eq(Time.at(42))
+          expect(person.reload.aliased_timestamp).to eq(Time.zone.at(42))
         end
       end
 

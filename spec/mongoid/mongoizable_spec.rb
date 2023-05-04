@@ -257,7 +257,7 @@ describe 'mongoize/demongoize/evolve methods' do
   end
 
   describe Symbol do
-    let(:invalid_value) { Time.new }
+    let(:invalid_value) { Time.zone.now }
     let(:klass) { described_class }
     let(:field_name) { :symbol_field }
 

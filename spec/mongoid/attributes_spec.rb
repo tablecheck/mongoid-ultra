@@ -1381,7 +1381,7 @@ describe Mongoid::Attributes do
       context 'when the database name is used' do
 
         let(:person) do
-          Person.create!(at: Time.now)
+          Person.create!(at: Time.zone.now)
         end
 
         before do
@@ -1411,7 +1411,7 @@ describe Mongoid::Attributes do
       context 'when the alias is used' do
 
         let(:person) do
-          Person.create!(aliased_timestamp: Time.now)
+          Person.create!(aliased_timestamp: Time.zone.now)
         end
 
         before do

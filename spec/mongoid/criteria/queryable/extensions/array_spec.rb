@@ -185,7 +185,7 @@ describe Array do
       end
 
       let(:expected) do
-        Time.at(integer)
+        Time.zone.at(integer)
       end
 
       it 'returns the integers as times' do
@@ -208,7 +208,7 @@ describe Array do
       end
 
       let(:expected) do
-        Time.at(float)
+        Time.zone.at(float)
       end
 
       it 'returns the floats as times' do
@@ -222,7 +222,7 @@ describe Array do
     context 'when the array is composed of times' do
 
       let(:date) do
-        Time.new(2010, 1, 1, 12, 0, 0)
+        Time.zone.local(2010, 1, 1, 12, 0, 0)
       end
 
       let(:evolved) do

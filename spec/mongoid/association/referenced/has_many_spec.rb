@@ -1249,12 +1249,12 @@ describe Mongoid::Association::Referenced::HasMany do
   end
 
   context 'when adding an object to the association' do
-    let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
+    let!(:start_time) { Timecop.freeze(Time.zone.at(Time.now.to_i)) }
     let!(:school) { HmmSchool.create! }
     let!(:student) { HmmStudent.create! }
 
     let(:update_time) do
-      Timecop.freeze(Time.at(Time.now.to_i) + 2)
+      Timecop.freeze(Time.zone.at(Time.now.to_i) + 2)
     end
 
     after do

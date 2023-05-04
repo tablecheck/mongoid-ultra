@@ -44,11 +44,11 @@ module Mongoid
         # either returns nil or Time.now if the string is empty or invalid,
         # which is a regression from pre-3.0 and also does not agree with
         # the core Time API.
-        parsed = ::Time.parse(self)
-        if ::Time.configured == ::Time
+        parsed = ::Time.zone.parse(self)
+        if ::Time.zone == ::Time
           parsed
         else
-          ::Time.configured.parse(self)
+          ::Time.zone.parse(self)
         end
       end
 

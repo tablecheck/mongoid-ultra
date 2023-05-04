@@ -17,7 +17,7 @@ describe 'Queries on Date fields' do
 
   context 'using Time' do
     let(:arg) do
-      Time.now.freeze
+      Time.zone.now.freeze
     end
 
     it_behaves_like 'converts to beginning of day in UTC'

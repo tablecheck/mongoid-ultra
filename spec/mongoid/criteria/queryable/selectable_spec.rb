@@ -493,7 +493,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context 'when there are nested complex keys' do
 
         let(:time) do
-          Time.now
+          Time.zone.now
         end
 
         let(:selection) do

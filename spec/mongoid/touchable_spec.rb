@@ -47,10 +47,10 @@ describe Mongoid::Touchable do
         building.floors.create!
       end
 
-      let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
+      let!(:start_time) { Timecop.freeze(Time.zone.at(Time.now.to_i)) }
 
       let(:update_time) do
-        Timecop.freeze(Time.at(Time.now.to_i) + 2)
+        Timecop.freeze(Time.zone.at(Time.now.to_i) + 2)
       end
 
       after do
@@ -199,11 +199,11 @@ describe Mongoid::Touchable do
           end
 
           it 'sets the attribute to the current time' do
-            expect(person.lunch_time).to be_within(5).of(Time.now)
+            expect(person.lunch_time).to be_within(5).of(Time.zone.now)
           end
 
           it 'persists the change' do
-            expect(person.reload.lunch_time).to be_within(5).of(Time.now)
+            expect(person.reload.lunch_time).to be_within(5).of(Time.zone.now)
           end
 
           it 'returns true' do
@@ -218,11 +218,11 @@ describe Mongoid::Touchable do
           end
 
           it 'sets the attribute to the current time' do
-            expect(person.aliased_timestamp).to be_within(5).of(Time.now)
+            expect(person.aliased_timestamp).to be_within(5).of(Time.zone.now)
           end
 
           it 'persists the change' do
-            expect(person.reload.aliased_timestamp).to be_within(5).of(Time.now)
+            expect(person.reload.aliased_timestamp).to be_within(5).of(Time.zone.now)
           end
 
           it 'returns true' do
@@ -244,11 +244,11 @@ describe Mongoid::Touchable do
           end
 
           it 'sets the updated at to the current time' do
-            expect(agent.updated_at).to be_within(5).of(Time.now)
+            expect(agent.updated_at).to be_within(5).of(Time.zone.now)
           end
 
           it 'persists the change' do
-            expect(agent.reload.updated_at).to be_within(5).of(Time.now)
+            expect(agent.reload.updated_at).to be_within(5).of(Time.zone.now)
           end
 
           it 'returns true' do
@@ -267,11 +267,11 @@ describe Mongoid::Touchable do
           end
 
           it 'sets the updated at to the current time' do
-            expect(agent.updated_at).to be_within(5).of(Time.now)
+            expect(agent.updated_at).to be_within(5).of(Time.zone.now)
           end
 
           it 'sets the attribute to the current time' do
-            expect(agent.dob).to be_within(5).of(Time.now)
+            expect(agent.dob).to be_within(5).of(Time.zone.now)
           end
 
           it 'sets both attributes to the exact same time' do
@@ -279,11 +279,11 @@ describe Mongoid::Touchable do
           end
 
           it 'persists the updated at change' do
-            expect(agent.reload.updated_at).to be_within(5).of(Time.now)
+            expect(agent.reload.updated_at).to be_within(5).of(Time.zone.now)
           end
 
           it 'persists the attribute change' do
-            expect(agent.reload.dob).to be_within(5).of(Time.now)
+            expect(agent.reload.dob).to be_within(5).of(Time.zone.now)
           end
 
           it 'returns true' do
@@ -400,7 +400,7 @@ describe Mongoid::Touchable do
         end
 
         it 'touches the parent document' do
-          expect(page.updated_at).to be_within(5).of(Time.now)
+          expect(page.updated_at).to be_within(5).of(Time.zone.now)
         end
       end
 
@@ -418,7 +418,7 @@ describe Mongoid::Touchable do
         end
 
         it 'touches the parent document' do
-          expect(book.updated_at).to be_within(5).of(Time.now)
+          expect(book.updated_at).to be_within(5).of(Time.zone.now)
         end
       end
 
@@ -438,7 +438,7 @@ describe Mongoid::Touchable do
         end
 
         it 'touches the parent document' do
-          expect(book.updated_at).to be_within(5).of(Time.now)
+          expect(book.updated_at).to be_within(5).of(Time.zone.now)
         end
       end
 
@@ -477,11 +477,11 @@ describe Mongoid::Touchable do
         end
 
         it 'sets the parent updated at to the current time' do
-          expect(agency.updated_at).to be_within(5).of(Time.now)
+          expect(agency.updated_at).to be_within(5).of(Time.zone.now)
         end
 
         it 'persists the change' do
-          expect(agency.reload.updated_at).to be_within(5).of(Time.now)
+          expect(agency.reload.updated_at).to be_within(5).of(Time.zone.now)
         end
       end
 
@@ -580,10 +580,10 @@ describe Mongoid::Touchable do
 
       shared_examples "updates the parent's updated_at" do
 
-        let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
+        let!(:start_time) { Timecop.freeze(Time.zone.at(Time.now.to_i)) }
 
         let(:update_time) do
-          Timecop.freeze(Time.at(Time.now.to_i) + 2)
+          Timecop.freeze(Time.zone.at(Time.now.to_i) + 2)
         end
 
         after do
@@ -617,10 +617,10 @@ describe Mongoid::Touchable do
 
       shared_examples "updates the child's updated_at" do
 
-        let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
+        let!(:start_time) { Timecop.freeze(Time.zone.at(Time.now.to_i)) }
 
         let(:update_time) do
-          Timecop.freeze(Time.at(Time.now.to_i) + 2)
+          Timecop.freeze(Time.zone.at(Time.now.to_i) + 2)
         end
 
         after do
@@ -674,8 +674,8 @@ describe Mongoid::Touchable do
     context 'when the touch option is false' do
 
       shared_examples 'does not update the parent' do
-        let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
-        let(:update_time) { Timecop.freeze(Time.at(Time.now.to_i) + 2) }
+        let!(:start_time) { Timecop.freeze(Time.zone.at(Time.now.to_i)) }
+        let(:update_time) { Timecop.freeze(Time.zone.at(Time.now.to_i) + 2) }
 
         after do
           Timecop.return
@@ -730,9 +730,9 @@ describe Mongoid::Touchable do
 
     context 'multi-level' do
 
-      let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
+      let!(:start_time) { Timecop.freeze(Time.zone.at(Time.now.to_i)) }
 
-      let(:update_time) { Timecop.freeze(Time.at(Time.now.to_i) + 2) }
+      let(:update_time) { Timecop.freeze(Time.zone.at(Time.now.to_i) + 2) }
 
       let(:child_name) do
         child_cls.name.demodulize.underscore
@@ -752,7 +752,7 @@ describe Mongoid::Touchable do
 
       let(:grandchild) do
         grandchild = child.send(grandchild_name.pluralize).create!
-        grandchild.created_at = Time.now + 1.day # arbitrary change so save! works
+        grandchild.created_at = 1.day.from_now # arbitrary change so save! works
         grandchild
       end
 
@@ -1077,10 +1077,10 @@ describe Mongoid::Touchable do
 
   describe 'when saving a document' do
 
-    let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
+    let!(:start_time) { Timecop.freeze(Time.zone.at(Time.now.to_i)) }
 
     let(:update_time) do
-      Timecop.freeze(Time.at(Time.now.to_i) + 2)
+      Timecop.freeze(Time.zone.at(Time.now.to_i) + 2)
     end
 
     after do
@@ -1309,9 +1309,9 @@ describe Mongoid::Touchable do
   end
 
   context 'when updated after touch' do
-    let(:touch_time) { Timecop.freeze(Time.at(Time.now.to_i) + 2) }
+    let(:touch_time) { Timecop.freeze(Time.zone.at(Time.now.to_i) + 2) }
 
-    let(:update_time) { Timecop.freeze(Time.at(Time.now.to_i) + 4) }
+    let(:update_time) { Timecop.freeze(Time.zone.at(Time.now.to_i) + 4) }
 
     let!(:book) { Book.create! }
 

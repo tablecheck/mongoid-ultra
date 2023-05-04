@@ -16,7 +16,7 @@ module Mongoid
       #   configured default time zone corresponding to local midnight of
       #   this date.
       def __mongoize_time__
-        ::Time.configured.local(year, month, day)
+        ::Time.zone.local(year, month, day)
       end
 
       # Turn the object from the ruby type we deal with to a Mongo friendly
@@ -71,7 +71,7 @@ module Mongoid
           begin
             time = if object.is_a?(String)
                      # https://jira.mongodb.org/browse/MONGOID-4460
-                     ::Time.parse(object)
+                     ::Time.zone.parse(object)
                    else
                      object.__mongoize_time__
                    end

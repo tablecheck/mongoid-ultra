@@ -455,7 +455,7 @@ are:
     	  end
 
           post = Post.create!
-          post.set('metadata.published_at' => Time.now)
+          post.set('metadata.published_at' => Time.zone.now)
           post.metadata['published_at'] # => Time instance
 
           post.set('metadata.approved.today' => true)

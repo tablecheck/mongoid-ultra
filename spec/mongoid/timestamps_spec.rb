@@ -120,17 +120,17 @@ describe Mongoid::Timestamps do
     end
 
     it 'updates the root document updated at' do
-      expect(document.updated_at).to be_within(1).of(Time.now)
+      expect(document.updated_at).to be_within(1).of(Time.zone.now)
     end
   end
 
   # This section of tests describes the behavior of the updated_at field for
   # different updates on referenced associations, as outlined in PR #5219.
   describe 'updated_at attribute' do
-    let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
+    let!(:start_time) { Timecop.freeze(Time.zone.at(Time.now.to_i)) }
 
     let(:update_time) do
-      Timecop.freeze(Time.at(Time.now.to_i) + 2)
+      Timecop.freeze(Time.zone.at(Time.now.to_i) + 2)
     end
 
     after do

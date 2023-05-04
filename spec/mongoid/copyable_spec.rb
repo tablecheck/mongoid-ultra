@@ -14,8 +14,8 @@ describe Mongoid::Copyable do
         Person.new(
           title: 'Sir',
           version: 4,
-          created_at: Time.now,
-          updated_at: Time.now,
+          created_at: Time.zone.now,
+          updated_at: Time.zone.now,
           desc: 'description'
         ) do |p|
           p.owner_id = 5

@@ -123,7 +123,7 @@ describe Date do
         end
 
         let(:expected) do
-          Time.at(integer)
+          Time.zone.at(integer)
         end
 
         it 'returns the integers as times' do
@@ -146,7 +146,7 @@ describe Date do
         end
 
         let(:expected) do
-          Time.at(float)
+          Time.zone.at(float)
         end
 
         it 'returns the floats as times' do

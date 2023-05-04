@@ -115,12 +115,12 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
       context 'when the criterion is a time' do
         let(:selection) do
-          query.send(tested_method, :field.gte => Time.new(2020, 1, 1))
+          query.send(tested_method, :field.gte => Time.zone.local(2020, 1, 1))
         end
 
         it 'adds the conditions' do
           expect(selection.selector).to eq({
-            'field' => { '$gte' => Time.new(2020, 1, 1) }
+            'field' => { '$gte' => Time.zone.local(2020, 1, 1) }
           })
         end
 
@@ -689,7 +689,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
     end
 
     context 'when Key instances are used and types involved have serializers' do
-      let(:time) { Time.now }
+      let(:time) { Time.zone.now }
 
       let(:query) do
         Band.all.and(:created_at.gt => time)
@@ -957,12 +957,12 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         context 'when the criterion is a time' do
           let(:selection) do
-            query.send(tested_method, :field.gte => Time.new(2020, 1, 1))
+            query.send(tested_method, :field.gte => Time.zone.local(2020, 1, 1))
           end
 
           it 'adds the conditions' do
             expect(selection.selector).to eq(expected_operator => [
-              'field' => { '$gte' => Time.new(2020, 1, 1) }
+              'field' => { '$gte' => Time.zone.local(2020, 1, 1) }
             ])
           end
 
@@ -1664,7 +1664,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
               # Date instance is converted to a Time instance in local time,
               # because we are querying on a Time field and dates are interpreted
               # in local time when assigning to Time fields
-              { 'published' => { '$gt' => Time.local(2020, 2, 3) } }
+              { 'published' => { '$gt' => Time.zone.local(2020, 2, 3) } }
             ]
           })
         end
@@ -2531,7 +2531,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
               # Date instance is converted to a Time instance in local time,
               # because we are querying on a Time field and dates are interpreted
               # in local time when assigning to Time fields
-              { 'published' => { '$gt' => Time.local(2020, 2, 3) } }
+              { 'published' => { '$gt' => Time.zone.local(2020, 2, 3) } }
             ]
           })
         end
