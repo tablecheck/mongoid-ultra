@@ -1814,7 +1814,7 @@ values, respectively, are straightforward:
 
 .. code-block:: ruby
 
-  Voter.where(born_on: Date.today).selector
+  Voter.where(born_on: Date.current).selector
   # => {"born_on"=>2020-12-18 00:00:00 UTC}
 
   Voter.where(registered_at: Time.now).selector
@@ -1825,16 +1825,16 @@ in all possible scenarios:
 
 .. code-block:: ruby
 
-  Voter.where(born_on: Date.today).selector
+  Voter.where(born_on: Date.current).selector
   # => {"born_on"=>2020-12-18 00:00:00 UTC}
 
-  Voter.where(registered_at: Date.today).selector
+  Voter.where(registered_at: Date.current).selector
   # => {"registered_at"=>2020-12-18 00:00:00 -0500}
 
-  Voter.where(voted_at: Date.today).selector
+  Voter.where(voted_at: Date.current).selector
   # => {"voted_at"=>Fri, 18 Dec 2020}
 
-  Voter.where(deregistered_at: Date.today).selector
+  Voter.where(deregistered_at: Date.current).selector
   # => {"deregistered_at"=>2020-12-18 00:00:00 UTC}
 
 When using the ``registered_at`` field which is of type ``Time``, the date

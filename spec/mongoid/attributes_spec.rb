@@ -1858,7 +1858,7 @@ describe Mongoid::Attributes do
           end
 
           let(:vet_visit) do
-            VetVisit.new(date: Date.today)
+            VetVisit.new(date: Date.current)
           end
 
           before do
@@ -1884,7 +1884,7 @@ describe Mongoid::Attributes do
           end
 
           let!(:vet_visit) do
-            pet.vet_visits.create!(date: Date.today)
+            pet.vet_visits.create!(date: Date.current)
           end
 
           before do
