@@ -193,9 +193,7 @@ module Mongoid
       #   Model.with_default_scope
       #
       # @return [ Mongoid::Criteria ] The criteria.
-      def with_default_scope
-        queryable.with_default_scope
-      end
+      delegate :with_default_scope, to: :queryable
       alias_method :criteria, :with_default_scope
 
       # Pushes the provided criteria onto the scope stack, and removes it after the

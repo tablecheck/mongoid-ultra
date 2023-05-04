@@ -12,9 +12,7 @@ module Mongoid
       #   :_id.mongoid_id?
       #
       # @return [ true | false ] If the symbol is :id or :_id.
-      def mongoid_id?
-        to_s.mongoid_id?
-      end
+      delegate :mongoid_id?, to: :to_s
 
       module ClassMethods
 

@@ -688,27 +688,6 @@ Rails/Date:
     - 'spec/mongoid/persistable/maxable_spec.rb'
     - 'spec/mongoid/persistable/minable_spec.rb'
 
-# Offense count: 22
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforceForPrefixed.
-Rails/Delegate:
-  Exclude:
-    - 'lib/mongoid/association/many.rb'
-    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
-    - 'lib/mongoid/association/relatable.rb'
-    - 'lib/mongoid/clients.rb'
-    - 'lib/mongoid/clients/options.rb'
-    - 'lib/mongoid/contextual/memory.rb'
-    - 'lib/mongoid/contextual/mongo.rb'
-    - 'lib/mongoid/contextual/none.rb'
-    - 'lib/mongoid/criteria.rb'
-    - 'lib/mongoid/document.rb'
-    - 'lib/mongoid/extensions/nil_class.rb'
-    - 'lib/mongoid/extensions/symbol.rb'
-    - 'lib/mongoid/fields/foreign_key.rb'
-    - 'lib/mongoid/findable.rb'
-    - 'lib/mongoid/scopable.rb'
-
 # Offense count: 91
 # Configuration parameters: Include.
 # Include: spec/**/*.rb, test/**/*.rb

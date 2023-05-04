@@ -20,6 +20,7 @@ module Mongoid
           attr_accessor :_added, :_loaded, :_unloaded
 
           def_delegators [], :is_a?, :kind_of?
+          def_delegators :entries, :inspect, :uniq
 
           # Check if the enumerable is equal to the other object.
           #
@@ -288,17 +289,6 @@ module Mongoid
             _unloaded.exists?(_id: doc._id) || _added.key?(doc._id)
           end
 
-          # Inspection will just inspect the entries for nice array-style
-          # printing.
-          #
-          # @example Inspect the enumerable.
-          #   enumerable.inspect
-          #
-          # @return [ String ] The inspected enum.
-          def inspect
-            entries.inspect
-          end
-
           # Return all the documents in the enumerable that have been _loaded or
           # _added.
           #
@@ -453,18 +443,6 @@ module Mongoid
           # @return [ Hash ] The entries all _loaded as a hash.
           def as_json(options = {})
             entries.as_json(options)
-          end
-
-          # Return all the unique documents in the enumerable.
-          #
-          # @note This operation loads all documents from the database.
-          #
-          # @example Get all the unique documents.
-          #   enumerable.uniq
-          #
-          # @return [ Array<Mongoid::Document> ] The unique documents.
-          def uniq
-            entries.uniq
           end
 
           private

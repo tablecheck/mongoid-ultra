@@ -54,9 +54,7 @@ module Mongoid
       #
       # @return [ String ] The collection name for the current persistence
       #   context.
-      def collection_name
-        persistence_context.collection_name
-      end
+      delegate :collection_name, to: :persistence_context
 
       # Get the database client for the document's current persistence context.
       #
@@ -127,9 +125,7 @@ module Mongoid
         #
         # @return [ String ] The database client name for the current
         #   persistence context.
-        def client_name
-          persistence_context.client_name
-        end
+        delegate :client_name, to: :persistence_context
 
         # Get the collection name for the current persistence context of the
         # document class.
@@ -139,9 +135,7 @@ module Mongoid
         #
         # @return [ String ] The collection name for the current persistence
         #   context.
-        def collection_name
-          persistence_context.collection_name
-        end
+        delegate :collection_name, to: :persistence_context
 
         # Get the database name for the current persistence context of the
         # document class.
@@ -151,9 +145,7 @@ module Mongoid
         #
         # @return [ String ] The database name for the current persistence
         #   context.
-        def database_name
-          persistence_context.database_name
-        end
+        delegate :database_name, to: :persistence_context
 
         # Get the collection for the current persistence context of the
         # document class.
@@ -163,9 +155,7 @@ module Mongoid
         #
         # @return [ Mongo::Collection ] The collection for the current
         #   persistence context.
-        def collection
-          persistence_context.collection
-        end
+        delegate :collection, to: :persistence_context
 
         # Get the client for the current persistence context of the
         # document class.

@@ -17,10 +17,12 @@ module Mongoid
     def_delegators :with_default_scope,
                    :aggregates,
                    :avg,
+                   :count,
                    :create_with,
                    :distinct,
                    :each,
                    :each_with_index,
+                   :estimated_count,
                    :extras,
                    :fifth,
                    :fifth!,
@@ -62,28 +64,6 @@ module Mongoid
                    :third_to_last!,
                    :update,
                    :update_all
-
-    # Returns a count of records in the database.
-    # If you want to specify conditions use where.
-    #
-    # @example Get the count of matching documents.
-    #   Person.count
-    #   Person.where(title: "Sir").count
-    #
-    # @return [ Integer ] The number of matching documents.
-    def count
-      with_default_scope.count
-    end
-
-    # Returns an estimated count of records in the database.
-    #
-    # @example Get the count of matching documents.
-    #   Person.estimated_count
-    #
-    # @return [ Integer ] The number of matching documents.
-    def estimated_count
-      with_default_scope.estimated_count
-    end
 
     # Returns true if count is zero
     #

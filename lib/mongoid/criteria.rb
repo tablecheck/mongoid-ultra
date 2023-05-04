@@ -157,9 +157,7 @@ module Mongoid
     #   criteria.extract_id
     #
     # @return [ Object ] The id.
-    def extract_id
-      selector.extract_id
-    end
+    delegate :extract_id, to: :selector
 
     # Adds a criterion to the +Criteria+ that specifies additional options
     # to be passed to the Ruby driver, in the exact format for the driver.

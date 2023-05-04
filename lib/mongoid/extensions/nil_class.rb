@@ -22,9 +22,7 @@ module Mongoid
       #   nil.collectionize
       #
       # @return [ String ] A blank string.
-      def collectionize
-        to_s.collectionize
-      end
+      delegate :collectionize, to: :to_s
     end
   end
 end
