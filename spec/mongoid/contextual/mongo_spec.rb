@@ -555,20 +555,22 @@ describe Mongoid::Contextual::Mongo do
     context 'when getting a localized field' do
       with_default_i18n_configs
 
-      before do
-        I18n.locale = :en
-        d = Dictionary.create!(description: 'english-text')
-        I18n.locale = :de
-        d.description = 'deutsch-text'
-        d.save!
-      end
-
       let(:criteria) do
         Dictionary.criteria
       end
 
       let(:context) do
         described_class.new(criteria)
+      end
+
+      let(:dictionary) { Dictionary.new }
+
+      around { |example| I18n.with_locale(:de) { example.run } }
+
+      before do
+        I18n.with_locale(:en) { dictionary.description = 'english-text' }
+        dictionary.description = 'deutsch-text'
+        dictionary.save!
       end
 
       context 'when getting the field without _translations' do
@@ -609,18 +611,16 @@ describe Mongoid::Contextual::Mongo do
         with_i18n_fallbacks
         with_default_i18n_configs
 
+        let(:distinct) { context.distinct(:description).first }
+
+        around { |example| I18n.with_locale(:he) { example.run } }
+
         before do
           I18n.fallbacks[:he] = [:en]
-        end
-
-        let(:distinct) do
-          context.distinct(:description).first
+          I18n.with_locale(:en) { Dictionary.create!(description: 'english-text') }
         end
 
         it 'correctly uses the fallback' do
-          I18n.locale = :en
-          Dictionary.create!(description: 'english-text')
-          I18n.locale = :he
           expect(distinct).to eq('english-text')
         end
       end
@@ -628,15 +628,7 @@ describe Mongoid::Contextual::Mongo do
       context 'when the localized field is embedded' do
         with_default_i18n_configs
 
-        before do
-          p = Passport.new
-          I18n.locale = :en
-          p.name = 'Neil'
-          I18n.locale = :he
-          p.name = 'Nissim'
-
-          Person.create!(passport: p, employer_id: 12345)
-        end
+        let(:passport) { Passport.new }
 
         let(:criteria) do
           Person.where(employer_id: 12345)
@@ -656,6 +648,14 @@ describe Mongoid::Contextual::Mongo do
 
         let(:distinct_translations_field) do
           context.distinct('pass.name_translations.en').first
+        end
+
+        around { |example| I18n.with_locale(:he) { example.run } }
+
+        before do
+          I18n.with_locale(:en) { passport.name = 'Neil' }
+          passport.name = 'Nissim'
+          Person.create!(passport: passport, employer_id: 12345)
         end
 
         it 'returns the translation for the current locale' do
@@ -744,22 +744,24 @@ describe Mongoid::Contextual::Mongo do
       context 'when tallying a localized field' do
         with_default_i18n_configs
 
+        around { |example| I18n.with_locale(:en) { example.run } }
+
         before do
-          I18n.locale = :en
           d1 = Dictionary.create!(description: 'en1')
           d2 = Dictionary.create!(description: 'en1')
           d3 = Dictionary.create!(description: 'en1')
           d4 = Dictionary.create!(description: 'en2')
-          I18n.locale = :de
-          d1.description = 'de1'
-          d2.description = 'de1'
-          d3.description = 'de2'
-          d4.description = 'de3'
-          d1.save!
-          d2.save!
-          d3.save!
-          d4.save!
-          I18n.locale = :en
+
+          I18n.with_locale(:de) do
+            d1.description = 'de1'
+            d2.description = 'de1'
+            d3.description = 'de2'
+            d4.description = 'de3'
+            d1.save!
+            d2.save!
+            d3.save!
+            d4.save!
+          end
         end
 
         context 'when getting the demongoized field' do
@@ -868,20 +870,22 @@ describe Mongoid::Contextual::Mongo do
     context 'when tallying an embedded localized field' do
       with_default_i18n_configs
 
+      around { |example| I18n.with_locale(:en) { example.run } }
+
       before do
-        I18n.locale = :en
         address1a = Address.new(name: 'en1')
         address1b = Address.new(name: 'en2')
         address2a = Address.new(name: 'en1')
         address2b = Address.new(name: 'en3')
-        I18n.locale = :de
-        address1a.name = 'de1'
-        address1b.name = 'de2'
-        address2a.name = 'de1'
-        address2b.name = 'de3'
-        Person.create!(addresses: [address1a, address1b])
-        Person.create!(addresses: [address2a, address2b])
-        I18n.locale = :en
+
+        I18n.with_locale(:de) do
+          address1a.name = 'de1'
+          address1b.name = 'de2'
+          address2a.name = 'de1'
+          address2b.name = 'de3'
+          Person.create!(addresses: [address1a, address1b])
+          Person.create!(addresses: [address2a, address2b])
+        end
       end
 
       context 'when getting the demongoized field' do

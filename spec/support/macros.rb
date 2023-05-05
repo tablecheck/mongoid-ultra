@@ -113,13 +113,12 @@ module Mongoid
 
     def with_default_i18n_configs
       around do |example|
-        I18n.locale = :en
         I18n.default_locale = :en
         I18n.try(:fallbacks=, I18n::Locale::Fallbacks.new)
         I18n.enforce_available_locales = false
-        example.run
+        I18n.with_locale(:en) { example.run }
       ensure
-        I18n.locale = :en
+        # I18n.locale = :en
         I18n.default_locale = :en
         I18n.try(:fallbacks=, I18n::Locale::Fallbacks.new)
         I18n.enforce_available_locales = false

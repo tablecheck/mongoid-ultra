@@ -156,82 +156,93 @@ describe Mongoid::Criteria do
     context 'when the field is localized' do
       with_default_i18n_configs
 
+      let(:dictionary) { Dictionary.new }
+
+      around { |example| I18n.with_locale(:de) { example.run } }
+
       before do
-        I18n.locale = :en
-        d = Dictionary.create!(description: 'english-text')
-        I18n.locale = :de
-        d.description = 'deutsch-text'
-        d.save!
+        I18n.with_locale(:en) { dictionary.description = 'english-text' }
+        dictionary.description = 'deutsch-text'
+        dictionary.save!
       end
 
       context 'when entire field is included' do
 
-        let(:dictionary) do
+        let(:dict_descr) do
           Dictionary.only(:description).first
         end
 
         it 'loads all translations' do
-          expect(dictionary.description_translations.keys).to include('de', 'en')
+          expect(dict_descr.description_translations.keys).to include('de', 'en')
         end
 
         it 'returns the field value for the current locale' do
-          I18n.locale = :en
-          expect(dictionary.description).to eq('english-text')
-          I18n.locale = :de
-          expect(dictionary.description).to eq('deutsch-text')
+          expect(dict_descr.description).to eq('deutsch-text')
+        end
+
+        it 'returns the field value for the en locale' do
+          I18n.with_locale(:en) do
+            expect(dict_descr.description).to eq('english-text')
+          end
         end
       end
 
       context 'when a specific locale is included' do
 
-        let(:dictionary) do
+        let(:dict_descr_de) do
           Dictionary.only(:'description.de').first
         end
 
         it 'loads translations only for the included locale' do
-          expect(dictionary.description_translations.keys).to include('de')
-          expect(dictionary.description_translations.keys).to_not include('en')
+          expect(dict_descr_de.description_translations.keys).to include('de')
+          expect(dict_descr_de.description_translations.keys).to_not include('en')
         end
 
         it 'returns the field value for the included locale' do
-          I18n.locale = :en
-          expect(dictionary.description).to be_nil
-          I18n.locale = :de
-          expect(dictionary.description).to eq('deutsch-text')
+          expect(dict_descr_de.description).to eq('deutsch-text')
+        end
+
+        it 'doesnt return the field value for the excluded locale' do
+          I18n.with_locale(:en) do
+            expect(dict_descr_de.description).to be_nil
+          end
         end
       end
 
       context 'when entire field is excluded' do
 
-        let(:dictionary) do
+        let(:dict_wo_descr) do
           Dictionary.without(:description).first
         end
 
         it 'does not load all translations' do
-          expect(dictionary.description_translations.keys).to_not include('de', 'en')
+          expect(dict_wo_descr.description_translations.keys).to_not include('de', 'en')
         end
 
         it 'raises an Mongoid::Errors::AttributeNotLoaded when attempting to access the field' do
-          expect { dictionary.description }.to raise_error Mongoid::Errors::AttributeNotLoaded
+          expect { dict_wo_descr.description }.to raise_error Mongoid::Errors::AttributeNotLoaded
         end
       end
 
       context 'when a specific locale is excluded' do
 
-        let(:dictionary) do
+        let(:dict_wo_descr_de) do
           Dictionary.without(:'description.de').first
         end
 
         it 'does not load excluded translations' do
-          expect(dictionary.description_translations.keys).to_not include('de')
-          expect(dictionary.description_translations.keys).to include('en')
+          expect(dict_wo_descr_de.description_translations.keys).to_not include('de')
+          expect(dict_wo_descr_de.description_translations.keys).to include('en')
         end
 
         it 'returns nil for excluded translations' do
-          I18n.locale = :en
-          expect(dictionary.description).to eq('english-text')
-          I18n.locale = :de
-          expect(dictionary.description).to be_nil
+          expect(dict_wo_descr_de.description).to be_nil
+        end
+
+        it 'returns the field value for included translations' do
+          I18n.with_locale(:en) do
+            expect(dict_wo_descr_de.description).to eq('english-text')
+          end
         end
       end
     end

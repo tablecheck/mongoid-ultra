@@ -724,9 +724,7 @@ describe Mongoid::Criteria::Queryable::Selector do
             described_class.new({}, { 'key' => Field.new })
           end
 
-          before do
-            I18n.locale = :de
-          end
+          around { |example| I18n.with_locale(:de) { example.run } }
 
           context 'when the criterion is simple' do
 

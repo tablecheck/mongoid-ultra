@@ -15,10 +15,12 @@ describe Mongoid::Fields do
       context 'when translations exist' do
         with_default_i18n_configs
 
+        around { |example| I18n.with_locale(:de) { example.run } }
+
         before do
-          I18n.locale = :en
-          product.description = 'test'
-          I18n.locale = :de
+          I18n.with_locale(:en) do
+            product.description = 'test'
+          end
           product.description = 'The best'
         end
 
@@ -525,8 +527,9 @@ describe Mongoid::Fields do
       context 'when a single locale is set' do
         with_default_i18n_configs
 
+        around { |example| I18n.with_locale(:de) { example.run } }
+
         before do
-          I18n.locale = :de
           product.description = 'The best'
         end
 
@@ -542,10 +545,10 @@ describe Mongoid::Fields do
       context 'when multiple locales are set' do
         with_default_i18n_configs
 
+        around { |example| I18n.with_locale(:de) { example.run } }
+
         before do
-          I18n.locale = :end
-          product.description = 'Cheap drinks'
-          I18n.locale = :de
+          I18n.with_locale(:en) { product.description = 'Cheap drinks' }
           product.description = 'Cheaper drinks'
         end
 
@@ -828,8 +831,9 @@ describe Mongoid::Fields do
       context 'when a locale is set' do
         with_default_i18n_configs
 
+        around { |example| I18n.with_locale(:de) { example.run } }
+
         before do
-          I18n.locale = :de
           product.description = 'Cheaper drinks'
         end
 
@@ -845,10 +849,10 @@ describe Mongoid::Fields do
       context 'when having multiple locales' do
         with_default_i18n_configs
 
+        around { |example| I18n.with_locale(:de) { example.run } }
+
         before do
-          I18n.locale = :en
-          product.description = 'Cheap drinks'
-          I18n.locale = :de
+          I18n.with_locale(:en) { product.description = 'Cheap drinks' }
           product.description = 'Cheaper drinks'
         end
 
@@ -2009,10 +2013,10 @@ describe Mongoid::Fields do
     context 'when assigning an empty string' do
       with_default_i18n_configs
 
+      around { |example| I18n.with_locale(:de) { example.run } }
+
       before do
-        I18n.locale = :en
-        product.title = 'hello'
-        I18n.locale = :de
+        I18n.with_locale(:en) { product.title = 'hello' }
         product.title = 'hello there!'
         product.title = ''
       end
@@ -2029,10 +2033,10 @@ describe Mongoid::Fields do
     context 'when assigning nil' do
       with_default_i18n_configs
 
+      around { |example| I18n.with_locale(:de) { example.run } }
+
       before do
-        I18n.locale = :en
-        product.title = 'hello'
-        I18n.locale = :de
+        I18n.with_locale(:en) { product.title = 'hello' }
         product.title = 'hello there!'
         product.title = nil
       end
@@ -2049,10 +2053,10 @@ describe Mongoid::Fields do
     context 'when assigning an empty array' do
       with_default_i18n_configs
 
+      around { |example| I18n.with_locale(:de) { example.run } }
+
       before do
-        I18n.locale = :en
-        product.title = 'hello'
-        I18n.locale = :de
+        I18n.with_locale(:en) { product.title = 'hello' }
         product.title = 'hello there!'
         product.title = []
       end

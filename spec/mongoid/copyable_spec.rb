@@ -166,10 +166,11 @@ describe Mongoid::Copyable do
         with_default_i18n_configs
 
         before do
-          I18n.locale = 'pt_BR'
-          person.desc = 'descrição'
-          person.addresses.first.name = 'descrição'
-          person.save!
+          I18n.with_locale(:pt_BR) do
+            person.desc = 'descrição'
+            person.addresses.first.name = 'descrição'
+            person.save!
+          end
         end
 
         let!(:from_db) do
@@ -180,29 +181,38 @@ describe Mongoid::Copyable do
           from_db.send(method)
         end
 
-        it 'sets the pt_BR version' do
-          I18n.locale = 'pt_BR'
-          expect(copy.desc).to eq('descrição')
+        context 'with pt_BR locale' do
+          around { |example| I18n.with_locale(:pt_BR) { example.run } }
+
+          it 'sets the pt_BR version' do
+            expect(copy.desc).to eq('descrição')
+          end
+
+          it 'sets embedded translations' do
+            expect(copy.addresses.first.name).to eq('descrição')
+          end
         end
 
-        it 'sets the english version' do
-          I18n.locale = :en
-          expect(copy.desc).to eq('description')
+        context 'with en locale' do
+          around { |example| I18n.with_locale(:en) { example.run } }
+
+          it 'sets the english version' do
+            expect(copy.desc).to eq('description')
+          end
+
+          it 'sets embedded english version' do
+            I18n.with_locale(:en) do
+              expect(copy.addresses.first.name).to eq('Bond')
+            end
+          end
         end
 
-        it 'sets to nil an nonexistent lang' do
-          I18n.locale = :fr
-          expect(copy.desc).to be_nil
-        end
+        context 'with fr (nonexistent) locale' do
+          around { |example| I18n.with_locale(:fr) { example.run } }
 
-        it 'sets embedded translations' do
-          I18n.locale = 'pt_BR'
-          expect(copy.addresses.first.name).to eq('descrição')
-        end
-
-        it 'sets embedded english version' do
-          I18n.locale = :en
-          expect(copy.addresses.first.name).to eq('Bond')
+          it 'sets the fallback (en) version' do
+            expect(copy.desc).to eq('description')
+          end
         end
       end
 
@@ -213,8 +223,9 @@ describe Mongoid::Copyable do
           person.addresses.build({ shipping_name: 'Title' }, ShipmentAddress)
         end
 
+        around { |example| I18n.with_locale(:pt_BR) { example.run } }
+
         before do
-          I18n.locale = 'pt_BR'
           person.addresses.type(ShipmentAddress).each { |address| address.shipping_name = 'Título' }
           person.save!
         end
@@ -228,7 +239,6 @@ describe Mongoid::Copyable do
         end
 
         it 'sets embedded translations' do
-          I18n.locale = 'pt_BR'
           copy.addresses.type(ShipmentAddress).each do |address|
             expect(address.shipping_name).to eq('Título')
           end
