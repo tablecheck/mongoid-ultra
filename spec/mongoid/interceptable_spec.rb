@@ -601,12 +601,15 @@ describe Mongoid::Interceptable do
         Person.create!
       end
 
+      let(:service) { instance_double(Service) }
+
       before do
         person.services.create!(sid: 1)
+        allow(Service).to receive(:new).and_return(service)
       end
 
       it "doesn't cascade the initialize" do
-        expect_any_instance_of(Service).to_not receive(:after_initialize_called=)
+        expect(service).to_not receive(:after_initialize_called=)
         expect(Person.find(person.id)).to eq(person)
       end
     end

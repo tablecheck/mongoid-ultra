@@ -85,6 +85,12 @@ Naming/AccessorMethodName:
     - 'lib/mongoid/persistence_context.rb'
     - 'lib/mongoid/timestamps/timeless.rb'
 
+RSpec/AnyInstance:
+  Exclude:
+    - 'spec/mongoid/contextual/mongo_spec.rb'
+    - 'spec/mongoid/warnings_spec.rb'
+    - 'spec/support/expectations.rb'
+
 RSpec/AroundBlock:
   Exclude:
     - 'spec/support/constraints.rb'

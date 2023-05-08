@@ -36,13 +36,6 @@ describe 'Mongoid::Tasks::Encryption' do
     end
 
     context 'when all parameters are correct' do
-      before do
-        expect_any_instance_of(Mongo::ClientEncryption)
-          .to receive(:create_data_key)
-          .with('local')
-          .and_return(data_key_id)
-      end
-
       context 'when all parameters are provided' do
         it 'creates a data key' do
           result = Mongoid::Tasks::Encryption.create_data_key(kms_provider_name: 'local', client_name: :encrypted)

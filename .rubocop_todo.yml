@@ -62,21 +62,6 @@ Naming/MemoizedInstanceVariableName:
     - 'lib/mongoid/document.rb'
     - 'lib/mongoid/traversable.rb'
 
-# Offense count: 25
-RSpec/AnyInstance:
-  Exclude:
-    - 'spec/mongoid/association/referenced/belongs_to/buildable_spec.rb'
-    - 'spec/mongoid/association/referenced/has_one/buildable_spec.rb'
-    - 'spec/mongoid/contextual/mongo_spec.rb'
-    - 'spec/mongoid/interceptable_spec.rb'
-    - 'spec/mongoid/persistable/savable_spec.rb'
-    - 'spec/mongoid/persistable_spec.rb'
-    - 'spec/mongoid/tasks/database_rake_spec.rb'
-    - 'spec/mongoid/tasks/encryption_spec.rb'
-    - 'spec/mongoid/validatable/uniqueness_spec.rb'
-    - 'spec/mongoid/warnings_spec.rb'
-    - 'spec/support/expectations.rb'
-
 # Offense count: 84
 RSpec/BeforeAfterAll:
   Enabled: false
