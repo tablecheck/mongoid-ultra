@@ -5,7 +5,7 @@ require 'spec_helper'
 describe 'Dots and Dollars' do
   min_server_version '5.0'
 
-  before(:all) do
+  before do
     class DADMUser
       include Mongoid::Document
       field :'first.last', type: String, default: 'Neil.Shweky'

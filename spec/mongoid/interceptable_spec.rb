@@ -511,12 +511,12 @@ describe Mongoid::Interceptable do
 
         context 'when running the callbacks directly' do
 
-          before(:all) do
+          before do
             Exhibition.define_model_callbacks(:rearrange)
             Exhibition.after_rearrange {}
           end
 
-          after(:all) do
+          after do
             Exhibition.reset_callbacks(:rearrange)
           end
 
@@ -542,14 +542,14 @@ describe Mongoid::Interceptable do
             band.records.build
           end
 
-          before(:all) do
+          before do
             Band.define_model_callbacks(:rearrange)
             Band.set_callback(:validation, :before) do
               run_callbacks(:rearrange)
             end
           end
 
-          after(:all) do
+          after do
             # ActiveSupport may raise an error when trying to reset callbacks on all of Band's
             # descendants, regardless of whether they have a particular callback defined.
             Band.reset_callbacks(:rearrange)
@@ -1643,13 +1643,13 @@ describe Mongoid::Interceptable do
       Address.new(street: '123 Sesame')
     end
 
-    before(:all) do
+    before do
       Person.before_save do |doc|
         throw(:abort) if doc.mode == :prevent_save
       end
     end
 
-    after(:all) do
+    after do
       Person.reset_callbacks(:save)
     end
 

@@ -40,7 +40,7 @@ module Constraints
     %i[min max].each do |dir| # rubocop:disable Performance/CollectionLiteralInLoop
       define_method(:"#{dir}_#{meth}_version") do |version|
         current_version = current_version.call if current_version.is_a?(Proc)
-        before(:all) do
+        before do
           if Constraints.send(:"#{dir}_version?", current_version, version)
             skip "#{name} version #{version} or #{dir == :min ? 'higher' : 'lower'} " \
                  "is required (using #{current_version})"
@@ -51,7 +51,7 @@ module Constraints
   end
 
   def require_mri
-    before(:all) do
+    before do
       unless SpecConfig.instance.mri?
         skip "MRI required, we have #{SpecConfig.instance.platform}"
       end
@@ -65,7 +65,7 @@ module Constraints
       raise ArgumentError.new("Invalid topologies requested: #{invalid_topologies.join(', ')}")
     end
 
-    before(:all) do
+    before do
       topology = ClusterConfig.instance.topology
       unless topologies.include?(topology)
         skip "Topology #{topologies.join(' or ')} required, we have #{topology}"
@@ -74,7 +74,7 @@ module Constraints
   end
 
   def require_transaction_support
-    before(:all) do
+    before do
       case ClusterConfig.instance.topology
       when :single
         skip 'Transactions tests require a replica set or a sharded cluster'
@@ -87,7 +87,7 @@ module Constraints
   end
 
   def require_multi_mongos
-    before(:all) do
+    before do
       if ClusterConfig.instance.topology == :sharded && SpecConfig.instance.addresses.length == 1
         skip 'Test requires a minimum of two mongoses if run in sharded topology'
       end
@@ -107,7 +107,7 @@ module Constraints
   # In load-balanced topology, the same problem can happen when there is
   # more than one mongos behind the load balancer.
   def require_no_multi_shard
-    before(:all) do
+    before do
       if ClusterConfig.instance.topology == :sharded && SpecConfig.instance.addresses.length > 1
         skip 'Test requires a single mongos if run in sharded topology'
       end
@@ -119,7 +119,7 @@ module Constraints
   end
 
   def require_enterprise
-    before(:all) do
+    before do
       unless ClusterConfig.instance.enterprise?
         skip 'Test requires enterprise build of MongoDB'
       end
@@ -127,7 +127,7 @@ module Constraints
   end
 
   def require_libmongocrypt
-    before(:all) do
+    before do
       # If FLE is set in environment, the entire test run is supposed to
       # include FLE therefore run the FLE tests.
       unless ENV['LIBMONGOCRYPT_PATH'].present? || ENV['FLE'].present?
@@ -137,7 +137,7 @@ module Constraints
   end
 
   def require_no_libmongocrypt
-    before(:all) do
+    before do
       if ENV['LIBMONGOCRYPT_PATH'].present?
         skip 'Test requires libmongocrypt to not be configured'
       end

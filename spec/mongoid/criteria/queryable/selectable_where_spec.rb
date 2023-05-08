@@ -153,7 +153,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
       context 'when the value must be evolved' do
 
-        before(:all) do
+        before do
           class Document
             def id
               13
@@ -165,7 +165,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
           end
         end
 
-        after(:all) do
+        after do
           Object.send(:remove_const, :Document)
         end
 

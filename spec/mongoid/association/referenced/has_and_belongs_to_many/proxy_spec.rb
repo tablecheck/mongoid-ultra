@@ -13,7 +13,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     Person.relations['preferences'] = original_preferences_association
   end
 
-  after(:all) do
+  after do
     Person.reset_callbacks(:save)
     Person.reset_callbacks(:destroy)
   end

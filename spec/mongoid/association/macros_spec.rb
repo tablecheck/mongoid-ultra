@@ -343,9 +343,6 @@ describe Mongoid::Association::Macros do
 
     after do
       Object.send(:remove_const, _class.name)
-    end
-
-    after(:all) do
       Mongoid.configure do |config|
         config.load_configuration(CONFIG)
       end

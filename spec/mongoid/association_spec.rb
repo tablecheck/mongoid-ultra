@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Mongoid::Association do
 
-  before(:all) do
+  before do
     Person.field(
       :_id,
       type: BSON::ObjectId,

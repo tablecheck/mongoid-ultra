@@ -429,11 +429,11 @@ describe Mongoid::Criteria::Findable do
 
     context 'when using string ids' do
 
-      before(:all) do
+      before do
         Band.field :_id, overwrite: true, type: String
       end
 
-      after(:all) do
+      after do
         Band.field :_id, overwrite: true, type: BSON::ObjectId, default: -> { BSON::ObjectId.new }
       end
 
@@ -595,11 +595,11 @@ describe Mongoid::Criteria::Findable do
 
     context 'when using hash ids' do
 
-      before(:all) do
+      before do
         Band.field :_id, overwrite: true, type: Hash
       end
 
-      after(:all) do
+      after do
         Band.field :_id, overwrite: true, type: BSON::ObjectId, default: -> { BSON::ObjectId.new }
       end
 
@@ -761,11 +761,11 @@ describe Mongoid::Criteria::Findable do
 
     context 'when using integer ids' do
 
-      before(:all) do
+      before do
         Band.field :_id, overwrite: true, type: Integer
       end
 
-      after(:all) do
+      after do
         Band.field :_id, overwrite: true, type: BSON::ObjectId, default: -> { BSON::ObjectId.new }
       end
 

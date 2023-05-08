@@ -590,7 +590,7 @@ describe Mongoid::Clients do
 
     context 'when no client exists with the key' do
 
-      before(:all) do
+      before do
         Band.store_in(client: :nonexistent)
       end
 
@@ -700,7 +700,7 @@ describe Mongoid::Clients do
 
     context 'when no client exists with the key' do
 
-      before(:all) do
+      before do
         Band.store_in(client: :nonexistent)
       end
 

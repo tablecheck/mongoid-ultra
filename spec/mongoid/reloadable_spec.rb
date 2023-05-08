@@ -458,14 +458,6 @@ describe Mongoid::Reloadable do
     context 'on sharded cluster' do
       require_topology :sharded
 
-      before(:all) do
-        CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
-        CONFIG[:clients][:other][:database] = 'other'
-        Mongoid::Clients.clients.each_value(&:close)
-        Mongoid::Config.send(:clients=, CONFIG[:clients])
-        Mongoid::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
-      end
-
       let(:subscriber) do
         client = Mongoid::Clients.with_name(:other)
         monitoring = client.send(:monitoring)
@@ -477,6 +469,12 @@ describe Mongoid::Reloadable do
       end
 
       before do
+        CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
+        CONFIG[:clients][:other][:database] = 'other'
+        Mongoid::Clients.clients.each_value(&:close)
+        Mongoid::Config.send(:clients=, CONFIG[:clients])
+        Mongoid::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
+
         subscriber.clear_events!
       end
 

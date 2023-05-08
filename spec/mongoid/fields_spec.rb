@@ -300,7 +300,7 @@ describe Mongoid::Fields do
 
   describe '#field' do
 
-    before(:all) do
+    before do
       described_class.option :custom do |model, field, value|
       end
     end

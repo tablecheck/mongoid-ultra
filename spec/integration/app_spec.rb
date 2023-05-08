@@ -20,7 +20,7 @@ def insert_rails_gem_version(cmd)
 end
 
 describe 'Mongoid application tests' do
-  before(:all) do
+  before do
     unless SpecConfig.instance.app_tests?
       skip 'Set APP_TESTS=1 in environment to run application tests'
     end

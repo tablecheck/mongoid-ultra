@@ -77,10 +77,6 @@ RSpec/AnyInstance:
     - 'spec/mongoid/warnings_spec.rb'
     - 'spec/support/expectations.rb'
 
-# Offense count: 84
-RSpec/BeforeAfterAll:
-  Enabled: false
-
 # Offense count: 832
 # Configuration parameters: Prefixes, AllowedPatterns.
 # Prefixes: when, with, without

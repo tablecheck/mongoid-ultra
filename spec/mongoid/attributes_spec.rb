@@ -543,7 +543,7 @@ describe Mongoid::Attributes do
 
   describe '#_id=' do
 
-    after(:all) do
+    after do
       Person.field(
         :_id,
         type: BSON::ObjectId,
@@ -555,7 +555,7 @@ describe Mongoid::Attributes do
 
     context 'when using object ids' do
 
-      before(:all) do
+      before do
         Person.field(
           :_id,
           type: BSON::ObjectId,
@@ -622,7 +622,7 @@ describe Mongoid::Attributes do
 
     context 'when using string ids' do
 
-      before(:all) do
+      before do
         Person.field(
           :_id,
           type: String,
@@ -676,7 +676,7 @@ describe Mongoid::Attributes do
 
     context 'when using integer ids' do
 
-      before(:all) do
+      before do
         Person.field(:_id, type: Integer, overwrite: true)
       end
 

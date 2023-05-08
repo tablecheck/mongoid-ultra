@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe 'Mongoid::Tasks::Database' do
 
-  before(:all) do
+  before do
     module DatabaseSpec
       class Measurement
         include Mongoid::Document
@@ -40,9 +40,11 @@ describe 'Mongoid::Tasks::Database' do
         }
       end
     end
+
+    allow(Mongoid::Tasks::Database).to receive(:logger).and_return(logger)
   end
 
-  after(:all) do
+  after do
     Mongoid.deregister_model(DatabaseSpec::Measurement)
     DatabaseSpec.send(:remove_const, :Measurement)
     Mongoid.deregister_model(DatabaseSpec::Comment)
@@ -59,10 +61,6 @@ describe 'Mongoid::Tasks::Database' do
   end
   let(:models) do
     [User, Account, Address, Draft]
-  end
-
-  before do
-    allow(Mongoid::Tasks::Database).to receive(:logger).and_return(logger)
   end
 
   describe '.create_collections' do

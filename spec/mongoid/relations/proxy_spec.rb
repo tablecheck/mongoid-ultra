@@ -58,13 +58,13 @@
 #
 #   describe "#extend" do
 #
-#     before(:all) do
+#     before do
 #       Person.reset_callbacks(:validate)
 #       module Testable
 #       end
 #     end
 #
-#     after(:all) do
+#     after do
 #       Object.send(:remove_const, :Testable)
 #     end
 #
