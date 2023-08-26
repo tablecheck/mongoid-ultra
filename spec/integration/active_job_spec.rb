@@ -7,7 +7,7 @@ require 'mongoid/railties/bson_object_id_serializer'
 describe 'ActiveJob Serialization' do
   skip unless defined?(ActiveJob)
 
-  class TestBsonObjectIdSerializerJob < ActiveJob::Base
+  class TestBsonObjectIdSerializerJob < ApplicationJob
     def perform(*args)
       args
     end
@@ -19,13 +19,13 @@ describe 'ActiveJob Serialization' do
 
   before do
     ActiveJob::Serializers.add_serializers(
-      [::Mongoid::Railties::ActiveJobSerializers::BsonObjectIdSerializer]
+      [Mongoid::Railties::ActiveJobSerializers::BsonObjectIdSerializer]
     )
   end
 
   it 'serializes and deserializes BSON::ObjectId' do
     expect do
       TestBsonObjectIdSerializerJob.perform_later(band.id)
-    end.not_to raise_error
+    end.to_not raise_error
   end
 end

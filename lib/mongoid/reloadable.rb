@@ -59,7 +59,7 @@ module Mongoid
     # @raise [ Errors::DocumentNotFound ] If the document was deleted.
     def check_for_deleted_document!(attributes)
       return unless Mongoid.raise_not_found_error
-      return unless attributes.nil? || attributes.empty?
+      return if attributes.present?
 
       shard_keys = atomic_selector.with_indifferent_access.slice(*shard_key_fields, :_id)
       raise Errors::DocumentNotFound.new(self.class, _id, shard_keys)

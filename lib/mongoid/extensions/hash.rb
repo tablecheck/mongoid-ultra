@@ -45,7 +45,7 @@ module Mongoid
               real_key = klass.database_field_name(key2)
 
               value.delete(key2) if real_key != key2
-              value[real_key] = (key == '$rename') ? value2.to_s : mongoize_for(key, klass, real_key, value2)
+              value[real_key] = key == '$rename' ? value2.to_s : mongoize_for(key, klass, real_key, value2)
             end
             consolidated[key] ||= {}
             consolidated[key].update(value)
