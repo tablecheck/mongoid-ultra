@@ -201,12 +201,12 @@ describe Mongoid::Criteria::Queryable::Storable do
       end
 
       it 'combines the conditions using $and' do
-        modified.selector.should == {
+        expect(modified.selector).to eq({
           'foo' => {
             '$in' => ['bar'],
             '$nin' => ['zoom']
           }
-        }
+        })
       end
     end
 
@@ -220,12 +220,12 @@ describe Mongoid::Criteria::Queryable::Storable do
       end
 
       it 'combines the conditions using $and' do
-        modified.selector.should == {
+        expect(modified.selector).to eq({
           'foo' => {
             :$in => ['bar'],
             :$nin => ['zoom']
           }
-        }
+        })
       end
     end
 
@@ -239,10 +239,10 @@ describe Mongoid::Criteria::Queryable::Storable do
       end
 
       it 'adds the new condition using $and' do
-        modified.selector.should == {
+        expect(modified.selector).to eq({
           'foo' => { '$in' => ['bar'] },
           '$and' => ['foo' => { '$in' => ['zoom'] }]
-        }
+        })
       end
     end
 
@@ -256,10 +256,10 @@ describe Mongoid::Criteria::Queryable::Storable do
       end
 
       it 'adds the new condition using $and' do
-        modified.selector.should == {
+        expect(modified.selector).to eq({
           'foo' => { :$in => ['bar'] },
           '$and' => ['foo' => { :$in => ['zoom'] }]
-        }
+        })
       end
     end
   end
