@@ -108,9 +108,8 @@ module Mongoid
     # @return [ Hash | nil ] The document's extracted attributes or nil if the
     #   document doesn't exist.
     def extract_embedded_attributes(attributes)
-      atomic_position.split('.').inject(attributes) do |attrs, part|
-        attrs[Utils.maybe_integer(part)]
-      end
+      segments = atomic_position.split('.').map { |part| Utils.maybe_integer(part) }
+      attributes.dig(*segments)
     end
   end
 end

@@ -2956,8 +2956,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       let(:reloaded_album_artist) { reloaded_album.artist }
 
       it 'does not execute the callback when the association is accessed' do
+        expect(reloaded_album_artist).to_not receive(:after_add_album)
         expect(reloaded_album_artist.after_add_referenced_called).to be_nil
-        expect(reloaded_album_artist).to_not have_received(:after_add_album)
       end
     end
   end
