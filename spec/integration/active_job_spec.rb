@@ -7,7 +7,12 @@ require 'mongoid/railties/bson_object_id_serializer'
 describe 'ActiveJob Serialization' do
   skip unless defined?(ActiveJob)
 
-  class TestBsonObjectIdSerializerJob < ActiveJob::Base
+  unless defined?(ApplicationJob)
+    class ApplicationJob < ActiveJob::Base
+    end
+  end
+
+  class TestBsonObjectIdSerializerJob < ApplicationJob
     def perform(*args)
       args
     end
