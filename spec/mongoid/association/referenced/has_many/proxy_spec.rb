@@ -1300,12 +1300,12 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
       context 'when association is not loaded' do
         before do
-          movie.ratings._loaded?.should be false
+          expect(movie.ratings._loaded?).to be false
         end
 
         it 'does not query the database because it knows about the added models' do
           expect_no_queries do
-            movie.ratings.any?.should be true
+            expect(movie.ratings.any?).to be true
           end
         end
       end
