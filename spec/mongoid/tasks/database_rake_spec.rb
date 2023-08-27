@@ -22,6 +22,9 @@ shared_context 'rake task' do
     Rake::Task.define_task(:environment)
 
     allow(Mongoid::Tasks::Database).to receive(:logger).and_return(logger)
+
+    # OptionParser can incorrectly parse RSpec's options such as --pattern
+    allow_any_instance_of(OptionParser).to receive(:parse!).and_return({})
   end
 
   shared_examples_for 'create_indexes' do
