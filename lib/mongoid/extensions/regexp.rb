@@ -20,13 +20,19 @@ module Mongoid
         def mongoize(object)
           return if object.nil?
 
-          case object
-          when String then ::Regexp.new(object)
-          when ::Regexp then object
-          when BSON::Regexp::Raw then object.compile
-          end
-        rescue RegexpError
-          nil
+          value = begin
+                    case object
+                    when String then ::Regexp.new(object)
+                    when ::Regexp then object
+                    when BSON::Regexp::Raw then object.compile
+                    end
+                  rescue RegexpError
+                    nil
+                  end
+
+          return value if value
+
+          Mongoid::RawValue(object, 'Regexp')
         end
         alias_method :demongoize, :mongoize
       end

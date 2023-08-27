@@ -84,13 +84,13 @@ module Mongoid
         def mongoize(object)
           return if object.blank?
 
-          begin
-            time = object.__mongoize_time__
-          rescue ArgumentError
-            return
-          end
+          time = begin
+                   object.__mongoize_time__
+                 rescue ArgumentError
+                   nil
+                 end
 
-          return unless time.acts_like?(:time)
+          return Mongoid::RawValue.new(object, 'Time') unless time&.acts_like?(:time)
 
           if object.respond_to?(:sec_fraction)
             ::Time.at(time.to_i, object.sec_fraction * (10**6)).utc

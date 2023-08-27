@@ -23,6 +23,8 @@ module Mongoid
           true
         elsif object.to_s&.match?(FALSY_VALUES)
           false
+        else
+          Mongoid::RawValue(object, 'Boolean')
         end
       end
       alias_method :demongoize, :mongoize

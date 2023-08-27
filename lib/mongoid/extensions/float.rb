@@ -40,10 +40,10 @@ module Mongoid
         def mongoize(object)
           return if object.blank?
 
-          if object.is_a?(String)
-            object.to_f if object.numeric?
+          if (object.is_a?(String) && object.numeric?) || object.respond_to?(:to_f)
+            object.to_f
           else
-            object.try(:to_f)
+            Mongoid::RawValue(object, 'Float')
           end
         end
         alias_method :demongoize, :mongoize

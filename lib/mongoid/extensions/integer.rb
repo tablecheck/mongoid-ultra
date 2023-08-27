@@ -1,9 +1,8 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 module Mongoid
   module Extensions
-
-    # Adds type-casting behavior to Integer class.
     module Integer
 
       # Converts the integer into a time as the number of seconds since the epoch.
@@ -48,17 +47,17 @@ module Mongoid
         def mongoize(object)
           return if object.blank?
 
-          if object.is_a?(String)
-            object.to_i if object.numeric?
+          if (object.is_a?(String) && object.numeric?) || object.respond_to?(:to_i)
+            object.to_i
           else
-            object.try(:to_i)
+            Mongoid::RawValue(object, 'Integer')
           end
         end
-        alias_method :demongoize, :mongoize
+        alias :demongoize :mongoize
       end
     end
   end
 end
 
-Integer.include Mongoid::Extensions::Integer
-Integer.extend(Mongoid::Extensions::Integer::ClassMethods)
+::Integer.__send__(:include, Mongoid::Extensions::Integer)
+::Integer.extend(Mongoid::Extensions::Integer::ClassMethods)
