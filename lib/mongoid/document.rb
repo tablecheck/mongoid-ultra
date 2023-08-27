@@ -83,7 +83,7 @@ module Mongoid
     #
     # @return [ Array ] An array containing [document.class, document._id]
     def identity
-      [ self.class, _id ]
+      [self.class, _id]
     end
 
     # Instantiate a new +Document+, setting the Document's attributes if
@@ -120,7 +120,7 @@ module Mongoid
     #
     # @return [ String ] The id of the document or nil if new.
     def to_key
-      (persisted? || destroyed?) ? [ _id.to_s ] : nil
+      persisted? || destroyed? ? [_id.to_s] : nil
     end
 
     # Return a hash of the entire document hierarchy from this document and
@@ -216,7 +216,7 @@ module Mongoid
         run_callbacks(:initialize) unless _initialize_callbacks.empty?
       else
         yield self if block_given?
-        self.pending_callbacks += %i[ apply_defaults find initialize ]
+        self.pending_callbacks += %i[apply_defaults find initialize]
       end
     end
 
@@ -306,8 +306,9 @@ module Mongoid
     # @param name [ String | Symbol ] the name of the relation to add
     # @param meta [ Mongoid::Assocation::Relatable ] the relation object
     def add_attributes_for_relation(name, meta)
-      relation, stored = send(name), meta.store_as
-      return unless attributes.key?(stored) || !relation.blank?
+      relation = send(name)
+      stored = meta.store_as
+      return unless attributes.key?(stored) || relation.present?
 
       if relation.nil?
         attributes.delete(stored)
@@ -325,7 +326,7 @@ module Mongoid
     def mongoid_document_check!(klass)
       return if klass.include?(Mongoid::Document)
 
-      raise ArgumentError, 'A class which includes Mongoid::Document is expected'
+      raise ArgumentError.new('A class which includes Mongoid::Document is expected')
     end
 
     # Constructs a hash representing the internal state of this object,
@@ -390,8 +391,8 @@ module Mongoid
       # @param [ true | false ] execute_callbacks Whether callbacks should be
       #   suppressed or not.
       def with_callbacks(execute_callbacks)
-        saved, Threaded.execute_callbacks =
-          Threaded.execute_callbacks?, execute_callbacks
+        saved = Threaded.execute_callbacks?
+        Threaded.execute_callbacks = execute_callbacks
         yield
       ensure
         Threaded.execute_callbacks = saved
@@ -474,7 +475,7 @@ module Mongoid
       #
       # @return [ Array<Class> ] All subclasses of the current document.
       def _types
-        @_types ||= (descendants + [ self ]).uniq.map(&:discriminator_value)
+        @_types ||= (descendants + [self]).uniq.map(&:discriminator_value)
       end
 
       # Clear the @_type cache. This is generally called when changing the discriminator

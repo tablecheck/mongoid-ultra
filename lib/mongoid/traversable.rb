@@ -29,7 +29,6 @@ module Mongoid
       #
       # @param [ Class ] subclass The inheriting class.
       #
-      # rubocop:disable Metrics/AbcSize
       def inherited(subclass)
         super
         @_type = nil
@@ -52,7 +51,6 @@ module Mongoid
         default_proc = -> { self.class.discriminator_value }
         field(discriminator_key, default: default_proc, type: String)
       end
-      # rubocop:enable Metrics/AbcSize
     end
 
     # `_parent` is intentionally not implemented via attr_accessor because
@@ -91,7 +89,6 @@ module Mongoid
       # @param [ String ] value The discriminator key to set.
       #
       # @api private
-      # rubocop:disable Metrics/AbcSize
       def discriminator_key=(value)
         raise Errors::InvalidDiscriminatorKeyTarget.new(self, superclass) if hereditary?
 
@@ -119,7 +116,6 @@ module Mongoid
         default_proc = -> { self.class.discriminator_value }
         field(discriminator_key, default: default_proc, type: String)
       end
-      # rubocop:enable Metrics/AbcSize
 
       # Returns the discriminator key.
       #
@@ -199,13 +195,11 @@ module Mongoid
       # See discussion above for the `_parent` method, as to why the variable
       # here needs to have two underscores.
       #
-      # rubocop:disable Naming/MemoizedInstanceVariableName
       if reset
         @__children = nil
       else
         @__children ||= collect_children
       end
-      # rubocop:enable Naming/MemoizedInstanceVariableName
     end
 
     # Get all descendant +Documents+ of this +Document+ recursively.
@@ -222,13 +216,11 @@ module Mongoid
       # See discussion above for the `_parent` method, as to why the variable
       # here needs to have two underscores.
       #
-      # rubocop:disable Naming/MemoizedInstanceVariableName
       if reset
         @__descendants = nil
       else
         @__descendants ||= collect_descendants
       end
-      # rubocop:enable Naming/MemoizedInstanceVariableName
     end
 
     # Collect all the children of this document.

@@ -82,15 +82,15 @@ module Mongoid
     #
     # @note this option only has effect when BSON 5+ is present. Otherwise,
     #   the setting is ignored.
-    option :allow_bson5_decimal128, default: false, on_change: -> (allow) do
-        if BSON::VERSION >= '5.0.0'
-          if allow
-            BSON::Registry.register(BSON::Decimal128::BSON_TYPE, BSON::Decimal128)
-          else
-            BSON::Registry.register(BSON::Decimal128::BSON_TYPE, BigDecimal)
-          end
-        end
-      end
+    option :allow_bson5_decimal128, default: false, on_change: lambda { |allow|
+                                                                 if BSON::VERSION >= '5.0.0'
+                                                                   if allow
+                                                                     BSON::Registry.register(BSON::Decimal128::BSON_TYPE, BSON::Decimal128)
+                                                                   else
+                                                                     BSON::Registry.register(BSON::Decimal128::BSON_TYPE, BigDecimal)
+                                                                   end
+                                                                 end
+                                                               }
 
     # Sets the async_query_executor for the application. By default the thread pool executor
     #   is set to `:immediate. Options are:

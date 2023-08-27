@@ -54,7 +54,6 @@ module Mongoid
           #
           # @return [ Array<Document> ] The loaded docs.
           #
-          # rubocop:disable Metrics/AbcSize
           def <<(*args)
             docs = args.flatten
             return concat(docs) if docs.size > 1
@@ -89,9 +88,7 @@ module Mongoid
             end
             unsynced(_base, foreign_key) and self
           end
-          # rubocop:enable Metrics/AbcSize
-
-          alias push <<
+          alias_method :push, :<<
 
           # Appends an array of documents to the association. Performs a batch
           # insert of the documents instead of persisting one at a time.
@@ -103,7 +100,9 @@ module Mongoid
           #
           # @return [ Array<Document> ] The documents.
           def concat(documents)
-            ids, docs, inserts = {}, [], []
+            ids = {}
+            docs = []
+            inserts = []
             documents.each { |doc| append_document(doc, ids, docs, inserts) }
             _base.push(foreign_key => ids.keys) if persistable? || _creating?
             persist_delayed(docs, inserts)
@@ -131,7 +130,7 @@ module Mongoid
             doc
           end
 
-          alias new build
+          alias_method :new, :build
 
           # Delete the document from the association. This will set the foreign key
           # on the document to nil. If the dependent options on the association are
@@ -155,7 +154,7 @@ module Mongoid
 
           # Mongoid::Extensions::Array defines Array#delete_one, so we need
           # to make sure that method behaves reasonably on proxies, too.
-          alias delete_one delete
+          alias_method :delete_one, :delete
 
           # Removes all associations between the base document and the target
           # documents by deleting the foreign keys and the references, orphaning
@@ -172,9 +171,9 @@ module Mongoid
             clear_target_for_nullify
           end
 
-          alias nullify_all nullify
-          alias clear nullify
-          alias purge nullify
+          alias_method :nullify_all, :nullify
+          alias_method :clear, :nullify
+          alias_method :purge, :nullify
 
           # Substitutes the supplied target documents for the existing documents
           # in the association. If the new target is nil, perform the necessary
@@ -361,7 +360,6 @@ module Mongoid
           # @param [ Array ] inserts the list of Hashes of attributes that will
           #   be inserted (corresponding to the ``docs`` list)
           #
-          # rubocop:disable Metrics/AbcSize
           def append_document(doc, ids, docs, inserts)
             return unless doc
 
@@ -379,7 +377,6 @@ module Mongoid
               unsynced(_base, foreign_key)
             end
           end
-          # rubocop:enable Metrics/AbcSize
         end
       end
     end

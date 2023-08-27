@@ -9,7 +9,7 @@ module Mongoid
     class Proxy
       extend Forwardable
 
-      alias extend_proxy extend
+      alias_method :extend_proxy, :extend
 
       # specific methods to prevent from being undefined
       KEEPER_METHODS = %i[
@@ -58,7 +58,9 @@ module Mongoid
       # @param [ Document | Array<Document> ] target The target of the proxy.
       # @param [ Mongoid::Association::Relatable ] association The association metadata.
       def initialize(base, target, association)
-        @_base, @_target, @_association = base, target, association
+        @_base = base
+        @_target = target
+        @_association = association
         yield(self) if block_given?
         extend_proxies(association.extension) if association.extension
       end

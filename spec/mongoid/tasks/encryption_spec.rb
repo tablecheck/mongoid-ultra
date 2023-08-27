@@ -44,9 +44,10 @@ describe 'Mongoid::Tasks::Encryption' do
         before do
           expect_any_instance_of(Mongo::ClientEncryption)
             .to receive(:create_data_key)
-                  .with('local', { key_alt_names: [key_alt_name] })
-                  .and_return(data_key_id)
+            .with('local', { key_alt_names: [key_alt_name] })
+            .and_return(data_key_id)
         end
+
         it 'creates a data key' do
           result = Mongoid::Tasks::Encryption.create_data_key(
             kms_provider_name: 'local',
@@ -70,9 +71,10 @@ describe 'Mongoid::Tasks::Encryption' do
             before do
               expect_any_instance_of(Mongo::ClientEncryption)
                 .to receive(:create_data_key)
-                      .with('local', {})
-                      .and_return(data_key_id)
+                .with('local', {})
+                .and_return(data_key_id)
             end
+
             it 'creates a data key' do
               result = Mongoid::Tasks::Encryption.create_data_key(client_name: :encrypted)
               expect(result).to eq(
@@ -89,9 +91,10 @@ describe 'Mongoid::Tasks::Encryption' do
             before do
               expect_any_instance_of(Mongo::ClientEncryption)
                 .to receive(:create_data_key)
-                      .with('local', {key_alt_names: [key_alt_name]})
-                      .and_return(data_key_id)
+                .with('local', { key_alt_names: [key_alt_name] })
+                .and_return(data_key_id)
             end
+
             it 'creates a data key' do
               result = Mongoid::Tasks::Encryption.create_data_key(
                 client_name: :encrypted,

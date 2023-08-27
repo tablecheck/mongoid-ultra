@@ -218,7 +218,7 @@ module Mongoid
     # @return [ Array<Object> ] The old and new values.
     def attribute_change(attr)
       attr = database_field_name(attr)
-      [ changed_attributes[attr], attributes[attr] ] if attribute_changed?(attr)
+      [changed_attributes[attr], attributes[attr]] if attribute_changed?(attr)
     end
 
     # A class for representing the default value that an attribute was changed

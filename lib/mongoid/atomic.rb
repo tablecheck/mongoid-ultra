@@ -115,7 +115,6 @@ module Mongoid
     #
     # @return [ Hash ] The updates and their modifiers.
     #
-    # rubocop:disable Style/OptionalBooleanParameter
     def atomic_updates(_use_indexes = false)
       process_flagged_destroys
       mods = Modifiers.new
@@ -126,9 +125,7 @@ module Mongoid
       end
       mods
     end
-    alias _updates atomic_updates
-    # rubocop:enable Style/OptionalBooleanParameter
-
+    alias_method :_updates, :atomic_updates
     # Get the removal modifier for the document. Will be nil on root
     # documents, $unset on embeds_one, $set on embeds_many.
     #

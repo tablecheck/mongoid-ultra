@@ -2,12 +2,11 @@
 
 require 'optparse'
 
-# rubocop:disable Metrics/BlockLength
 namespace :db do
   namespace :mongoid do
     namespace :encryption do
       desc 'Create encryption key'
-      task create_data_key: [ :environment ] do
+      task create_data_key: [:environment] do
         options = {}
         parser = OptionParser.new do |opts|
           opts.on('-c', '--client CLIENT', 'Name of the client to use') do |v|
@@ -39,4 +38,3 @@ namespace :db do
     end
   end
 end
-# rubocop:enable Metrics/BlockLength

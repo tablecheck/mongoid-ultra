@@ -2,7 +2,6 @@
 
 # TODO: consider refactoring this Proxy class, to satisfy the following
 # cops...
-# rubocop:disable Metrics/ClassLength
 module Mongoid
   module Association
     module Referenced
@@ -81,7 +80,7 @@ module Mongoid
             self
           end
 
-          alias push <<
+          alias_method :push, :<<
 
           # Appends an array of documents to the association. Performs a batch
           # insert of the documents instead of persisting one at a time.
@@ -93,7 +92,8 @@ module Mongoid
           #
           # @return [ Array<Document> ] The documents.
           def concat(documents)
-            docs, inserts = [], []
+            docs = []
+            inserts = []
             documents.each do |doc|
               next unless doc
 
@@ -125,7 +125,7 @@ module Mongoid
             end
           end
 
-          alias new build
+          alias_method :new, :build
 
           # Delete the document from the association. This will set the foreign key
           # on the document to nil. If the dependent options on the association are
@@ -152,7 +152,7 @@ module Mongoid
 
           # Mongoid::Extensions::Array defines Array#delete_one, so we need
           # to make sure that method behaves reasonably on proxies, too.
-          alias delete_one delete
+          alias_method :delete_one, :delete
 
           # Deletes all related documents from the database given the supplied
           # conditions.
@@ -218,9 +218,7 @@ module Mongoid
           #   person.posts.exists?
           #
           # @return [ true | false ] True is persisted documents exist, false if not.
-          def exists?
-            criteria.exists?
-          end
+          delegate :exists?, to: :criteria
 
           # Find the matching document on the association, either based on id or
           # conditions.
@@ -273,7 +271,7 @@ module Mongoid
             end
           end
 
-          alias nullify_all nullify
+          alias_method :nullify_all, :nullify
 
           # Clear the association. Will delete the documents from the db if they are
           # already persisted.
@@ -303,7 +301,7 @@ module Mongoid
             many
           end
 
-          alias clear purge
+          alias_method :clear, :purge
 
           # Substitutes the supplied target documents for the existing documents
           # in the association. If the new target is nil, perform the necessary
@@ -317,7 +315,8 @@ module Mongoid
           # @return [ Many ] The association.
           def substitute(replacement)
             if replacement
-              new_docs, docs = replacement.compact, []
+              new_docs = replacement.compact
+              docs = []
               new_ids = new_docs.map(&:_id)
               remove_not_in(new_ids)
               new_docs.each do |doc|
@@ -579,4 +578,3 @@ module Mongoid
     end
   end
 end
-# rubocop:enable Metrics/ClassLength
