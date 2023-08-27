@@ -37,11 +37,11 @@ module Mongoid
       #
       # @return [ Hash ] A new consolidated hash.
       def __consolidate__(klass)
-        consolidated = {}
-        each_pair do |key, value|
-          if /\$/.match?(key)
-            value.each_pair do |k, v|
-              value[k] = key == '$rename' ? v.to_s : mongoize_for(key, klass, k, v)
+        each_pair.with_object({}) do |(key, value), consolidated|
+          if key.start_with?('$')
+            value = value.each_with_object({}) do |(key2, value2), hash|
+              key2 = klass.database_field_name(key2)
+              hash[key2] = key == '$rename' ? value2.to_s : mongoize_for(key, klass, key2, value2)
             end
             consolidated[key] ||= {}
             consolidated[key].update(value)
@@ -50,7 +50,6 @@ module Mongoid
             consolidated['$set'].update(key => mongoize_for(key, klass, key, value))
           end
         end
-        consolidated
       end
 
       # Checks whether conditions given in this hash are known to be
