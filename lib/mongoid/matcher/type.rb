@@ -1,5 +1,4 @@
-# frozen_string_literal: true
-
+# rubocop:todo all
 module Mongoid
   module Matcher
 
@@ -9,8 +8,6 @@ module Mongoid
     #
     # @api private
     module Type
-
-      extend self
 
       # Returns whether a value satisfies a $type expression.
       #
@@ -22,20 +19,20 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      def matches?(exists, value, condition)
+      module_function def matches?(exists, value, condition)
         conditions = case condition
-                     when Array
-                       condition
-                     when Integer
-                       [condition]
-                     else
-                       raise Errors::InvalidQuery.new("Unknown $type argument: #{condition}")
-                     end
-
-        conditions.each do |cond|
-          return true if one_matches?(exists, value, cond)
+        when Array
+          condition
+        when Integer
+          [condition]
+        else
+          raise Errors::InvalidQuery, "Unknown $type argument: #{condition}"
         end
-
+        conditions.each do |condition|
+          if one_matches?(exists, value, condition)
+            return true
+          end
+        end
         false
       end
 
@@ -50,74 +47,76 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      def one_matches?(exists, value, condition)
+      module_function def one_matches?(exists, value, condition)
         case condition
         when 1
           # Double
-          value.is_a?(Float)
+          Float === value
         when 2
           # String
-          value.is_a?(String)
+          String === value
         when 3
           # Object
-          value.is_a?(Hash)
+          Hash === value
         when 4
           # Array
-          value.is_a?(Array)
+          Array === value
         when 5
           # Binary data
-          value.is_a?(BSON::Binary)
+          BSON::Binary === value
         when 6
           # Undefined
-          value.is_a?(BSON::Undefined)
+          BSON::Undefined === value
         when 7
           # ObjectId
-          value.is_a?(BSON::ObjectId)
+          BSON::ObjectId === value
         when 8
           # Boolean
-          value.is_a?(TrueClass) || value.is_a?(FalseClass)
+          TrueClass === value || FalseClass === value
         when 9
           # Date
-          value.is_a?(Date) || value.is_a?(Time) || value.is_a?(DateTime)
+          Date === value || Time === value || DateTime === value
         when 10
           # Null
-          exists && value.is_a?(NilClass)
+          exists && NilClass === value
         when 11
           # Regex
-          value.is_a?(Regexp::Raw) || value.is_a?(::Regexp)
+          Regexp::Raw === value || ::Regexp === value
         when 12
           # DBPointer deprecated
-          value.is_a?(BSON::DbPointer)
+          BSON::DbPointer === value
         when 13
           # JavaScript
-          value.is_a?(BSON::Code)
+          BSON::Code === value
         when 14
           # Symbol deprecated
-          value.is_a?(Symbol) || value.is_a?(BSON::Symbol::Raw)
+          Symbol === value || BSON::Symbol::Raw === value
         when 15
           # Javascript with code deprecated
-          value.is_a?(BSON::CodeWithScope)
+          BSON::CodeWithScope === value
         when 16
           # 32-bit int
-          value.is_a?(BSON::Int32) || (value.is_a?(Integer) && (-2**32..(2**32) - 1).cover?(value))
+          BSON::Int32 === value || Integer === value && (-2**32..2**32-1).include?(value)
         when 17
           # Timestamp
-          value.is_a?(BSON::Timestamp)
+          BSON::Timestamp === value
         when 18
           # Long
-          value.is_a?(BSON::Int64) ||
-            (value.is_a?(Integer) && (-2**64..(2**64) - 1).cover?(value) && !(-2**32..(2**32) - 1).cover?(value))
+          BSON::Int64 === value ||
+            Integer === value &&
+              (-2**64..2**64-1).include?(value) &&
+              !(-2**32..2**32-1).include?(value)
         when 19
           # Decimal
-          value.is_a?(BSON::Decimal128)
+          BSON::Decimal128 === value
         when -1
           # minKey
-          value.is_a?(BSON::MinKey)
+          BSON::MinKey === value
         when 127
           # maxKey
-          value.is_a?(BSON::MaxKey)
+          BSON::MaxKey === value
         else
-          raise Errors::InvalidQuery.new("Unknown $type argument: #{condition}")
+          raise Errors::InvalidQuery, "Unknown $type argument: #{condition}"
         end
       end
     end

@@ -1,5 +1,4 @@
-# frozen_string_literal: true
-
+# rubocop:todo all
 module Mongoid
   module Matcher
 
@@ -9,8 +8,6 @@ module Mongoid
     # @api private
     module Expression
 
-      extend self
-
       # Returns whether a document satisfies a query expression.
       #
       # @param [ Mongoid::Document ] document The document.
@@ -19,29 +16,29 @@ module Mongoid
       # @return [ true | false ] Whether the document matches.
       #
       # @api private
-      def matches?(document, expr)
+      module_function def matches?(document, expr)
         if expr.nil?
-          raise Errors::InvalidQuery.new('Nil condition in expression context')
+          raise Errors::InvalidQuery, "Nil condition in expression context"
         end
-
-        unless expr.is_a?(Hash)
-          raise Errors::InvalidQuery.new('MQL query must be provided as a Hash')
+        unless Hash === expr
+          raise Errors::InvalidQuery, "MQL query must be provided as a Hash"
         end
-
         expr.all? do |k, expr_v|
           k = k.to_s
-          if k == '$comment'
-            true
-          elsif k.start_with?('$')
+          if k == "$comment"
+            # Nothing
+            return true
+          end
+          if k.start_with?('$')
             ExpressionOperator.get(k).matches?(document, expr_v)
           else
             values = Matcher.extract_attribute(document, k)
-            if values.empty?
-              FieldExpression.matches?(false, nil, expr_v)
-            else
+            if values.length > 0
               values.any? do |v|
                 FieldExpression.matches?(true, v, expr_v)
               end
+            else
+              FieldExpression.matches?(false, nil, expr_v)
             end
           end
         end

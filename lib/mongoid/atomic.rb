@@ -4,7 +4,6 @@ require 'mongoid/atomic/modifiers'
 require 'mongoid/atomic/paths'
 
 module Mongoid
-
   # This module contains the logic for supporting atomic operations against the
   # database.
   module Atomic
@@ -21,7 +20,6 @@ module Mongoid
     ].freeze
 
     included do
-
       # When MongoDB finally fully implements the positional operator, we can
       # get rid of all indexing related code in Mongoid.
       attr_accessor :_index
@@ -32,7 +30,7 @@ module Mongoid
     # @example Add the atomic pull.
     #   person.add_atomic_pull(address)
     #
-    # @param [ Mongoid::Document ] document The embedded document to pull.
+    # @param [ Document ] document The embedded document to pull.
     def add_atomic_pull(document)
       document.flagged_for_destroy = true
       key = document.association_name.to_s
@@ -45,9 +43,9 @@ module Mongoid
     # @example Add an atomic unset.
     #   document.add_atomic_unset(doc)
     #
-    # @param [ Mongoid::Document ] document The child document.
+    # @param [ Document ] document The child document.
     #
-    # @return [ Array<Mongoid::Document> ] The children.
+    # @return [ Array<Document> ] The children.
     def add_atomic_unset(document)
       document.flagged_for_destroy = true
       key = document.association_name.to_s
@@ -116,6 +114,8 @@ module Mongoid
     #   person.atomic_updates(children)
     #
     # @return [ Hash ] The updates and their modifiers.
+    #
+    # rubocop:disable Style/OptionalBooleanParameter
     def atomic_updates(_use_indexes = false)
       process_flagged_destroys
       mods = Modifiers.new
@@ -126,7 +126,8 @@ module Mongoid
       end
       mods
     end
-    alias_method :_updates, :atomic_updates
+    alias _updates atomic_updates
+    # rubocop:enable Style/OptionalBooleanParameter
 
     # Get the removal modifier for the document. Will be nil on root
     # documents, $unset on embeds_one, $set on embeds_many.
@@ -315,13 +316,20 @@ module Mongoid
 
     private
 
+    # Clears all pending atomic updates.
+    def reset_atomic_updates!
+      Atomic::UPDATES.each do |update|
+        send(update).clear
+      end
+    end
+
     # Generates the atomic updates in the correct order.
     #
     # @example Generate the updates.
     #   model.generate_atomic_updates(mods, doc)
     #
     # @param [ Modifiers ] mods The atomic modifications.
-    # @param [ Mongoid::Document ] doc The document to update for.
+    # @param [ Document ] doc The document to update for.
     def generate_atomic_updates(mods, doc)
       mods.unset(doc.atomic_unsets)
       mods.pull(doc.atomic_pulls)

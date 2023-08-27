@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 module Rails
 
-  # Mongoid utilities for Rails.
+  # Mongoid utilities for Rails
   module Mongoid
     extend self
 
@@ -15,7 +16,7 @@ module Rails
     #
     # @param [ Application ] app The rails application.
     def load_models(app)
-      ::Mongoid.load_models(app.config.paths['app/models'].expanded)
+      ::Mongoid.load_models(app.config.paths["app/models"].expanded)
     end
 
     # Conditionally calls `Rails::Mongoid.load_models(app)` if the

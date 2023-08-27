@@ -4,19 +4,29 @@ require 'mongoid/association/marshalable'
 
 module Mongoid
   module Association
-
     # This class is the superclass for all association proxy objects, and contains
     # common behavior for all of them.
     class Proxy
       extend Forwardable
 
-      UNFORWARDABLE_METHODS = /\A(?:__.*|send|object_id|equal\?|respond_to\?|respond_to_missing\?|tap|public_send|extend_proxy|extend_proxies)\z/.freeze
+      alias extend_proxy extend
 
-      alias_method :extend_proxy, :extend
+      # specific methods to prevent from being undefined
+      KEEPER_METHODS = %i[
+        send
+        object_id
+        equal?
+        respond_to?
+        respond_to_missing?
+        tap
+        public_send
+        extend_proxy
+        extend_proxies
+      ].freeze
 
       # We undefine most methods to get them sent through to the target.
       instance_methods.each do |method|
-        undef_method(method) unless UNFORWARDABLE_METHODS.match?(method)
+        undef_method(method) unless method.to_s.start_with?('__') || KEEPER_METHODS.include?(method)
       end
 
       include Threaded::Lifecycle
@@ -42,19 +52,13 @@ module Mongoid
       def_delegators :binding, :bind_one, :unbind_one
       def_delegator :_base, :collection_name
 
-      # Convenience for setting the target and the association metadata properties since
-      # all proxies will need to do this.
+      # Sets the target and the association metadata properties.
       #
-      # @example Initialize the proxy.
-      #   proxy.init(person, name, association)
-      #
-      # @param [ Mongoid::Document ] base The base document on the proxy.
-      # @param [ Mongoid::Document | Array<Mongoid::Document> ] target The target of the proxy.
+      # @param [ Document ] base The base document on the proxy.
+      # @param [ Document | Array<Document> ] target The target of the proxy.
       # @param [ Mongoid::Association::Relatable ] association The association metadata.
-      def init(base, target, association)
-        @_base = base
-        @_target = target
-        @_association = association
+      def initialize(base, target, association)
+        @_base, @_target, @_association = base, target, association
         yield(self) if block_given?
         extend_proxies(association.extension) if association.extension
       end
@@ -112,7 +116,7 @@ module Mongoid
       # @example Set the association metadata.
       #   proxt.characterize_one(name)
       #
-      # @param [ Mongoid::Document ] document The document to set on.
+      # @param [ Document ] document The document to set on.
       def characterize_one(document)
         document._association = _association unless document._association
       end
@@ -154,7 +158,7 @@ module Mongoid
       # @example Raise the error.
       #   relation.raise_unsaved(post)
       #
-      # @param [ Mongoid::Document ] doc The child document getting created.
+      # @param [ Document ] doc The child document getting created.
       #
       # @raise [ Errors::UnsavedDocument ] The error.
       def raise_unsaved(doc)
@@ -190,16 +194,15 @@ module Mongoid
       end
 
       class << self
-
         # Apply ordering to the criteria if it was defined on the association.
         #
         # @example Apply the ordering.
         #   Proxy.apply_ordering(criteria, association)
         #
-        # @param [ Mongoid::Criteria ] criteria The criteria to modify.
+        # @param [ Criteria ] criteria The criteria to modify.
         # @param [ Mongoid::Association::Relatable ] association The association metadata.
         #
-        # @return [ Mongoid::Criteria ] The ordered criteria.
+        # @return [ Criteria ] The ordered criteria.
         def apply_ordering(criteria, association)
           association.order ? criteria.order_by(association.order) : criteria
         end

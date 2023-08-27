@@ -1,5 +1,4 @@
-# frozen_string_literal: true
-
+# rubocop:todo all
 module Mongoid
   module Matcher
 
@@ -10,8 +9,6 @@ module Mongoid
     # @api private
     module Ne
 
-      extend self
-
       # Returns whether a value satisfies an $ne expression.
       #
       # @param [ true | false ] exists Whether the value exists.
@@ -21,10 +18,10 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      def matches?(exists, value, condition)
+      module_function def matches?(exists, value, condition)
         case condition
         when ::Regexp, BSON::Regexp::Raw
-          raise Errors::InvalidQuery.new("'$ne' operator does not allow Regexp arguments: #{Errors::InvalidQuery.truncate_expr(condition)}")
+          raise Errors::InvalidQuery, "'$ne' operator does not allow Regexp arguments: #{Errors::InvalidQuery.truncate_expr(condition)}"
         end
 
         !EqImpl.matches?(exists, value, condition, '$ne')

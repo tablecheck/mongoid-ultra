@@ -1,5 +1,4 @@
-# frozen_string_literal: true
-
+# rubocop:todo all
 module Mongoid
   module Matcher
 
@@ -10,8 +9,6 @@ module Mongoid
     # @api private
     module Eq
 
-      extend self
-
       # Returns whether a value satisfies an $eq expression.
       #
       # @param [ true | false ] exists Whether the value exists.
@@ -21,7 +18,7 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      def matches?(exists, value, condition)
+      module_function def matches?(exists, value, condition)
         EqImpl.matches?(exists, value, condition, '$eq')
       end
     end

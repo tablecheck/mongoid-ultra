@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 module Mongoid
 
@@ -6,34 +7,29 @@ module Mongoid
   module Interceptable
     extend ActiveSupport::Concern
 
-    CALLBACKS = %i[
-      after_build
-      after_create
-      after_destroy
-      after_find
-      after_initialize
-      after_save
-      after_touch
-      after_update
-      after_upsert
-      after_validation
-      around_create
-      around_destroy
-      around_save
-      around_update
-      around_upsert
-      before_create
-      before_destroy
-      before_save
-      before_update
-      before_upsert
-      before_validation
+    CALLBACKS = [
+      :after_build,
+      :after_create,
+      :after_destroy,
+      :after_find,
+      :after_initialize,
+      :after_save,
+      :after_touch,
+      :after_update,
+      :after_upsert,
+      :after_validation,
+      :around_create,
+      :around_destroy,
+      :around_save,
+      :around_update,
+      :around_upsert,
+      :before_create,
+      :before_destroy,
+      :before_save,
+      :before_update,
+      :before_upsert,
+      :before_validation,
     ].freeze
-
-    # Callback methods which apply defaults to models.
-    #
-    # @api private
-    APPLY_DEFAULTS = %i[apply_defaults apply_post_processed_defaults].freeze
 
     included do
       extend ActiveModel::Callbacks
@@ -75,7 +71,7 @@ module Mongoid
     #
     # @return [ true | false ] If the document is in a callback state.
     def in_callback_state?(kind)
-      %i[create destroy].include?(kind) || new_record? || flagged_for_destroy? || changed?
+      [ :create, :destroy ].include?(kind) || new_record? || flagged_for_destroy? || changed?
     end
 
     # Run only the after callbacks for the specific event.
@@ -127,8 +123,9 @@ module Mongoid
     # @param [ Proc | nil ] skip_if If this proc returns true, the callbacks
     #   will not be triggered, while the given block will be still called.
     def run_callbacks(kind, with_children: true, skip_if: nil, &block)
-      return block&.call if skip_if&.call
-
+      if skip_if&.call
+        return block&.call
+      end
       if with_children
         cascadable_children(kind).each do |child|
           if child.run_callbacks(child_callback_type(kind, child), with_children: with_children) == false
@@ -146,19 +143,20 @@ module Mongoid
     # Run the callbacks for embedded documents.
     #
     # @param [ Symbol ] kind The type of callback to execute.
-    # @param [ Array<Mongoid::Document> ] children Children to execute callbacks on. If
+    # @param [ Array<Document> ] children Children to execute callbacks on. If
     #   nil, callbacks will be executed on all cascadable children of
     #   the document.
     #
     # @api private
     def _mongoid_run_child_callbacks(kind, children: nil, &block)
       child, *tail = (children || cascadable_children(kind))
+      with_children = !Mongoid::Config.prevent_multiple_calls_of_embedded_callbacks
       if child.nil?
         block&.call
       elsif tail.empty?
-        child.run_callbacks(child_callback_type(kind, child), &block)
+        child.run_callbacks(child_callback_type(kind, child), with_children: with_children, &block)
       else
-        child.run_callbacks(child_callback_type(kind, child)) do
+        child.run_callbacks(child_callback_type(kind, child), with_children: with_children) do
           _mongoid_run_child_callbacks(kind, children: tail, &block)
         end
       end
@@ -194,10 +192,10 @@ module Mongoid
     # @api private
     def run_pending_callbacks
       pending_callbacks.each do |cb|
-        if APPLY_DEFAULTS.include?(cb)
+        if [:apply_defaults, :apply_post_processed_defaults].include?(cb)
           send(cb)
         else
-          run_callbacks(cb, with_children: false)
+          self.run_callbacks(cb, with_children: false)
         end
       end
       pending_callbacks.clear
@@ -225,11 +223,10 @@ module Mongoid
     #
     # @param [ Symbol ] kind The type of callback.
     #
-    # @return [ Array<Mongoid::Document> ] The children.
+    # @return [ Array<Document> ] The children.
     def cascadable_children(kind, children = Set.new)
       embedded_relations.each_pair do |name, association|
         next unless association.cascading_callbacks?
-
         without_autobuild do
           delayed_pulls = delayed_atomic_pulls[name]
           delayed_unsets = delayed_atomic_unsets[name]
@@ -238,7 +235,6 @@ module Mongoid
           relation = send(name)
           Array.wrap(relation).each do |child|
             next if children.include?(child)
-
             children.add(child) if cascadable_child?(kind, child, association)
             child.send(:cascadable_children, kind, children)
           end
@@ -253,13 +249,12 @@ module Mongoid
     #   document.cascadable_child?(:update, doc)
     #
     # @param [ Symbol ] kind The type of callback.
-    # @param [ Mongoid::Document ] child The child document.
+    # @param [ Document ] child The child document.
     #
     # @return [ true | false ] If the child should fire the callback.
     def cascadable_child?(kind, child, association)
-      return false if %i[initialize find touch].include?(kind)
+      return false if kind == :initialize || kind == :find || kind == :touch
       return false if kind == :validate && association.validate?
-
       child.callback_executable?(kind) ? child.in_callback_state?(kind) : false
     end
 
@@ -272,15 +267,17 @@ module Mongoid
     #   document.child_callback_type(:update, doc)
     #
     # @param [ Symbol ] kind The type of callback.
-    # @param [ Mongoid::Document ] child The child document
+    # @param [ Document ] child The child document
     #
     # @return [ Symbol ] The name of the callback.
     def child_callback_type(kind, child)
       if kind == :update
         return :create if child.new_record?
         return :destroy if child.flagged_for_destroy?
+        kind
+      else
+        kind
       end
-      kind
     end
 
     # We need to hook into this for autosave, since we don't want it firing if
@@ -291,10 +288,10 @@ module Mongoid
     # @example Hook into the halt.
     #   document.halted_callback_hook(filter)
     #
-    # @param [ Symbol ] _filter The callback that halted.
-    # @param [ Symbol ] _name The name of the callback that was halted
+    # @param [ Symbol ] filter The callback that halted.
+    # @param [ Symbol ] name The name of the callback that was halted
     #   (requires Rails 6.1+)
-    def halted_callback_hook(_filter, _name = nil)
+    def halted_callback_hook(filter, name = nil)
       @before_callback_halted = true
     end
 

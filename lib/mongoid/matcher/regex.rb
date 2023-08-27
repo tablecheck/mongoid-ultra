@@ -1,5 +1,4 @@
-# frozen_string_literal: true
-
+# rubocop:todo all
 module Mongoid
   module Matcher
 
@@ -10,28 +9,26 @@ module Mongoid
     # @api private
     module Regex
 
-      extend self
-
       # Returns whether a value satisfies a $regex expression.
       #
-      # @param [ true | false ] _exists Not used.
+      # @param [ true | false ] exists Not used.
       # @param [ String | Array<String> ] value The value to check.
       # @param [ Regexp | BSON::Regexp::Raw ] condition The $regex condition.
       #
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      def matches?(_exists, value, condition)
+      module_function def matches?(exists, value, condition)
         condition = case condition
-                    when Regexp
-                      condition
-                    when BSON::Regexp::Raw
-                      condition.compile
-                    else
-                      # Note that strings must have been converted to a regular expression
-                      # instance already (with $options taken into account, if provided).
-                      raise Errors::InvalidQuery.new("$regex requires a regular expression argument: #{Errors::InvalidQuery.truncate_expr(condition)}")
-                    end
+        when Regexp
+          condition
+        when BSON::Regexp::Raw
+          condition.compile
+        else
+          # Note that strings must have been converted to a regular expression
+          # instance already (with $options taken into account, if provided).
+          raise Errors::InvalidQuery, "$regex requires a regular expression argument: #{Errors::InvalidQuery.truncate_expr(condition)}"
+        end
 
         case value
         when Array
@@ -54,8 +51,8 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      def matches_array_or_scalar?(value, condition)
-        if value.is_a?(Array)
+      module_function def matches_array_or_scalar?(value, condition)
+        if Array === value
           value.any? do |v|
             matches?(true, v, condition)
           end

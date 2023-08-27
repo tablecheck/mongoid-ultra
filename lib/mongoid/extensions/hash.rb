@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 module Mongoid
   module Extensions
@@ -23,7 +24,7 @@ module Mongoid
       #
       # @return [ Hash ] The converted hash.
       def __mongoize_object_id__
-        if (id = self['$oid'])
+        if id = self['$oid']
           BSON::ObjectId.from_string(id)
         else
           transform_values!(&:__mongoize_object_id__)
@@ -39,15 +40,19 @@ module Mongoid
       def __consolidate__(klass)
         consolidated = {}
         each_pair do |key, value|
-          if /\$/.match?(key)
-            value.each_pair do |k, v|
-              value[k] = key == '$rename' ? v.to_s : mongoize_for(key, klass, k, v)
+          if key =~ /\$/
+            value.keys.each do |key2|
+              value2 = value[key2]
+              real_key = klass.database_field_name(key2)
+
+              value.delete(key2) if real_key != key2
+              value[real_key] = (key == "$rename") ? value2.to_s : mongoize_for(key, klass, real_key, value2)
             end
             consolidated[key] ||= {}
             consolidated[key].update(value)
           else
-            consolidated['$set'] ||= {}
-            consolidated['$set'].update(key => mongoize_for(key, klass, key, value))
+            consolidated["$set"] ||= {}
+            consolidated["$set"].update(key => mongoize_for(key, klass, key, value))
           end
         end
         consolidated
@@ -79,10 +84,9 @@ module Mongoid
       #   conditions.
       # @api private
       def _mongoid_unsatisfiable_criteria?
-        unsatisfiable_criteria = { '_id' => { '$in' => [] } }
+        unsatisfiable_criteria = { "_id" => { "$in" => [] }}
         return true if self == unsatisfiable_criteria
-        return false unless length == 1 && keys == %w[$and]
-
+        return false unless length == 1 && keys == %w($and)
         value = values.first
         value.is_a?(Array) && value.any? do |sub_v|
           sub_v.is_a?(Hash) && sub_v._mongoid_unsatisfiable_criteria?
@@ -100,7 +104,7 @@ module Mongoid
       # @return [ true | false ] Whether hash contains known unsatisfiable
       #   conditions.
       # @deprecated
-      alias_method :blank_criteria?, :_mongoid_unsatisfiable_criteria?
+      alias :blank_criteria? :_mongoid_unsatisfiable_criteria?
 
       # Deletes an id value from the hash.
       #
@@ -109,7 +113,7 @@ module Mongoid
       #
       # @return [ Object ] The deleted value, or nil.
       def delete_id
-        delete('_id') || delete(:_id) || delete('id') || delete(:id)
+        delete("_id") || delete(:_id) || delete("id") || delete(:id)
       end
 
       # Get the id attribute from this hash, whether it's prefixed with an
@@ -120,7 +124,7 @@ module Mongoid
       #
       # @return [ Object ] The value of the id.
       def extract_id
-        self['_id'] || self[:_id] || self['id'] || self[:id]
+        self["_id"] || self[:_id] || self["id"] || self[:id]
       end
 
       # Fetch a nested value via dot syntax.
@@ -132,11 +136,10 @@ module Mongoid
       #
       # @return [ Object ] The matching value.
       def __nested__(string)
-        keys = string.split('.')
+        keys = string.split(".")
         value = self
         keys.each do |key|
           return nil if value.nil?
-
           value_for_key = value[key]
           if value_for_key.nil? && key.to_i.to_s == key
             value_for_key = value[key.to_i]
@@ -174,9 +177,9 @@ module Mongoid
       # @example Convert the hash to a criteria.
       #   { klass: Band, where: { name: "Depeche Mode" }.to_criteria
       #
-      # @return [ Mongoid::Criteria ] The criteria.
+      # @return [ Criteria ] The criteria.
       def to_criteria
-        criteria = Criteria.new(delete(:klass) || delete('klass'))
+        criteria = Criteria.new(delete(:klass) || delete("klass"))
         each_pair do |method, args|
           criteria = criteria.__send__(method, args)
         end
@@ -202,8 +205,8 @@ module Mongoid
         field = klass.fields[key.to_s]
         if field
           val = field.mongoize(value)
-          if Mongoid::Persistable::LIST_OPERATIONS.include?(operator) && field.resizable? && !value.is_a?(Array)
-            val = val.first
+          if Mongoid::Persistable::LIST_OPERATIONS.include?(operator) && field.resizable?
+            val = val.first if !value.is_a?(Array)
           end
           val
         else
@@ -224,7 +227,6 @@ module Mongoid
         # @return [ Hash | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.nil?
-
           case object
           when BSON::Document
             object.dup.transform_values!(&:mongoize)
@@ -247,7 +249,7 @@ module Mongoid
   end
 end
 
-Hash.include Mongoid::Extensions::Hash
-Hash.extend(Mongoid::Extensions::Hash::ClassMethods)
+::Hash.__send__(:include, Mongoid::Extensions::Hash)
+::Hash.extend(Mongoid::Extensions::Hash::ClassMethods)
 
-Mongoid.deprecate(Hash, :blank_criteria)
+::Mongoid.deprecate(Hash, :blank_criteria)

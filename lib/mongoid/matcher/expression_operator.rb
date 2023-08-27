@@ -1,5 +1,4 @@
-# frozen_string_literal: true
-
+# rubocop:todo all
 module Mongoid
   module Matcher
 
@@ -11,14 +10,12 @@ module Mongoid
       MAP = {
         '$and' => And,
         '$nor' => Nor,
-        '$or' => Or
+        '$or' => Or,
       }.freeze
-
-      extend self
 
       # Returns the matcher module for a given operator.
       #
-      # @param [ String ] operator The operator name.
+      # @param [ String ] op The operator name.
       #
       # @return [ Module ] The matcher module.
       #
@@ -26,10 +23,10 @@ module Mongoid
       #   Raised if the given operator is unknown.
       #
       # @api private
-      def get(operator)
-        MAP.fetch(operator)
+      module_function def get(op)
+        MAP.fetch(op)
       rescue KeyError
-        raise Errors::InvalidExpressionOperator.new(operator)
+        raise Errors::InvalidExpressionOperator.new(op)
       end
     end
   end

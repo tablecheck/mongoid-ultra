@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Mongoid
-
   # Defines behavior for dirty tracking.
   module Changeable
     extend ActiveSupport::Concern
@@ -52,12 +51,10 @@ module Mongoid
     #
     # @return [ Hash<String, Array<Object, Object> ] The changes.
     def changes
-      changes = {}
-      changed.each do |attr|
+      changed.each_with_object({}) do |attr, changes|
         change = attribute_change(attr)
         changes[attr] = change if change
-      end
-      changes.with_indifferent_access
+      end.with_indifferent_access
     end
 
     # Call this method after save, so the changes can be properly switched.
@@ -72,9 +69,7 @@ module Mongoid
       @previous_changes = changes
       @attributes_before_last_save = @previous_attributes
       @previous_attributes = attributes.dup
-      Atomic::UPDATES.each do |update|
-        send(update).clear
-      end
+      reset_atomic_updates!
       changed_attributes.clear
     end
 
@@ -165,25 +160,19 @@ module Mongoid
     #   in an attribute during the save that triggered the callbacks to run.
     #
     # @param [ String ] attr The name of the attribute.
-    # @param **kwargs The optional keyword arguments.
-    #
-    # @option **kwargs [ Object ] :from The object the attribute was changed from.
-    # @option **kwargs [ Object ] :to The object the attribute was changed to.
+    # @param [ Object ] from The object the attribute was changed from (optional).
+    # @param [ Object ] to The object the attribute was changed to (optional).
     #
     # @return [ true | false ] Whether the attribute has changed during the last save.
-    def saved_change_to_attribute?(attr, **kwargs)
+    def saved_change_to_attribute?(attr, from: Utils::PLACEHOLDER, to: Utils::PLACEHOLDER)
       changes = saved_change_to_attribute(attr)
       return false unless changes.is_a?(Array)
 
-      if kwargs.key?(:from) && kwargs.key?(:to)
-        changes.first == kwargs[:from] && changes.last == kwargs[:to]
-      elsif kwargs.key?(:from)
-        changes.first == kwargs[:from]
-      elsif kwargs.key?(:to)
-        changes.last == kwargs[:to]
-      else
-        true
-      end
+      return true if Utils.placeholder?(from) && Utils.placeholder?(to)
+      return changes.first == from if Utils.placeholder?(to)
+      return changes.last == to if Utils.placeholder?(from)
+
+      changes.first == from && changes.last == to
     end
 
     # Returns whether this attribute change the next time we save.
@@ -229,8 +218,31 @@ module Mongoid
     # @return [ Array<Object> ] The old and new values.
     def attribute_change(attr)
       attr = database_field_name(attr)
-      [changed_attributes[attr], attributes[attr]] if attribute_changed?(attr)
+      [ changed_attributes[attr], attributes[attr] ] if attribute_changed?(attr)
     end
+
+    # A class for representing the default value that an attribute was changed
+    # from or to.
+    #
+    # @api private
+    class Anything
+      # `Anything` objects are always equal to everything. This simplifies
+      # the logic for asking whether an attribute has changed or not. If the
+      # `from` or `to` value is a `Anything` (because it was not
+      # explicitly given), any comparison with it will suggest the value has
+      # not changed.
+      #
+      # @param [ Object ] _other The object being compared with this object.
+      #
+      # @return [ true ] Always returns true.
+      def ==(_other)
+        true
+      end
+    end
+
+    # a singleton object to represent an optional `to` or `from` value
+    # that was not explicitly provided to #attribute_changed?
+    ATTRIBUTE_UNCHANGED = Anything.new
 
     # Determine if a specific attribute has changed.
     #
@@ -238,19 +250,16 @@ module Mongoid
     #   model.attribute_changed?("name")
     #
     # @param [ String ] attr The name of the attribute.
-    # @param **kwargs The optional keyword arguments.
-    #
-    # @option **kwargs [ Object ] :from The object the attribute was changed from.
-    # @option **kwargs [ Object ] :to The object the attribute was changed to.
+    # @param [ Object ] from The object the attribute was changed from (optional).
+    # @param [ Object ] to The object the attribute was changed to (optional).
     #
     # @return [ true | false ] Whether the attribute has changed.
-    def attribute_changed?(attr, **kwargs)
+    def attribute_changed?(attr, from: ATTRIBUTE_UNCHANGED, to: ATTRIBUTE_UNCHANGED)
       attr = database_field_name(attr)
-
-      return false if !changed_attributes.key?(attr) ||
-                      (changed_attributes[attr] == attributes[attr]) ||
-                      (kwargs.key?(:from) && (changed_attributes[attr] != kwargs[:from])) ||
-                      (kwargs.key?(:to) && (attributes[attr] != kwargs[:to]))
+      return false unless changed_attributes.key?(attr)
+      return false if changed_attributes[attr] == attributes[attr]
+      return false if from != changed_attributes[attr]
+      return false if to != attributes[attr]
 
       true
     end
@@ -264,8 +273,7 @@ module Mongoid
     #
     # @return [ true | false ] If the attribute differs.
     def attribute_changed_from_default?(attr)
-      field = fields[attr]
-      return false unless field
+      return false unless (field = fields[attr])
 
       attributes[attr] != field.eval_default(self)
     end
@@ -340,8 +348,8 @@ module Mongoid
       @attributes_before_type_cast = @attributes.dup
     end
 
+    # Class-level methods for changeable objects.
     module ClassMethods
-
       private
 
       # Generate all the dirty methods needed for the attribute.

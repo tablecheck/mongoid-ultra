@@ -4,7 +4,6 @@ module Mongoid
   module Association
     module Embedded
       class EmbeddedIn
-
         # Transparent proxy for embedded_in associations.
         # An instance of this class is returned when calling the
         # association getter method on the child document. This
@@ -12,19 +11,18 @@ module Mongoid
         # most of its methods to the target of the association, i.e.
         # the parent document.
         class Proxy < Association::One
-
           # Instantiate a new embedded_in association.
           #
           # @example Create the new association.
           #   Association::Embedded::EmbeddedIn.new(person, address, association)
           #
-          # @param [ Mongoid::Document ] base The document the association hangs off of.
-          # @param [ Mongoid::Document ] target The target (parent) of the association.
+          # @param [ Document ] base The document the association hangs off of.
+          # @param [ Document ] target The target (parent) of the association.
           # @param [ Mongoid::Association::Relatable ] association The association metadata.
           #
           # @return [ In ] The proxy.
           def initialize(base, target, association)
-            init(base, target, association) do
+            super do
               characterize_one(_target)
               bind_one
             end
@@ -36,9 +34,9 @@ module Mongoid
           # @example Substitute the new document.
           #   person.name.substitute(new_name)
           #
-          # @param [ Mongoid::Document | Hash ] replacement A document to replace the target.
+          # @param [ Document | Hash ] replacement A document to replace the target.
           #
-          # @return [ Mongoid::Document | nil ] The association or nil.
+          # @return [ Document | nil ] The association or nil.
           def substitute(replacement)
             unbind_one
             unless replacement
@@ -69,11 +67,9 @@ module Mongoid
           # @example Set the base association.
           #   object.characterize_one(document)
           #
-          # @param [ Mongoid::Document ] document The document to set the association metadata on.
+          # @param [ Document ] document The document to set the association metadata on.
           def characterize_one(document)
-            return if _base._association
-
-            _base._association = _association.inverse_association(document)
+            _base._association ||= _association.inverse_association(document)
           end
 
           # Are we able to persist this association?
@@ -116,7 +112,7 @@ module Mongoid
             # @example Get the path calculator.
             #   Proxy.path(document)
             #
-            # @param [ Mongoid::Document ] document The document to calculate on.
+            # @param [ Document ] document The document to calculate on.
             #
             # @return [ Root ] The root atomic path calculator.
             def path(document)

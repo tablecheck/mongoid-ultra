@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
-require 'rails'
-require 'rails/mongoid'
+require "rails"
+require "rails/mongoid"
 
 module Rails
   module Mongoid
@@ -11,7 +12,7 @@ module Rails
 
       console do |app|
         if app.sandbox?
-          require 'mongoid/railties/console_sandbox'
+          require "mongoid/railties/console_sandbox"
           start_sandbox
         end
       end
@@ -24,17 +25,19 @@ module Rails
       # @ return [Hash] rescued responses
       def self.rescue_responses
         {
-          'Mongoid::Errors::DocumentNotFound' => :not_found,
-          'Mongoid::Errors::Validations' => 422
+          "Mongoid::Errors::DocumentNotFound" => :not_found,
+          "Mongoid::Errors::Validations" => 422
         }
       end
 
       config.app_generators.orm :mongoid, migration: false
 
-      config.action_dispatch.rescue_responses&.merge!(rescue_responses)
+      if config.action_dispatch.rescue_responses
+        config.action_dispatch.rescue_responses.merge!(rescue_responses)
+      end
 
       rake_tasks do
-        load 'mongoid/railties/database.rake'
+        load "mongoid/railties/database.rake"
       end
 
       # Exposes Mongoid's configuration to the Rails application configuration.
@@ -53,15 +56,18 @@ module Rails
       # It runs after all config/initializers have loaded, so that the YAML
       # options can override options specified in
       # (e.g.) config/initializers/mongoid.rb.
-      initializer 'mongoid.load-config', after: :load_config_initializers do
-        config_file = Rails.root.join('config/mongoid.yml')
+      initializer "mongoid.load-config", after: :load_config_initializers do
+        config_file = Rails.root.join("config", "mongoid.yml")
         if config_file.file?
           begin
             ::Mongoid.load!(config_file)
-          rescue ::Mongoid::Errors::NoClientsConfig,
-                 ::Mongoid::Errors::NoDefaultClient,
-                 ::Mongoid::Errors::NoClientDatabase,
-                 ::Mongoid::Errors::NoClientHosts => e
+          rescue ::Mongoid::Errors::NoClientsConfig => e
+            handle_configuration_error(e)
+          rescue ::Mongoid::Errors::NoDefaultClient => e
+            handle_configuration_error(e)
+          rescue ::Mongoid::Errors::NoClientDatabase => e
+            handle_configuration_error(e)
+          rescue ::Mongoid::Errors::NoClientHosts => e
             handle_configuration_error(e)
           end
         end
@@ -81,19 +87,19 @@ module Rails
       #
       # This will happen for every request in development, once in other
       # environments.
-      initializer 'mongoid.preload-models' do |app|
+      initializer "mongoid.preload-models" do |app|
         config.to_prepare do
           ::Rails::Mongoid.preload_models(app)
         end
       end
 
       # Rails runs all initializers first before getting into any generator
-      # code, so we have no way in the initializer to know if we are
+      # code, so we have no way in the intitializer to know if we are
       # generating a mongoid.yml. So instead of failing, we catch all the
       # errors and print them out.
-      def handle_configuration_error(error)
-        ::Mongoid.logger.error 'There is a configuration error with the current mongoid.yml.'
-        ::Mongoid.logger.error error.message
+      def handle_configuration_error(e)
+        puts "There is a configuration error with the current mongoid.yml."
+        puts e.message
       end
 
       # Include Controller extension that measures Mongoid runtime
@@ -101,16 +107,28 @@ module Rails
       # instrumentation event `process_action.action_controller`.
       #
       # The measurement is made via internal Mongo monitoring subscription
-      initializer 'mongoid.runtime-metric' do
-        require 'mongoid/railties/controller_runtime'
+      initializer "mongoid.runtime-metric" do
+        require "mongoid/railties/controller_runtime"
 
         ActiveSupport.on_load :action_controller do
           include ::Mongoid::Railties::ControllerRuntime::ControllerExtension
         end
 
         Mongo::Monitoring::Global.subscribe Mongo::Monitoring::COMMAND,
-                                            ::Mongoid::Railties::ControllerRuntime::Collector.new
+            ::Mongoid::Railties::ControllerRuntime::Collector.new
       end
+
+      # Add custom serializers for BSON::ObjectId
+      initializer 'mongoid.active_job.custom_serializers' do
+        require 'mongoid/railties/bson_object_id_serializer'
+
+        config.after_initialize do
+          ActiveJob::Serializers.add_serializers(
+            [::Mongoid::Railties::ActiveJobSerializers::BsonObjectIdSerializer]
+          )
+        end
+      end
+
     end
   end
 end

@@ -1,6 +1,6 @@
-*****************
-Mongoid Ultra 9.0
-*****************
+***********
+Mongoid 9.0
+***********
 
 .. default-domain:: mongodb
 
@@ -16,31 +16,6 @@ The complete list of releases is available `on GitHub
 <https://jira.mongodb.org/projects/MONGOID?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page>`_;
 please consult GitHub releases for detailed release notes and JIRA for
 the complete list of issues fixed in each release, including bug fixes.
-
-Support for MongoDB Server, Ruby, JRuby, and Rails Versions Dropped
--------------------------------------------------------------------
-
-Mongoid 9 drops support for:
-- MongoDB Server 3.6 and 4.0
-- Ruby 2.6
-- JRuby 9.3
-- Rails 5.2
-
-Mongoid 9 requires minimum versions as follows:
-- MongoDB Server 4.4 or newer
-- Ruby 2.7 or newer
-- JRuby 9.5 or newer
-- Rails 6.0 or newer
-
-In addition, Mongoid 9 deprecates support for the following versions.
-Users are encouraged to upgrade to newer versions after upgrading
-to Mongoid 9.
-- MongoDB Server 4.4
-- Ruby 2.7
-- Rails 6.0
-
-Consider using `MongoDB Atlas <https://www.mongodb.com/atlas/database>`_
-to automate your MongoDB server upgrades.
 
 
 Deprecated options removed
@@ -72,26 +47,10 @@ prior has been dropped (you must use a minimum of version 8.0.)
 Deprecated functionality removed
 --------------------------------
 
-The following previously deprecated functionality is now removed:
-
-- ``Mongoid::QueryCache`` has been removed. Please replace it 1-for-1 with ``Mongo::QueryCache``.
+- The ``Mongoid::QueryCache`` module has been removed. Please replace any usages 1-for-1 with ``Mongo::QueryCache``.
   The method ``Mongoid::QueryCache#clear_cache`` should be replaced with ``Mongo::QueryCache#clear``.
-  All other methods and submodules are identically named.
-- ``Document#as_json :compact`` option is removed. Please call ```#compact``
-  on the returned ``Hash`` object instead.
-- ``Criteria#geo_near`` is removed as MongoDB server versions 4.2
-  and later no longer support the ``$geoNear`` command. Please use the
-  `$geoNear stage of the aggregation pipeline
-  <https://www.mongodb.com/docs/manual/reference/operator/aggregation/geoNear/>`_
-  instead.
-- ``Criteria#max_scan`` is removed as MongoDB server versions 4.2
-  and later no longer support the ``maxScan`` query option. Please use
-  ``Criteria#max_time_ms`` instead.
-- The ``:background_indexing`` global option and ``:background`` index
-  specification argument have been removed. These options do not have any effect
-  in MongoDB server versions 4.2 and later. You may safely remove
-  ``:background_indexing`` from your config ``:background`` from any index
-  definitions without replacement.
+  All other methods and submodules are identically named. Refer to the `driver query cache documentation
+  <https://mongodb.com/docs/ruby-driver/current/reference/query-cache/>`_ for more details.
 
 
 ``touch`` method now clears changed state
@@ -313,35 +272,6 @@ defaults to ``true``.
 When set to false, the older, inconsistent behavior is restored.
 
 
-``Criteria#pluck_each`` Method Added
-----------------------------------------
-
-The newly introduced ``Criteria#pluck_each`` method returns
-an Enumerator for the results of ``pluck``, or if a block is given,
-calls the block once for each pluck result in a progressively-loaded
-fashion.
-
-Previously, calling ``criteria.pluck(:name).each`` would load the
-entire result set into Ruby's memory before iterating over the results.
-In contrast, ``criteria.pluck_each(:name)`` uses the `MongoDB getMore command
-<https://mongodb.com/docs/manual/reference/command/getMore/>`_
-to load results in batches, similar to how ``criteria.each`` behaves.
-This is useful for working with large query results.
-
-The method arguments and behavior of ``pluck_each`` are otherwise
-identical to ``pluck``.
-
-.. code-block:: ruby
-
-  Band.all.pluck_each(:name, 'address.city', :founded) do |name, city, founded|
-    puts "#{name} from #{city} started in #{founded}"
-  end
-  # =>
-  # The Rolling Stones from London started in 1962
-  # The Beatles from Liverpool started in 1960
-  # The Monkees from Los Angeles started in 1966
-
-
 Support Field Aliases on Index Options
 --------------------------------------
 
@@ -365,14 +295,48 @@ of the ``index`` macro: ``partial_filter_expression``, ``weights``,
   and Mongoid's functionality may not support such changes.
 
 
+BSON 5 and BSON::Decimal128 Fields
+----------------------------------
+
+When BSON 4 or earlier is present, any field declared as BSON::Decimal128 will
+return a BSON::Decimal128 value. When BSON 5 is present, however, any field
+declared as BSON::Decimal128 will return a BigDecimal value by default.
+
+.. code-block:: ruby
+
+  class Model
+    include Mongoid::Document
+
+    field :decimal_field, type: BSON::Decimal128
+  end
+
+  # under BSON <= 4
+  Model.first.decimal_field.class #=> BSON::Decimal128
+
+  # under BSON >= 5
+  Model.first.decimal_field.class #=> BigDecimal
+
+If you need literal BSON::Decimal128 values with BSON 5, you may instruct
+Mongoid to allow literal BSON::Decimal128 fields:
+
+.. code-block:: ruby
+
+  Model.first.decimal_field.class #=> BigDecimal
+
+  Mongoid.allow_bson5_decimal128 = true
+  Model.first.decimal_field.class #=> BSON::Decimal128
+
+.. note::
+
+  The ``allow_bson5_decimal128`` option only has any effect under
+  BSON 5 and later. BSON 4 and earlier ignore the setting entirely.
+
+
 Bug Fixes and Improvements
 --------------------------
 
 This section will be for smaller bug fixes and improvements:
 
-- The ``.tally`` method can now take a keyword arg :unwind
-  which tallies array values individually (using the ``$unwind`` operator.)
-  `MONGOID-5556 <https://jira.mongodb.org/browse/MONGOID-5556>`_.
 - The ``.unscoped`` method now also clears scopes declared using ``.with_scope``
   `MONGOID-5214 <https://jira.mongodb.org/browse/MONGOID-5214>`_.
 - When evolving a ``String`` to a ``BigDecimal`` (i.e. when querying a
@@ -394,3 +358,6 @@ This section will be for smaller bug fixes and improvements:
   a non-numeric, non-string value that implements ``:to_d`` will return a string
   rather than a ``BigDecimal``
   `MONGOID-5507 <https://jira.mongodb.org/browse/MONGOID-5507>`_.
+- Added support for serializing and deserializing BSON::ObjectId values
+  when passed as ActiveJob arguments
+  `MONGOID-5611 <https://jira.mongodb.org/browse/MONGOID-5611>`_.
