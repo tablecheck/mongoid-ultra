@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Clients::Sessions do
 
   before(:all) do
     CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
     CONFIG[:clients][:other][:database] = 'other'
-    Mongoid::Clients.clients.values.each(&:close)
+    Mongoid::Clients.clients.each_value(&:close)
     Mongoid::Config.send(:clients=, CONFIG[:clients])
     Mongoid::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
   end
@@ -102,7 +102,7 @@ describe Mongoid::Clients::Sessions do
           end
 
           it 'uses a single session id for all operations on the class' do
-            expect(Post.with(client: :other) { |klass| klass.count }).to be(1)
+            expect(Post.with(client: :other, &:count)).to be(1)
             lsids_sent = insert_events.collect { |event| event.command['lsid'] }
             expect(lsids_sent.size).to eq(3)
             expect(lsids_sent.uniq.size).to eq(1)
@@ -112,17 +112,17 @@ describe Mongoid::Clients::Sessions do
         context 'when the other class uses a different client' do
 
           let!(:error) do
-            e = nil
+            error = nil
             begin
               Person.with_session do
                 Person.create!
                 Person.create!
                 Post.create!
               end
-            rescue => ex
-                e = ex
+            rescue StandardError => e
+              error = e
             end
-            e
+            error
           end
 
           it 'does not raise an error' do
@@ -140,7 +140,7 @@ describe Mongoid::Clients::Sessions do
         context 'when sessions are nested' do
 
           let!(:error) do
-            e = nil
+            error = nil
             begin
               Person.with_session do
                 Person.with_session do
@@ -148,10 +148,10 @@ describe Mongoid::Clients::Sessions do
                   Post.create!
                 end
               end
-            rescue => ex
-              e = ex
+            rescue StandardError => e
+              error = e
             end
-            e
+            error
           end
 
           it 'raises an error' do
@@ -170,9 +170,7 @@ describe Mongoid::Clients::Sessions do
   context 'when a session is used on a model instance' do
 
     let!(:person) do
-      Person.with(client: :other) do |klass|
-        klass.create!
-      end
+      Person.with(client: :other, &:create!)
     end
 
     context 'when sessions are supported' do
@@ -236,17 +234,17 @@ describe Mongoid::Clients::Sessions do
         context 'when the other class uses a different client' do
 
           let!(:error) do
-            e = nil
+            error = nil
             begin
               person.with_session do
                 person.username = 'Emily'
                 person.save!
                 person.posts << Post.create!
               end
-            rescue => ex
-              e = ex
+            rescue StandardError => e
+              error = e
             end
-            e
+            error
           end
 
           it 'does not raise an error' do
@@ -264,7 +262,7 @@ describe Mongoid::Clients::Sessions do
         context 'when sessions are nested' do
 
           let!(:error) do
-            e = nil
+            error = nil
             begin
               person.with_session do
                 person.with_session do
@@ -273,10 +271,10 @@ describe Mongoid::Clients::Sessions do
                   person.posts << Post.create!
                 end
               end
-            rescue => ex
-              e = ex
+            rescue StandardError => e
+              error = e
             end
-            e
+            error
           end
 
           it 'raises an error' do
@@ -284,7 +282,7 @@ describe Mongoid::Clients::Sessions do
           end
 
           it 'does not execute any operations' do
-            expect(person.reload.username).not_to eq('Emily')
+            expect(person.reload.username).to_not eq('Emily')
             expect(Post.count).to be(0)
             expect(update_events).to be_empty
           end

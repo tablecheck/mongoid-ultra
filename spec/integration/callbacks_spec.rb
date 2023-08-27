@@ -63,7 +63,7 @@ describe 'callbacks integration tests' do
         context 'set as a document instance' do
           let(:instance) do
             Galaxy.create!(stars: [Star.new(
-              planets: [Planet.new],
+              planets: [Planet.new]
             )])
           end
 
@@ -73,7 +73,7 @@ describe 'callbacks integration tests' do
         context 'set as attributes on parent' do
           let(:instance) do
             Galaxy.create!(stars: [
-              planets: [{}],
+              planets: [{}]
             ])
           end
 
@@ -166,7 +166,7 @@ describe 'callbacks integration tests' do
 
         context 'set as a document instance' do
           before do
-            instance.update_attributes!(stars: [Star.new])
+            instance.update!(stars: [Star.new])
           end
 
           include_examples 'persists the attribute value'
@@ -174,7 +174,7 @@ describe 'callbacks integration tests' do
 
         context 'set as attributes on parent' do
           before do
-            instance.update_attributes!(stars: [{}])
+            instance.update!(stars: [{}])
           end
 
           include_examples 'persists the attribute value'
@@ -194,7 +194,7 @@ describe 'callbacks integration tests' do
 
         context 'set as a document instance' do
           before do
-            instance.update_attributes!(stars: [Star.new(planets: [Planet.new])])
+            instance.update!(stars: [Star.new(planets: [Planet.new])])
           end
 
           include_examples 'persists the attribute value'
@@ -202,7 +202,7 @@ describe 'callbacks integration tests' do
 
         context 'set as attributes on parent' do
           before do
-            instance.update_attributes!(stars: [planets: [{}]])
+            instance.update!(stars: [planets: [{}]])
           end
 
           include_examples 'persists the attribute value'
@@ -228,7 +228,7 @@ describe 'callbacks integration tests' do
 
         context 'set as a document instance' do
           before do
-            instance.update_attributes!(president: President.new)
+            instance.update!(president: President.new)
           end
 
           include_examples 'persists the attribute value'
@@ -236,7 +236,7 @@ describe 'callbacks integration tests' do
 
         context 'set as attributes on parent' do
           before do
-            instance.update_attributes!(president: { name: "Abraham Lincoln" })
+            instance.update!(president: { name: 'Abraham Lincoln' })
           end
 
           include_examples 'persists the attribute value'
@@ -256,7 +256,7 @@ describe 'callbacks integration tests' do
 
         context 'set as a document instance' do
           before do
-            instance.update_attributes!(president: President.new(first_spouse: FirstSpouse.new))
+            instance.update!(president: President.new(first_spouse: FirstSpouse.new))
           end
 
           include_examples 'persists the attribute value'
@@ -264,7 +264,7 @@ describe 'callbacks integration tests' do
 
         context 'set as attributes on parent' do
           before do
-            instance.update_attributes!(president: { first_spouse: { name: "Mary Todd Lincoln" } })
+            instance.update!(president: { first_spouse: { name: 'Mary Todd Lincoln' } })
           end
 
           include_examples 'persists the attribute value'
@@ -315,7 +315,7 @@ describe 'callbacks integration tests' do
     end
   end
 
-  context "When touching an embedded document" do
+  context 'When touching an embedded document' do
     let(:planet) { Planet.new }
     let(:star) { Star.new }
     let(:galaxy) { Galaxy.create! }
@@ -325,7 +325,7 @@ describe 'callbacks integration tests' do
       galaxy.stars << star
     end
 
-    it "the parent document touch callback gets called before the child" do
+    it 'the parent document touch callback gets called before the child' do
       planet.touch
       expect(galaxy.was_touched).to be true
       expect(star.was_touched_after_parent).to be true
@@ -333,7 +333,7 @@ describe 'callbacks integration tests' do
     end
   end
 
-  context "when reloading has_and_belongs_to_many after_save and after_remove callbacks" do
+  context 'when reloading has_and_belongs_to_many after_save and after_remove callbacks' do
 
     let(:architect) { Architect.create }
 
@@ -343,7 +343,7 @@ describe 'callbacks integration tests' do
 
     let(:b3) { Building.create }
 
-    it "counts added/removed buildings correctly" do
+    it 'counts added/removed buildings correctly' do
       architect.buildings << b1
       expect(architect.after_add_num_buildings).to eq(1)
 
@@ -363,11 +363,11 @@ describe 'callbacks integration tests' do
 
   context '_previously was methods in after_save callback' do
     let(:title) do
-      "Title"
+      'Title'
     end
 
     let(:updated_title) do
-      "Updated title"
+      'Updated title'
     end
 
     let(:age) do
@@ -396,7 +396,7 @@ describe 'callbacks integration tests' do
         # Field values are nil before create
         [nil, nil],
         [title, age]
-        ])
+      ])
     end
   end
 
@@ -415,9 +415,9 @@ describe 'callbacks integration tests' do
         end
       end
 
-      person = PreviouslyNewRecordPerson.create!(title: "title", age: 55)
+      person = PreviouslyNewRecordPerson.create!(title: 'title', age: 55)
       expect(person.previously_new_record_value).to be_truthy
-      person.title = "New title"
+      person.title = 'New title'
       person.save!
       expect(person.previously_new_record_value).to be_falsey
     end
@@ -438,11 +438,11 @@ describe 'callbacks integration tests' do
         end
       end
 
-      unsaved_person = PreviouslyPersistedPerson.new(title: "title", age: 55)
+      unsaved_person = PreviouslyPersistedPerson.new(title: 'title', age: 55)
       unsaved_person.destroy
       expect(unsaved_person.previously_persisted_value).to be_falsey
 
-      saved_person = PreviouslyPersistedPerson.create(title: "title", age: 55)
+      saved_person = PreviouslyPersistedPerson.create(title: 'title', age: 55)
       saved_person.destroy
       expect(saved_person.previously_persisted_value).to be_truthy
     end
@@ -455,16 +455,16 @@ describe 'callbacks integration tests' do
       field :name, type: String
       field :age, type: Integer
 
-      set_callback :save, :before do |doc|
-        [:name, :age].each do |attr|
+      set_callback :save, :before do
+        %i[name age].each do |attr|
           saved_change_to_attribute_values_before[attr] += [saved_change_to_attribute(attr)]
           attribute_before_last_save_values_before[attr] += [attribute_before_last_save(attr)]
           will_save_change_to_attribute_values_before[attr] += [will_save_change_to_attribute?(attr)]
         end
       end
 
-      set_callback :save, :after do |doc|
-        [:name, :age].each do |attr|
+      set_callback :save, :after do
+        %i[name age].each do |attr|
           saved_change_to_attribute_values_after[attr] += [saved_change_to_attribute(attr)]
           saved_change_to_attribute_q_values_after[attr] += [saved_change_to_attribute?(attr)]
           attribute_before_last_save_values_after[attr] += [attribute_before_last_save(attr)]
@@ -518,40 +518,67 @@ describe 'callbacks integration tests' do
 
       expect(subject.saved_change_to_attribute_values_before).to eq(
         {
-          :name => [nil, [nil, "Name 1"], nil],
-          :age => [nil, nil, [nil, 18]],
+          name: [nil, [nil, 'Name 1'], nil],
+          age: [nil, nil, [nil, 18]]
         }
       )
       expect(subject.saved_change_to_attribute_values_after).to eq(
         {
-          :name => [[nil, "Name 1"], nil, ["Name 1", "Name 2"]],
-          :age => [nil, [nil, 18], nil],
+          name: [[nil, 'Name 1'], nil, ['Name 1', 'Name 2']],
+          age: [nil, [nil, 18], nil]
         }
       )
       expect(subject.saved_change_to_attribute_q_values_after).to eq(
         {
-          :name => [true, false, true],
-          :age => [false, true, false],
+          name: [true, false, true],
+          age: [false, true, false]
         }
       )
       expect(subject.attribute_before_last_save_values_before).to eq(
         {
-          :name => [nil, nil, "Name 1"],
-          :age => [nil, nil, nil]
+          name: [nil, nil, 'Name 1'],
+          age: [nil, nil, nil]
         }
       )
       expect(subject.attribute_before_last_save_values_after).to eq(
         {
-          :name => [nil, "Name 1", "Name 1"],
-          :age => [nil, nil, 18]
+          name: [nil, 'Name 1', 'Name 1'],
+          age: [nil, nil, 18]
         }
       )
       expect(subject.will_save_change_to_attribute_values_before).to eq(
         {
-          :name => [true, false, true],
-          :age => [false, true, false]
+          name: [true, false, true],
+          age: [false, true, false]
         }
       )
+    end
+  end
+
+  context 'nested embedded documents' do
+    config_override :prevent_multiple_calls_of_embedded_callbacks, true
+
+    let(:logger) { [] }
+
+    let(:root) do
+      Root.new(
+        embedded_once: [
+          EmbeddedOnce.new(
+            embedded_twice: [EmbeddedTwice.new]
+          )
+        ]
+      )
+    end
+
+    before do
+      root.logger = logger
+      root.embedded_once.first.logger = logger
+      root.embedded_once.first.embedded_twice.first.logger = logger
+    end
+
+    it 'runs callbacks in the correct order' do
+      root.save!
+      expect(logger).to eq(%i[embedded_twice embedded_once root])
     end
   end
 end

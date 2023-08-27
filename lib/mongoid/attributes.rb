@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "active_model/attribute_methods"
-require "mongoid/attributes/dynamic"
-require "mongoid/attributes/nested"
-require "mongoid/attributes/processing"
-require "mongoid/attributes/projector"
-require "mongoid/attributes/readonly"
+require 'active_model/attribute_methods'
+require 'mongoid/attributes/dynamic'
+require 'mongoid/attributes/nested'
+require 'mongoid/attributes/processing'
+require 'mongoid/attributes/projector'
+require 'mongoid/attributes/readonly'
 
 module Mongoid
 
@@ -18,7 +18,7 @@ module Mongoid
     include Readonly
 
     attr_reader :attributes
-    alias :raw_attributes :attributes
+    alias_method :raw_attributes, :attributes
 
     # Determine if an attribute is present.
     #
@@ -30,7 +30,7 @@ module Mongoid
     # @return [ true | false ] True if present, false if not.
     def attribute_present?(name)
       attribute = read_raw_attribute(name)
-      !attribute.blank? || attribute == false
+      attribute.present? || attribute == false
     rescue Mongoid::Errors::AttributeNotLoaded
       false
     end
@@ -88,8 +88,7 @@ module Mongoid
       raw = read_raw_attribute(name)
       process_raw_attribute(name.to_s, raw, field)
     end
-    alias :[] :read_attribute
-
+    alias_method :[], :read_attribute
 
     # Process the raw attribute values just read from the documents attributes.
     #
@@ -195,11 +194,10 @@ module Mongoid
 
           typed_value
         end
-      else
-        # TODO: MONGOID-5072
+        # else TODO: MONGOID-5072
       end
     end
-    alias :[]= :write_attribute
+    alias_method :[]=, :write_attribute
 
     # Allows you to set all the attributes for a particular mass-assignment security role
     # by passing in a hash of attributes with keys matching the attribute names
@@ -233,7 +231,7 @@ module Mongoid
     def write_attributes(attrs = nil)
       assign_attributes(attrs)
     end
-    alias :attributes= :write_attributes
+    alias_method :attributes=, :write_attributes
 
     # Determine if the attribute is missing from the document, due to loading
     # it from the database with missing fields.
@@ -255,7 +253,7 @@ module Mongoid
     #
     # @return [ Object ] The hash with keys and values of the type-casted attributes.
     def typed_attributes
-      attribute_names.map { |name| [name, send(name)] }.to_h
+      attribute_names.to_h { |name| [name, send(name)] }
     end
 
     private
@@ -269,7 +267,7 @@ module Mongoid
     #
     # @return [ true | false ] If the string contains a "."
     def hash_dot_syntax?(string)
-      string.include?(".")
+      string.include?('.')
     end
 
     # Return the typecasted value for a field.
@@ -284,8 +282,6 @@ module Mongoid
     def typed_value_for(key, value)
       fields.key?(key) ? fields[key].mongoize(value) : value.mongoize
     end
-
-    private
 
     def read_raw_attribute(name)
       normalized = database_field_name(name.to_s)
@@ -340,7 +336,7 @@ module Mongoid
       # @param [ Symbol ] name The aliased field name to remove.
       def unalias_attribute(name)
         unless aliased_fields.delete(name.to_s)
-          raise AttributeError, "Field #{name} is not an aliased field"
+          raise AttributeError.new("Field #{name} is not an aliased field")
         end
 
         remove_method name
@@ -356,10 +352,8 @@ module Mongoid
       end
     end
 
-    private
-
     def lookup_attribute_presence(name, value)
-      if localized_fields.has_key?(name) && value
+      if localized_fields.key?(name) && value
         value = localized_fields[name].send(:lookup, value)
       end
       value.present?

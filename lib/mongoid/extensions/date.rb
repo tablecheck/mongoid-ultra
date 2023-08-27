@@ -42,6 +42,7 @@ module Mongoid
         # @return [ Date | nil ] The object as a date or nil.
         def demongoize(object)
           return if object.nil?
+
           if object.is_a?(String)
             object = begin
               object.__mongoize_time__
@@ -50,9 +51,9 @@ module Mongoid
             end
           end
 
-          if object.acts_like?(:time) || object.acts_like?(:date)
-            ::Date.new(object.year, object.month, object.day)
-          end
+          return unless object.acts_like?(:time) || object.acts_like?(:date)
+
+          ::Date.new(object.year, object.month, object.day)
         end
 
         # Turn the object from the ruby type we deal with to a Mongo friendly
@@ -66,24 +67,25 @@ module Mongoid
         # @return [ Time | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.blank?
+
           begin
-            if object.is_a?(String)
-              # https://jira.mongodb.org/browse/MONGOID-4460
-              time = ::Time.parse(object)
-            else
-              time = object.__mongoize_time__
-            end
+            time = if object.is_a?(String)
+                     # https://jira.mongodb.org/browse/MONGOID-4460
+                     ::Time.parse(object)
+                   else
+                     object.__mongoize_time__
+                   end
           rescue ArgumentError
             nil
           end
-          if time.acts_like?(:time)
-            ::Time.utc(time.year, time.month, time.day)
-          end
+          return unless time.acts_like?(:time)
+
+          ::Time.utc(time.year, time.month, time.day)
         end
       end
     end
   end
 end
 
-::Date.__send__(:include, Mongoid::Extensions::Date)
-::Date.extend(Mongoid::Extensions::Date::ClassMethods)
+Date.include Mongoid::Extensions::Date
+Date.extend(Mongoid::Extensions::Date::ClassMethods)

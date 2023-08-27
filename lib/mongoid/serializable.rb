@@ -49,9 +49,9 @@ module Mongoid
 
       names = field_names(options)
 
-      method_names = Array.wrap(options[:methods]).map do |name|
+      method_names = Array.wrap(options[:methods]).filter_map do |name|
         name.to_s if respond_to?(name)
-      end.compact
+      end
 
       (names + method_names).each do |name|
         without_autobuild do
@@ -128,7 +128,7 @@ module Mongoid
       inclusions = options[:include]
       relation_names(inclusions).each do |name|
         association = relations[name.to_s]
-        if association && relation = send(association.name)
+        if association && (relation = send(association.name))
           attributes[association.name.to_s] =
             relation.serializable_hash(relation_options(inclusions, options, name))
         end

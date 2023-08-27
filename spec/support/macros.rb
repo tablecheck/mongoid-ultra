@@ -5,7 +5,7 @@ module Mongoid
 
     def use_spec_mongoid_config
       around do |example|
-        config_path = File.join(File.dirname(__FILE__), "..", "config", "mongoid.yml")
+        config_path = File.join(File.dirname(__FILE__), '..', 'config', 'mongoid.yml')
 
         Mongoid::Clients.clear
         Mongoid.load!(config_path, :test)
@@ -102,12 +102,12 @@ module Mongoid
       end
     end
 
-    def time_zone_override(tz)
+    def time_zone_override(time_zone)
       around do |example|
-        old_tz = Time.zone
-        Time.zone = tz
+        old_time_zone = Time.zone
+        Time.zone = time_zone
         example.run
-        Time.zone = old_tz
+        Time.zone = old_time_zone
       end
     end
 

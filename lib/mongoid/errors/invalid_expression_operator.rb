@@ -14,10 +14,9 @@ module Mongoid
       # @api private
       def initialize(operator)
         @operator = operator
-        super(compose_message("invalid_expression_operator",
-          operator: operator,
-          valid_operators: "'$and', '$nor', '$or'",
-        ))
+        super(compose_message('invalid_expression_operator',
+                              operator: operator,
+                              valid_operators: "'$and', '$nor', '$or'"))
       end
 
       # @return [ String ] The operator that was used.

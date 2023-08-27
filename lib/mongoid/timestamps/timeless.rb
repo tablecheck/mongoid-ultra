@@ -15,7 +15,7 @@ module Mongoid
       #
       # @return [ true ] True.
       def clear_timeless_option
-        if self.persisted?
+        if persisted?
           self.class.clear_timeless_option_on_update
         else
           self.class.clear_timeless_option
@@ -52,13 +52,11 @@ module Mongoid
         #
         # @api private
         def timeless_table
-          Thread.current['[mongoid]:timeless'] ||= Hash.new
+          Thread.current['[mongoid]:timeless'] ||= {}
         end
 
         def_delegators :timeless_table, :[]=, :[]
       end
-
-      private
 
       module ClassMethods
 
@@ -80,7 +78,7 @@ module Mongoid
         #
         # @return [ true ] Always true.
         def clear_timeless_option
-          if counter = Timeless[name]
+          if (counter = Timeless[name])
             counter -= 1
             set_timeless_counter(counter)
           end
@@ -92,11 +90,11 @@ module Mongoid
         #
         # @return [ true ] Always true.
         def clear_timeless_option_on_update
-          if counter = Timeless[name]
-            counter -= 1 if self < Mongoid::Timestamps::Created
-            counter -= 1 if self < Mongoid::Timestamps::Updated
-            set_timeless_counter(counter)
-          end
+          return unless (counter = Timeless[name])
+
+          counter -= 1 if self < Mongoid::Timestamps::Created
+          counter -= 1 if self < Mongoid::Timestamps::Updated
+          set_timeless_counter(counter)
         end
 
         # Clears the timeless counter for the current class
@@ -107,7 +105,7 @@ module Mongoid
         # @return [ Integer | nil ] The counter value, or nil
         #   if the counter was cleared.
         def set_timeless_counter(counter)
-          Timeless[name] = (counter == 0) ? nil : counter
+          Timeless[name] = counter == 0 ? nil : counter
         end
 
         # Returns whether the current class should skip timestamping.

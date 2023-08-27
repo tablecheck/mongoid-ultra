@@ -24,13 +24,10 @@ module Mongoid
       # @return [ String ] The name of the current environment.
       # @api public
       def env_name
-        if defined?(::Rails)
-          return ::Rails.env
-        end
-        if defined?(::Sinatra)
-          return ::Sinatra::Base.environment.to_s
-        end
-        ENV["RACK_ENV"] || ENV["MONGOID_ENV"] or raise Errors::NoEnvironment
+        return ::Rails.env if defined?(::Rails)
+        return ::Sinatra::Base.environment.to_s if defined?(::Sinatra)
+
+        ENV['RACK_ENV'] || ENV['MONGOID_ENV'] || (raise Errors::NoEnvironment)
       end
 
       # Load the yaml from the provided path and return the settings for the
@@ -50,9 +47,7 @@ module Mongoid
         env = environment ? environment.to_s : env_name
 
         contents = File.read(path)
-        if contents.empty?
-          raise Mongoid::Errors::EmptyConfigFile.new(path)
-        end
+        raise Mongoid::Errors::EmptyConfigFile.new(path) if contents.empty?
 
         # These are the classes that can be used in a Mongoid
         # configuration file in addition to standard YAML types.
@@ -61,19 +56,17 @@ module Mongoid
           Symbol,
           # BSON::Binary occur as keyId values for FLE (more precisely,
           # the keyIds are UUIDs).
-          BSON::Binary,
+          BSON::Binary
         ]
 
         result = ERB.new(contents).result
         data = if RUBY_VERSION < '2.6'
-          YAML.safe_load(result, permitted_classes, [], true)
-        else
-          YAML.safe_load(result, permitted_classes: permitted_classes, aliases: true)
-        end
+                 YAML.safe_load(result, permitted_classes, [], true)
+               else
+                 YAML.safe_load(result, permitted_classes: permitted_classes, aliases: true)
+               end
 
-        unless data.is_a?(Hash)
-          raise Mongoid::Errors::InvalidConfigFile.new(path)
-        end
+        raise Mongoid::Errors::InvalidConfigFile.new(path) unless data.is_a?(Hash)
 
         data[env]
       end

@@ -5,9 +5,11 @@ require 'spec_helper'
 describe 'distinct on aliased fields' do
 
   let(:client) { Person.collection.client }
+  let(:event) { subscriber.single_command_started_event('distinct') }
+  let(:command) { event.command }
 
   let(:subscriber) do
-    Mrss::EventSubscriber.new
+    EventSubscriber.new
   end
 
   before do
@@ -17,12 +19,6 @@ describe 'distinct on aliased fields' do
   after do
     client.unsubscribe(Mongo::Monitoring::COMMAND, subscriber)
   end
-
-  let(:event) do
-    subscriber.single_command_started_event('distinct')
-  end
-
-  let(:command) { event.command }
 
   context 'top level field' do
     let(:query) do
@@ -52,9 +48,11 @@ end
 describe 'pluck on aliased fields' do
 
   let(:client) { Person.collection.client }
+  let(:event) { subscriber.single_command_started_event('find') }
+  let(:command) { event.command }
 
   let(:subscriber) do
-    Mrss::EventSubscriber.new
+    EventSubscriber.new
   end
 
   before do
@@ -65,12 +63,6 @@ describe 'pluck on aliased fields' do
     client.unsubscribe(Mongo::Monitoring::COMMAND, subscriber)
   end
 
-  let(:event) do
-    subscriber.single_command_started_event('find')
-  end
-
-  let(:command) { event.command }
-
   context 'top level field' do
     let(:query) do
       Person.pluck(:test)
@@ -79,7 +71,7 @@ describe 'pluck on aliased fields' do
     it 'expands the alias' do
       query
 
-      expect(command['projection']).to eq({'t' => true})
+      expect(command['projection']).to eq({ 't' => true })
     end
   end
 
@@ -91,7 +83,7 @@ describe 'pluck on aliased fields' do
     it 'expands the alias' do
       query
 
-      expect(command['projection']).to eq({'phone_numbers.ext' => true})
+      expect(command['projection']).to eq({ 'phone_numbers.ext' => true })
     end
   end
 end

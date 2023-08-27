@@ -38,6 +38,7 @@ module Mongoid
       def create_indexes(models = ::Mongoid.models)
         models.each do |model|
           next if model.index_specifications.empty?
+
           if !model.embedded? || model.cyclic?
             model.create_indexes
             logger.info("MONGOID: Created indexes on #{model}:")
@@ -63,22 +64,22 @@ module Mongoid
         undefined_by_model = {}
 
         models.each do |model|
-          unless model.embedded?
-            begin
-              model.collection.indexes(session: model.send(:_session)).each do |index|
-                # ignore default index
-                unless index['name'] == '_id_'
-                  key = index['key'].symbolize_keys
-                  spec = model.index_specification(key, index['name'])
-                  unless spec
-                    # index not specified
-                    undefined_by_model[model] ||= []
-                    undefined_by_model[model] << index
-                  end
-                end
-              end
-            rescue Mongo::Error::OperationFailure; end
+          next if model.embedded?
+
+          model.collection.indexes(session: model.send(:_session)).each do |index|
+            # ignore default index
+            next if index['name'] == '_id_'
+
+            key = index['key'].symbolize_keys
+            spec = model.index_specification(key, index['name'])
+            next if spec
+
+            # index not specified
+            undefined_by_model[model] ||= []
+            undefined_by_model[model] << index
           end
+        rescue Mongo::Error::OperationFailure => e
+          logger.info("MONGOID: Could not get indexes for #{model}: #{e.message}")
         end
 
         undefined_by_model
@@ -98,7 +99,7 @@ module Mongoid
             collection = model.collection
             collection.indexes(session: model.send(:_session)).drop_one(key)
             logger.info(
-              "MONGOID: Removed index '#{index['name']}' on collection " +
+              "MONGOID: Removed index '#{index['name']}' on collection " \
               "'#{collection.name}' in database '#{collection.database.name}'."
             )
           end
@@ -111,17 +112,19 @@ module Mongoid
       # @example Remove all the indexes.
       #   Mongoid::Tasks::Database.remove_indexes
       #
-      # @return [ Array<Class> ] The un-indexed models.
+      # @return [ Array<Class> ] The model classes whose indexes were successfully removed.
       def remove_indexes(models = ::Mongoid.models)
-        models.each do |model|
+        models.filter_map do |model|
           next if model.embedded?
+
           begin
             model.remove_indexes
           rescue Mongo::Error::OperationFailure
             next
           end
+
           model
-        end.compact
+        end
       end
 
       # Shard collections for models that declare shard keys.
@@ -135,7 +138,7 @@ module Mongoid
       #
       # @return [ Array<Class> ] The sharded models
       def shard_collections(models = ::Mongoid.models)
-        models.map do |model|
+        models.filter_map do |model|
           next if model.shard_config.nil?
 
           if model.embedded? && !model.cyclic?
@@ -158,41 +161,29 @@ module Mongoid
           # Additionally, 3.6 and potentially older servers do not provide
           # the error code when they are asked to collStats a non-existent
           # collection (https://jira.mongodb.org/browse/SERVER-50070).
-          begin
-            stats = model.collection.database.command(collStats: model.collection.name).first
-          rescue Mongo::Error::OperationFailure => exc
+          stats = begin
+            model.collection.database.command(collStats: model.collection.name).first
+          rescue Mongo::Error::OperationFailure => e
             # Code 26 is database does not exist.
             # Code 8 is collection does not exist, as of 4.0.
             # On 3.6 and earlier match the text of exception message.
-            if exc.code == 26 || exc.code == 8 ||
-              exc.code.nil? && exc.message =~ /not found/
-            then
+            if e.code == 26 || e.code == 8 ||
+               (e.code.nil? && e.message =~ /not found/)
               model.collection.create
 
-              stats = model.collection.database.command(collStats: model.collection.name).first
+              model.collection.database.command(collStats: model.collection.name).first
             else
               raise
             end
           end
 
-          stats = model.collection.database.command(collStats: model.collection.name).first
           if stats[:sharded]
             logger.info("MONGOID: #{model.collection.namespace} is already sharded for #{model}")
             next model
           end
 
           admin_db = model.collection.client.use(:admin).database
-
-          begin
-            admin_db.command(enableSharding: model.collection.database.name)
-          rescue Mongo::Error::OperationFailure => exc
-            # Server 2.6 fails if sharding is already enabled
-            if exc.code == 23 || exc.code.nil? && exc.message =~ /already enabled/
-              # Nothing
-            else
-              raise
-            end
-          end
+          admin_db.command(enableSharding: model.collection.database.name)
 
           begin
             admin_db.command(shardCollection: model.collection.namespace, **model.shard_config)
@@ -204,7 +195,7 @@ module Mongoid
           logger.info("MONGOID: Sharded collection #{model.collection.namespace} for #{model}")
 
           model
-        end.compact
+        end
       end
 
       private

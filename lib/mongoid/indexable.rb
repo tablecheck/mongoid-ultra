@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "mongoid/indexable/specification"
-require "mongoid/indexable/validators/options"
-require "ostruct"
+require 'mongoid/indexable/specification'
+require 'mongoid/indexable/validators/options'
+require 'ostruct'
 
 module Mongoid
 
@@ -27,8 +27,9 @@ module Mongoid
         return unless index_specifications
 
         index_specifications.each do |spec|
-          key, options = spec.key, spec.options
-          if database = options[:database]
+          key = spec.key
+          options = spec.options
+          if (database = options[:database])
             with(database: database) do |klass|
               klass.collection.indexes(session: _session).create_one(key, options.except(:database))
             end
@@ -48,17 +49,18 @@ module Mongoid
       def remove_indexes
         indexed_database_names.each do |database|
           with(database: database) do |klass|
-            begin
-              klass.collection.indexes(session: _session).each do |spec|
-                unless spec["name"] == "_id_"
-                  klass.collection.indexes(session: _session).drop_one(spec["key"])
-                  logger.info(
-                    "MONGOID: Removed index '#{spec["name"]}' on collection " +
-                    "'#{klass.collection.name}' in database '#{database}'."
-                  )
-                end
-              end
-            rescue Mongo::Error::OperationFailure; end
+
+            klass.collection.indexes(session: _session).each do |spec|
+              next if spec['name'] == '_id_'
+
+              klass.collection.indexes(session: _session).drop_one(spec['key'])
+              logger.info(
+                "MONGOID: Removed index '#{spec['name']}' on collection " \
+                "'#{klass.collection.name}' in database '#{database}'."
+              )
+            end
+          rescue Mongo::Error::OperationFailure => e
+            logger.info("MONGOID: Failed to remove indexes on #{klass}: #{e.message}")
           end
         end and true
       end
@@ -71,8 +73,8 @@ module Mongoid
       #
       # @return [ true ] If the operation succeeded.
       def add_indexes
-        if hereditary? && !index_keys.include?(self.discriminator_key.to_sym => 1)
-          index({ self.discriminator_key.to_sym => 1 }, unique: false)
+        if hereditary? && index_keys.exclude?(discriminator_key.to_sym => 1)
+          index({ discriminator_key.to_sym => 1 }, unique: false)
         end
         true
       end
@@ -92,9 +94,9 @@ module Mongoid
       # @return [ Hash ] The index options.
       def index(spec, options = nil)
         specification = Specification.new(self, spec, options)
-        if !index_specifications.include?(specification)
-          index_specifications.push(specification)
-        end
+        return if index_specifications.include?(specification)
+
+        index_specifications.push(specification)
       end
 
       # Get an index specification for the provided key.

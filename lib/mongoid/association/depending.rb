@@ -29,20 +29,19 @@ module Mongoid
         def _all_dependents
           superclass_dependents = superclass.respond_to?(:_all_dependents) ? superclass._all_dependents : []
           dependents + superclass_dependents.reject do |new_dep|
-            dependents.any? do |old_dep| old_dep.name == new_dep.name
-            end
+            dependents.any? { |old_dep| old_dep.name == new_dep.name }
           end
         end
       end
 
       # The valid dependent strategies.
-      STRATEGIES = [
-          :delete_all,
-          :destroy,
-          :nullify,
-          :restrict_with_exception,
-          :restrict_with_error
-      ]
+      STRATEGIES = %i[
+        delete_all
+        destroy
+        nullify
+        restrict_with_exception
+        restrict_with_error
+      ].freeze
 
       # Attempt to add the cascading information for the document to know how
       # to handle associated documents on a removal.
@@ -61,7 +60,7 @@ module Mongoid
             klass.dependents_owner = klass
           end
 
-          if association.dependent && !klass.dependents.include?(association)
+          if association.dependent && klass.dependents.exclude?(association)
             klass.dependents.push(association)
           end
         end
@@ -76,11 +75,11 @@ module Mongoid
       # @raises [ Mongoid::Errors::InvalidDependentStrategy ]
       #   Error if invalid.
       def self.validate!(association)
-        unless STRATEGIES.include?(association.dependent)
-          raise Errors::InvalidDependentStrategy.new(association,
-                                                     association.dependent,
-                                                     STRATEGIES)
-        end
+        return if STRATEGIES.include?(association.dependent)
+
+        raise Errors::InvalidDependentStrategy.new(association,
+                                                   association.dependent,
+                                                   STRATEGIES)
       end
 
       # Perform all cascading deletes, destroys, or nullifies. Will delegate to
@@ -90,7 +89,7 @@ module Mongoid
       #   document.apply_destroy_dependencies!
       def apply_destroy_dependencies!
         self.class._all_dependents.each do |association|
-          if dependent = association.try(:dependent)
+          if (dependent = association.try(:dependent))
             send("_dependent_#{dependent}!", association)
           end
         end
@@ -99,43 +98,43 @@ module Mongoid
       private
 
       def _dependent_delete_all!(association)
-        if relation = send(association.name)
-          if relation.respond_to?(:dependents) && relation.dependents.blank?
-            relation.clear
-          else
-            ::Array.wrap(send(association.name)).each { |rel| rel.delete }
-          end
+        return unless (relation = send(association.name))
+
+        if relation.respond_to?(:dependents) && relation.dependents.blank?
+          relation.clear
+        else
+          ::Array.wrap(send(association.name)).each(&:delete)
         end
       end
 
       def _dependent_destroy!(association)
-        if relation = send(association.name)
-          if relation.is_a?(Enumerable)
-            relation.entries
-            relation.each { |doc| doc.destroy }
-          else
-            relation.destroy
-          end
+        return unless (relation = send(association.name))
+
+        if relation.is_a?(Enumerable)
+          relation.entries
+          relation.each(&:destroy)
+        else
+          relation.destroy
         end
       end
 
       def _dependent_nullify!(association)
-        if relation = send(association.name)
-          relation.nullify
-        end
+        return unless (relation = send(association.name))
+
+        relation.nullify
       end
 
       def _dependent_restrict_with_exception!(association)
-        if (relation = send(association.name)) && !relation.blank?
-          raise Errors::DeleteRestriction.new(relation, association.name)
-        end
+        return unless (relation = send(association.name)) && relation.present?
+
+        raise Errors::DeleteRestriction.new(relation, association.name)
       end
 
       def _dependent_restrict_with_error!(association)
-        if (relation = send(association.name)) && !relation.blank?
-          errors.add(association.name, :destroy_restrict_with_error_dependencies_exist)
-          throw(:abort, false)
-        end
+        return unless (relation = send(association.name)) && relation.present?
+
+        errors.add(association.name, :destroy_restrict_with_error_dependencies_exist)
+        throw(:abort, false)
       end
     end
   end

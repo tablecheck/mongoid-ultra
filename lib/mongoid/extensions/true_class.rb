@@ -25,13 +25,12 @@ module Mongoid
       #
       # @return [ true | false ] If the other is a boolean.
       def is_a?(other)
-        if other == Mongoid::Boolean || other.class == Mongoid::Boolean
-          return true
-        end
+        return true if other == Mongoid::Boolean || other.instance_of?(Mongoid::Boolean)
+
         super(other)
       end
     end
   end
 end
 
-::TrueClass.__send__(:include, Mongoid::Extensions::TrueClass)
+TrueClass.include Mongoid::Extensions::TrueClass

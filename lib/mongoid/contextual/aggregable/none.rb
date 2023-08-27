@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "mongoid/contextual/aggregable"
+require 'mongoid/contextual/aggregable'
 
 module Mongoid
   module Contextual
@@ -58,7 +58,7 @@ module Mongoid
         # @param [ Symbol ] _field The field to max.
         #
         # @return [ nil ] Always nil.
-        alias :max :min
+        alias_method :max, :min
       end
     end
   end

@@ -26,20 +26,22 @@ module Mongoid
       # @param [ Object ] value The current value of the field.
       def validate_each(document, attribute, value)
         field = document.fields[document.database_field_name(attribute)]
-        if field.try(:localized?) && !value.blank?
-          value.each_pair do |_locale, _value|
+        if field.try(:localized?) && value.present?
+          value.each_pair do |loc, val|
+            next unless not_present?(val)
+
             document.errors.add(
               attribute,
               :blank_in_locale,
-              **options.merge(location: _locale)
-            ) if not_present?(_value)
+              **options.merge(location: loc)
+            )
           end
-        elsif document.relations.has_key?(attribute.to_s)
+        elsif document.relations.key?(attribute.to_s)
           if relation_or_fk_missing?(document, attribute, value)
             document.errors.add(attribute, :blank, **options)
           end
-        else
-          document.errors.add(attribute, :blank, **options) if not_present?(value)
+        elsif not_present?(value)
+          document.errors.add(attribute, :blank, **options)
         end
       end
 
@@ -59,6 +61,7 @@ module Mongoid
       # @return [ true | false ] If the doc is missing.
       def relation_or_fk_missing?(doc, attr, value)
         return true if value.blank? && doc.send(attr).blank?
+
         association = doc.relations[attr.to_s]
         association.stores_foreign_key? && doc.send(association.foreign_key).blank?
       end

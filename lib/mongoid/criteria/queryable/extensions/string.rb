@@ -36,7 +36,7 @@ module Mongoid
           #
           # @return [ String ] The string with $ at the front.
           def __mongo_expression__
-            start_with?("$") ? self : "$#{self}"
+            start_with?('$') ? self : "$#{self}"
           end
 
           # Get the string as a sort option.
@@ -47,9 +47,9 @@ module Mongoid
           # @return [ Hash ] The string as a sort option hash.
           def __sort_option__
             split(/,/).inject({}) do |hash, spec|
-              hash.tap do |_hash|
+              hash.tap do |h|
                 field, direction = spec.strip.split(/\s/)
-                _hash[field.to_sym] = Mongoid::Criteria::Translator.to_direction(direction)
+                h[field.to_sym] = Mongoid::Criteria::Translator.to_direction(direction)
               end
             end
           end
@@ -81,7 +81,7 @@ module Mongoid
             # @return [ Hash ] The selection.
             def __expr_part__(key, value, negating = false)
               if negating
-                { key => { "$#{value.regexp? ? "not" : "ne"}" => value }}
+                { key => { "$#{value.regexp? ? 'not' : 'ne'}" => value } }
               else
                 { key => value }
               end
@@ -108,5 +108,5 @@ module Mongoid
   end
 end
 
-::String.__send__(:include, Mongoid::Criteria::Queryable::Extensions::String)
-::String.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::String::ClassMethods)
+String.include Mongoid::Criteria::Queryable::Extensions::String
+String.extend Mongoid::Criteria::Queryable::Extensions::String::ClassMethods

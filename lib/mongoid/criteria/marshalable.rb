@@ -17,7 +17,7 @@ module Mongoid
       #
       # @return [ Array<Object> ] The dumped data.
       def marshal_dump
-        data = [ klass, :mongo, inclusions, documents, strategy, negating ]
+        data = [klass, :mongo, inclusions, documents, strategy, negating]
         data.push(scoping_options).push(dump_hash(:selector)).push(dump_hash(:options))
       end
 
@@ -29,12 +29,7 @@ module Mongoid
       # @param [ Array ] data The raw data.
       def marshal_load(data)
         @scoping_options, raw_selector, raw_options = data.pop(3)
-        @klass, driver, @inclusions, @documents, @strategy, @negating = data
-
-        if driver == :mongo1x
-          raise NotImplementedError, "Mongoid no longer supports marshalling with driver version 1.x."
-        end
-
+        @klass, _driver, @inclusions, @documents, @strategy, @negating = data
         @selector = load_hash(Queryable::Selector, raw_selector)
         @options = load_hash(Queryable::Options, raw_options)
       end
@@ -42,9 +37,8 @@ module Mongoid
       private
 
       def dump_hash(name)
-        send(name).inject({}) do |raw, (key, value)|
+        send(name).each_with_object({}) do |(key, value), raw|
           raw[key] = value
-          raw
         end
       end
 

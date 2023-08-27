@@ -110,7 +110,7 @@ describe 'embedded associations' do
     context 'when association is loaded' do
       before do
         # This query must be before the product is created
-        manufactory.products.where(name: "Car").first
+        manufactory.products.where(name: 'Car').first
 
         product
       end
@@ -260,8 +260,9 @@ describe 'embedded associations' do
     end
   end
 
-  context "when summing properties on an embedded child" do
+  context 'when summing properties on an embedded child' do
     let(:user) { EmmUser.new }
+
     before do
       user.orders.build(amount: 200)
       expect(user.orders.sum(:amount)).to eq(200)
@@ -270,7 +271,7 @@ describe 'embedded associations' do
       user.orders.build(amount: 500)
     end
 
-    it "the cache is cleared after deletion" do
+    it 'the cache is cleared after deletion' do
       expect(user.orders.sum(:amount)).to eq(500)
     end
   end
@@ -280,7 +281,7 @@ describe 'embedded associations' do
       EmmUser.create!(orders: [
         EmmOrder.new(sku: 0, amount: 0),
         EmmOrder.new(sku: 1, amount: 1),
-        EmmOrder.new(sku: 2, amount: 2),
+        EmmOrder.new(sku: 2, amount: 2)
       ])
     end
 
@@ -291,8 +292,8 @@ describe 'embedded associations' do
         user.save!
         user.reload
 
-        expect(user.orders.map do
-          |order| [order.sku, order.amount]
+        expect(user.orders.map do |order|
+          [order.sku, order.amount]
         end).to eq([[1, 10], [2, 2]])
       end
     end
@@ -304,8 +305,8 @@ describe 'embedded associations' do
         user.save!
         user.reload
 
-        expect(user.orders.map do
-          |order| [order.sku, order.amount]
+        expect(user.orders.map do |order|
+          [order.sku, order.amount]
         end).to eq([[1, 1], [2, 20]])
       end
     end
@@ -316,7 +317,7 @@ describe 'embedded associations' do
       EmmUser.create!(orders: [
         EmmOrder.new(sku: 0, surcharges: [EmmSurcharge.new(amount: 0)]),
         EmmOrder.new(sku: 1, surcharges: [EmmSurcharge.new(amount: 1)]),
-        EmmOrder.new(sku: 2, surcharges: [EmmSurcharge.new(amount: 2)]),
+        EmmOrder.new(sku: 2, surcharges: [EmmSurcharge.new(amount: 2)])
       ])
     end
 
@@ -329,8 +330,8 @@ describe 'embedded associations' do
         user.save!
         user.reload
 
-        expect(user.orders.map do
-          |order| [order.sku, order.surcharges.first.amount]
+        expect(user.orders.map do |order|
+          [order.sku, order.surcharges.first.amount]
         end).to eq([[1, 10], [2, 2]])
       end
     end
@@ -342,8 +343,8 @@ describe 'embedded associations' do
         user.save!
         user.reload
 
-        expect(user.orders.map do
-          |order| [order.sku, order.surcharges.first.amount]
+        expect(user.orders.map do |order|
+          [order.sku, order.surcharges.first.amount]
         end).to eq([[1, 1], [2, 20]])
       end
     end

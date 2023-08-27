@@ -37,7 +37,7 @@ module Mongoid
       #
       # @return [ Hash ] The insert ops.
       def atomic_inserts
-        { atomic_insert_modifier => { atomic_position => as_attributes }}
+        { atomic_insert_modifier => { atomic_position => as_attributes } }
       end
 
       # Insert the embedded document.
@@ -50,13 +50,15 @@ module Mongoid
       # @return [ Mongoid::Document ] The document.
       def insert_as_embedded
         raise Errors::NoParent.new(self.class.name) unless _parent
+
         if _parent.new_record?
           _parent.insert
         else
           selector = _parent.atomic_selector
           _root.collection.find(selector).update_one(
-              positionally(selector, atomic_inserts),
-              session: _session)
+            positionally(selector, atomic_inserts),
+            session: _session
+          )
         end
       end
 
@@ -102,7 +104,8 @@ module Mongoid
       def prepare_insert(options = {})
         raise Errors::ReadonlyDocument.new(self.class) if readonly? && !Mongoid.legacy_readonly
         return self if performing_validations?(options) &&
-          invalid?(options[:context] || :create)
+                       invalid?(options[:context] || :create)
+
         run_callbacks(:commit, with_children: true, skip_if: -> { in_transaction? }) do
           run_callbacks(:save, with_children: false) do
             run_callbacks(:create, with_children: false) do

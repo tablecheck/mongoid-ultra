@@ -41,6 +41,7 @@ module Mongoid
         with_query(document) do
           attrib, val = to_validate(document, attribute, value)
           return unless validation_required?(document, attrib)
+
           if document.embedded?
             validate_embedded(document, attrib, val)
           else
@@ -76,7 +77,7 @@ module Mongoid
       #
       # @return [ true | false ] If the validation is case sensitive.
       def case_sensitive?
-        !(options[:case_sensitive] == false)
+        options[:case_sensitive] != false
       end
 
       # Create the validation criteria.
@@ -128,14 +129,14 @@ module Mongoid
         field = document.database_field_name(attribute)
 
         if value && localized?(document, field)
-          conditions = (value || {}).inject([]) { |acc, (k,v)| acc << { "#{field}.#{k}" => filter(v) }}
-          selector = { "$or" => conditions }
+          conditions = (value || {}).inject([]) { |acc, (k, v)| acc << { "#{field}.#{k}" => filter(v) } }
+          selector = { '$or' => conditions }
         else
           selector = { field => filter(value) }
         end
 
         if document.persisted? && !document.embedded?
-          selector.merge!(_id: { "$ne" => document._id })
+          selector[:_id] = { '$ne' => document._id }
         end
         selector
       end
@@ -199,7 +200,7 @@ module Mongoid
       # @return [ true | false ] If the scope reference has changed.
       def scope_value_changed?(document)
         Array.wrap(options[:scope]).any? do |item|
-          document.send("attribute_changed?", item.to_s)
+          document.send(:attribute_changed?, item.to_s)
         end
       end
 
@@ -220,10 +221,10 @@ module Mongoid
       # @return [ Array<Object, Object> ] The field and value.
       def to_validate(document, attribute, value)
         association = document.relations[attribute.to_s]
-        if association && association.stores_foreign_key?
-          [ association.foreign_key, value && value._id ]
+        if association&.stores_foreign_key?
+          [association.foreign_key, value&._id]
         else
-          [ attribute, value ]
+          [attribute, value]
         end
       end
 
@@ -239,6 +240,7 @@ module Mongoid
       # @param [ Object ] value The value.
       def validate_embedded(document, attribute, value)
         return if skip_validation?(document)
+
         relation = document._parent.send(document.association_name)
         criteria = create_criteria(relation, document, attribute, value)
         criteria = criteria.merge(options[:conditions].call) if options[:conditions]
@@ -258,16 +260,16 @@ module Mongoid
       # @param [ Object ] value The value.
       def validate_root(document, attribute, value)
         klass = document.class
-
         while klass.superclass.respond_to?(:validators) && klass.superclass.validators.include?(self)
           klass = klass.superclass
         end
+
         criteria = create_criteria(klass, document, attribute, value)
         criteria = criteria.merge(options[:conditions].call) if options[:conditions]
 
-        if criteria.read(mode: :primary).exists?
-          add_error(document, attribute, value)
-        end
+        return unless criteria.read(mode: :primary).exists?
+
+        add_error(document, attribute, value)
       end
 
       # Are we required to validate the document?
@@ -281,7 +283,7 @@ module Mongoid
       # @return [ true | false ] If we need to validate.
       def validation_required?(document, attribute)
         document.new_record? ||
-          document.send("attribute_changed?", attribute.to_s) ||
+          document.send(:attribute_changed?, attribute.to_s) ||
           scope_value_changed?(document)
       end
 

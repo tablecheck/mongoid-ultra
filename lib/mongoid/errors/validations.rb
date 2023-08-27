@@ -10,17 +10,17 @@ module Mongoid
     #   Validations.new(person.errors)
     class Validations < MongoidError
       attr_reader :document
-      alias :record :document
+      alias_method :record, :document
 
       def initialize(document)
         @document = document
 
         super(
           compose_message(
-            "validations",
+            'validations',
             {
               document: document.class,
-              errors: document.errors.full_messages.join(", ")
+              errors: document.errors.full_messages.join(', ')
             }
           )
         )

@@ -25,7 +25,7 @@ module Mongoid
       def build(attrs = {}, &block)
         create_document(:new, attrs, &block)
       end
-      alias :new :build
+      alias_method :new, :build
 
       # Create a document in the database given the selector and return it.
       # Complex criteria, such as $in and $or operations will get ignored.
@@ -172,11 +172,10 @@ module Mongoid
       # @return [ Mongoid::Document ] The new or saved document.
       def create_document(method, attrs = nil, &block)
         attrs = (create_attrs || {}).merge(attrs || {})
-        attributes = selector.reduce(attrs) do |hash, (key, value)|
-          unless invalid_key?(hash, key) || invalid_embedded_doc?(value)
-            hash[key] = value
-          end
-          hash
+        attributes = selector.each_with_object(attrs) do |(key, value), hash|
+          next if invalid_key?(hash, key) || invalid_embedded_doc?(value)
+
+          hash[key] = value
         end
         if embedded?
           attributes[:_parent] = parent_document
@@ -218,8 +217,6 @@ module Mongoid
       def first_or(method, attrs = {}, &block)
         first || create_document(method, attrs, &block)
       end
-
-      private
 
       def invalid_key?(hash, key)
         # @todo Change this to BSON::String::ILLEGAL_KEY when ruby driver 2.3.0 is

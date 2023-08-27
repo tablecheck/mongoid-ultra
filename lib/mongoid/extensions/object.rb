@@ -15,7 +15,7 @@ module Mongoid
       def __evolve_object_id__
         self
       end
-      alias :__mongoize_object_id__ :__evolve_object_id__
+      alias_method :__mongoize_object_id__, :__evolve_object_id__
 
       # Convert the object to args for a find query.
       #
@@ -112,7 +112,7 @@ module Mongoid
       def ivar(name)
         var_name = "@_#{name}"
         if instance_variable_defined?(var_name)
-          return instance_variable_get(var_name)
+          instance_variable_get(var_name)
         else
           false
         end
@@ -159,7 +159,7 @@ module Mongoid
       # @return [ true | false ] If the variable was defined.
       def remove_ivar(name)
         if instance_variable_defined?("@_#{name}")
-          return remove_instance_variable("@_#{name}")
+          remove_instance_variable("@_#{name}")
         else
           false
         end
@@ -213,7 +213,8 @@ module Mongoid
         #
         # @return [ Object ] The converted object.
         def __mongoize_fk__(association, object)
-          return nil if !object || object == ""
+          return nil if !object || object == ''
+
           association.convert_to_foreign_key(object)
         end
 
@@ -246,7 +247,7 @@ module Mongoid
   end
 end
 
-::Object.__send__(:include, Mongoid::Extensions::Object)
-::Object.extend(Mongoid::Extensions::Object::ClassMethods)
+Object.include Mongoid::Extensions::Object
+Object.extend(Mongoid::Extensions::Object::ClassMethods)
 
-::Mongoid.deprecate(Object, :blank_criteria)
+Mongoid.deprecate(Object, :blank_criteria)

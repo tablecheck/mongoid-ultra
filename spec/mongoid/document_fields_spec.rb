@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Document do
 
   describe 'BSON::Binary field' do
     context 'when assigned a BSON::Binary instance' do
       let(:data) do
-        BSON::Binary.new("hello world")
+        BSON::Binary.new('hello world')
       end
 
       let(:registry) do
@@ -17,14 +17,14 @@ describe Mongoid::Document do
       it 'does not freeze the specified data' do
         registry
 
-        expect(data).not_to be_frozen
+        expect(data).to_not be_frozen
       end
 
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.data).to eq(data)
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.data).to eq(data)
       end
     end
 
@@ -46,8 +46,8 @@ describe Mongoid::Document do
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.data).to eq(BSON::Binary.new(data))
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.data).to eq(BSON::Binary.new(data))
       end
     end
 
@@ -61,14 +61,14 @@ describe Mongoid::Document do
       end
 
       it 'assigns nil' do
-        expect(registry.data).to be nil
+        expect(registry.data).to be_nil
       end
 
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.data).to be nil
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.data).to be_nil
       end
     end
 
@@ -82,14 +82,14 @@ describe Mongoid::Document do
       end
 
       it 'assigns nil' do
-        expect(registry.data).to be nil
+        expect(registry.data).to be_nil
       end
 
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.data).to be nil
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.data).to be_nil
       end
     end
   end
@@ -107,14 +107,14 @@ describe Mongoid::Document do
       it 'does not freeze the specified data' do
         registry
 
-        expect(obj_id).not_to be_frozen
+        expect(obj_id).to_not be_frozen
       end
 
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.obj_id).to eq(obj_id)
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.obj_id).to eq(obj_id)
       end
     end
 
@@ -134,8 +134,8 @@ describe Mongoid::Document do
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.obj_id).to eq(BSON::ObjectId.from_string(obj_id))
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.obj_id).to eq(BSON::ObjectId.from_string(obj_id))
       end
     end
 
@@ -149,20 +149,20 @@ describe Mongoid::Document do
       end
 
       it 'assigns nil' do
-        expect(registry.obj_id).to be nil
+        expect(registry.obj_id).to be_nil
       end
 
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.obj_id).to be nil
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.obj_id).to be_nil
       end
     end
 
     context 'when assigned an invalid string' do
       let(:obj_id) do
-        "hello"
+        'hello'
       end
 
       let(:registry) do
@@ -170,14 +170,14 @@ describe Mongoid::Document do
       end
 
       it 'assigns nil' do
-        expect(registry.obj_id).to eq("hello")
+        expect(registry.obj_id).to eq('hello')
       end
 
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.obj_id).to eq("hello")
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.obj_id).to eq('hello')
       end
     end
 
@@ -197,8 +197,8 @@ describe Mongoid::Document do
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.obj_id).to eq(:sym)
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.obj_id).to eq(:sym)
       end
     end
   end
@@ -206,7 +206,7 @@ describe Mongoid::Document do
   describe 'Hash field' do
     context 'with symbol key and value' do
       let(:church) do
-        Church.create!(location: {state: :ny})
+        Church.create!(location: { state: :ny })
       end
 
       let(:found_church) do
@@ -218,7 +218,7 @@ describe Mongoid::Document do
       end
 
       it 'stringifies the key' do
-        expect(found_church.location.keys).to eq(%w(state))
+        expect(found_church.location.keys).to eq(%w[state])
       end
 
       it 'retrieves value as symbol via driver' do
@@ -227,7 +227,7 @@ describe Mongoid::Document do
         church
 
         v = Church.collection.find.first
-        expect(v['location']).to eq({'state' => :ny})
+        expect(v['location']).to eq({ 'state' => :ny })
       end
     end
   end
@@ -239,8 +239,8 @@ describe Mongoid::Document do
       expect(Mop.find(mop.id).regexp_field).to be_a Regexp
       expect(
         Mop.collection.find(
-          "_id" => mop.id,
-          "regexp_field" => { "$type" => 'regex' }
+          '_id' => mop.id,
+          'regexp_field' => { '$type' => 'regex' }
         ).count
       ).to eq 1
     end
@@ -253,8 +253,8 @@ describe Mongoid::Document do
       expect(Mop.find(mop.id).bson_regexp_field).to be_a BSON::Regexp::Raw
       expect(
         Mop.collection.find(
-          "_id" => mop.id,
-          "bson_regexp_field" => { "$type" => 'regex' }
+          '_id' => mop.id,
+          'bson_regexp_field' => { '$type' => 'regex' }
         ).count
       ).to eq 1
     end

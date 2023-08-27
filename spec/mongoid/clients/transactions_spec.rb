@@ -1,33 +1,25 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative './transactions_spec_models'
 
 def capture_exception
-  e = nil
+  error = nil
   begin
     yield
-  rescue => ex
-    e = ex
+  rescue StandardError => e
+    error = e
   end
-  e
+  error
 end
 
 describe Mongoid::Clients::Sessions do
   before(:all) do
-    if Gem::Version.new(Mongo::VERSION) < Gem::Version.new('2.6')
-      skip 'Driver does not support transactions'
-    end
-  end
-
-  before(:all) do
-    if Gem::Version.new(Mongo::VERSION) >= Gem::Version.new('2.6')
-      CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
-      CONFIG[:clients][:other][:database] = 'other'
-      Mongoid::Clients.clients.values.each(&:close)
-      Mongoid::Config.send(:clients=, CONFIG[:clients])
-      Mongoid::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
-    end
+    CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
+    CONFIG[:clients][:other][:database] = 'other'
+    Mongoid::Clients.clients.each_value(&:close)
+    Mongoid::Config.send(:clients=, CONFIG[:clients])
+    Mongoid::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
   end
 
   after(:all) do
@@ -60,7 +52,8 @@ describe Mongoid::Clients::Sessions do
   end
 
   let(:other_events) do
-    subscriber.started_events.reject { |event| ['insert', 'update'].include?(event.command_name) }
+    skip_commands = %w[insert update]
+    subscriber.started_events.reject { |event| skip_commands.include?(event.command_name) }
   end
 
   context 'when a transaction is used on a model class' do
@@ -157,7 +150,7 @@ describe Mongoid::Clients::Sessions do
         context 'when the other class uses the same client' do
           shared_examples 'it uses a single transaction number for all operations on the class' do
             it do
-              expect(Post.with(client: :other) { |klass| klass.count }).to be(1)
+              expect(Post.with(client: :other, &:count)).to be(1)
               expect(insert_events_txn_numbers.size).to eq(3)
               expect(insert_events_txn_numbers.uniq.size).to eq(1)
             end
@@ -204,8 +197,8 @@ describe Mongoid::Clients::Sessions do
               expect(Person.count).to be(2)
               expect(Post.count).to be(1)
               expect(insert_events_txn_numbers.size).to eq(2)
-              expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(0)
-              expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(1)
+              expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(0)
+              expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(1)
             end
           end
 
@@ -339,8 +332,8 @@ describe Mongoid::Clients::Sessions do
         end
 
         it 'aborts the transaction' do
-          expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(1)
-          expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(0)
+          expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(1)
+          expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(0)
         end
       end
     end
@@ -348,7 +341,7 @@ describe Mongoid::Clients::Sessions do
     context 'when transactions are not supported' do
       require_topology :single
 
-      it 'it raises a transactions not supported error' do
+      it 'raises a transactions not supported error' do
         expect do
           Person.transaction do
             Person.create!
@@ -361,9 +354,7 @@ describe Mongoid::Clients::Sessions do
   context 'when a transaction is used on a model instance' do
 
     let!(:person) do
-      Person.with(client: :other) do |klass|
-        klass.create!
-      end
+      Person.with(client: :other, &:create!)
     end
 
     context 'when transactions are supported' do
@@ -503,7 +494,7 @@ describe Mongoid::Clients::Sessions do
                   person.save!
                   person.posts << Post.create!
                 end
-              rescue => ex
+              rescue StandardError
               end
             end
 
@@ -531,7 +522,7 @@ describe Mongoid::Clients::Sessions do
             end
 
             it 'does not execute any operations' do
-              expect(person.reload.username).not_to eq('Emily')
+              expect(person.reload.username).to_not eq('Emily')
               expect(Post.count).to be(0)
               expect(update_events).to be_empty
             end
@@ -555,7 +546,7 @@ describe Mongoid::Clients::Sessions do
             end
 
             it 'does not execute any operations' do
-              expect(person.reload.username).not_to eq('Emily')
+              expect(person.reload.username).to_not eq('Emily')
               expect(Post.count).to be(0)
               expect(update_events).to be_empty
             end
@@ -580,8 +571,8 @@ describe Mongoid::Clients::Sessions do
         end
 
         it 'aborts the transaction' do
-          expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(1)
-          expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(0)
+          expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(1)
+          expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(0)
         end
       end
     end
@@ -589,7 +580,7 @@ describe Mongoid::Clients::Sessions do
     context 'when transactions are not supported' do
       require_topology :single
 
-      it 'it raises a transactions not supported error' do
+      it 'raises a transactions not supported error' do
         expect do
           Person.transaction do
             Person.create!
@@ -629,8 +620,8 @@ describe Mongoid::Clients::Sessions do
         end
 
         it 'commits the transacrion' do
-          expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(0)
-          expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(1)
+          expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(0)
+          expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(1)
         end
 
         it 'executes the commands inside the transaction' do
@@ -649,8 +640,8 @@ describe Mongoid::Clients::Sessions do
         end
 
         it 'aborts the transaction' do
-          expect(other_events.count { |e| e.command_name == 'abortTransaction'}).to be(1)
-          expect(other_events.count { |e| e.command_name == 'commitTransaction'}).to be(0)
+          expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(1)
+          expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(0)
         end
 
         it 'passes on the error' do
@@ -752,7 +743,7 @@ describe Mongoid::Clients::Sessions do
 
           before do
             subject.transaction do
-              subject.update_attributes!(name: 'Austin Powers')
+              subject.update!(name: 'Austin Powers')
             end
           end
 
@@ -809,14 +800,12 @@ describe Mongoid::Clients::Sessions do
 
           context 'when modified once' do
             before do
-              begin
-                subject.transaction do
-                  subject.name = 'Austin Powers'
-                  subject.save!
-                  raise 'Something went wrong'
-                end
-              rescue RuntimeError
+              subject.transaction do
+                subject.name = 'Austin Powers'
+                subject.save!
+                raise 'Something went wrong'
               end
+            rescue RuntimeError
             end
 
             it_behaves_like 'rollback callbacks are called'
@@ -843,12 +832,10 @@ describe Mongoid::Clients::Sessions do
               end
 
               before do
-                begin
-                  subject.transaction do
-                    subject.save!
-                  end
-                rescue RuntimeError
+                subject.transaction do
+                  subject.save!
                 end
+              rescue RuntimeError
               end
 
               it 'does not call any transaction callbacks' do
@@ -864,12 +851,10 @@ describe Mongoid::Clients::Sessions do
               end
 
               before do
-                begin
-                  subject.transaction do
-                    subject.save!
-                  end
-                rescue RuntimeError
+                subject.transaction do
+                  subject.save!
                 end
+              rescue RuntimeError
               end
 
               it_behaves_like 'rollback callbacks are called'
@@ -887,7 +872,7 @@ describe Mongoid::Clients::Sessions do
 
           before do
             subject.transaction do
-              subject.update_attributes!(name: 'Austin Powers')
+              subject.update!(name: 'Austin Powers')
               raise Mongoid::Errors::Rollback
             end
           end
@@ -958,7 +943,7 @@ describe Mongoid::Clients::Sessions do
           end
 
           before do
-            subject.update_attributes!(name: 'Jason Bourne')
+            subject.update!(name: 'Jason Bourne')
           end
 
           it_behaves_like 'commit callbacks are called'

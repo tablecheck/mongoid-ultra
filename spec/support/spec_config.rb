@@ -6,23 +6,22 @@ require 'singleton'
 class SpecConfig
   include Singleton
 
-  DEFAULT_MONGODB_URI = "mongodb://127.0.0.1:27017"
+  DEFAULT_MONGODB_URI = 'mongodb://127.0.0.1:27017'
 
   def initialize
     if ENV['MONGODB_URI']
       @uri_str = ENV['MONGODB_URI']
     else
-      STDERR.puts "Environment variable 'MONGODB_URI' is not set, so the default url will be used."
-      STDERR.puts "This may lead to unexpected test failures because service discovery will raise unexpected warnings."
-      STDERR.puts "Please consider providing the correct uri via MONGODB_URI environment variable."
+      warn "Environment variable 'MONGODB_URI' is not set, so the default url will be used."
+      warn 'This may lead to unexpected test failures because service discovery will raise unexpected warnings.'
+      warn 'Please consider providing the correct uri via MONGODB_URI environment variable.'
       @uri_str = DEFAULT_MONGODB_URI
     end
-    
+
     @uri = Mongo::URI.new(@uri_str)
   end
 
-  attr_reader :uri_str
-  attr_reader :uri
+  attr_reader :uri_str, :uri
 
   def addresses
     @uri.servers
@@ -33,7 +32,7 @@ class SpecConfig
   end
 
   def jruby?
-    RUBY_PLATFORM =~ /\bjava\b/
+    RUBY_PLATFORM.match?(/\bjava\b/)
   end
 
   def windows?
@@ -45,11 +44,11 @@ class SpecConfig
   end
 
   def client_debug?
-    %w(1 true yes).include?(ENV['CLIENT_DEBUG']&.downcase)
+    %w[1 true yes].include?(ENV['CLIENT_DEBUG']&.downcase)
   end
 
   def app_tests?
-    !%w(0 false no).include?(ENV['APP_TESTS']&.downcase)
+    %w[0 false no].exclude?(ENV['APP_TESTS']&.downcase)
   end
 
   def ci?
@@ -57,11 +56,7 @@ class SpecConfig
   end
 
   def rails_version
-    v = ENV['RAILS']
-    if v == ''
-      v = nil
-    end
-    v || '6.1'
+    ENV['RAILS'].presence || '6.1'
   end
 
   # Scrapes the output of `gem list` to find which versions of Rails are
@@ -72,10 +67,10 @@ class SpecConfig
   #    nil if nothing matches.
   def installed_rails_version
     output = `gem list --exact rails`
-    if output =~ /^rails \((.*)\)/
-      versions = $1.split(/,\s*/)
-      rails_version_re = /^#{rails_version}(?:\..*)?$/
-      versions.detect { |v| v =~ rails_version_re }
-    end
+    return unless output =~ /^rails \((.*)\)/
+
+    versions = ::Regexp.last_match(1).split(/,\s*/)
+    rails_version_re = /^#{rails_version}(?:\..*)?$/
+    versions.detect { |v| v =~ rails_version_re }
   end
 end

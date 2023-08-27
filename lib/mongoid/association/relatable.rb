@@ -14,17 +14,17 @@ module Mongoid
       # The options shared between all association types.
       #
       # @return [ Array<Symbol> ] The shared options.
-      SHARED_OPTIONS = [
-                         :class_name,
-                         :inverse_of,
-                         :validate,
-                         :extend
-                       ].freeze
+      SHARED_OPTIONS = %i[
+        class_name
+        inverse_of
+        validate
+        extend
+      ].freeze
 
       # The primary key default.
       #
       # @return [ String ] The primary key field default.
-      PRIMARY_KEY_DEFAULT = '_id'.freeze
+      PRIMARY_KEY_DEFAULT = '_id'
 
       # The name of the association.
       #
@@ -38,17 +38,17 @@ module Mongoid
 
       # Initialize the Association.
       #
-      # @param [ Class ] _class The class of the model who owns this association.
+      # @param [ Class ] klass The class of the model who owns this association.
       # @param [ Symbol ] name The name of the association.
       # @param [ Hash ] opts The association options.
       # @param [ Block ] block The optional block.
-      def initialize(_class, name, opts = {}, &block)
-        @owner_class = _class
+      def initialize(klass, name, opts = {}, &block)
+        @owner_class = klass
         @name = name
         @options = opts
         @extension = nil
 
-        @module_path = _class.name ? _class.name.split('::')[0..-2].join('::') : ''
+        @module_path = klass.name ? klass.name.split('::')[0..-2].join('::') : ''
         @module_path << '::' unless @module_path.empty?
 
         create_extension!(&block)
@@ -61,8 +61,8 @@ module Mongoid
       def ==(other)
         relation_class_name == other.relation_class_name &&
           inverse_class_name == other.inverse_class_name &&
-            name == other.name &&
-              options == other.options
+          name == other.name &&
+          options == other.options
       end
 
       # Get the callbacks for a given type.
@@ -89,7 +89,9 @@ module Mongoid
       # @param [ Mongoid::Document ] doc The document to be bound.
       #
       # @return [ true | false ] Whether the document can be bound.
-      def bindable?(doc); false; end
+      def bindable?(_doc)
+        false
+      end
 
       # Get the inverse names.
       #
@@ -98,7 +100,7 @@ module Mongoid
       #
       # @return [ Array<Symbol> ] The list of inverse names.
       def inverses(other = nil)
-        return [ inverse_of ] if inverse_of
+        return [inverse_of] if inverse_of
         return [] if @options.key?(:inverse_of) && !inverse_of
 
         if polymorphic?
@@ -147,7 +149,7 @@ module Mongoid
       def relation_class_name
         @class_name ||= @options[:class_name] || ActiveSupport::Inflector.classify(name)
       end
-      alias :class_name :relation_class_name
+      alias_method :class_name, :relation_class_name
 
       # The class of the association object(s).
       #
@@ -169,7 +171,7 @@ module Mongoid
           resolve_name(inverse_class, cls_name)
         end
       end
-      alias :klass :relation_class
+      alias_method :klass, :relation_class
 
       # The class name of the object owning this association.
       #
@@ -184,7 +186,7 @@ module Mongoid
       def inverse_class
         @owner_class
       end
-      alias :inverse_klass :inverse_class
+      alias_method :inverse_klass, :inverse_class
 
       # The foreign key field if this association stores a foreign key.
       # Otherwise, the primary key.
@@ -205,14 +207,14 @@ module Mongoid
       #
       # @return [ String ] The name of the inverse setter.
       def inverse_setter(other = nil)
-        @inverse_setter ||= "#{inverses(other).first}=" unless inverses(other).blank?
+        @inverse_setter ||= "#{inverses(other).first}=" if inverses(other).present?
       end
 
       # The name of the foreign key setter method.
       #
       # @return [ String ] The name of the foreign key setter.
       def foreign_key_setter
-        # note: You can't check if this association stores foreign key
+        # NOTE: You can't check if this association stores foreign key
         # See HasOne and HasMany binding, they referenced foreign_key_setter
         @foreign_key_setter ||= "#{foreign_key}=" if foreign_key
       end
@@ -242,7 +244,7 @@ module Mongoid
       #
       # @return [ String ] The foreign key check.
       def foreign_key_check
-        @foreign_key_check ||= "#{foreign_key}_previously_changed?" if (stores_foreign_key? && foreign_key)
+        @foreign_key_check ||= "#{foreign_key}_previously_changed?" if stores_foreign_key? && foreign_key
       end
 
       # Create an association proxy object using the owner and target.
@@ -267,9 +269,12 @@ module Mongoid
       #
       # @return [ String ] The counter cache column name.
       def counter_cache_column_name
-        @counter_cache_column_name ||= (@options[:counter_cache].is_a?(String) ||
-            @options[:counter_cache].is_a?(Symbol)) ?
-            @options[:counter_cache] : "#{inverse || inverse_class_name.demodulize.underscore.pluralize}_count"
+        @counter_cache_column_name ||= if @options[:counter_cache].is_a?(String) ||
+                                          @options[:counter_cache].is_a?(Symbol)
+                                         @options[:counter_cache]
+                                       else
+                                         "#{inverse || inverse_class_name.demodulize.underscore.pluralize}_count"
+                                       end
       end
 
       # Get the extension.
@@ -284,7 +289,7 @@ module Mongoid
       # @return [ Symbol ] The inverse name.
       def inverse(other = nil)
         candidates = inverses(other)
-        candidates.detect { |c| c } if candidates
+        candidates&.detect { |c| c }
       end
 
       # Whether the associated object(s) should be validated.
@@ -299,10 +304,10 @@ module Mongoid
                       end
       end
 
-      # The associations above this one in the inclusion tree.
+      # Sets the associations above this one in the inclusion tree.
       #
-      # @return [ Array<String> ] The associations.
-      attr_accessor :parent_inclusions
+      # @param [ Array<String> ] value The associations.
+      attr_writer :parent_inclusions
 
       # The associations above this one in the inclusion tree.
       #
@@ -315,14 +320,14 @@ module Mongoid
       #
       # @return [ true | false ] true if it is a *_many association, false if not.
       def many?
-        [Referenced::HasMany, Embedded::EmbedsMany].any? { |a| self.is_a?(a) }
+        [Referenced::HasMany, Embedded::EmbedsMany].any? { |a| is_a?(a) }
       end
 
       # Is this association an embeds_one or has_one association?
       #
       # @return [ true | false ] true if it is a *_one association, false if not.
       def one?
-        [Referenced::HasOne, Embedded::EmbedsOne].any? { |a| self.is_a?(a) }
+        [Referenced::HasOne, Embedded::EmbedsOne].any? { |a| is_a?(a) }
       end
 
       # Is this association an embedded_in or belongs_to association?
@@ -330,7 +335,7 @@ module Mongoid
       # @return [ true | false ] true if it is an embedded_in or belongs_to
       #   association, false if not.
       def in_to?
-        [Referenced::BelongsTo, Embedded::EmbeddedIn].any? { |a| self.is_a?(a) }
+        [Referenced::BelongsTo, Embedded::EmbeddedIn].any? { |a| is_a?(a) }
       end
 
       private
@@ -338,7 +343,7 @@ module Mongoid
       # Gets the model classes with inverse associations of this model. This is used to determine
       # the classes on the other end of polymorphic associations with models.
       def inverse_association_classes
-        Mongoid::Config.models.map { |m| inverse_association(m) }.compact.map(&:inverse_class)
+        Mongoid::Config.models.filter_map { |m| inverse_association(m) }.map(&:inverse_class)
       end
 
       def setup_index!
@@ -346,15 +351,15 @@ module Mongoid
       end
 
       def define_touchable!
-        if touchable?
-          Touchable.define_touchable!(self)
-        end
+        return unless touchable?
+
+        Touchable.define_touchable!(self)
       end
 
       def define_autosaver!
-        if autosave?
-          Association::Referenced::AutoSave.define_autosave!(self)
-        end
+        return unless autosave?
+
+        Association::Referenced::AutoSave.define_autosave!(self)
       end
 
       def define_builder!
@@ -386,45 +391,45 @@ module Mongoid
       end
 
       def define_counter_cache_callbacks!
-        if counter_cached?
-          Association::Referenced::CounterCache.define_callbacks!(self)
-        end
+        return unless counter_cached?
+
+        Association::Referenced::CounterCache.define_callbacks!(self)
       end
 
       def define_dependency!
-        if dependent
-          Association::Depending.define_dependency!(self)
-        end
+        return unless dependent
+
+        Association::Depending.define_dependency!(self)
       end
 
       def validate!
-        @options.keys.each do |opt|
-          unless self.class::VALID_OPTIONS.include?(opt)
-            raise Errors::InvalidRelationOption.new(@owner_class, name, opt, self.class::VALID_OPTIONS)
-          end
+        @options.each_key do |opt|
+          next if self.class::VALID_OPTIONS.include?(opt)
+
+          raise Errors::InvalidRelationOption.new(@owner_class, name, opt, self.class::VALID_OPTIONS)
         end
 
         [name, "#{name}?".to_sym, "#{name}=".to_sym].each do |n|
-          if Mongoid.destructive_fields.include?(n)
-            raise Errors::InvalidRelation.new(@owner_class, n)
-          end
+          next unless Mongoid.destructive_fields.include?(n)
+
+          raise Errors::InvalidRelation.new(@owner_class, n)
         end
       end
 
       def polymorph!
-        if polymorphic?
-          @owner_class.polymorphic = true
-        end
+        return unless polymorphic?
+
+        @owner_class.polymorphic = true
       end
 
       def create_extension!(&block)
-        if block
-          extension_module_name = "#{@owner_class.to_s.demodulize}#{name.to_s.camelize}RelationExtension"
-          silence_warnings do
-            @owner_class.const_set(extension_module_name, Module.new(&block))
-          end
-          @extension = "#{@owner_class}::#{extension_module_name}".constantize
+        return unless block
+
+        extension_module_name = "#{@owner_class.to_s.demodulize}#{name.to_s.camelize}RelationExtension"
+        silence_warnings do
+          @owner_class.const_set(extension_module_name, Module.new(&block))
         end
+        @extension = "#{@owner_class}::#{extension_module_name}".constantize
       end
 
       def default_inverse
@@ -440,11 +445,9 @@ module Mongoid
         hier = [parent]
 
         # name is not present on anonymous modules
-        if mod.name
-          mod.name.split('::').each do |part|
-            parent = parent.const_get(part)
-            hier << parent
-          end
+        mod.name&.split('::')&.each do |part|
+          parent = parent.const_get(part)
+          hier << parent
         end
 
         hier.reverse
@@ -460,33 +463,31 @@ module Mongoid
       def resolve_name(mod, name)
         cls = exc = nil
         parts = name.to_s.split('::')
+
         if parts.first == ''
           parts.shift
           hierarchy = [Object]
         else
           hierarchy = namespace_hierarchy(mod)
         end
+
         hierarchy.each do |ns|
-          begin
-            parts.each do |part|
-              # Simple const_get sometimes pulls names out of weird scopes,
-              # perhaps confusing the receiver (ns in this case) with the
-              # local scope. Walk the class hierarchy ourselves one node
-              # at a time by specifying false as the second argument.
-              ns = ns.const_get(part, false)
-            end
-            cls = ns
-            break
-          rescue NameError => e
-            if exc.nil?
-              exc = e
-            end
-          end
+
+          # Simple const_get sometimes pulls names out of weird scopes,
+          # perhaps confusing the receiver (ns in this case) with the
+          # local scope. Walk the class hierarchy ourselves one node
+          # at a time by specifying false as the second argument.
+          parts.each { |part| ns = ns.const_get(part, false) }
+
+          cls = ns
+          break
+        rescue NameError => e
+          exc = e if exc.nil?
         end
-        if cls.nil?
-          # Raise the first exception, this is from the most specific namespace
-          raise exc
-        end
+
+        # Raise the first exception, this is from the most specific namespace
+        raise exc if cls.nil?
+
         cls
       end
     end

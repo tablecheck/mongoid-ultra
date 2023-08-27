@@ -24,7 +24,7 @@ module Mongoid
       #
       # @return [ Array ] The array of args.
       def __find_args__
-        flat_map{ |a| a.__find_args__ }.uniq{ |a| a.to_s }
+        flat_map(&:__find_args__).uniq(&:to_s)
       end
 
       # Mongoize the array into an array of object ids.
@@ -80,7 +80,7 @@ module Mongoid
       #
       # @return [ true | false ] If the array is multi args.
       def multi_arged?
-        !first.is_a?(Hash) && first.resizable? || size > 1
+        (!first.is_a?(Hash) && first.resizable?) || size > 1
       end
 
       # Turn the object from the ruby type we deal with to a Mongo friendly
@@ -149,6 +149,7 @@ module Mongoid
         # @return [ Array | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.nil?
+
           case object
           when ::Array, ::Set
             object.map(&:mongoize)
@@ -169,7 +170,7 @@ module Mongoid
   end
 end
 
-::Array.__send__(:include, Mongoid::Extensions::Array)
-::Array.extend(Mongoid::Extensions::Array::ClassMethods)
+Array.include Mongoid::Extensions::Array
+Array.extend(Mongoid::Extensions::Array::ClassMethods)
 
-::Mongoid.deprecate(Array, :blank_criteria)
+Mongoid.deprecate(Array, :blank_criteria)

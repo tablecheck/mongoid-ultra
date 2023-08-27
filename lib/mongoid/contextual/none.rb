@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "mongoid/contextual/aggregable/none"
+require 'mongoid/contextual/aggregable/none'
 
 module Mongoid
   module Contextual
@@ -48,9 +48,9 @@ module Mongoid
       #   end
       #
       # @return [ Enumerator ] The enumerator.
-      def each
-        if block_given?
-          [].each { |doc| yield(doc) }
+      def each(&block)
+        if block
+          [].each(&block)
           self
         else
           to_enum
@@ -68,11 +68,13 @@ module Mongoid
       # @example Do any documents exist for given conditions.
       #   context.exists?(name: "...")
       #
-      # @param [ Hash | Object | false ] id_or_conditions an _id to
+      # @param [ Hash | Object | false ] _id_or_conditions An _id to
       #   search for, a hash of conditions, nil or false.
       #
       # @return [ false ] Always false.
-      def exists?(id_or_conditions = :none); false; end
+      def exists?(_id_or_conditions = :none)
+        false
+      end
 
       # Pluck the field values in null context.
       #
@@ -91,15 +93,15 @@ module Mongoid
       # @example Iterate through the values for null context.
       #   context.pluck_each(:name) { |name| puts name }
       #
-      # @param [ [ String | Symbol ]... ] *_fields Field(s) to pluck.
+      # @param [ [ String | Symbol ]... ] *fields Field(s) to pluck.
       # @param [ Proc ] &block The block which will not be called
       #   due to null context.
       #
       # @return [ Enumerator | None ] An enumerator, or the context
       #   if a block was given.
-      def pluck_each(*_fields, &block)
-        enum = pluck(*_fields).each(&block)
-        block_given? ? self : enum
+      def pluck_each(*fields, &block)
+        enum = pluck(*fields).each(&block)
+        block ? self : enum
       end
 
       # Pick the field values in null context.
@@ -120,8 +122,8 @@ module Mongoid
       #   context.tally(:name)
       #
       # @param [ String | Symbol ] _field Field to tally.
-      # @param [ Boolean ] :unwind Whether to tally array
-      #   member values individually. Default false.
+      # @param [ Boolean ] :unwind Whether to tally array member
+      #   values individually. Not used in null context.
       # @param [ String | Symbol ] _field Field to tally.
       #
       # @return [ Hash ] An empty Hash.
@@ -136,7 +138,8 @@ module Mongoid
       #
       # @param [ Mongoid::Criteria ] criteria The criteria.
       def initialize(criteria)
-        @criteria, @klass = criteria, criteria.klass
+        @criteria = criteria
+        @klass = criteria.klass
       end
 
       # Always returns nil.
@@ -156,7 +159,7 @@ module Mongoid
       # @example Get the first document in null context.
       #   context.first!
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] always raises.
+      # @raise [ Mongoid::Errors::DocumentNotFound ] always raises.
       def first!
         raise_document_not_found_error
       end
@@ -178,7 +181,7 @@ module Mongoid
       # @example Get the last document in null context.
       #   context.last!
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] always raises.
+      # @raise [ Mongoid::Errors::DocumentNotFound ] always raises.
       def last!
         raise_document_not_found_error
       end
@@ -200,7 +203,7 @@ module Mongoid
       # @example Take a document in null context.
       #   context.take!
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] always raises.
+      # @raise [ Mongoid::Errors::DocumentNotFound ] always raises.
       def take!
         raise_document_not_found_error
       end
@@ -220,7 +223,7 @@ module Mongoid
       # @example Get the second document in null context.
       #   context.second!
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] always raises.
+      # @raise [ Mongoid::Errors::DocumentNotFound ] always raises.
       def second!
         raise_document_not_found_error
       end
@@ -240,7 +243,7 @@ module Mongoid
       # @example Get the third document in null context.
       #   context.third!
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] always raises.
+      # @raise [ Mongoid::Errors::DocumentNotFound ] always raises.
       def third!
         raise_document_not_found_error
       end
@@ -260,7 +263,7 @@ module Mongoid
       # @example Get the fourth document in null context.
       #   context.fourth!
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] always raises.
+      # @raise [ Mongoid::Errors::DocumentNotFound ] always raises.
       def fourth!
         raise_document_not_found_error
       end
@@ -280,7 +283,7 @@ module Mongoid
       # @example Get the fifth document in null context.
       #   context.fifth!
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] always raises.
+      # @raise [ Mongoid::Errors::DocumentNotFound ] always raises.
       def fifth!
         raise_document_not_found_error
       end
@@ -300,7 +303,7 @@ module Mongoid
       # @example Get the second to last document in null context.
       #   context.second_to_last!
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] always raises.
+      # @raise [ Mongoid::Errors::DocumentNotFound ] always raises.
       def second_to_last!
         raise_document_not_found_error
       end
@@ -320,7 +323,7 @@ module Mongoid
       # @example Get the third to last document in null context.
       #   context.third_to_last!
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] always raises.
+      # @raise [ Mongoid::Errors::DocumentNotFound ] always raises.
       def third_to_last!
         raise_document_not_found_error
       end
@@ -334,10 +337,9 @@ module Mongoid
       def length
         entries.length
       end
-      alias :size :length
-
-      alias :find_first :first
-      alias :one :first
+      alias_method :size, :length
+      alias_method :find_first, :first
+      alias_method :one, :first
 
       private
 

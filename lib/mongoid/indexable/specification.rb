@@ -10,7 +10,7 @@ module Mongoid
       # option name.
       MAPPINGS = {
         expire_after_seconds: :expire_after
-      }
+      }.freeze
 
       # @!attribute klass
       #   @return [ Class ] The class the index is defined on.
@@ -56,7 +56,7 @@ module Mongoid
       #
       # @return [ String ] name The index name.
       def name
-        @name ||= key.reduce([]) do |n, (k,v)|
+        @name ||= key.reduce([]) do |n, (k, v)|
           n << "#{k}_#{v}"
         end.join('_')
       end
@@ -93,7 +93,6 @@ module Mongoid
       #
       # @return [ Hash ] The normalized options.
       def normalize_options!(options)
-
         options.transform_keys! do |option|
           option = option.to_sym
           MAPPINGS[option] || option

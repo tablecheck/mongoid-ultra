@@ -19,6 +19,7 @@ module Mongoid
         # @return [ Regexp | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.nil?
+
           case object
           when String then ::Regexp.new(object)
           when ::Regexp then object
@@ -27,10 +28,10 @@ module Mongoid
         rescue RegexpError
           nil
         end
-        alias :demongoize :mongoize
+        alias_method :demongoize, :mongoize
       end
     end
   end
 end
 
-::Regexp.extend(Mongoid::Extensions::Regexp::ClassMethods)
+Regexp.extend(Mongoid::Extensions::Regexp::ClassMethods)

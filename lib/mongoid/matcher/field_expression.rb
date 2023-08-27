@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -8,6 +10,11 @@ module Mongoid
     # @api private
     module FieldExpression
 
+      extend self
+
+      # @api private
+      DOLLAR_REGEX_OPTIONS = %w[$regex $options].freeze
+
       # Returns whether a value satisfies a condition.
       #
       # @param [ true | false ] exists Whether the value exists.
@@ -17,27 +24,27 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      module_function def matches?(exists, value, condition)
+      def matches?(exists, value, condition)
         if condition.is_a?(Hash)
           condition.all? do |k, cond_v|
             k = k.to_s
             if k.start_with?('$')
-              if %w($regex $options).include?(k)
+              if DOLLAR_REGEX_OPTIONS.include?(k)
                 unless condition.key?('$regex')
-                  raise Errors::InvalidQuery, "$regex is required if $options is given: #{Errors::InvalidQuery.truncate_expr(condition)}"
+                  raise Errors::InvalidQuery.new("$regex is required if $options is given: #{Errors::InvalidQuery.truncate_expr(condition)}")
                 end
 
                 if k == '$regex'
-                  if options = condition['$options']
+                  if (options = condition['$options'])
                     cond_v = case cond_v
-                    when Regexp
-                      BSON::Regexp::Raw.new(cond_v.source, options)
-                    when BSON::Regexp::Raw
-                      BSON::Regexp::Raw.new(cond_v.pattern, options)
-                    else
-                      BSON::Regexp::Raw.new(cond_v, options)
-                    end
-                  elsif String === cond_v
+                             when Regexp
+                               BSON::Regexp::Raw.new(cond_v.source, options)
+                             when BSON::Regexp::Raw
+                               BSON::Regexp::Raw.new(cond_v.pattern, options)
+                             else
+                               BSON::Regexp::Raw.new(cond_v, options)
+                             end
+                  elsif cond_v.is_a?(String)
                     cond_v = BSON::Regexp::Raw.new(cond_v)
                   end
 
@@ -49,14 +56,14 @@ module Mongoid
               else
                 FieldOperator.get(k).matches?(exists, value, cond_v)
               end
-            elsif Hash === value
+            elsif value.is_a?(Hash)
               sub_values = Matcher.extract_attribute(value, k)
-              if sub_values.length > 0
+              if sub_values.empty?
+                Eq.matches?(false, nil, cond_v)
+              else
                 sub_values.any? do |sub_v|
                   Eq.matches?(true, sub_v, cond_v)
                 end
-              else
-                Eq.matches?(false, nil, cond_v)
               end
             else
               false

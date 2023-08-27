@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Criteria::Options do
-
 
   context 'when a persistence context with options is set on the class of the criteria' do
 
@@ -25,7 +24,7 @@ describe Mongoid::Criteria::Options do
     end
 
     it 'uses the persistence context of the class of the criteria' do
-      expect(context.options).to eq({ })
+      expect(context.options).to eq({})
     end
   end
 end

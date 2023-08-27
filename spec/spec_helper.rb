@@ -2,22 +2,18 @@
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), 'shared', 'lib'))
 
 autoload :Timecop, 'timecop'
 require 'support/spec_config'
-require 'mrss/session_registry'
-Mrss.patch_mongo_for_session_registry
-
 require 'mongoid'
 
 # require all shared examples
 Dir['./spec/support/shared/*.rb'].sort.each { |file| require file }
 
-MODELS = File.join(File.dirname(__FILE__), "support/models")
+MODELS = File.join(File.dirname(__FILE__), 'support/models')
 $LOAD_PATH.unshift(MODELS)
 
-require "action_controller"
+require 'action_controller'
 require 'rspec/retry'
 
 if SpecConfig.instance.client_debug?
@@ -40,20 +36,9 @@ def database_id_alt
   'mongoid_test_alt'
 end
 
-begin
-  require 'mrss/cluster_config'
-  require 'support/client_registry'
-  require 'mrss/event_subscriber'
-rescue LoadError => exc
-  raise LoadError.new <<~MSG.strip
-    The test suite requires shared tooling to be installed.
-    Please refer to spec/README.md for instructions.
-    #{exc.class}: #{exc}
-  MSG
-end
-
-ClusterConfig = Mrss::ClusterConfig
-
+require 'support/cluster_config'
+require 'support/client_registry'
+require 'support/event_subscriber'
 require 'support/authorization'
 require 'support/expectations'
 require 'support/helpers'
@@ -69,7 +54,7 @@ if SpecConfig.instance.ci?
     begin
       client.command(ping: 1)
       break
-    rescue Mongo::Error::OperationFailure => e
+    rescue Mongo::Error::OperationFailure
       sleep(2)
       client.cluster.scan!
     end
@@ -88,19 +73,19 @@ CONFIG = {
         heartbeat_frequency: 180,
         user: MONGOID_ROOT_USER.name,
         password: MONGOID_ROOT_USER.password,
-        auth_source: Mongo::Database::ADMIN,
+        auth_source: Mongo::Database::ADMIN
       }
     }
   },
   options: {
     belongs_to_required_by_default: false,
     log_level: if SpecConfig.instance.client_debug?
-      :debug
-    else
-      :info
-    end,
+                 :debug
+               else
+                 :info
+               end
   }
-}
+}.freeze
 
 # Set the database that the spec suite connects to.
 Mongoid.configure do |config|
@@ -108,8 +93,8 @@ Mongoid.configure do |config|
 end
 
 # Autoload every model for the test suite that sits in spec/support/models.
-Dir[ File.join(MODELS, "*.rb") ].sort.each do |file|
-  name = File.basename(file, ".rb")
+Dir[File.join(MODELS, '*.rb')].sort.each do |file|
+  name = File.basename(file, '.rb')
   autoload name.camelize.to_sym, name
 end
 
@@ -120,15 +105,14 @@ module Mongoid
 end
 
 ActiveSupport::Inflector.inflections do |inflect|
-  inflect.irregular("canvas", "canvases")
-  inflect.singular("address_components", "address_component")
+  inflect.irregular('canvas', 'canvases')
+  inflect.singular('address_components', 'address_component')
 end
 
 I18n.config.enforce_available_locales = false
 
-
-if %w(yes true 1).include?((ENV['TEST_I18N_FALLBACKS'] || '').downcase)
-  require "i18n/backend/fallbacks"
+if %w[yes true 1].include?((ENV['TEST_I18N_FALLBACKS'] || '').downcase)
+  require 'i18n/backend/fallbacks'
 end
 
 # The user must be created before any of the tests are loaded, until
@@ -139,7 +123,7 @@ begin
   # database. This user will need to be authenticated in order to add any
   # more users to any other databases.
   client.database.users.create(MONGOID_ROOT_USER)
-rescue Mongo::Error::OperationFailure => e
+rescue Mongo::Error::OperationFailure
 ensure
   client.close
 end
@@ -160,15 +144,10 @@ RSpec.configure do |config|
   end
 
   # Drop all collections and clear the identity map before each spec.
-  config.before(:each) do
+  config.before do
     cluster = Mongoid.default_client.cluster
-    # Older drivers do not have a #connected? method
-    if cluster.respond_to?(:connected?) && !cluster.connected?
-      Mongoid.default_client.reconnect
-    end
-    Mongoid.default_client.collections.each do |coll|
-      coll.delete_many
-    end
+    Mongoid.default_client.reconnect unless cluster.connected?
+    Mongoid.default_client.collections.each(&:delete_many)
   end
 
   if SpecConfig.instance.mri? && !SpecConfig.instance.windows?
@@ -179,60 +158,9 @@ RSpec.configure do |config|
     timeout_lib = Timeout
   end
 
-  if SpecConfig.instance.ci? && !%w(1 true yes).include?(ENV['INTERACTIVE']&.downcase)
-    config.around(:each) do |example|
+  if SpecConfig.instance.ci? && %w[1 true yes].exclude?(ENV['INTERACTIVE']&.downcase)
+    config.around do |example|
       timeout_lib.timeout(30) { example.run }
     end
-  end
-end
-
-# A subscriber to be used with the Ruby driver for testing.
-class EventSubscriber
-
-  # The started events.
-  attr_reader :started_events
-
-  # The succeeded events.
-  attr_reader :succeeded_events
-
-  # The failed events.
-  attr_reader :failed_events
-
-  # Create the test event subscriber.
-  #
-  # @example Create the subscriber
-  #   EventSubscriber.new
-  def initialize
-    @started_events = []
-    @succeeded_events = []
-    @failed_events = []
-  end
-
-  # Cache the succeeded event.
-  #
-  # @param [ Event ] event The event.
-  def succeeded(event)
-    @succeeded_events.push(event)
-  end
-
-  # Cache the started event.
-  #
-  # @param [ Event ] event The event.
-  def started(event)
-    @started_events.push(event)
-  end
-
-  # Cache the failed event.
-  #
-  # @param [ Event ] event The event.
-  def failed(event)
-    @failed_events.push(event)
-  end
-
-  # Clear all cached events.
-  def clear_events!
-    @started_events = []
-    @succeeded_events = []
-    @failed_events = []
   end
 end

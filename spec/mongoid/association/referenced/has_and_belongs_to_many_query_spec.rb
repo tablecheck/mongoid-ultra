@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative './has_and_belongs_to_many_models'
 
 describe Mongoid::Association::Referenced::HasAndBelongsToMany do
@@ -13,7 +13,8 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
     let(:contract) do
       HabtmmContract.where(item: 'foo').only(:signature_ids,
-        'signatures._id', 'signatures.name').first
+                                             'signatures._id',
+                                             'signatures.name').first
     end
 
     let(:signature) { contract.signatures.first }
@@ -26,7 +27,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
       expect do
         signature.year
       end.to raise_error(Mongoid::Errors::AttributeNotLoaded)
-      expect(signature.attributes.keys).to eq(['_id', 'name'])
+      expect(signature.attributes.keys).to eq(%w[_id name])
     end
 
     # Delete this test when https://jira.mongodb.org/browse/MONGOID-4704 is

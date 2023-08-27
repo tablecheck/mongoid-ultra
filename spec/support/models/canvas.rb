@@ -7,7 +7,7 @@ class Canvas
   embeds_one :writer
   embeds_one :palette
 
-  field :foo, type: String, default: ->{ "original" }
+  field :foo, type: String, default: -> { 'original' }
 
   has_many :comments, as: :commentable
 
@@ -15,13 +15,13 @@ class Canvas
   accepts_nested_attributes_for :writer
 
   def render
-    shapes.each { |shape| render }
+    shapes.each { |_shape| render }
   end
 
   class Test < Canvas
 
-    field :foo, type: String, overwrite: true, default: ->{ "overridden" }
+    field :foo, type: String, overwrite: true, default: -> { 'overridden' }
   end
 end
 
-require "support/models/browser"
+require 'support/models/browser'

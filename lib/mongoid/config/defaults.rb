@@ -10,7 +10,7 @@ module Mongoid
       # Note that this method will load the *new* functionality introduced in
       # the given Mongoid version.
       #
-      # @param [ String | Float ] The version number as X.y.
+      # @param [ String | Float ] version The version number as X.y.
       #
       # raises [ ArgumentError ] if an invalid version is given.
       def load_defaults(version)
@@ -24,20 +24,20 @@ module Mongoid
         # in the other direction (towards earlier versions).
 
         case version.to_s
-        when "7.3", "7.4", "7.5"
-          raise ArgumentError, "Version no longer supported: #{version}"
-        when "8.0"
+        when '7.3', '7.4', '7.5'
+          raise ArgumentError.new("Version no longer supported: #{version}")
+        when '8.0'
           self.legacy_readonly = true
 
-          load_defaults "8.1"
-        when "8.1"
+          load_defaults '8.1'
+        when '8.1'
           self.immutable_ids = false
 
-          load_defaults "9.0"
-        when "9.0"
+          load_defaults '9.0'
+        when '9.0'
           # All flag defaults currently reflect 9.0 behavior.
         else
-          raise ArgumentError, "Unknown version: #{version}"
+          raise ArgumentError.new("Unknown version: #{version}")
         end
       end
     end

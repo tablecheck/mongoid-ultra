@@ -61,7 +61,7 @@ module Mongoid
         def store(key, value, localize = true)
           super(key, evolve(value, localize))
         end
-        alias :[]= :store
+        alias_method :[]=, :store
 
         # Convert the options to aggregation pipeline friendly options.
         #
@@ -71,9 +71,9 @@ module Mongoid
         # @return [ Array<Hash> ] The options in pipeline form.
         def to_pipeline
           pipeline = []
-          pipeline.push({ "$skip" => skip }) if skip
-          pipeline.push({ "$limit" => limit }) if limit
-          pipeline.push({ "$sort" => sort }) if sort
+          pipeline.push({ '$skip' => skip }) if skip
+          pipeline.push({ '$limit' => limit }) if limit
+          pipeline.push({ '$sort' => sort }) if sort
           pipeline
         end
 
@@ -123,11 +123,10 @@ module Mongoid
         #
         # @return [ Object ] The serialized hash.
         def evolve_hash(value, localize = true)
-          value.inject({}) do |hash, (field, _value)|
+          value.each_with_object({}) do |(field, val), hash|
             name, serializer = storage_pair(field)
             name = localized_key(name, serializer) if localize
-            hash[name] = _value
-            hash
+            hash[name] = val
           end
         end
       end

@@ -3,7 +3,7 @@
 module Mongoid
   module Errors
 
-    # Creates the exception raised when trying to set or get the 
+    # Creates the exception raised when trying to set or get the
     # discriminator key on a child class.
     #
     # @param [ String ] class_name The class name.
@@ -14,7 +14,7 @@ module Mongoid
       def initialize(class_name, superclass)
         super(
           compose_message(
-            "invalid_discriminator_key_target",
+            'invalid_discriminator_key_target',
             { class_name: class_name, superclass: superclass }
           )
         )

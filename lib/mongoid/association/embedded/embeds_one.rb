@@ -17,13 +17,13 @@ module Mongoid
         # common ones.
         #
         # @return [ Array<Symbol> ] The extra valid options.
-        ASSOCIATION_OPTIONS = [
-            :autobuild,
-            :as,
-            :cascade_callbacks,
-            :cyclic,
-            :store_as
-        ]
+        ASSOCIATION_OPTIONS = %i[
+          autobuild
+          as
+          cascade_callbacks
+          cyclic
+          store_as
+        ].freeze
 
         # The complete list of valid options for this association, including
         # the shared ones.
@@ -58,7 +58,9 @@ module Mongoid
         # Is this association type embedded?
         #
         # @return [ true ] Always true.
-        def embedded?; true; end
+        def embedded?
+          true
+        end
 
         # Get the default validation setting for the association. Determines if
         # by default a validates associated will occur.
@@ -67,12 +69,16 @@ module Mongoid
         #   Proxy.validation_default
         #
         # @return [ true | false ] The validation default.
-        def validation_default; true; end
+        def validation_default
+          true
+        end
 
         # Does this association type store the foreign key?
         #
         # @return [ false ] Always false.
-        def stores_foreign_key?; false; end
+        def stores_foreign_key?
+          false
+        end
 
         # The primary key
         #
@@ -125,24 +131,26 @@ module Mongoid
         end
 
         def relation_complements
-          @relation_complements ||= [ Embedded::EmbeddedIn ].freeze
+          @relation_complements ||= [Embedded::EmbeddedIn].freeze
         end
 
-        def polymorphic_inverses(other = nil)
-          [ as ]
+        def polymorphic_inverses(_other = nil)
+          [as]
         end
 
-        def determine_inverses(other)
+        def determine_inverses(_other)
           matches = relation_class.relations.values.select do |rel|
             relation_complements.include?(rel.class) &&
               # https://jira.mongodb.org/browse/MONGOID-4882
-              rel.relation_class_name.sub(/\A::/, '') == inverse_class_name
+              rel.relation_class_name.delete_prefix('::') == inverse_class_name
 
           end
+
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
-          matches.collect { |m| m.name } unless matches.blank?
+
+          matches.collect(&:name) if matches.present?
         end
       end
     end

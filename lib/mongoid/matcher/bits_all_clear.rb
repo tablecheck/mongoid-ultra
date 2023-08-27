@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -20,7 +22,7 @@ module Mongoid
       # @api private
       def array_matches?(value, condition)
         condition.all? do |c|
-          value & (1<<c) == 0
+          value & (1 << c) == 0
         end
       end
 

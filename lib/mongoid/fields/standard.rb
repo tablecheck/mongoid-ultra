@@ -20,13 +20,13 @@ module Mongoid
       # @example Add the atomic changes.
       # field.add_atomic_changes(doc, "key", {}, [], [])
       #
-      # @param [ Mongoid::Document ] document The document to add to.
-      # @param [ String ] name The name of the field.
+      # @param [ Mongoid::Document ] _document The document to add to.
+      # @param [ String ] _name The name of the field.
       # @param [ String ] key The atomic location of the field.
       # @param [ Hash ] mods The current modifications.
       # @param [ Array ] new The new elements to add.
-      # @param [ Array ] old The old elements getting removed.
-      def add_atomic_changes(document, name, key, mods, new, old)
+      # @param [ Array ] _old The old elements getting removed.
+      def add_atomic_changes(_document, _name, key, mods, new, _old)
         mods[key] = new
       end
 
@@ -40,7 +40,7 @@ module Mongoid
       #
       # @return [ Object ] The serialized default value.
       def eval_default(doc)
-        if fields = doc.__selected_fields
+        if (fields = doc.__selected_fields)
           evaluated_default(doc) if included?(fields)
         else
           evaluated_default(doc)
@@ -76,9 +76,9 @@ module Mongoid
         # @todo: Durran, change API in 4.0 to take the class as a parameter.
         # This is here temporarily to address #2529 without changing the
         # constructor signature.
-        if default_val.respond_to?(:call)
-          define_default_method(options[:klass])
-        end
+        return unless default_val.respond_to?(:call)
+
+        define_default_method(options[:klass])
       end
 
       # Does this field do lazy default evaluation?
@@ -194,7 +194,7 @@ module Mongoid
       # @return [ true | false ] If the field was included.
       def included?(fields)
         (fields.values.first == 1 && fields[name.to_s] == 1) ||
-          (fields.values.first == 0 && !fields.has_key?(name.to_s))
+          (fields.values.first == 0 && !fields.key?(name.to_s))
       end
 
       # Get the evaluated default.

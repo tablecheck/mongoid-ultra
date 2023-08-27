@@ -15,7 +15,7 @@ module Mongoid
           #
           # @return [ Time ] The converted time in UTC.
           def __evolve_time__
-            usec = strftime("%6N").to_f
+            usec = strftime('%6N').to_f
             u = utc
             ::Time.utc(u.year, u.month, u.day, u.hour, u.min, u.sec, usec)
           end
@@ -48,5 +48,5 @@ module Mongoid
   end
 end
 
-::DateTime.__send__(:include, Mongoid::Criteria::Queryable::Extensions::DateTime)
-::DateTime.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::DateTime::ClassMethods)
+DateTime.include Mongoid::Criteria::Queryable::Extensions::DateTime
+DateTime.extend Mongoid::Criteria::Queryable::Extensions::DateTime::ClassMethods

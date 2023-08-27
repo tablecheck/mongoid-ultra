@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require "mongoid/validatable/macros"
-require "mongoid/validatable/localizable"
-require "mongoid/validatable/associated"
-require "mongoid/validatable/format"
-require "mongoid/validatable/length"
-require "mongoid/validatable/queryable"
-require "mongoid/validatable/presence"
-require "mongoid/validatable/uniqueness"
+require 'mongoid/validatable/macros'
+require 'mongoid/validatable/localizable'
+require 'mongoid/validatable/associated'
+require 'mongoid/validatable/format'
+require 'mongoid/validatable/length'
+require 'mongoid/validatable/queryable'
+require 'mongoid/validatable/presence'
+require 'mongoid/validatable/uniqueness'
 
 module Mongoid
 
@@ -87,7 +87,7 @@ module Mongoid
     #
     # @return [ true | false ] True if valid, false if not.
     def valid?(context = nil)
-      super context ? context : (new_record? ? :create : :update)
+      super(context || (new_record? ? :create : :update))
     end
 
     # Used to prevent infinite loops in associated validations.
@@ -120,9 +120,9 @@ module Mongoid
       #
       # @param [ Mongoid::Association::Relatable ] association The association metadata.
       def validates_relation(association)
-        if association.validate?
-          validates_associated(association.name)
-        end
+        return unless association.validate?
+
+        validates_associated(association.name)
       end
 
       # Add validation with the supplied validators for the provided fields
@@ -140,12 +140,12 @@ module Mongoid
       def validates_with(*args, &block)
         if args.first == PresenceValidator
           args.last[:attributes].each do |name|
-            association = relations[name.to_s]
-            if association && association.autosave?
-              Association::Referenced::AutoSave.define_autosave!(association)
-            end
+            next unless (association = relations[name.to_s])&.autosave?
+
+            Association::Referenced::AutoSave.define_autosave!(association)
           end
         end
+
         super
       end
 

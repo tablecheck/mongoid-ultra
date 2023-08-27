@@ -15,8 +15,8 @@ module Mongoid
       def initialize(executor)
         super(
           compose_message(
-            "invalid_async_query_executor",
-            { executor: executor, options: [:immediate, :global_thread_pool] }
+            'invalid_async_query_executor',
+            { executor: executor, options: %i[immediate global_thread_pool] }
           )
         )
       end

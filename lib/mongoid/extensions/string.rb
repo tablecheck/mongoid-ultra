@@ -26,7 +26,7 @@ module Mongoid
       #
       # @return [ String | BSON::ObjectId | nil ] The mongoized string.
       def __mongoize_object_id__
-        convert_to_object_id unless blank?
+        convert_to_object_id if present?
       end
 
       # Mongoize the string for storage.
@@ -45,7 +45,7 @@ module Mongoid
         # which is a regression from pre-3.0 and also does not agree with
         # the core Time API.
         parsed = ::Time.parse(self)
-        if ::Time == ::Time.configured
+        if ::Time.configured == ::Time
           parsed
         else
           ::Time.configured.parse(self)
@@ -59,7 +59,7 @@ module Mongoid
       #
       # @return [ String ] The string in collection friendly form.
       def collectionize
-        tableize.gsub("/", "_")
+        tableize.tr('/', '_')
       end
 
       # Is the string a valid value for a Mongoid id?
@@ -92,7 +92,7 @@ module Mongoid
       #
       # @return [ String ] The string stripped of "=".
       def reader
-        delete("=").sub(/\_before\_type\_cast\z/, '')
+        delete('=').delete_suffix('_before_type_cast')
       end
 
       # Is this string a writer?
@@ -102,7 +102,7 @@ module Mongoid
       #
       # @return [ true | false ] If the string contains "=".
       def writer?
-        include?("=")
+        include?('=')
       end
 
       # Is this string a valid_method_name?
@@ -122,7 +122,7 @@ module Mongoid
       #
       # @return [ true | false ] If the string ends with "_before_type_cast"
       def before_type_cast?
-        ends_with?("_before_type_cast")
+        ends_with?('_before_type_cast')
       end
 
       # Is the object not to be converted to bson on criteria creation?
@@ -163,11 +163,11 @@ module Mongoid
         def mongoize(object)
           object.try(:to_s)
         end
-        alias :demongoize :mongoize
+        alias_method :demongoize, :mongoize
       end
     end
   end
 end
 
-::String.__send__(:include, Mongoid::Extensions::String)
-::String.extend(Mongoid::Extensions::String::ClassMethods)
+String.include Mongoid::Extensions::String
+String.extend(Mongoid::Extensions::String::ClassMethods)

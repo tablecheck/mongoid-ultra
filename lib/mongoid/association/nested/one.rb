@@ -26,6 +26,7 @@ module Mongoid
         # @return [ Mongoid::Document ] The built document.
         def build(parent)
           return if reject?(parent, attributes)
+
           @existing = parent.send(association.name)
           if update?
             attributes.delete_id
@@ -112,7 +113,7 @@ module Mongoid
         #
         # @return [ true | false ] If the document should be replaced.
         def replace?
-          !existing && !destroyable? && !attributes.blank?
+          !existing && !destroyable? && attributes.present?
         end
 
         # Should the document be updated?
@@ -144,11 +145,9 @@ module Mongoid
 
           # otherwise, an attempt has been made to set the _id of an existing,
           # persisted document.
-          if Mongoid::Config.immutable_ids
-            raise Errors::ImmutableAttribute.new(:_id, id)
-          else
-            Mongoid::Warnings.warn_mutable_ids
-          end
+          raise Errors::ImmutableAttribute.new(:_id, id) if Mongoid::Config.immutable_ids
+
+          Mongoid::Warnings.warn_mutable_ids
         end
       end
     end

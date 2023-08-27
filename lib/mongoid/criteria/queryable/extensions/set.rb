@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "set"
+require 'set'
 
 module Mongoid
   class Criteria
@@ -21,7 +21,8 @@ module Mongoid
             # @return [ Array ] The evolved set.
             def evolve(object)
               return object if !object || !object.respond_to?(:map)
-              object.map{ |obj| obj.class.evolve(obj) }
+
+              object.map { |obj| obj.class.evolve(obj) }
             end
           end
         end
@@ -30,4 +31,4 @@ module Mongoid
   end
 end
 
-::Set.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Set::ClassMethods)
+Set.extend Mongoid::Criteria::Queryable::Extensions::Set::ClassMethods

@@ -31,11 +31,10 @@ module Mongoid
     #
     # @return [ Hash ] The new operations.
     def positionally(selector, operations, processed = {})
-      if selector.size == 1 || selector.values.any? { |val| val.nil? }
-        return operations
-      end
-      keys = selector.keys.map{ |m| m.sub('._id','') } - ['_id']
-      keys = keys.sort_by { |s| s.length*-1 }
+      return operations if selector.size == 1 || selector.values.any?(&:nil?)
+
+      keys = selector.keys.map { |m| m.sub('._id', '') } - ['_id']
+      keys = keys.sort_by { |s| s.length * -1 }
       process_operations(keys, operations, processed)
     end
 
@@ -62,7 +61,7 @@ module Mongoid
       if matches.size == 1
         keys.each do |kk|
           if position =~ /\A#{kk}\.\d+\.(.*)\z/
-            return "#{kk}.$.#{$1}"
+            return "#{kk}.$.#{::Regexp.last_match(1)}"
           end
         end
       end

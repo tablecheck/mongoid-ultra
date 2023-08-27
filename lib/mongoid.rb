@@ -1,43 +1,42 @@
 # frozen_string_literal: true
 
-require "forwardable"
-require "time"
-require "set"
-require "ruby2_keywords"
+require 'mongoid/version'
+require 'mongoid/bundle_checker'
 
-require "active_support"
-require "active_support/core_ext"
-require "active_support/json"
-require "active_support/inflector"
-require "active_support/time_with_zone"
-require "active_model"
+require 'forwardable'
+require 'time'
+require 'set'
+
+require 'active_support'
+require 'active_support/core_ext'
+require 'active_support/json'
+require 'active_support/inflector'
+require 'active_support/time_with_zone'
+require 'active_model'
 
 require 'concurrent-ruby'
 
-require "mongo"
-require "mongo/active_support"
+require 'mongo'
+require 'mongo/active_support'
 
-require "mongoid/version"
-require "mongoid/deprecable"
-require "mongoid/config"
-require "mongoid/persistence_context"
-require "mongoid/loadable"
-require "mongoid/loggable"
-require "mongoid/clients"
-require "mongoid/document"
-require "mongoid/tasks/database"
-require "mongoid/tasks/encryption"
-require "mongoid/warnings"
-require "mongoid/utils"
+require 'mongoid/deprecable'
+require 'mongoid/config'
+require 'mongoid/persistence_context'
+require 'mongoid/loadable'
+require 'mongoid/loggable'
+require 'mongoid/clients'
+require 'mongoid/document'
+require 'mongoid/tasks/database'
+require 'mongoid/tasks/encryption'
+require 'mongoid/warnings'
+require 'mongoid/utils'
 
 # If we are using Rails then we will include the Mongoid railtie.
 # This configures initializers required to integrate Mongoid with Rails.
-if defined?(Rails)
-  require "mongoid/railtie"
-end
+require 'mongoid/railtie' if defined?(Rails)
 
 # Add English locale config to load path by default.
-I18n.load_path << File.join(File.dirname(__FILE__), "config", "locales", "en.yml")
+I18n.load_path << File.join(File.dirname(__FILE__), 'config', 'locales', 'en.yml')
 
 # Top-level module for project.
 module Mongoid
@@ -48,10 +47,10 @@ module Mongoid
   extend Clients::Sessions::ClassMethods
 
   # A string added to the platform details of Ruby driver client handshake documents.
-  PLATFORM_DETAILS = "mongoid-#{VERSION}".freeze
+  PLATFORM_DETAILS = "mongoid-#{VERSION}".freeze # rubocop:disable Style/RedundantFreeze
 
   # The minimum MongoDB version supported.
-  MONGODB_VERSION = "2.6.0"
+  MONGODB_VERSION = '2.6.0'
 
   # Sets the Mongoid configuration options. Best used by passing a block.
   #
@@ -75,7 +74,7 @@ module Mongoid
   #
   # @return [ Config ] The configuration object.
   def configure(&block)
-    return Config unless block_given?
+    return Config unless block
 
     block.arity == 0 ? Config.instance_exec(&block) : yield(Config)
   end
@@ -115,7 +114,7 @@ module Mongoid
   #
   # @example Delegate the configuration methods.
   #   Mongoid.database = Mongo::Connection.new.db("test")
-  def_delegators Config, *(Config.public_instance_methods(false) - [ :logger=, :logger ])
+  def_delegators Config, *(Config.public_instance_methods(false) - %i[logger= logger])
 
   # Define persistence context that is used when a transaction method is called
   # on Mongoid module.

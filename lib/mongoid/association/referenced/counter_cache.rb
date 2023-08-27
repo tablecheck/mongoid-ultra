@@ -19,8 +19,8 @@ module Mongoid
         #
         # @param [ Symbol... ] *counters One or more counter caches to reset.
         def reset_counters(*counters)
-          self.class.with(persistence_context) do |_class|
-            _class.reset_counters(self, *counters)
+          self.class.with(persistence_context) do |klass|
+            klass.reset_counters(self, *counters)
           end
         end
 
@@ -55,7 +55,7 @@ module Mongoid
           # @param [ String ] id The id of the object to update.
           # @param [ Hash ] counters
           def update_counters(id, counters)
-            where(:_id => id).inc(counters)
+            where(_id: id).inc(counters)
           end
 
           # Increment the counter name from the entries that match the
@@ -107,29 +107,27 @@ module Mongoid
                 original, current = send("#{foreign_key}_previous_change")
 
                 unless original.nil?
-                  association.klass.with(persistence_context) do |_class|
-                    _class.decrement_counter(cache_column, original)
+                  association.klass.with(persistence_context) do |k|
+                    k.decrement_counter(cache_column, original)
                   end
                 end
 
-                if record = __send__(name)
-                  unless current.nil?
-                    record[cache_column] = (record[cache_column] || 0) + 1
-                    record.class.with(record.persistence_context) do |_class|
-                      _class.increment_counter(cache_column, current) if record.persisted?
-                    end
+                if (record = __send__(name)) && !current.nil?
+                  record[cache_column] = (record[cache_column] || 0) + 1
+                  record.class.with(record.persistence_context) do |k|
+                    k.increment_counter(cache_column, current) if record.persisted?
                   end
                 end
               end
             end
 
             klass.after_create do
-              if record = __send__(name)
+              if (record = __send__(name))
                 record[cache_column] = (record[cache_column] || 0) + 1
 
                 if record.persisted?
-                  record.class.with(record.persistence_context) do |_class|
-                    _class.increment_counter(cache_column, record._id)
+                  record.class.with(record.persistence_context) do |k|
+                    k.increment_counter(cache_column, record._id)
                   end
                   record.remove_change(cache_column)
                 end
@@ -137,12 +135,12 @@ module Mongoid
             end
 
             klass.before_destroy do
-              if record = __send__(name)
+              if (record = __send__(name))
                 record[cache_column] = (record[cache_column] || 0) - 1 unless record.frozen?
 
                 if record.persisted?
-                  record.class.with(record.persistence_context) do |_class|
-                    _class.decrement_counter(cache_column, record._id)
+                  record.class.with(record.persistence_context) do |k|
+                    k.decrement_counter(cache_column, record._id)
                   end
                   record.remove_change(cache_column)
                 end

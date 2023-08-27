@@ -7,68 +7,164 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 2.7
   NewCops: enable
   Exclude:
     - 'perf/**/*'
-    - 'spec/shared/lib/mrss/**/*'
     - 'test-apps/**/*'
     - 'vendor/**/*'
 
-# -----------------------------------
-# TODO: Enable and fix the cops below
-# -----------------------------------
-
-Gemspec:
-  Enabled: false
-
-Layout:
-  Enabled: false
-
-Lint:
-  Enabled: false
-
-Metrics:
-  Enabled: false
-
-Naming:
-  Enabled: false
-
-Performance:
-  Enabled: false
-
-Rake:
-  Enabled: false
-
-Rails:
-  Enabled: false
-
-RSpec:
-  Enabled: false
-
-Security:
+Lint/EmptyClass:
   Exclude:
     - 'spec/**/*'
 
-Style:
-  Enabled: false
-
 Style/Documentation:
-  Enabled: true
   AllowedConstants: ['ClassMethods']
   Exclude:
     - 'gemfiles/**/*'
     - 'spec/**/*'
 
 Style/DocumentationMethod:
-  Enabled: true
   Exclude:
     - 'gemfiles/**/*'
     - 'spec/**/*'
 
-# --------------------------------------
-# Cops below this line set intentionally
-# --------------------------------------
+# --------------------------------------------------
+# These cops are having CI issues. Enable later.
+
+Performance/StringInclude:
+  Enabled: false
+
+Performance/RegexpMatch:
+  Exclude:
+    - 'Gemfile'
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - 'Gemfile'
+
+# --------------------------------------------------
+# Cops with specific files skipped. These can be inlined later.
+
+Layout/LineContinuationLeadingSpace:
+  Exclude:
+    - 'spec/integration/app_spec.rb'
+
+Lint/EmptyBlock:
+  Exclude:
+    - 'spec/**/*'
+
+Lint/RedundantCopDisableDirective:
+  Exclude:
+    - 'spec/mongoid/version_spec.rb'
+
+RSpec/BeforeAfterAll:
+  Exclude:
+    - 'spec/support/constraints.rb'
+
+Lint/BinaryOperatorWithIdenticalOperands:
+  Exclude:
+    - 'spec/mongoid/equality_spec.rb'
+
+Lint/ConstantDefinitionInBlock:
+  Exclude:
+    - 'spec/**/*'
+
+Lint/SuppressedException:
+  Exclude:
+    - 'spec/**/*'
+
+Naming/AccessorMethodName:
+  Exclude:
+    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
+    - 'lib/mongoid/atomic/modifiers.rb'
+    - 'lib/mongoid/clients/options.rb'
+    - 'lib/mongoid/criteria/options.rb'
+    - 'lib/mongoid/encryptable.rb'
+    - 'lib/mongoid/fields/encrypted.rb'
+    - 'lib/mongoid/persistence_context.rb'
+    - 'lib/mongoid/timestamps/timeless.rb'
+
+RSpec/AroundBlock:
+  Exclude:
+    - 'spec/support/constraints.rb'
+
+RSpec/IdenticalEqualityAssertion:
+  Exclude:
+    - 'spec/mongoid/equality_spec.rb'
+
+RSpec/InstanceVariable:
+  Exclude:
+    - 'spec/integration/callbacks_spec.rb'
+
+Security/MarshalLoad:
+  Exclude:
+    - 'spec/mongoid/criteria/marshalable_spec.rb'
+
+RSpec/SubjectStub:
+  Exclude:
+    - 'spec/mongoid/collection_configurable_spec.rb'
+
+Style/ClassVars:
+  Exclude:
+    - 'lib/mongoid/contextual/mongo/documents_loader.rb'
+    - 'spec/mongoid/clients/transactions_spec_models.rb'
+    - 'spec/mongoid/contextual/mongo/documents_loader_spec.rb'
+
+Style/CaseEquality:
+  Exclude:
+    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
+    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
+    - 'spec/**/*'
+
+RSpec/ExampleLength:
+  Max: 50
+
+RSpec/MultipleExpectations:
+  Max: 20
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 50
+
+# --------------------------------------------------
+# These cops are disabled by default, but should be periodically
+# checked and cleaned up.
+
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Performance/CollectionLiteralInLoop:
+  Exclude:
+    - 'spec/mongoid/association/embedded/embeds_many/proxy_spec.rb'
+    - 'spec/mongoid/association/referenced/has_many/proxy_spec.rb'
+    - 'spec/mongoid/attributes_spec.rb'
+    - 'spec/mongoid/criteria/queryable/selectable_spec.rb'
+    - 'spec/mongoid/criteria/queryable/selector_spec.rb'
+
+# --------------------------------------------------
+# These cops are intentionally disabled due to incompatibility.
+
+# Mongoid behavior differs from ActiveRecord
+Rails/RedundantPresenceValidationOnBelongsTo:
+  Enabled: false
+
+# False positives
+Lint/HashCompareByIdentity:
+  Exclude:
+    - 'lib/mongoid/persistence_context.rb'
+    - 'lib/mongoid/threaded.rb'
+
+# --------------------------------------------------
+# These cops are intentionally configured due to style preference.
 
 Bundler/OrderedGems:
   Enabled: false
@@ -76,6 +172,82 @@ Bundler/OrderedGems:
 Gemspec/OrderedDependencies:
   Enabled: false
 
-# Not used by Mongoid
-Rails/RedundantPresenceValidationOnBelongsTo:
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/mongoid/association/referenced/has_many/proxy_spec.rb'
+    - 'spec/mongoid/interceptable_spec.rb'
+    - 'spec/mongoid/touchable_spec.rb'
+
+Lint/MissingSuper:
+  Exclude:
+    - 'lib/mongoid/association/embedded/embedded_in/proxy.rb'
+    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
+    - 'lib/mongoid/association/embedded/embeds_one/proxy.rb'
+    - 'lib/mongoid/association/referenced/belongs_to/proxy.rb'
+    - 'lib/mongoid/association/referenced/has_many/proxy.rb'
+    - 'lib/mongoid/association/referenced/has_one/proxy.rb'
+    - 'lib/mongoid/criteria/queryable/pipeline.rb'
+    - 'lib/mongoid/criteria/queryable/smash.rb'
+
+Lint/UnusedMethodArgument:
+  AllowUnusedKeywordArguments: true
+
+Metrics/BlockLength:
+  Exclude:
+    - '**/Rakefile'
+    - '**/*.rake'
+
+Naming/PredicateName:
+  AllowedMethods:
+    - is_a?
+    - has_and_belongs_to_many
+    - has_many
+    - has_one
+    - has_attribute?
+    - has_attribute_before_type_cast?
+
+RSpec/NotToNot:
+  EnforcedStyle: to_not
+
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Style/FetchEnvVar:
   Enabled: false
+
+Style/GuardClause:
+  AllowConsecutiveConditionals: true
+  Exclude:
+    - 'Gemfile'
+    - 'gemfiles/**/*'
+    # this exclusion should be inlined
+    - 'lib/mongoid/criteria/queryable/mergeable.rb'
+
+Style/ModuleFunction:
+  EnforcedStyle: extend_self
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Style/RaiseArgs:
+  EnforcedStyle: compact
+
+# See: https://github.com/rubocop/rubocop/issues/11798
+# Enforce multiline style if it becomes available in the future.
+Style/WhileUntilModifier:
+  Enabled: false
+
+# See: https://github.com/rubocop/rubocop/issues/11802
+Style/SymbolArray:
+  Exclude:
+    - 'spec/mongoid/criteria/queryable/selector_spec.rb'
+    - 'spec/mongoid/criteria/queryable/options_spec.rb'

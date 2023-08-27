@@ -108,7 +108,7 @@ module Mongoid
       # @return [ true | false ] If the field is a BSON::ObjectId.
       def object_id_field?
         @object_id_field ||=
-            association.polymorphic? ? true : association.klass.using_object_ids?
+          association.polymorphic? ? true : association.klass.using_object_ids?
       end
 
       # Returns true if an array, false if not.
@@ -129,10 +129,10 @@ module Mongoid
       # @example Eval the default proc.
       #   field.evaluate_default_proc(band)
       #
-      # @param [ Mongoid::Document ] doc The document.
+      # @param [ Mongoid::Document ] _doc The document.
       #
       # @return [ Object ] The called proc.
-      def evaluate_default_proc(doc)
+      def evaluate_default_proc(_doc)
         serialize_default(default_val[])
       end
 
@@ -145,7 +145,7 @@ module Mongoid
       #
       # @return [ Fields::Standard ] The field.
       def related_id_field
-        @related_id_field ||= association.klass.fields["_id"]
+        @related_id_field ||= association.klass.fields['_id']
       end
 
       def primary_key_field
@@ -163,7 +163,9 @@ module Mongoid
       # @param [ Object ] object The default.
       #
       # @return [ Object ] The serialized default.
-      def serialize_default(object); object; end
+      def serialize_default(object)
+        object
+      end
     end
   end
 end

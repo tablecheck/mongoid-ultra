@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Contextual::Aggregable::Memory do
 
@@ -15,11 +15,15 @@ describe Mongoid::Contextual::Aggregable::Memory do
   end
 
   file = File.read(File.join(File.dirname(__FILE__), 'memory_table.yml'))
-  table = if RUBY_VERSION.start_with?("2.5")
+  table = if RUBY_VERSION.start_with?('2.5')
             YAML.safe_load(file, [BigDecimal])
           else
             YAML.safe_load(file, permitted_classes: [BigDecimal])
           end.deep_symbolize_keys.fetch(:sets)
+  field_map = { integer: :views,
+                float: :rating,
+                big_decimal: :sales }
+  methods = %i[sum avg min max]
 
   table.each do |name, spec|
     context "DB values are #{name}" do
@@ -29,11 +33,9 @@ describe Mongoid::Contextual::Aggregable::Memory do
         end
       end
 
-      { integer: :views,
-        float: :rating,
-        big_decimal: :sales }.each do |type, field|
+      field_map.each do |type, field|
 
-        %i[sum avg min max].each do |method|
+        methods.each do |method|
           context "#{type.to_s.camelize} field :#{method}" do
             let(:expected) do
               spec.dig(:expected, type, method)

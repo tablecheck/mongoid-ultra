@@ -15,53 +15,53 @@ module Mongoid
     # These are methods defined on the criteria that should also be accessible
     # directly from the class level.
     def_delegators :with_default_scope,
-      :aggregates,
-      :avg,
-      :create_with,
-      :distinct,
-      :each,
-      :each_with_index,
-      :extras,
-      :fifth,
-      :fifth!,
-      :find_one_and_delete,
-      :find_one_and_replace,
-      :find_one_and_update,
-      :find_or_create_by,
-      :find_or_create_by!,
-      :find_or_initialize_by,
-      :first!,
-      :first_or_create,
-      :first_or_create!,
-      :first_or_initialize,
-      :for_js,
-      :fourth,
-      :fourth!,
-      :includes,
-      :last!,
-      :map_reduce,
-      :max,
-      :min,
-      :none,
-      :pick,
-      :pluck,
-      :pluck_each,
-      :read,
-      :second,
-      :second!,
-      :second_to_last,
-      :second_to_last!,
-      :sum,
-      :take,
-      :take!,
-      :tally,
-      :text_search,
-      :third,
-      :third!,
-      :third_to_last,
-      :third_to_last!,
-      :update,
-      :update_all,
+                   :aggregates,
+                   :avg,
+                   :create_with,
+                   :distinct,
+                   :each,
+                   :each_with_index,
+                   :extras,
+                   :fifth,
+                   :fifth!,
+                   :find_one_and_delete,
+                   :find_one_and_replace,
+                   :find_one_and_update,
+                   :find_or_create_by,
+                   :find_or_create_by!,
+                   :find_or_initialize_by,
+                   :first!,
+                   :first_or_create,
+                   :first_or_create!,
+                   :first_or_initialize,
+                   :for_js,
+                   :fourth,
+                   :fourth!,
+                   :includes,
+                   :last!,
+                   :map_reduce,
+                   :max,
+                   :min,
+                   :none,
+                   :pick,
+                   :pluck,
+                   :pluck_each,
+                   :read,
+                   :second,
+                   :second!,
+                   :second_to_last,
+                   :second_to_last!,
+                   :sum,
+                   :take,
+                   :take!,
+                   :tally,
+                   :text_search,
+                   :third,
+                   :third!,
+                   :third_to_last,
+                   :third_to_last!,
+                   :update,
+                   :update_all
 
     # Returns a count of records in the database.
     # If you want to specify conditions use where.
@@ -167,7 +167,7 @@ module Mongoid
     #   the +raise_not_found_error+ Mongoid configuration option is truthy.
     def find(*args, &block)
       empty_or_proc = args.empty? || (args.length == 1 && args.first.is_a?(Proc))
-      if block_given? && empty_or_proc
+      if block && empty_or_proc
         with_default_scope.find(*args, &block)
       else
         with_default_scope.find(*args)
@@ -193,6 +193,7 @@ module Mongoid
       if result.nil? && Mongoid.raise_not_found_error
         raise(Errors::DocumentNotFound.new(self, attrs))
       end
+
       yield(result) if result && block_given?
       result
     end
@@ -211,6 +212,7 @@ module Mongoid
     def find_by!(attrs = {})
       result = where(attrs).find_first
       raise(Errors::DocumentNotFound.new(self, attrs)) unless result
+
       yield(result) if result && block_given?
       result
     end
@@ -226,7 +228,7 @@ module Mongoid
     def first(limit = nil)
       with_default_scope.first(limit)
     end
-    alias :one :first
+    alias_method :one, :first
 
     # Find the last +Document+ given the conditions.
     #

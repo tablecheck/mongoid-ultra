@@ -15,12 +15,12 @@ module Mongoid
       # @param [ Hash ] modifications The add to set modifiers.
       def add_to_set(modifications)
         modifications.each_pair do |field, value|
-          if add_to_sets.has_key?(field)
+          if add_to_sets.key?(field)
             value.each do |val|
-              add_to_sets[field]["$each"].push(val)
+              add_to_sets[field]['$each'].push(val)
             end
           else
-            add_to_sets[field] = { "$each" => value }
+            add_to_sets[field] = { '$each' => value }
           end
         end
       end
@@ -34,7 +34,7 @@ module Mongoid
       def pull_all(modifications)
         modifications.each_pair do |field, value|
           add_operation(pull_alls, field, value)
-          pull_fields[field.split(".", 2)[0]] = field
+          pull_fields[field.split('.', 2)[0]] = field
         end
       end
 
@@ -47,7 +47,7 @@ module Mongoid
       def pull(modifications)
         modifications.each_pair do |field, value|
           pulls[field] = value
-          pull_fields[field.split(".", 2)[0]] = field
+          pull_fields[field.split('.', 2)[0]] = field
         end
       end
 
@@ -73,10 +73,11 @@ module Mongoid
       # @param [ Hash ] modifications The set modifiers.
       def set(modifications)
         modifications.each_pair do |field, value|
-          next if field == "_id"
+          next if field == '_id'
+
           mods = set_conflict?(field) ? conflicting_sets : sets
           add_operation(mods, field, value)
-          set_fields[field.split(".", 2)[0]] = field
+          set_fields[field.split('.', 2)[0]] = field
         end
       end
 
@@ -104,7 +105,7 @@ module Mongoid
       # @param [ String ] field The field.
       # @param [ Hash ] value The atomic op.
       def add_operation(mods, field, value)
-        if mods.has_key?(field)
+        if mods.key?(field)
           if mods[field].is_a?(Array)
             value.each do |val|
               mods[field].push(val)
@@ -127,12 +128,12 @@ module Mongoid
       # @param [ String ] field The field.
       # @param [ Hash ] value The atomic op.
       def add_each_operation(mods, field, value)
-        if mods.has_key?(field)
+        if mods.key?(field)
           value.each do |val|
-            mods[field]["$each"].push(val)
+            mods[field]['$each'].push(val)
           end
         else
-          mods[field] = { "$each" => value }
+          mods[field] = { '$each' => value }
         end
       end
 
@@ -143,7 +144,7 @@ module Mongoid
       #
       # @return [ Hash ] The $addToSet operations.
       def add_to_sets
-        self["$addToSet"] ||= {}
+        self['$addToSet'] ||= {}
       end
 
       # Is the operation going to be a conflict for a $set?
@@ -155,8 +156,8 @@ module Mongoid
       #
       # @return [ true | false ] If this field is a conflict.
       def set_conflict?(field)
-        name = field.split(".", 2)[0]
-        pull_fields.has_key?(name) || push_fields.has_key?(name)
+        name = field.split('.', 2)[0]
+        pull_fields.key?(name) || push_fields.key?(name)
       end
 
       # Is the operation going to be a conflict for a $push?
@@ -168,8 +169,8 @@ module Mongoid
       #
       # @return [ true | false ] If this field is a conflict.
       def push_conflict?(field)
-        name = field.split(".", 2)[0]
-        set_fields.has_key?(name) || pull_fields.has_key?(name) ||
+        name = field.split('.', 2)[0]
+        set_fields.key?(name) || pull_fields.key?(name) ||
           (push_fields.keys.count { |item| item.split('.', 2).first == name } > 1)
       end
 
@@ -180,7 +181,7 @@ module Mongoid
       #
       # @return [ Hash ] The conflicting pull operations.
       def conflicting_pulls
-        conflicts["$pullAll"] ||= {}
+        conflicts['$pullAll'] ||= {}
       end
 
       # Get the conflicting push modifications.
@@ -190,7 +191,7 @@ module Mongoid
       #
       # @return [ Hash ] The conflicting push operations.
       def conflicting_pushes
-        conflicts["$push"] ||= {}
+        conflicts['$push'] ||= {}
       end
 
       # Get the conflicting set modifications.
@@ -200,7 +201,7 @@ module Mongoid
       #
       # @return [ Hash ] The conflicting set operations.
       def conflicting_sets
-        conflicts["$set"] ||= {}
+        conflicts['$set'] ||= {}
       end
 
       # Get the push operations that would have conflicted with the sets.
@@ -250,7 +251,7 @@ module Mongoid
       #
       # @return [ Hash ] The $pullAll operations.
       def pull_alls
-        self["$pullAll"] ||= {}
+        self['$pullAll'] ||= {}
       end
 
       # Get the $pull operations or initialize a new one.
@@ -260,7 +261,7 @@ module Mongoid
       #
       # @return [ Hash ] The $pull operations.
       def pulls
-        self["$pull"] ||= {}
+        self['$pull'] ||= {}
       end
 
       # Get the $push/$each operations or initialize a new one.
@@ -270,7 +271,7 @@ module Mongoid
       #
       # @return [ Hash ] The $push/$each operations.
       def pushes
-        self["$push"] ||= {}
+        self['$push'] ||= {}
       end
 
       # Get the $set operations or initialize a new one.
@@ -280,7 +281,7 @@ module Mongoid
       #
       # @return [ Hash ] The $set operations.
       def sets
-        self["$set"] ||= {}
+        self['$set'] ||= {}
       end
 
       # Get the $unset operations or initialize a new one.
@@ -290,7 +291,7 @@ module Mongoid
       #
       # @return [ Hash ] The $unset operations.
       def unsets
-        self["$unset"] ||= {}
+        self['$unset'] ||= {}
       end
     end
   end

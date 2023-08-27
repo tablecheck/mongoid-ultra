@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::PersistenceContext do
 
@@ -26,14 +26,14 @@ describe Mongoid::PersistenceContext do
 
       it 'sets the persistence context for the object on the current thread' do
         expect(described_class.get(object)).to be(persistence_context)
-        expect(described_class.get(object)).not_to be(nil)
+        expect(described_class.get(object)).to_not be_nil
         expect(described_class.get(object).collection.name).to eq('other')
       end
 
       it 'only sets persistence context for the object on the current thread' do
-         Thread.new do
-          expect(described_class.get(object)).not_to be(persistence_context)
-          expect(described_class.get(object)).to be(nil)
+        Thread.new do
+          expect(described_class.get(object)).to_not be(persistence_context)
+          expect(described_class.get(object)).to be_nil
         end.value
       end
     end
@@ -58,8 +58,8 @@ describe Mongoid::PersistenceContext do
 
       it 'does not get persistence context for the object from another thread' do
         Thread.new do
-          expect(described_class.get(object)).not_to be(persistence_context)
-          expect(described_class.get(object)).to be(nil)
+          expect(described_class.get(object)).to_not be(persistence_context)
+          expect(described_class.get(object)).to be_nil
         end.value
       end
     end
@@ -80,8 +80,11 @@ describe Mongoid::PersistenceContext do
       end
 
       it 'clears the context anyway' do
-        begin; described_class.clear(object); rescue; end
-        expect(described_class.get(object)).to be(nil)
+        begin
+          described_class.clear(object)
+        rescue StandardError
+        end
+        expect(described_class.get(object)).to be_nil
       end
     end
 
@@ -98,7 +101,7 @@ describe Mongoid::PersistenceContext do
         end
 
         it 'clears the persistence context for the object on the current thread' do
-          expect(described_class.get(object)).to be(nil)
+          expect(described_class.get(object)).to be_nil
         end
       end
 
@@ -115,7 +118,7 @@ describe Mongoid::PersistenceContext do
           end
 
           it 'does not close the cluster' do
-            expect(client).not_to receive(:close)
+            expect(client).to_not receive(:close)
             described_class.clear(object, client.cluster.dup)
           end
         end
@@ -136,7 +139,7 @@ describe Mongoid::PersistenceContext do
 
     context 'with reusable client' do
       let(:options) do
-        {client: :some_client}
+        { client: :some_client }
       end
 
       let(:cluster) do
@@ -151,7 +154,7 @@ describe Mongoid::PersistenceContext do
 
       before do
         expect(Mongoid::Clients).to receive(:with_name).with(:some_client).and_return(client)
-        expect(client).not_to receive(:close)
+        expect(client).to_not receive(:close)
       end
 
       it 'does not close the client' do
@@ -221,9 +224,9 @@ describe Mongoid::PersistenceContext do
           end
 
           it 'raises an InvalidPersistenceOption error' do
-            expect {
+            expect do
               persistence_context
-            }.to raise_error(Mongoid::Errors::InvalidPersistenceOption)
+            end.to raise_error(Mongoid::Errors::InvalidPersistenceOption)
           end
         end
       end
@@ -258,7 +261,7 @@ describe Mongoid::PersistenceContext do
       context 'when the parent object has a client set' do
 
         let(:file) do
-          File.join(File.dirname(__FILE__), "..", "config", "mongoid.yml")
+          File.join(File.dirname(__FILE__), '..', 'config', 'mongoid.yml')
         end
 
         before do
@@ -309,7 +312,7 @@ describe Mongoid::PersistenceContext do
       context 'when there are no options passed to the Persistence Context' do
 
         let(:options) do
-          { }
+          {}
         end
 
         after do
@@ -330,7 +333,7 @@ describe Mongoid::PersistenceContext do
         context 'when the storage options is a block' do
 
           before do
-            object.store_in collection: ->{ :schmands }
+            object.store_in collection: -> { :schmands }
           end
 
           it 'uses the storage options' do
@@ -363,7 +366,7 @@ describe Mongoid::PersistenceContext do
         context 'when the storage options is a block' do
 
           before do
-            object.store_in collection: ->{ :schmands }
+            object.store_in collection: -> { :schmands }
           end
 
           it 'uses the persistence context options' do
@@ -403,7 +406,7 @@ describe Mongoid::PersistenceContext do
       context 'when there are no options passed to the Persistence Context' do
 
         let(:options) do
-          { }
+          {}
         end
 
         after do
@@ -436,8 +439,9 @@ describe Mongoid::PersistenceContext do
         context 'when the storage options is a block' do
 
           before do
-            object.store_in database: ->{ :musique }
+            object.store_in database: -> { :musique }
           end
+
           it 'uses the storage options' do
             expect(persistence_context.database_name).to eq(:musique)
           end
@@ -476,7 +480,7 @@ describe Mongoid::PersistenceContext do
         context 'when the storage options is a block' do
 
           before do
-            object.store_in database: ->{ :sounds }
+            object.store_in database: -> { :sounds }
           end
 
           after do
@@ -531,7 +535,7 @@ describe Mongoid::PersistenceContext do
     end
 
     let(:options) do
-      { }
+      {}
     end
 
     before do
@@ -584,7 +588,7 @@ describe Mongoid::PersistenceContext do
         context 'when the storage options is a block' do
 
           before do
-            object.store_in client: ->{ :other }
+            object.store_in client: -> { :other }
           end
 
           it 'uses the persistence context options' do
@@ -597,7 +601,7 @@ describe Mongoid::PersistenceContext do
     context 'when there is no client option set' do
 
       let(:options) do
-        { }
+        {}
       end
 
       context 'when there is a client override' do
@@ -628,7 +632,7 @@ describe Mongoid::PersistenceContext do
         context 'when the storage options is a block' do
 
           before do
-            object.store_in client: ->{ :alternative }
+            object.store_in client: -> { :alternative }
           end
 
           it 'uses the client storage option' do
@@ -669,26 +673,24 @@ describe Mongoid::PersistenceContext do
     end
   end
 
-  context "when using an alternate database to update a document" do
+  context 'when using an alternate database to update a document' do
     let(:user) do
       User.new(name: '1')
     end
 
     before do
-      user.with(database: database_id_alt) do |u|
-        u.save!
-      end
+      user.with(database: database_id_alt, &:save!)
 
       expect do
         user.with(database: database_id_alt) do |u|
-          u.update(name:'2')
+          u.update(name: '2')
         end
       end.to_not raise_error
     end
 
-    it "persists the update" do
-      User.with("database" => database_id_alt) do |klass|
-        expect(klass.find(user._id).name).to eq("2")
+    it 'persists the update' do
+      User.with('database' => database_id_alt) do |klass|
+        expect(klass.find(user._id).name).to eq('2')
       end
     end
   end

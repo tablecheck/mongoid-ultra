@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "rails/generators/named_base"
-require "rails/generators/active_model"
+require 'rails/generators/named_base'
+require 'rails/generators/active_model'
 
 module Mongoid
   module Generators
@@ -13,8 +13,7 @@ module Mongoid
       #
       # @return [ String ] The path.
       def self.source_root
-        @_mongoid_source_root ||=
-          File.expand_path("../#{base_name}/#{generator_name}/templates", __FILE__)
+        @source_root ||= File.expand_path("../#{base_name}/#{generator_name}/templates", __FILE__)
       end
     end
   end
@@ -31,9 +30,10 @@ module Rails
       #
       # @return [ String ] The type value.
       def type_class
-        return "Time" if type == :datetime
-        return "String" if type == :text
-        return "Mongoid::Boolean" if type == :boolean
+        return 'Time' if type == :datetime
+        return 'String' if type == :text
+        return 'Mongoid::Boolean' if type == :boolean
+
         type.to_s.camelcase
       end
     end

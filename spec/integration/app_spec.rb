@@ -7,7 +7,7 @@ TMP_BASE = File.join(BASE, 'tmp')
 
 def check_call(cmd, **opts)
   puts "Executing #{cmd.join(' ')}"
-  Mrss::ChildProcessHelper.check_call(cmd, **opts)
+  ChildProcessHelper.check_call(cmd, **opts)
 end
 
 def gem_version_argument(version)
@@ -16,14 +16,14 @@ end
 
 def insert_rails_gem_version(cmd)
   gem_version = gem_version_argument(SpecConfig.instance.installed_rails_version)
-  cmd.tap { cmd[1,0] = gem_version if gem_version }
+  cmd.tap { cmd[1, 0] = gem_version if gem_version }
 end
 
 describe 'Mongoid application tests' do
   before(:all) do
     require 'fileutils'
-    require 'mrss/child_process_helper'
     require 'open-uri'
+    require 'support/child_process_helper'
 
     FileUtils.mkdir_p(TMP_BASE)
   end
@@ -33,11 +33,11 @@ describe 'Mongoid application tests' do
       it 'runs' do
         clone_application(
           'https://github.com/mongoid/mongoid-demo',
-          subdir: 'sinatra-minimal',
+          subdir: 'sinatra-minimal'
         ) do
 
           # JRuby needs a long timeout
-          start_app(%w(bundle exec ruby app.rb), 4567, 40) do |port|
+          start_app(%w[bundle exec ruby app.rb], 4567, 40) do |_port|
             uri = URI.parse('http://localhost:4567/posts')
             resp = JSON.parse(uri.open.read)
 
@@ -52,11 +52,11 @@ describe 'Mongoid application tests' do
       it 'runs' do
         clone_application(
           'https://github.com/mongoid/mongoid-demo',
-          subdir: 'rails-api',
+          subdir: 'rails-api'
         ) do
 
           # JRuby needs a long timeout
-          start_app(%w(bundle exec rails s), 3000, 50) do |port|
+          start_app(%w[bundle exec rails s], 3000, 50) do |_port|
             uri = URI.parse('http://localhost:3000/posts')
             resp = JSON.parse(uri.open.read)
 
@@ -81,7 +81,11 @@ describe 'Mongoid application tests' do
     ensure
       # The process may have already died (due to an error exit) -
       # in this case killing it will raise an exception.
-      Process.kill('TERM', process.pid) rescue nil
+      begin
+        Process.kill('TERM', process.pid)
+      rescue StandardError
+        nil
+      end
       status = process.wait
     end
 
@@ -101,12 +105,12 @@ describe 'Mongoid application tests' do
 
     Dir.chdir(TMP_BASE) do
       FileUtils.rm_rf(name)
-      check_call(insert_rails_gem_version(%W(rails new #{name} --skip-spring --skip-active-record)), env: clean_env)
+      check_call(insert_rails_gem_version(%W[rails new #{name} --skip-spring --skip-active-record]), env: clean_env)
 
       Dir.chdir(name) do
         adjust_rails_defaults
         adjust_app_gemfile
-        check_call(%w(bundle install), env: clean_env)
+        check_call(%w[bundle install], env: clean_env)
 
         yield
       end
@@ -116,13 +120,13 @@ describe 'Mongoid application tests' do
   context 'new application - rails' do
     it 'creates' do
       prepare_new_rails_app 'mongoid-test' do
-        check_call(%w(rails g model post), env: clean_env)
-        check_call(%w(rails g model comment post:belongs_to), env: clean_env)
+        check_call(%w[rails g model post], env: clean_env)
+        check_call(%w[rails g model comment post:belongs_to], env: clean_env)
 
         # https://jira.mongodb.org/browse/MONGOID-4885
         comment_text = File.read('app/models/comment.rb')
         expect(comment_text).to match(/belongs_to :post/)
-        expect(comment_text).not_to match(/embedded_in :post/)
+        expect(comment_text).to_not match(/embedded_in :post/)
       end
     end
 
@@ -131,17 +135,17 @@ describe 'Mongoid application tests' do
         mongoid_config_file = File.join(TMP_BASE, 'mongoid-test-config/config/mongoid.yml')
 
         expect(File.exist?(mongoid_config_file)).to be false
-        check_call(%w(rails g mongoid:config), env: clean_env)
+        check_call(%w[rails g mongoid:config], env: clean_env)
         expect(File.exist?(mongoid_config_file)).to be true
 
         config_text = File.read(mongoid_config_file)
-        expect(config_text).to match /mongoid_test_config_development/
-        expect(config_text).to match /mongoid_test_config_test/
+        expect(config_text).to match(/mongoid_test_config_development/)
+        expect(config_text).to match(/mongoid_test_config_test/)
 
         Mongoid::Config::Introspection.options(include_deprecated: true).each do |opt|
           if opt.deprecated?
             # deprecated options should not be included
-            expect(config_text).not_to include "# #{opt.name}:"
+            expect(config_text).to_not include "# #{opt.name}:"
           else
             block = "    #{opt.indented_comment(indent: 4)}\n" \
                     "    # #{opt.name}: #{opt.default}\n"
@@ -156,19 +160,19 @@ describe 'Mongoid application tests' do
         mongoid_initializer = File.join(TMP_BASE, 'mongoid-test-init/config/initializers/mongoid.rb')
 
         expect(File.exist?(mongoid_initializer)).to be false
-        check_call(%w(rails g mongoid:config), env: clean_env)
+        check_call(%w[rails g mongoid:config], env: clean_env)
         expect(File.exist?(mongoid_initializer)).to be true
       end
     end
   end
 
   def install_rails
-    check_call(%w(gem uni rails -a))
-    if (rails_version = SpecConfig.instance.rails_version) == 'master'
-    else
-      check_call(%w(gem list))
-      check_call(%w(gem install rails --no-document -v) + ["~> #{rails_version}.0"])
-    end
+    check_call(%w[gem uni rails -a])
+    rails_version = SpecConfig.instance.rails_version
+    return if rails_version == 'master'
+
+    check_call(%w[gem list])
+    check_call(%w[gem install rails --no-document -v] + ["~> #{rails_version}.0"])
   end
 
   context 'local test applications' do
@@ -178,10 +182,12 @@ describe 'Mongoid application tests' do
 
       APP_PATH = File.join(File.dirname(__FILE__), '../../test-apps/rails-api')
 
-      %w(development production).each do |rails_env|
+      autoloaders = %w[classic zeitwerk]
+
+      %w[development production].each do |rails_env|
         context "in #{rails_env}" do
 
-          %w(classic zeitwerk).each do |autoloader|
+          autoloaders.each do |autoloader|
             context "with #{autoloader} autoloader" do
 
               let(:env) do
@@ -199,7 +205,7 @@ describe 'Mongoid application tests' do
                     FileUtils.rm_f('Gemfile.lock')
                   end
 
-                  check_call(%w(bundle install), env: env)
+                  check_call(%w[bundle install], env: env)
                   write_mongoid_yml
                 end
 
@@ -208,16 +214,17 @@ describe 'Mongoid application tests' do
               end
 
               it 'creates an index' do
-                index = client['posts'].indexes.detect do |index|
-                  index['key'] == {'subject' => 1}
+                index = client['posts'].indexes.detect do |idx|
+                  idx['key'] == { 'subject' => 1 }
                 end
-                expect(index).to be nil
+                expect(index).to be_nil
 
-                check_call(%w(bundle exec rake db:mongoid:create_indexes -t),
-                  cwd: APP_PATH, env: env)
+                check_call(%w[bundle exec rake db:mongoid:create_indexes -t],
+                           cwd: APP_PATH,
+                           env: env)
 
-                index = client['posts'].indexes.detect do |index|
-                  index['key'] == {'subject' => 1}
+                index = client['posts'].indexes.detect do |idx|
+                  idx['key'] == { 'subject' => 1 }
                 end
                 expect(index).to be_a(Hash)
               end
@@ -231,11 +238,11 @@ describe 'Mongoid application tests' do
   def clone_application(repo_url, subdir: nil)
     Dir.chdir(TMP_BASE) do
       FileUtils.rm_rf(File.basename(repo_url))
-      check_call(%w(git clone) + [repo_url])
+      check_call(%w[git clone] + [repo_url])
       Dir.chdir(File.join(*[File.basename(repo_url), subdir].compact)) do
         adjust_app_gemfile
         adjust_rails_defaults
-        check_call(%w(bundle install), env: clean_env)
+        check_call(%w[bundle install], env: clean_env)
         puts `git diff`
 
         write_mongoid_yml
@@ -247,24 +254,16 @@ describe 'Mongoid application tests' do
 
   def parse_mongodb_uri(uri)
     pre, query = uri.split('?', 2)
-    if pre =~ %r,\A(mongodb(?:.*?))://([^/]+)(?:/(.*))?\z,
-      protocol = $1
-      hosts = $2
-      database = $3
-      if database == ''
-        database = nil
-      end
-    else
-      raise ArgumentError, "Invalid MongoDB URI: #{uri}"
+
+    unless pre =~ %r{\A(mongodb(?:.*?))://([^/]+)(?:/(.*))?\z}
+      raise ArgumentError.new("Invalid MongoDB URI: #{uri}")
     end
-    if query == ''
-      query = nil
-    end
+
     {
-      protocol: protocol,
-      hosts: hosts,
-      database: database,
-      query: query,
+      protocol: Regexp.last_match(1),
+      hosts: Regexp.last_match(2),
+      database: Regexp.last_match(3).presence,
+      query: query.presence
     }
   end
 
@@ -279,12 +278,11 @@ describe 'Mongoid application tests' do
     parts[:database] = 'mongoid_test'
     uri = build_mongodb_uri(parts)
     p uri
-    env_config = {'clients' => {'default' => {
-      # TODO massive hack, will fail if uri specifies a database name or
-      # any uri options
-      'uri' => uri,
-    }}}
-    config = {'development' => env_config, 'production' => env_config}
+    env_config = { 'clients' => { 'default' => {
+      # TODO: massive hack, will fail if uri specifies a database name or any uri options
+      'uri' => uri
+    } } }
+    config = { 'development' => env_config, 'production' => env_config }
     File.open('config/mongoid.yml', 'w') do |f|
       f << YAML.dump(config)
     end
@@ -293,7 +291,7 @@ describe 'Mongoid application tests' do
   def adjust_app_gemfile(rails_version: SpecConfig.instance.rails_version)
     remove_bundler_req
 
-    gemfile_lines = IO.readlines('Gemfile')
+    gemfile_lines = File.readlines('Gemfile')
     gemfile_lines.delete_if do |line|
       line =~ /mongoid/
     end
@@ -302,11 +300,11 @@ describe 'Mongoid application tests' do
       gemfile_lines.delete_if do |line|
         line =~ /rails/
       end
-      if rails_version == 'master'
-        gemfile_lines << "gem 'rails', git: 'https://github.com/rails/rails'\n"
-      else
-        gemfile_lines << "gem 'rails', '~> #{rails_version}.0'\n"
-      end
+      gemfile_lines << if rails_version == 'master'
+                         "gem 'rails', git: 'https://github.com/rails/rails'\n"
+                       else
+                         "gem 'rails', '~> #{rails_version}.0'\n"
+                       end
     end
     File.open('Gemfile', 'w') do |f|
       f << gemfile_lines.join
@@ -314,29 +312,31 @@ describe 'Mongoid application tests' do
   end
 
   def adjust_rails_defaults(rails_version: SpecConfig.instance.rails_version)
-    if File.exist?('config/application.rb')
-      lines = IO.readlines('config/application.rb')
-      lines.each do |line|
-        line.gsub!(/config.load_defaults \d\.\d/, "config.load_defaults #{rails_version}")
-      end
-      File.open('config/application.rb', 'w') do |f|
-        f << lines.join
-      end
+    return unless File.exist?('config/application.rb')
+
+    lines = File.readlines('config/application.rb')
+    lines.each do |line|
+      line.gsub!(/config.load_defaults \d\.\d/, "config.load_defaults #{rails_version}")
+    end
+
+    File.open('config/application.rb', 'w') do |f|
+      f << lines.join
     end
   end
 
   def remove_bundler_req
     return unless File.file?('Gemfile.lock')
+
     # TODO: Remove this method completely when we get rid of .lock files in
     # mongoid-demo apps.
-    lock_lines = IO.readlines('Gemfile.lock')
+    lock_lines = File.readlines('Gemfile.lock')
     # Get rid of the bundled with line so that whatever bundler is installed
     # on the system is usable with the application.
-    if i = lock_lines.index("BUNDLED WITH\n")
-      lock_lines.slice!(i, 2)
-      File.open('Gemfile.lock', 'w') do |f|
-        f << lock_lines.join
-      end
+    return unless (i = lock_lines.index("BUNDLED WITH\n"))
+
+    lock_lines.slice!(i, 2)
+    File.open('Gemfile.lock', 'w') do |f|
+      f << lock_lines.join
     end
   end
 
@@ -346,28 +346,23 @@ describe 'Mongoid application tests' do
     # in `initialize': too long unix socket path (126bytes given but 108bytes max) (ArgumentError)
     # Is it trying to create unix sockets in current directory?
     # https://stackoverflow.com/questions/30302021/rails-runner-without-spring
-    check_call(%w(bin/spring binstub --remove --all), env: clean_env)
+    check_call(%w[bin/spring binstub --remove --all], env: clean_env)
   end
 
   def clean_env
-    @clean_env ||= Hash[ENV.keys.grep(/BUNDLE|RUBYOPT/).map { |k| [k, nil ] }]
+    @clean_env ||= ENV.keys.grep(/BUNDLE|RUBYOPT/).to_h { |k| [k, nil] }
   end
 
   def wait_for_port(port, timeout, process)
     deadline = Mongoid::Utils.monotonic_time + timeout
     loop do
-      begin
-        Socket.tcp('localhost', port, nil, nil, connect_timeout: 0.5) do |socket|
-          return
-        end
-      rescue IOError, SystemCallError
-        unless process.alive?
-          raise "Process #{process} died while waiting for port #{port}"
-        end
-        if Mongoid::Utils.monotonic_time > deadline
-          raise
-        end
+      Socket.tcp('localhost', port, nil, nil, connect_timeout: 0.5) do |_socket|
+        break
       end
+    rescue IOError, SystemCallError
+      raise "Process #{process} died while waiting for port #{port}" unless process.alive?
+
+      raise if Mongoid::Utils.monotonic_time > deadline
     end
   end
 end

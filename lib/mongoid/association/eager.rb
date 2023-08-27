@@ -57,26 +57,6 @@ module Mongoid
         each_loaded_document_of_class(@association.klass, keys_from_docs, &block)
       end
 
-      # Retrieves the documents of the specified class, that have the
-      # foreign key included in the specified list of keys.
-      #
-      # When the documents are retrieved, the set of inclusions applied
-      # is the set of inclusions applied to the host document minus the
-      # association that is being eagerly loaded.
-      private def each_loaded_document_of_class(cls, keys)
-        # Note: keys should not include nil elements.
-        # Upstream code is responsible for eliminating nils from keys.
-        return cls.none if keys.empty?
-
-        criteria = cls.criteria
-        criteria = criteria.apply_scope(@association.scope)
-        criteria = criteria.any_in(key => keys)
-        criteria.inclusions = criteria.inclusions - [@association]
-        criteria.each do |doc|
-          yield doc
-        end
-      end
-
       # Set the pre-loaded document into its parent.
       #
       # @example Set docs into parent with pk = "foo"
@@ -102,9 +82,7 @@ module Mongoid
       def grouped_docs
         @grouped_docs[@association.name] ||= @docs.group_by do |doc|
           doc.send(group_by_key) if doc.respond_to?(group_by_key)
-        end.reject do |k, v|
-          k.nil?
-        end
+        end.reject { |k, _| k.nil? }
       end
 
       # Group the documents and return the keys.
@@ -140,10 +118,28 @@ module Mongoid
       # @param [ Document ] doc The object to set the association on
       # @param [ Document | Array ] element to set into the parent
       def set_relation(doc, element)
-        doc.set_relation(@association.name, element) unless doc.blank?
+        doc.set_relation(@association.name, element) if doc.present?
       end
 
       private
+
+      # Retrieves the documents of the specified class, that have the
+      # foreign key included in the specified list of keys.
+      #
+      # When the documents are retrieved, the set of inclusions applied
+      # is the set of inclusions applied to the host document minus the
+      # association that is being eagerly loaded.
+      def each_loaded_document_of_class(cls, keys, &block)
+        # NOTE: keys should not include nil elements.
+        # Upstream code is responsible for eliminating nils from keys.
+        return cls.none if keys.empty?
+
+        criteria = cls.criteria
+        criteria = criteria.apply_scope(@association.scope)
+        criteria = criteria.any_in(key => keys)
+        criteria.inclusions = criteria.inclusions - [@association]
+        criteria.each(&block)
+      end
 
       # Shift the current association metadata
       #

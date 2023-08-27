@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative 'embeds_many_models'
 
 describe Mongoid::Association::Embedded::EmbedsMany do
@@ -28,14 +28,14 @@ describe Mongoid::Association::Embedded::EmbedsMany do
   end
 
   let(:options) do
-    { }
+    {}
   end
 
   describe '#relation_complements' do
 
     let(:expected_complements) do
       [
-        Mongoid::Association::Embedded::EmbeddedIn,
+        Mongoid::Association::Embedded::EmbeddedIn
       ]
     end
 
@@ -100,7 +100,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
       end
 
       it 'does not set up validation' do
-        expect(embeds_many_class).not_to receive(:validates_associated)
+        expect(embeds_many_class).to_not receive(:validates_associated)
         association.setup!
       end
     end
@@ -254,7 +254,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
   end
 
   describe '#merge!' do
-
+    skip 'TODO'
   end
 
   describe '#store_as' do
@@ -366,7 +366,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
       end
 
       it 'returns the type followed by = as a String' do
-        expect(association.type_setter).to eq("containable_type=")
+        expect(association.type_setter).to eq('containable_type=')
       end
     end
 
@@ -422,7 +422,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
         context 'when the relation class has only one relation whose class matches the owning class' do
 
           it 'returns the :as attribute of this association' do
-            expect(association.inverses(instance_of_other_class)).to match_array([ :containable ])
+            expect(association.inverses(instance_of_other_class)).to eq([:containable])
           end
         end
 
@@ -433,14 +433,14 @@ describe Mongoid::Association::Embedded::EmbedsMany do
           end
 
           it 'returns the :inverse_of value' do
-            expect(association.inverses(instance_of_other_class)).to eq([ :inverse_name ])
+            expect(association.inverses(instance_of_other_class)).to eq([:inverse_name])
           end
         end
 
         context 'when inverse_of is not specified' do
 
           it 'returns the :as attribute of this association' do
-            expect(association.inverses(instance_of_other_class)).to match_array([ :containable ])
+            expect(association.inverses(instance_of_other_class)).to eq([:containable])
           end
         end
       end
@@ -454,14 +454,14 @@ describe Mongoid::Association::Embedded::EmbedsMany do
           end
 
           it 'returns the :inverse_of value' do
-            expect(association.inverses).to eq([ :inverse_name ])
+            expect(association.inverses).to eq([:inverse_name])
           end
         end
 
         context 'when inverse_of is not specified' do
 
           it 'returns the :as attribute' do
-            expect(association.inverses).to eq([ :containable ])
+            expect(association.inverses).to eq([:containable])
           end
         end
       end
@@ -480,21 +480,21 @@ describe Mongoid::Association::Embedded::EmbedsMany do
         end
 
         it 'returns the :inverse_of value' do
-          expect(association.inverses).to eq([ :inverse_name ])
+          expect(association.inverses).to eq([:inverse_name])
         end
       end
 
       context 'when inverse_of is not specified' do
 
         it 'uses the inverse class to find the inverse name' do
-          expect(association.inverses).to eq([ :container ])
+          expect(association.inverses).to eq([:container])
         end
       end
 
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-
+          skip 'TODO'
         end
       end
     end
@@ -595,14 +595,14 @@ describe Mongoid::Association::Embedded::EmbedsMany do
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-
+          skip 'TODO'
         end
       end
     end
   end
 
   describe '#inverse_association' do
-
+    skip 'TODO'
   end
 
   describe '#autosave' do
@@ -785,8 +785,9 @@ describe Mongoid::Association::Embedded::EmbedsMany do
 
     context 'when a block is passed' do
 
+      let(:block) { proc {} }
       let(:association) do
-        embeds_many_class.embeds_one name, options do; end
+        embeds_many_class.embeds_one(name, options) { 1 }
       end
 
       it 'defines an extension module' do
@@ -795,7 +796,8 @@ describe Mongoid::Association::Embedded::EmbedsMany do
 
       it 'returns the extension' do
         expect(association.extension).to eq(
-          "#{embeds_many_class.name}::#{embeds_many_class.name}#{name.to_s.camelize}RelationExtension".constantize)
+          "#{embeds_many_class.name}::#{embeds_many_class.name}#{name.to_s.camelize}RelationExtension".constantize
+        )
       end
     end
 
@@ -859,7 +861,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
   describe '#path' do
 
     it 'returns an instance of Mongoid::Atomic::Paths::Root' do
-      expect(association.path(double( :_parent => true))).to be_a(Mongoid::Atomic::Paths::Embedded::Many)
+      expect(association.path(double(_parent: true))).to be_a(Mongoid::Atomic::Paths::Embedded::Many)
     end
   end
 
@@ -870,44 +872,44 @@ describe Mongoid::Association::Embedded::EmbedsMany do
 
     let(:inverse_assoc) { gun._association.inverse_association }
 
-    it "has the correct inverses" do
+    it 'has the correct inverses' do
       pending 'MONGOID-5080'
 
       expect(inverse_assoc).to be_a(Mongoid::Association::Embedded::EmbeddedIn)
       expect(inverse_assoc.name).to eq(:tank)
     end
 
-    context "when embedded association is not namespaced but has class_name" do
+    context 'when embedded association is not namespaced but has class_name' do
 
       let(:turret) { tank.emm_turrets.create! }
 
       let(:inverse_assoc) { turret._association.inverse_association }
 
-      it "has the correct inverses" do
+      it 'has the correct inverses' do
         expect(inverse_assoc).to be_a(Mongoid::Association::Embedded::EmbeddedIn)
         expect(inverse_assoc.name).to eq(:tank)
       end
     end
 
-    context "when embedded association is not namespaced and lacks class_name" do
+    context 'when embedded association is not namespaced and lacks class_name' do
 
       let(:hatch) { tank.emm_hatches.create! }
 
       let(:inverse_assoc) { hatch._association.inverse_association }
 
-      it "does not find the inverse" do
-        expect(inverse_assoc).to be nil
+      it 'does not find the inverse' do
+        expect(inverse_assoc).to be_nil
       end
     end
 
-    context "when the class names exist on top level and namespaced" do
+    context 'when the class names exist on top level and namespaced' do
 
       let(:car) { EmmSpec::Car.create! }
       let(:door) { car.doors.create! }
 
       let(:inverse_assoc) { door._association.inverse_association }
 
-      it "has the correct inverses" do
+      it 'has the correct inverses' do
         pending 'MONGOID-5080'
 
         expect(inverse_assoc).to be_a(Mongoid::Association::Embedded::EmbeddedIn)
@@ -915,13 +917,13 @@ describe Mongoid::Association::Embedded::EmbedsMany do
       end
     end
 
-    context "when the association has an unqualified class_name in same module" do
+    context 'when the association has an unqualified class_name in same module' do
 
       let(:launcher) { tank.launchers.create! }
 
       let(:inverse_assoc) { launcher._association.inverse_association }
 
-      it "has the correct inverses" do
+      it 'has the correct inverses' do
         pending 'unqualified class_name arguments do not work per MONGOID-5080'
 
         expect(inverse_assoc).to be_a(Mongoid::Association::Embedded::EmbeddedIn)

@@ -45,6 +45,7 @@ module Mongoid
         # @return [ Array | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.nil?
+
           case object
           when ::Set then ::Array.mongoize(object.to_a).uniq
           when ::Array then ::Array.mongoize(object).uniq
@@ -55,5 +56,5 @@ module Mongoid
   end
 end
 
-::Set.__send__(:include, Mongoid::Extensions::Set)
-::Set.extend(Mongoid::Extensions::Set::ClassMethods)
+Set.include Mongoid::Extensions::Set
+Set.extend(Mongoid::Extensions::Set::ClassMethods)

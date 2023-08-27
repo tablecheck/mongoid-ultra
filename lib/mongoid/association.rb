@@ -38,13 +38,13 @@ module Mongoid
     #
     # @return [ Hash ] The mapping from macros to their Association class.
     MACRO_MAPPING = {
-        embeds_one: Association::Embedded::EmbedsOne,
-        embeds_many: Association::Embedded::EmbedsMany,
-        embedded_in: Association::Embedded::EmbeddedIn,
-        has_one: Association::Referenced::HasOne,
-        has_many: Association::Referenced::HasMany,
-        has_and_belongs_to_many: Association::Referenced::HasAndBelongsToMany,
-        belongs_to: Association::Referenced::BelongsTo,
+      embeds_one: Association::Embedded::EmbedsOne,
+      embeds_many: Association::Embedded::EmbedsMany,
+      embedded_in: Association::Embedded::EmbeddedIn,
+      has_one: Association::Referenced::HasOne,
+      has_many: Association::Referenced::HasMany,
+      has_and_belongs_to_many: Association::Referenced::HasAndBelongsToMany,
+      belongs_to: Association::Referenced::BelongsTo
     }.freeze
 
     attr_accessor :_association
@@ -72,7 +72,7 @@ module Mongoid
     #
     # @return [ true | false ] True if in an embeds many.
     def embedded_many?
-      _association && _association.is_a?(Association::Embedded::EmbedsMany)
+      _association&.is_a?(Association::Embedded::EmbedsMany)
     end
 
     # Determine if the document is part of an embeds_one association.
@@ -82,7 +82,7 @@ module Mongoid
     #
     # @return [ true | false ] True if in an embeds one.
     def embedded_one?
-      _association && _association.is_a?(Association::Embedded::EmbedsOne)
+      _association&.is_a?(Association::Embedded::EmbedsOne)
     end
 
     # Get the association name for this document. If no association was defined
@@ -96,6 +96,7 @@ module Mongoid
     # @return [ Symbol ] The association name.
     def association_name
       raise Errors::NoMetadata.new(self.class.name) unless _association
+
       _association.name
     end
 
@@ -106,7 +107,7 @@ module Mongoid
     #
     # @return [ true | false ] True if in a references many.
     def referenced_many?
-      _association && _association.is_a?(Association::Referenced::HasMany)
+      _association&.is_a?(Association::Referenced::HasMany)
     end
 
     # Determine if the document is part of an references_one association.
@@ -116,7 +117,7 @@ module Mongoid
     #
     # @return [ true | false ] True if in a references one.
     def referenced_one?
-      _association && _association.is_a?(Association::Referenced::HasOne)
+      _association&.is_a?(Association::Referenced::HasOne)
     end
 
     # Convenience method for iterating through the loaded associations and
@@ -127,12 +128,11 @@ module Mongoid
     #
     # @return [ Hash ] The association metadata.
     def reload_relations
-      relations.each_pair do |name, meta|
-        if instance_variable_defined?("@_#{name}")
-          if _parent.nil? || instance_variable_get("@_#{name}") != _parent
-            remove_instance_variable("@_#{name}")
-          end
-        end
+      relations.each_pair do |name, _meta|
+        next unless instance_variable_defined?("@_#{name}") &&
+                    (_parent.nil? || instance_variable_get("@_#{name}") != _parent)
+
+        remove_instance_variable("@_#{name}")
       end
     end
   end

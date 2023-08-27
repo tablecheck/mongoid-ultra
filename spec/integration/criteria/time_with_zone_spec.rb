@@ -14,15 +14,15 @@ describe 'TimeWithZone in queries' do
     context 'Mongo driver static field' do
 
       let(:view_lt) do
-        Book.collection.find(updated_at: {'$lt' => query_time + 10.minutes})
+        Book.collection.find(updated_at: { '$lt' => query_time + 10.minutes })
       end
 
       let(:view_gt) do
-        Book.collection.find(updated_at: {'$gt' => query_time - 10.minutes})
+        Book.collection.find(updated_at: { '$gt' => query_time - 10.minutes })
       end
 
       let(:view_range) do
-        Book.collection.find(updated_at: {'$gt' => query_time - 10.minutes, '$lt' => query_time + 10.minutes})
+        Book.collection.find(updated_at: { '$gt' => query_time - 10.minutes, '$lt' => query_time + 10.minutes })
       end
 
       it 'finds the document' do
@@ -35,15 +35,15 @@ describe 'TimeWithZone in queries' do
     context 'Mongo driver dynamic field' do
 
       let(:view_lt) do
-        Book.collection.find(dynamic_time: {'$lt' => query_time + 10.minutes})
+        Book.collection.find(dynamic_time: { '$lt' => query_time + 10.minutes })
       end
 
       let(:view_gt) do
-        Book.collection.find(dynamic_time: {'$gt' => query_time - 10.minutes})
+        Book.collection.find(dynamic_time: { '$gt' => query_time - 10.minutes })
       end
 
       let(:view_range) do
-        Book.collection.find(dynamic_time: {'$gt' => query_time - 10.minutes, '$lt' => query_time + 10.minutes})
+        Book.collection.find(dynamic_time: { '$gt' => query_time - 10.minutes, '$lt' => query_time + 10.minutes })
       end
 
       it 'finds the document' do
@@ -101,19 +101,25 @@ describe 'TimeWithZone in queries' do
 
     context 'when zone of queried time is UTC' do
       let(:time_zone) { 'UTC' }
+
       it { expect(now_in_zone.utc_offset).to eq 0 }
+
       it_behaves_like 'time zone queries'
     end
 
     context 'when zone of queried time is JST' do
       let(:time_zone) { 'Asia/Tokyo' }
-      it { expect(now_in_zone.utc_offset).to be > 0 }
+
+      it { expect(now_in_zone.utc_offset).to be_positive }
+
       it_behaves_like 'time zone queries'
     end
 
     context 'when zone of queried time is PST' do
       let(:time_zone) { 'Pacific Time (US & Canada)' }
-      it { expect(now_in_zone.utc_offset).to be < 0 }
+
+      it { expect(now_in_zone.utc_offset).to be_negative }
+
       it_behaves_like 'time zone queries'
     end
   end
@@ -123,19 +129,25 @@ describe 'TimeWithZone in queries' do
 
     context 'when zone of queried time is UTC' do
       let(:time_zone) { 'UTC' }
+
       it { expect(now_in_zone.utc_offset).to eq 0 }
+
       it_behaves_like 'time zone queries'
     end
 
     context 'when zone of queried time is JST' do
       let(:time_zone) { 'Asia/Tokyo' }
-      it { expect(now_in_zone.utc_offset).to be > 0 }
+
+      it { expect(now_in_zone.utc_offset).to be_positive }
+
       it_behaves_like 'time zone queries'
     end
 
     context 'when zone of queried time is PST' do
       let(:time_zone) { 'Pacific Time (US & Canada)' }
-      it { expect(now_in_zone.utc_offset).to be < 0 }
+
+      it { expect(now_in_zone.utc_offset).to be_negative }
+
       it_behaves_like 'time zone queries'
     end
   end

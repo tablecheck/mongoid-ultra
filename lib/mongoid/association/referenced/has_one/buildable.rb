@@ -14,15 +14,13 @@ module Mongoid
           #
           # @param [ Object ] base The base object.
           # @param [ Object ] object The object to use to build the association.
-          # @param [ String ] type The type of the association.
-          # @param [ nil ] selected_fields Must be nil.
+          # @param [ String ] _type The type of the association.
+          # @param [ nil ] _selected_fields Must be nil.
           #
           # @return [ Mongoid::Document ] A single document.
-          def build(base, object, type = nil, selected_fields = nil)
+          def build(base, object, _type = nil, _selected_fields = nil)
             if query?(object)
-              if !base.new_record?
-                execute_query(object, base)
-              end
+              execute_query(object, base) unless base.new_record?
             else
               clear_associated(object)
               object
@@ -34,15 +32,16 @@ module Mongoid
           def clear_associated(object)
             unless inverse
               raise Errors::InverseNotFound.new(
-                  @owner_class,
-                  name,
-                  object.class,
-                  foreign_key,
+                @owner_class,
+                name,
+                object.class,
+                foreign_key
               )
             end
-            if object && (associated = object.send(inverse))
-              associated.substitute(nil)
-            end
+
+            return unless object && (associated = object.send(inverse))
+
+            associated.substitute(nil)
           end
 
           def query_criteria(object, base)

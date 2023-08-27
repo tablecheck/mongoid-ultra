@@ -23,8 +23,10 @@ module Mongoid
       # @return [ Mongo::Client ] The new client.
       def create(name = nil)
         return default unless name
+
         config = Mongoid.clients[name]
         raise Errors::NoClientConfig.new(name) unless config
+
         create_client(config)
       end
 
@@ -54,25 +56,20 @@ module Mongoid
       #
       # @return [ Mongo::Client ] The client.
       def create_client(configuration)
-        raise Errors::NoClientsConfig.new unless configuration
+        raise Errors::NoClientsConfig unless configuration
+
         config = configuration.dup
         uri = config.delete(:uri)
-        database = config.delete(:database)
+        database = config.delete(:database) || Mongo::URI.get(uri).database
         hosts = config.delete(:hosts)
         opts = config.delete(:options) || {}
-        if opts[:auto_encryption_options]
-          if opts[:auto_encryption_options].key?(:schema_map)
-            Mongoid.logger.warn(
-              'The :schema_map is configured in the :auto_encryption_options for the client;' +
-              ' encryption setting in Mongoid documents will be ignored.'
-            )
-          else
-            opts[:auto_encryption_options][:schema_map] = Mongoid.config.encryption_schema_map(database)
-          end
+
+        if opts.key?(:auto_encryption_options)
+          opts[:auto_encryption_options] = build_auto_encryption_options(opts, database)
         end
-        unless config.empty?
-          default_logger.warn("Unknown config options detected: #{config}.")
-        end
+
+        default_logger.warn("Unknown config options detected: #{config}.") unless config.empty?
+
         if uri
           Mongo::Client.new(uri, options(opts))
         else
@@ -83,9 +80,39 @@ module Mongoid
         end
       end
 
+      # Build auto encryption options for the client based on the options
+      # provided in the Mongoid client configuration and the encryption
+      # schema map for the database.
+      #
+      # @param [ Hash ] opts Options from the Mongoid client configuration.
+      # @param [ String ] database Database name to use for encryption schema map.
+      #
+      # @return [ Hash | nil ] Auto encryption options for the client.
+      #
+      # @api private
+      def build_auto_encryption_options(opts, database)
+        return nil unless opts[:auto_encryption_options]
+
+        opts[:auto_encryption_options].dup.tap do |auto_encryption_options|
+          if auto_encryption_options.key?(:schema_map)
+            default_logger.warn(
+              'The :schema_map is configured in the :auto_encryption_options for the client; ' \
+              'encryption setting in Mongoid documents will be ignored.'
+            )
+          else
+            auto_encryption_options[:schema_map] = Mongoid.config.encryption_schema_map(database)
+          end
+          if auto_encryption_options.key?(:key_vault_client)
+            auto_encryption_options[:key_vault_client] = Mongoid.client(
+              auto_encryption_options[:key_vault_client]
+            )
+          end
+        end
+      end
+
       MONGOID_WRAPPING_LIBRARY = {
         name: 'Mongoid',
-        version: VERSION,
+        version: VERSION
       }.freeze
 
       def driver_version
@@ -104,13 +131,13 @@ module Mongoid
         options[:app_name] = Mongoid::Config.app_name if Mongoid::Config.app_name
         if (driver_version <=> [2, 13]) >= 0
           wrap_lib = if options[:wrapping_libraries]
-            [MONGOID_WRAPPING_LIBRARY] + options[:wrapping_libraries]
-          else
-            [MONGOID_WRAPPING_LIBRARY]
-          end
+                       [MONGOID_WRAPPING_LIBRARY] + options[:wrapping_libraries]
+                     else
+                       [MONGOID_WRAPPING_LIBRARY]
+                     end
           options[:wrapping_libraries] = wrap_lib
         end
-        options.reject{ |k, _v| k == :hosts }.to_hash.symbolize_keys!
+        options.except(:hosts).to_hash.symbolize_keys!
       end
     end
   end

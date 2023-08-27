@@ -11,13 +11,13 @@ module Mongoid
         extend Macroable
 
         # Constant for a LineString $geometry.
-        LINE_STRING = "LineString"
+        LINE_STRING = 'LineString'
 
         # Constant for a Point $geometry.
-        POINT = "Point"
+        POINT = 'Point'
 
         # Constant for a Polygon $geometry.
-        POLYGON = "Polygon"
+        POLYGON = 'Polygon'
 
         # @attribute [rw] negating If the next expression is negated.
         # @attribute [rw] selector The query selector.
@@ -35,34 +35,26 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def all(*criteria)
-          if criteria.empty?
-            return clone.tap do |query|
-              query.reset_strategies!
-            end
-          end
+          return clone.tap(&:reset_strategies!) if criteria.empty?
 
           criteria.inject(clone) do |query, condition|
-            if condition.nil?
-              raise Errors::CriteriaArgumentRequired, :all
-            end
+            raise Errors::CriteriaArgumentRequired.new(:all) if condition.nil?
 
             condition = expand_condition_to_array_values(condition)
 
             if strategy
-              send(strategy, condition, "$all")
+              send(strategy, condition, '$all')
             else
-              condition.inject(query) do |_query, (field, value)|
-                v = {'$all' => value}
-                if negating?
-                  v = {'$not' => v}
-                end
-                _query.add_field_expression(field.to_s, v)
+              condition.inject(query) do |q, (field, value)|
+                v = { '$all' => value }
+                v = { '$not' => v } if negating?
+                q.add_field_expression(field.to_s, v)
               end
             end
           end.reset_strategies!
         end
-        alias :all_in :all
-        key :all, :union, "$all"
+        alias_method :all_in, :all
+        key :all, :union, '$all'
 
         # Add the $and criterion.
         #
@@ -75,10 +67,8 @@ module Mongoid
         #
         # @return [ Selectable ] The new selectable.
         def and(*criteria)
-          _mongoid_flatten_arrays(criteria).inject(self.clone) do |c, new_s|
-            if new_s.is_a?(Selectable)
-              new_s = new_s.selector
-            end
+          _mongoid_flatten_arrays(criteria).inject(clone) do |c, new_s|
+            new_s = new_s.selector if new_s.is_a?(Selectable)
             normalized = _mongoid_expand_keys(new_s)
             normalized.each do |k, v|
               k = k.to_s
@@ -89,12 +79,11 @@ module Mongoid
                 # we can add to existing conditions.
                 # Otherwise use $and.
                 if v.is_a?(Hash) &&
-                  v.length == 1 &&
-                  (new_k = v.keys.first).start_with?('$') &&
-                  (existing_kv = c.selector[k]).is_a?(Hash) &&
-                  !existing_kv.key?(new_k) &&
-                  existing_kv.keys.all? { |sub_k| sub_k.start_with?('$') }
-                then
+                   v.length == 1 &&
+                   (new_k = v.keys.first).start_with?('$') &&
+                   (existing_kv = c.selector[k]).is_a?(Hash) &&
+                   !existing_kv.key?(new_k) &&
+                   existing_kv.keys.all? { |sub_k| sub_k.start_with?('$') }
                   merged_v = c.selector[k].merge(v)
                   c.selector.store(k, merged_v)
                 else
@@ -107,7 +96,7 @@ module Mongoid
             c
           end
         end
-        alias :all_of :and
+        alias_method :all_of, :and
 
         # Add the range selection.
         #
@@ -121,14 +110,12 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def between(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :between
-          end
+          raise Errors::CriteriaArgumentRequired.new(:between) if criterion.nil?
 
           selection(criterion) do |selector, field, value|
             selector.store(
               field,
-              { "$gte" => value.min, "$lte" => value.max }
+              { '$gte' => value.min, '$lte' => value.max }
             )
           end
         end
@@ -151,13 +138,11 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def elem_match(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :elem_match
-          end
+          raise Errors::CriteriaArgumentRequired.new(:elem_match) if criterion.nil?
 
-          and_with_operator(criterion, "$elemMatch")
+          and_with_operator(criterion, '$elemMatch')
         end
-        key :elem_match, :override, "$elemMatch"
+        key :elem_match, :override, '$elemMatch'
 
         # Add the $exists selection.
         #
@@ -174,15 +159,13 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def exists(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :exists
-          end
+          raise Errors::CriteriaArgumentRequired.new(:exists) if criterion.nil?
 
-          typed_override(criterion, "$exists") do |value|
+          typed_override(criterion, '$exists') do |value|
             Mongoid::Boolean.evolve(value)
           end
         end
-        key :exists, :override, "$exists" do |value|
+        key :exists, :override, '$exists' do |value|
           Mongoid::Boolean.evolve(value)
         end
 
@@ -221,26 +204,24 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def geo_spatial(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :geo_spatial
-          end
+          raise Errors::CriteriaArgumentRequired.new(:geo_spatial) if criterion.nil?
 
           __merge__(criterion)
         end
 
-        key :intersects_line, :override, "$geoIntersects", "$geometry" do |value|
-          { "type" => LINE_STRING, "coordinates" => value }
+        key :intersects_line, :override, '$geoIntersects', '$geometry' do |value|
+          { 'type' => LINE_STRING, 'coordinates' => value }
         end
-        key :intersects_point, :override, "$geoIntersects", "$geometry" do |value|
-          { "type" => POINT, "coordinates" => value }
+        key :intersects_point, :override, '$geoIntersects', '$geometry' do |value|
+          { 'type' => POINT, 'coordinates' => value }
         end
-        key :intersects_polygon, :override, "$geoIntersects", "$geometry" do |value|
-          { "type" => POLYGON, "coordinates" => value }
+        key :intersects_polygon, :override, '$geoIntersects', '$geometry' do |value|
+          { 'type' => POLYGON, 'coordinates' => value }
         end
-        key :within_polygon, :override, "$geoWithin", "$geometry" do |value|
-          { "type" => POLYGON, "coordinates" => value }
+        key :within_polygon, :override, '$geoWithin', '$geometry' do |value|
+          { 'type' => POLYGON, 'coordinates' => value }
         end
-        key :within_box, :override, "$geoWithin", "$box"
+        key :within_box, :override, '$geoWithin', '$box'
 
         # Add the $eq criterion to the selector.
         #
@@ -254,13 +235,11 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def eq(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :eq
-          end
+          raise Errors::CriteriaArgumentRequired.new(:eq) if criterion.nil?
 
-          and_with_operator(criterion, "$eq")
+          and_with_operator(criterion, '$eq')
         end
-        key :eq, :override, "$eq"
+        key :eq, :override, '$eq'
 
         # Add the $gt criterion to the selector.
         #
@@ -274,13 +253,11 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def gt(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :gt
-          end
+          raise Errors::CriteriaArgumentRequired.new(:gt) if criterion.nil?
 
-          and_with_operator(criterion, "$gt")
+          and_with_operator(criterion, '$gt')
         end
-        key :gt, :override, "$gt"
+        key :gt, :override, '$gt'
 
         # Add the $gte criterion to the selector.
         #
@@ -294,13 +271,11 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def gte(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :gte
-          end
+          raise Errors::CriteriaArgumentRequired.new(:gte) if criterion.nil?
 
-          and_with_operator(criterion, "$gte")
+          and_with_operator(criterion, '$gte')
         end
-        key :gte, :override, "$gte"
+        key :gte, :override, '$gte'
 
         # Adds the $in selection to the selectable.
         #
@@ -317,26 +292,22 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def in(condition)
-          if condition.nil?
-            raise Errors::CriteriaArgumentRequired, :in
-          end
+          raise Errors::CriteriaArgumentRequired.new(:in) if condition.nil?
 
           condition = expand_condition_to_array_values(condition)
 
           if strategy
-            send(strategy, condition, "$in")
+            send(strategy, condition, '$in')
           else
             condition.inject(clone) do |query, (field, value)|
-              v = {'$in' => value}
-              if negating?
-                v = {'$not' => v}
-              end
+              v = { '$in' => value }
+              v = { '$not' => v } if negating?
               query.add_field_expression(field.to_s, v)
             end.reset_strategies!
           end
         end
-        alias :any_in :in
-        key :in, :intersect, "$in"
+        alias_method :any_in, :in
+        key :in, :intersect, '$in'
 
         # Add the $lt criterion to the selector.
         #
@@ -350,13 +321,11 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def lt(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :lt
-          end
+          raise Errors::CriteriaArgumentRequired.new(:lt) if criterion.nil?
 
-          and_with_operator(criterion, "$lt")
+          and_with_operator(criterion, '$lt')
         end
-        key :lt, :override, "$lt"
+        key :lt, :override, '$lt'
 
         # Add the $lte criterion to the selector.
         #
@@ -370,13 +339,11 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def lte(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :lte
-          end
+          raise Errors::CriteriaArgumentRequired.new(:lte) if criterion.nil?
 
-          and_with_operator(criterion, "$lte")
+          and_with_operator(criterion, '$lte')
         end
-        key :lte, :override, "$lte"
+        key :lte, :override, '$lte'
 
         # Add a $maxDistance selection to the selectable.
         #
@@ -387,12 +354,10 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def max_distance(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :max_distance
-          end
+          raise Errors::CriteriaArgumentRequired.new(:max_distance) if criterion.nil?
 
           # $maxDistance must be given together with $near
-          __add__(criterion, "$maxDistance")
+          __add__(criterion, '$maxDistance')
         end
 
         # Adds $mod selection to the selectable.
@@ -407,13 +372,11 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def mod(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :mod
-          end
+          raise Errors::CriteriaArgumentRequired.new(:mod) if criterion.nil?
 
-          and_with_operator(criterion, "$mod")
+          and_with_operator(criterion, '$mod')
         end
-        key :mod, :override, "$mod"
+        key :mod, :override, '$mod'
 
         # Adds $ne selection to the selectable.
         #
@@ -427,14 +390,12 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def ne(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :ne
-          end
+          raise Errors::CriteriaArgumentRequired.new(:ne) if criterion.nil?
 
-          and_with_operator(criterion, "$ne")
+          and_with_operator(criterion, '$ne')
         end
-        alias :excludes :ne
-        key :ne, :override, "$ne"
+        alias_method :excludes, :ne
+        key :ne, :override, '$ne'
 
         # Adds a $near criterion to a geo selection.
         #
@@ -448,13 +409,11 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def near(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :near
-          end
+          raise Errors::CriteriaArgumentRequired.new(:near) if criterion.nil?
 
-          and_with_operator(criterion, "$near")
+          and_with_operator(criterion, '$near')
         end
-        key :near, :override, "$near"
+        key :near, :override, '$near'
 
         # Adds a $nearSphere criterion to a geo selection.
         #
@@ -468,13 +427,11 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def near_sphere(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :near_sphere
-          end
+          raise Errors::CriteriaArgumentRequired.new(:near_sphere) if criterion.nil?
 
-          and_with_operator(criterion, "$nearSphere")
+          and_with_operator(criterion, '$nearSphere')
         end
-        key :near_sphere, :override, "$nearSphere"
+        key :near_sphere, :override, '$nearSphere'
 
         # Adds the $nin selection to the selectable.
         #
@@ -491,26 +448,22 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def nin(condition)
-          if condition.nil?
-            raise Errors::CriteriaArgumentRequired, :nin
-          end
+          raise Errors::CriteriaArgumentRequired.new(:nin) if condition.nil?
 
           condition = expand_condition_to_array_values(condition)
 
           if strategy
-            send(strategy, condition, "$nin")
+            send(strategy, condition, '$nin')
           else
             condition.inject(clone) do |query, (field, value)|
-              v = {'$nin' => value}
-              if negating?
-                v = {'$not' => v}
-              end
+              v = { '$nin' => value }
+              v = { '$not' => v } if negating?
               query.add_field_expression(field.to_s, v)
             end.reset_strategies!
           end
         end
-        alias :not_in :nin
-        key :nin, :intersect, "$nin"
+        alias_method :not_in, :nin
+        key :nin, :intersect, '$nin'
 
         # Adds $nor selection to the selectable.
         #
@@ -554,32 +507,26 @@ module Mongoid
           if criteria.empty?
             dup.tap { |query| query.negating = true }
           else
-            criteria.compact.inject(self.clone) do |c, new_s|
-              if new_s.is_a?(Selectable)
-                new_s = new_s.selector
-              end
+            criteria.compact.inject(clone) do |c, new_s|
+              new_s = new_s.selector if new_s.is_a?(Selectable)
               _mongoid_expand_keys(new_s).each do |k, v|
                 k = k.to_s
-                if c.selector[k] || k.start_with?('$')
-                  c = c.send(:__multi__, [{'$nor' => [{k => v}]}], '$and')
+                if c.selector[k] || k.start_with?('$') || v.is_a?(Hash)
+                  c = c.send(:__multi__, [{ '$nor' => [{ k => v }] }], '$and')
                 else
-                  if v.is_a?(Hash)
-                    c = c.send(:__multi__, [{'$nor' => [{k => v}]}], '$and')
-                  else
-                    if v.is_a?(Regexp)
-                      negated_operator = '$not'
-                    else
-                      negated_operator = '$ne'
-                    end
-                    c = c.send(:__override__, {k => v}, negated_operator)
-                  end
+                  negated_operator = if v.is_a?(Regexp)
+                                       '$not'
+                                     else
+                                       '$ne'
+                                     end
+                  c = c.send(:__override__, { k => v }, negated_operator)
                 end
               end
               c
             end
           end
         end
-        key :not, :override, "$not"
+        key :not, :override, '$not'
 
         # Negate the arguments, constraining the query to only those documents
         # that do NOT match the arguments.
@@ -603,8 +550,8 @@ module Mongoid
 
           exprs = criteria.map do |criterion|
             _mongoid_expand_keys(
-                criterion.is_a?(Selectable) ?
-                  criterion.selector : criterion)
+              criterion.is_a?(Selectable) ? criterion.selector : criterion
+            )
           end
 
           self.and('$nor' => exprs)
@@ -687,13 +634,13 @@ module Mongoid
               if criterion.is_a?(Selectable)
                 _mongoid_expand_keys(criterion.selector)
               else
-                Hash[criterion.map do |k, v|
+                criterion.to_h do |k, v|
                   if k.is_a?(Symbol)
                     [k.to_s, v]
                   else
                     [k, v]
                   end
-                end]
+                end
               end
             end
             self.and('$or' => exprs)
@@ -715,15 +662,13 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def with_size(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :with_size
-          end
+          raise Errors::CriteriaArgumentRequired.new(:with_size) if criterion.nil?
 
-          typed_override(criterion, "$size") do |value|
+          typed_override(criterion, '$size') do |value|
             ::Integer.evolve(value)
           end
         end
-        key :with_size, :override, "$size" do |value|
+        key :with_size, :override, '$size' do |value|
           ::Integer.evolve(value)
         end
 
@@ -741,15 +686,13 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def with_type(criterion)
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :with_type
-          end
+          raise Errors::CriteriaArgumentRequired.new(:with_type) if criterion.nil?
 
-          typed_override(criterion, "$type") do |value|
+          typed_override(criterion, '$type') do |value|
             ::Integer.evolve(value)
           end
         end
-        key :with_type, :override, "$type" do |value|
+        key :with_type, :override, '$type' do |value|
           ::Integer.evolve(value)
         end
 
@@ -773,12 +716,10 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def text_search(terms, opts = nil)
-          if terms.nil?
-            raise Errors::CriteriaArgumentRequired, :terms
-          end
+          raise Errors::CriteriaArgumentRequired.new(:terms) if terms.nil?
 
           clone.tap do |query|
-            criterion = {'$text' => { '$search' => terms }}
+            criterion = { '$text' => { '$search' => terms } }
             criterion['$text'].merge!(opts) if opts
             if query.selector['$text']
               # Per https://www.mongodb.com/docs/manual/reference/operator/query/text/
@@ -787,7 +728,7 @@ module Mongoid
               # overwriting previous text search condition with the currently
               # given one.
               Mongoid.logger.warn('Multiple $text expressions per query are not currently supported by the server')
-              query.selector = {'$and' => [query.selector]}.merge(criterion)
+              query.selector = { '$and' => [query.selector] }.merge(criterion)
             else
               query.selector = query.selector.merge(criterion)
             end
@@ -809,10 +750,10 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def where(*criteria)
-          criteria.inject(clone) do |query, criterion|
-            if criterion.nil?
-              raise Errors::CriteriaArgumentRequired, :where
-            end
+          selectable = clone
+
+          criteria.each do |criterion|
+            raise Errors::CriteriaArgumentRequired.new(:where) if criterion.nil?
 
             # We need to save the criterion in an instance variable so
             # Modifiable methods know how to create a polymorphic object.
@@ -821,12 +762,14 @@ module Mongoid
             # works out to be fine because first_or_create etc. methods
             # only ever specify one criterion to #where.
             @criterion = criterion
-            if criterion.is_a?(String)
-              js_query(criterion)
-            else
-              expr_query(criterion)
-            end
-          end.reset_strategies!
+            selectable = if criterion.is_a?(String)
+                           js_query(criterion)
+                         else
+                           expr_query(criterion)
+                         end
+          end
+
+          selectable.reset_strategies!
         end
 
         private
@@ -834,10 +777,10 @@ module Mongoid
         # Adds the specified expression to the query.
         #
         # Criterion must be a hash in one of the following forms:
-        # - {field_name: value}
-        # - {'field_name' => value}
-        # - {key_instance: value}
-        # - {'$operator' => operator_value_expression}
+        # - { field_name: value }
+        # - { 'field_name' => value }
+        # - { key_instance: value }
+        # - { '$operator' => operator_value_expression }
         #
         # Field name and operator may be given as either strings or symbols.
         #
@@ -850,10 +793,11 @@ module Mongoid
         # @api private
         def expr_query(criterion)
           if criterion.nil?
-            raise ArgumentError, 'Criterion cannot be nil here'
+            raise ArgumentError.new('Criterion cannot be nil here')
           end
-          unless Hash === criterion
-            raise Errors::InvalidQuery, "Expression must be a Hash: #{Errors::InvalidQuery.truncate_expr(criterion)}"
+
+          unless criterion.is_a?(Hash)
+            raise Errors::InvalidQuery.new("Expression must be a Hash: #{Errors::InvalidQuery.truncate_expr(criterion)}")
           end
 
           normalized = _mongoid_expand_keys(criterion)
@@ -881,12 +825,8 @@ module Mongoid
         #   end
         #
         # @param [ Hash ] criterion The criterion.
-        def typed_override(criterion, operator)
-          if criterion
-            criterion.transform_values! do |value|
-              yield(value)
-            end
-          end
+        def typed_override(criterion, operator, &block)
+          criterion&.transform_values!(&block)
           __override__(criterion, operator)
         end
 
@@ -904,7 +844,7 @@ module Mongoid
           clone.tap do |query|
             if negating?
               query.add_operator_expression('$and',
-                [{'$nor' => [{'$where' => criterion}]}])
+                                            [{ '$nor' => [{ '$where' => criterion }] }])
             else
               query.add_operator_expression('$where', criterion)
             end
@@ -924,10 +864,8 @@ module Mongoid
         # @api private
         def selection(criterion = nil)
           clone.tap do |query|
-            if criterion
-              criterion.each_pair do |field, value|
-                yield(query.selector, field.is_a?(Key) ? field : field.to_s, value)
-              end
+            criterion&.each_pair do |field, value|
+              yield(query.selector, field.is_a?(Key) ? field : field.to_s, value)
             end
             query.reset_strategies!
           end
@@ -943,7 +881,7 @@ module Mongoid
           # @return [ Array<Symbol> ] The names of the forwardable methods.
           def forwardables
             public_instance_methods(false) -
-              [ :negating, :negating=, :negating?, :selector, :selector= ]
+              %i[negating negating= negating? selector selector=]
           end
         end
       end

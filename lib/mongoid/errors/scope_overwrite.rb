@@ -9,10 +9,10 @@ module Mongoid
     # @example Create the error.
     #   ScopeOverwrite.new(Person,'teenies')
     class ScopeOverwrite < MongoidError
-      def initialize(model_name,scope_name)
+      def initialize(model_name, scope_name)
         super(
           compose_message(
-            "scope_overwrite",
+            'scope_overwrite',
             { model_name: model_name, scope_name: scope_name }
           )
         )

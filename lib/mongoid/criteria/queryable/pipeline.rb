@@ -34,7 +34,7 @@ module Mongoid
         #
         # @return [ Pipeline ] The pipeline.
         def group(entry)
-          push("$group" => evolve(entry.__expand_complex__))
+          push('$group' => evolve(entry.__expand_complex__))
         end
 
         # Initialize the new pipeline.
@@ -58,7 +58,7 @@ module Mongoid
         #
         # @return [ Pipeline ] The pipeline.
         def project(entry)
-          push("$project" => evolve(entry))
+          push('$project' => evolve(entry))
         end
 
         # Add the $unwind entry to the pipeline.
@@ -72,12 +72,12 @@ module Mongoid
         #
         # @return [ Pipeline ] The pipeline.
         def unwind(field_or_doc)
-          unless field_or_doc.respond_to? :keys
+          if field_or_doc.respond_to?(:keys)
+            push('$unwind' => field_or_doc)
+          else
             normalized = field_or_doc.to_s
             name = aliases[normalized] || normalized
-            push("$unwind" => name.__mongo_expression__)
-          else
-            push("$unwind" => field_or_doc)
+            push('$unwind' => name.__mongo_expression__)
           end
         end
 

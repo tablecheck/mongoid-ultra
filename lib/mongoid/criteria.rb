@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require "mongoid/criteria/findable"
-require "mongoid/criteria/includable"
-require "mongoid/criteria/inspectable"
-require "mongoid/criteria/marshalable"
-require "mongoid/criteria/modifiable"
-require "mongoid/criteria/queryable"
-require "mongoid/criteria/scopable"
-require "mongoid/criteria/options"
-require "mongoid/criteria/translator"
+require 'mongoid/criteria/findable'
+require 'mongoid/criteria/includable'
+require 'mongoid/criteria/inspectable'
+require 'mongoid/criteria/marshalable'
+require 'mongoid/criteria/modifiable'
+require 'mongoid/criteria/queryable'
+require 'mongoid/criteria/scopable'
+require 'mongoid/criteria/options'
+require 'mongoid/criteria/translator'
 
 module Mongoid
 
@@ -22,14 +22,14 @@ module Mongoid
     include Enumerable
 
     # @api private
-    alias :_enumerable_find :find
+    alias_method :_enumerable_find, :find
 
     include Contextual
     include Queryable
     include Findable
 
     # @api private
-    alias :_findable_find :find
+    alias_method :_findable_find, :find
 
     include Inspectable
     include Includable
@@ -42,7 +42,7 @@ module Mongoid
 
     # Static array used to check with method missing - we only need to ever
     # instantiate once.
-    CHECK = []
+    CHECK = [].freeze
 
     attr_accessor :embedded, :klass, :parent_document, :association
 
@@ -56,6 +56,7 @@ module Mongoid
     # @return [ true | false ] If the objects are equal.
     def ==(other)
       return super if other.respond_to?(:selector)
+
       entries == other
     end
 
@@ -101,7 +102,7 @@ module Mongoid
     #
     # @see https://ruby-doc.org/core/Enumerable.html#method-i-find
     def find(*args, &block)
-      if block_given?
+      if block
         _enumerable_find(*args, &block)
       else
         _findable_find(*args)
@@ -137,9 +138,7 @@ module Mongoid
     # @param [ Array<Mongoid::Document> ] docs The embedded documents.
     #
     # @return [ Array<Mongoid::Document> ] The embedded documents.
-    def documents=(docs)
-      @documents = docs
-    end
+    attr_writer :documents
 
     # Is the criteria for embedded documents?
     #
@@ -185,7 +184,7 @@ module Mongoid
     # @return [ Array<String> ] The fields.
     def field_list
       if options[:fields]
-        options[:fields].keys.reject{ |key| key == klass.discriminator_key }
+        options[:fields].keys.reject { |key| key == klass.discriminator_key }
       else
         []
       end
@@ -292,12 +291,10 @@ module Mongoid
     def only(*args)
       args = args.flatten
       return clone if args.empty?
-      if (args & Fields::IDS).empty?
-        args.unshift(:_id)
-      end
-      if klass.hereditary?
-        args.push(klass.discriminator_key.to_sym)
-      end
+
+      args.unshift(:_id) if (args & Fields::IDS).empty?
+      args.push(klass.discriminator_key.to_sym) if klass.hereditary?
+
       super(*args)
     end
 
@@ -341,7 +338,7 @@ module Mongoid
       super || klass.respond_to?(name) || CHECK.respond_to?(name, include_private)
     end
 
-    alias :to_ary :to_a
+    alias_method :to_ary, :to_a
 
     # Convenience for objects that want to be merged into a criteria.
     #
@@ -360,7 +357,7 @@ module Mongoid
     #
     # @return [ Proc ] The wrapped criteria.
     def to_proc
-      ->{ self }
+      -> { self }
     end
 
     # Adds a criterion to the +Criteria+ that specifies a type or an Array of
@@ -374,7 +371,7 @@ module Mongoid
     #
     # @return [ Mongoid::Criteria ] The cloned criteria.
     def type(types)
-      any_in(self.discriminator_key.to_sym => Array(types))
+      any_in(discriminator_key.to_sym => Array(types))
     end
 
     # This is the general entry point for most MongoDB queries. This either
@@ -403,14 +400,16 @@ module Mongoid
       # arguments through this method. This API can be reconsidered in the
       # future.
       if args.length > 1
-        raise ArgumentError, "Criteria#where requires zero or one arguments (given #{args.length})"
+        raise ArgumentError.new("Criteria#where requires zero or one arguments (given #{args.length})")
       end
+
       if args.length == 1
         expression = args.first
         if expression.is_a?(::String) && embedded?
           raise Errors::UnsupportedJavascript.new(klass, expression)
         end
       end
+
       super
     end
 
@@ -440,11 +439,11 @@ module Mongoid
     # @return [ Mongoid::Criteria ] The criteria.
     def for_js(javascript, scope = {})
       code = if scope.empty?
-        # CodeWithScope is not supported for $where as of MongoDB 4.4
-        BSON::Code.new(javascript)
-      else
-        BSON::CodeWithScope.new(javascript, scope)
-      end
+               # CodeWithScope is not supported for $where as of MongoDB 4.4
+               BSON::Code.new(javascript)
+             else
+               BSON::CodeWithScope.new(javascript, scope)
+             end
       js_query(code)
     end
 
@@ -464,9 +463,9 @@ module Mongoid
     # @raise [ Errors::DocumentNotFound ] If none are found and raising an
     #   error.
     def check_for_missing_documents!(result, ids)
-      if (result.size < ids.size) && Mongoid.raise_not_found_error
-        raise Errors::DocumentNotFound.new(klass, ids, ids - result.map(&:_id))
-      end
+      return unless Mongoid.raise_not_found_error && (result.size < ids.size)
+
+      raise Errors::DocumentNotFound.new(klass, ids, ids - result.map(&:_id))
     end
 
     # Clone or dup the current +Criteria+. This will return a new criteria with
@@ -503,14 +502,24 @@ module Mongoid
     # @return [ Object ] The result of the method call.
     ruby2_keywords def method_missing(name, *args, &block)
       if klass.respond_to?(name)
-        klass.send(:with_scope, self) do
-          klass.send(name, *args, &block)
+        klass.public_send(:with_scope, self) do
+          klass.public_send(name, *args, &block)
         end
       elsif CHECK.respond_to?(name)
-        return entries.send(name, *args, &block)
+        entries.public_send(name, *args, &block)
       else
         super
       end
+    end
+
+    # Check if the method can be handled by method_missing.
+    #
+    # @param [ Symbol | String ] name The name of the method.
+    # @param [ true | false ] _include_private Whether to include private methods.
+    #
+    # @return [ true | false ] True if method can be handled, false otherwise.
+    def respond_to_missing?(name, _include_private = false)
+      klass.respond_to?(name) || CHECK.respond_to?(name)
     end
 
     # For models where inheritance is at play we need to add the type
@@ -534,8 +543,8 @@ module Mongoid
     # @return [ true | false ] If type selection should be added.
     def type_selectable?
       klass.hereditary? &&
-        !selector.keys.include?(self.discriminator_key) &&
-        !selector.keys.include?(self.discriminator_key.to_sym)
+        selector.keys.exclude?(discriminator_key) &&
+        selector.keys.exclude?(discriminator_key.to_sym)
     end
 
     # Get the selector for type selection.
@@ -549,7 +558,7 @@ module Mongoid
     def type_selection
       klasses = klass._types
       if klasses.size > 1
-        { klass.discriminator_key.to_sym => { "$in" => klass._types }}
+        { klass.discriminator_key.to_sym => { '$in' => klass._types } }
       else
         { klass.discriminator_key.to_sym => klass._types[0] }
       end

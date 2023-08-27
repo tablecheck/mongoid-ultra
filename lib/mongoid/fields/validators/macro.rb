@@ -8,20 +8,20 @@ module Mongoid
       module Macro
         extend self
 
-        OPTIONS = [
-          :as,
-          :default,
-          :identity,
-          :label,
-          :localize,
-          :fallbacks,
-          :association,
-          :pre_processed,
-          :subtype,
-          :type,
-          :overwrite,
-          :encrypt
-        ]
+        OPTIONS = %i[
+          as
+          default
+          identity
+          label
+          localize
+          fallbacks
+          association
+          pre_processed
+          subtype
+          type
+          overwrite
+          encrypt
+        ].freeze
 
         # Validate the field definition.
         #
@@ -44,8 +44,8 @@ module Mongoid
         #
         # @param [ Class ] klass The model class.
         # @param [ Symbol ] name The field name.
-        # @param [ Hash ] options The provided options.
-        def validate_relation(klass, name, options = {})
+        # @param [ Hash ] _options The provided options.
+        def validate_relation(klass, name, _options = {})
           [name, "#{name}?".to_sym, "#{name}=".to_sym].each do |n|
             if Mongoid.destructive_fields.include?(n)
               raise Errors::InvalidRelation.new(klass, n)
@@ -87,13 +87,11 @@ module Mongoid
         #
         # @api private
         def validate_name_uniqueness(klass, name, options)
-          if !options[:overwrite] && klass.fields.keys.include?(name.to_s)
-            if Mongoid.duplicate_fields_exception
-              raise Errors::InvalidField.new(klass, name, name)
-            else
-              Mongoid.logger.warn("Overwriting existing field #{name} in class #{klass.name}.") if Mongoid.logger
-            end
-          end
+          return unless !options[:overwrite] && klass.fields.key?(name.to_s)
+
+          raise Errors::InvalidField.new(klass, name, name) if Mongoid.duplicate_fields_exception
+
+          Mongoid.logger&.warn("Overwriting existing field #{name} in class #{klass.name}.")
         end
 
         # Validate that the field options are allowed.
@@ -109,8 +107,8 @@ module Mongoid
         #
         # @raise [ Errors::InvalidFieldOption ] If an option is invalid.
         def validate_options(klass, name, options)
-          options.keys.each do |option|
-            if !OPTIONS.include?(option) && !Fields.options.include?(option)
+          options.each_key do |option|
+            unless OPTIONS.include?(option) || Fields.options.include?(option)
               raise Errors::InvalidFieldOption.new(klass, name, option, OPTIONS)
             end
 

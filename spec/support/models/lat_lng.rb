@@ -8,10 +8,11 @@ class LatLng
   end
 
   def initialize(lat, lng)
-    @lat, @lng = lat, lng
+    @lat = lat
+    @lng = lng
   end
 
   def mongoize
-    [ lng, lat ]
+    [lng, lat]
   end
 end

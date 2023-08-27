@@ -9,7 +9,7 @@ module Mongoid
         extend self
 
         # Standard configuration options.
-        STANDARD = [ :database, :hosts, :username, :password ].freeze
+        STANDARD = %i[database hosts username password].freeze
 
         # Validate the client configuration.
         #
@@ -18,9 +18,8 @@ module Mongoid
         #
         # @param [ Hash ] clients The clients config.
         def validate(clients)
-          unless clients.has_key?(:default)
-            raise Errors::NoDefaultClient.new(clients.keys)
-          end
+          raise Errors::NoDefaultClient.new(clients.keys) unless clients.key?(:default)
+
           clients.each_pair do |name, config|
             validate_client_database(name, config)
             validate_client_hosts(name, config)
@@ -40,9 +39,9 @@ module Mongoid
         # @param [ String | Symbol ] name The config key.
         # @param [ Hash ] config The configuration.
         def validate_client_database(name, config)
-          if no_database_or_uri?(config)
-            raise Errors::NoClientDatabase.new(name, config)
-          end
+          return unless no_database_or_uri?(config)
+
+          raise Errors::NoClientDatabase.new(name, config)
         end
 
         # Validate that the client config has hosts.
@@ -55,9 +54,9 @@ module Mongoid
         # @param [ String | Symbol ] name The config key.
         # @param [ Hash ] config The configuration.
         def validate_client_hosts(name, config)
-          if no_hosts_or_uri?(config)
-            raise Errors::NoClientHosts.new(name, config)
-          end
+          return unless no_hosts_or_uri?(config)
+
+          raise Errors::NoClientHosts.new(name, config)
         end
 
         # Validate that not both a uri and standard options are provided for a
@@ -71,9 +70,9 @@ module Mongoid
         # @param [ String | Symbol ] name The config key.
         # @param [ Hash ] config The configuration.
         def validate_client_uri(name, config)
-          if both_uri_and_standard?(config)
-            raise Errors::MixedClientConfiguration.new(name, config)
-          end
+          return unless both_uri_and_standard?(config)
+
+          raise Errors::MixedClientConfiguration.new(name, config)
         end
 
         # Return true if the configuration has no database or uri option
@@ -88,7 +87,7 @@ module Mongoid
         #
         # @return [ true | false ] If no database or uri is defined.
         def no_database_or_uri?(config)
-          !config.has_key?(:database) && !config.has_key?(:uri)
+          !config.key?(:database) && !config.key?(:uri)
         end
 
         # Return true if the configuration has no hosts or uri option
@@ -103,7 +102,7 @@ module Mongoid
         #
         # @return [ true | false ] If no hosts or uri is defined.
         def no_hosts_or_uri?(config)
-          !config.has_key?(:hosts) && !config.has_key?(:uri)
+          !config.key?(:hosts) && !config.key?(:uri)
         end
 
         # Return true if the configuration has both standard options and a uri
@@ -118,7 +117,7 @@ module Mongoid
         #
         # @return [ true | false ] If both standard and uri are defined.
         def both_uri_and_standard?(config)
-          config.has_key?(:uri) && config.keys.any? do |key|
+          config.key?(:uri) && config.keys.any? do |key|
             STANDARD.include?(key.to_sym)
           end
         end

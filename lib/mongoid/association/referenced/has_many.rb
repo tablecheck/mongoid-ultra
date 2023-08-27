@@ -19,18 +19,18 @@ module Mongoid
         # common ones.
         #
         # @return [ Array<Symbol> ] The extra valid options.
-        ASSOCIATION_OPTIONS = [
-            :after_add,
-            :after_remove,
-            :as,
-            :autosave,
-            :before_add,
-            :before_remove,
-            :dependent,
-            :foreign_key,
-            :order,
-            :primary_key,
-            :scope,
+        ASSOCIATION_OPTIONS = %i[
+          after_add
+          after_remove
+          as
+          autosave
+          before_add
+          before_remove
+          dependent
+          foreign_key
+          order
+          primary_key
+          scope
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -42,13 +42,13 @@ module Mongoid
         # The default foreign key suffix.
         #
         # @return [ String ] '_id'
-        FOREIGN_KEY_SUFFIX = '_id'.freeze
+        FOREIGN_KEY_SUFFIX = '_id'
 
         # The list of association complements.
         #
         # @return [ Array<Mongoid::Association::Relatable> ] The association complements.
         def relation_complements
-          @relation_complements ||= [ Referenced::BelongsTo ].freeze
+          @relation_complements ||= [Referenced::BelongsTo].freeze
         end
 
         # Setup the instance methods, fields, etc. on the association owning class.
@@ -75,30 +75,38 @@ module Mongoid
           self
         end
 
-
         # Get the foreign key field on the inverse for saving the association reference.
         #
         # @return [ String ] The foreign key field on the inverse for saving the
         #   association reference.
         def foreign_key
-          @foreign_key ||= @options[:foreign_key] ? @options[:foreign_key].to_s :
+          @foreign_key ||= if @options[:foreign_key]
+                             @options[:foreign_key].to_s
+                           else
                              default_foreign_key_field
+                           end
         end
 
         # Is this association type embedded?
         #
         # @return [ false ] Always false.
-        def embedded?; false; end
+        def embedded?
+          false
+        end
 
         # The default for validation the association object.
         #
         # @return [ true ] Always true.
-        def validation_default; true; end
+        def validation_default
+          true
+        end
 
         # Does this association type store the foreign key?
         #
         # @return [ true ] Always true.
-        def stores_foreign_key?; false; end
+        def stores_foreign_key?
+          false
+        end
 
         # Get the association proxy class for this association type.
         #
@@ -152,7 +160,7 @@ module Mongoid
         #
         # @return [ true | false ] Whether the document can be bound.
         def bindable?(doc)
-          forced_nil_inverse? || (!!inverse && doc.fields.keys.include?(foreign_key))
+          forced_nil_inverse? || (!!inverse && doc.fields.key?(foreign_key))
         end
 
         # The nested builder object.
@@ -190,21 +198,24 @@ module Mongoid
           @default_foreign_key_field ||= "#{inverse}#{FOREIGN_KEY_SUFFIX}"
         end
 
-        def polymorphic_inverses(other)
-          [ as ]
+        def polymorphic_inverses(_other)
+          [as]
         end
 
         def determine_inverses(other)
           matches = (other || relation_class).relations.values.select do |rel|
             relation_complements.include?(rel.class) &&
-                rel.relation_class_name == inverse_class_name
+              rel.relation_class_name == inverse_class_name
 
           end
+
           if matches.size > 1
-            return [ default_inverse.name ] if default_inverse
+            return [default_inverse.name] if default_inverse
+
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
-          matches.collect { |m| m.name } unless matches.blank?
+
+          matches.collect(&:name) if matches.present?
         end
 
         def default_primary_key

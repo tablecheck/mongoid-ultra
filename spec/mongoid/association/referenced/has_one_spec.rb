@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative './has_one_models'
 
 describe Mongoid::Association::Referenced::HasOne do
@@ -28,14 +28,14 @@ describe Mongoid::Association::Referenced::HasOne do
   end
 
   let(:options) do
-    { }
+    {}
   end
 
   describe '#relation_complements' do
 
     let(:expected_complements) do
       [
-          Mongoid::Association::Referenced::BelongsTo,
+        Mongoid::Association::Referenced::BelongsTo
       ]
     end
 
@@ -77,7 +77,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              autosave: true
+            autosave: true
           }
         end
 
@@ -97,12 +97,12 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              autosave: false
+            autosave: false
           }
         end
 
         it 'does not set up autosave' do
-          expect(Mongoid::Association::Referenced::AutoSave).not_to receive(:define_autosave!)
+          expect(Mongoid::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
           association.setup!
         end
       end
@@ -116,7 +116,7 @@ describe Mongoid::Association::Referenced::HasOne do
         end
 
         it 'does not set up autosave' do
-          expect(Mongoid::Association::Referenced::AutoSave).not_to receive(:define_autosave!)
+          expect(Mongoid::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
           association.setup!
         end
       end
@@ -126,7 +126,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
       let(:options) do
         {
-            validate: true
+          validate: true
         }
       end
 
@@ -146,12 +146,12 @@ describe Mongoid::Association::Referenced::HasOne do
 
       let(:options) do
         {
-            validate: false
+          validate: false
         }
       end
 
       it 'does not set up validation' do
-        expect(has_one_class).not_to receive(:validates_associated)
+        expect(has_one_class).to_not receive(:validates_associated)
         association.setup!
       end
     end
@@ -174,10 +174,9 @@ describe Mongoid::Association::Referenced::HasOne do
 
       context 'when the as option is provided' do
 
-
         let(:options) do
           {
-              as: :containable
+            as: :containable
           }
         end
 
@@ -206,7 +205,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
           let(:options) do
             {
-                dependent: :delete_all
+              dependent: :delete_all
             }
           end
 
@@ -226,7 +225,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
           let(:options) do
             {
-                dependent: :destroy
+              dependent: :destroy
             }
           end
 
@@ -246,7 +245,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
           let(:options) do
             {
-                dependent: :nullify
+              dependent: :nullify
             }
           end
 
@@ -266,7 +265,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
           let(:options) do
             {
-                dependent: :restrict_with_exception
+              dependent: :restrict_with_exception
             }
           end
 
@@ -286,7 +285,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
           let(:options) do
             {
-                dependent: :restrict_with_error
+              dependent: :restrict_with_error
             }
           end
 
@@ -306,7 +305,7 @@ describe Mongoid::Association::Referenced::HasOne do
       context 'when the dependent option is not provided' do
 
         it 'does not set up the dependency' do
-          expect(Mongoid::Association::Depending).not_to receive(:define_dependency!)
+          expect(Mongoid::Association::Depending).to_not receive(:define_dependency!)
           association.setup!
         end
       end
@@ -410,7 +409,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
       let(:options) do
         {
-            primary_key: 'guid'
+          primary_key: 'guid'
         }
       end
 
@@ -463,7 +462,7 @@ describe Mongoid::Association::Referenced::HasOne do
   end
 
   describe '#merge!' do
-
+    skip 'TODO'
   end
 
   describe '#store_as' do
@@ -513,7 +512,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
       let(:options) do
         {
-            as: :containable
+          as: :containable
         }
       end
 
@@ -536,7 +535,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
       let(:options) do
         {
-            as: :containable
+          as: :containable
         }
       end
 
@@ -563,7 +562,7 @@ describe Mongoid::Association::Referenced::HasOne do
       end
 
       it 'returns the type followed by = as a String' do
-        expect(association.type_setter).to eq("containable_type=")
+        expect(association.type_setter).to eq('containable_type=')
       end
     end
 
@@ -583,7 +582,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :delete_all
+            dependent: :delete_all
           }
         end
 
@@ -596,7 +595,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :destroy
+            dependent: :destroy
           }
         end
 
@@ -609,7 +608,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :nullify
+            dependent: :nullify
           }
         end
 
@@ -622,7 +621,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :restrict_with_exception
+            dependent: :restrict_with_exception
           }
         end
 
@@ -635,7 +634,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :restrict_with_error
+            dependent: :restrict_with_error
           }
         end
 
@@ -677,7 +676,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
       let(:options) do
         {
-            as: :containable
+          as: :containable
         }
       end
 
@@ -690,7 +689,7 @@ describe Mongoid::Association::Referenced::HasOne do
         context 'when the relation class has only one relation whose class matches the owning class' do
 
           it 'returns the :as attribute of this association' do
-            expect(association.inverses(instance_of_other_class)).to match_array([ :containable ])
+            expect(association.inverses(instance_of_other_class)).to eq([:containable])
           end
         end
 
@@ -701,14 +700,14 @@ describe Mongoid::Association::Referenced::HasOne do
           end
 
           it 'returns the :inverse_of value' do
-            expect(association.inverses(instance_of_other_class)).to eq([ :inverse_name ])
+            expect(association.inverses(instance_of_other_class)).to eq([:inverse_name])
           end
         end
 
         context 'when inverse_of is not specified' do
 
           it 'returns the :as attribute of this association' do
-            expect(association.inverses(instance_of_other_class)).to match_array([ :containable ])
+            expect(association.inverses(instance_of_other_class)).to eq([:containable])
           end
         end
       end
@@ -722,14 +721,14 @@ describe Mongoid::Association::Referenced::HasOne do
           end
 
           it 'returns the :inverse_of value' do
-            expect(association.inverses).to eq([ :inverse_name ])
+            expect(association.inverses).to eq([:inverse_name])
           end
         end
 
         context 'when inverse_of is not specified' do
 
           it 'returns the :as attribute' do
-            expect(association.inverses).to eq([ :containable ])
+            expect(association.inverses).to eq([:containable])
           end
         end
       end
@@ -748,21 +747,21 @@ describe Mongoid::Association::Referenced::HasOne do
         end
 
         it 'returns the :inverse_of value' do
-          expect(association.inverses).to eq([ :inverse_name ])
+          expect(association.inverses).to eq([:inverse_name])
         end
       end
 
       context 'when inverse_of is not specified' do
 
         it 'uses the inverse class to find the inverse name' do
-          expect(association.inverses).to eq([ :owner_object ])
+          expect(association.inverses).to eq([:owner_object])
         end
       end
 
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-
+          skip 'TODO'
         end
       end
     end
@@ -778,7 +777,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
       let(:options) do
         {
-            as: :containable
+          as: :containable
         }
       end
 
@@ -863,14 +862,14 @@ describe Mongoid::Association::Referenced::HasOne do
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-
+          skip 'TODO'
         end
       end
     end
   end
 
   describe '#inverse_association' do
-
+    skip 'TODO'
   end
 
   describe '#autosave' do
@@ -894,7 +893,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              autosave: false
+            autosave: false
           }
         end
 
@@ -936,7 +935,7 @@ describe Mongoid::Association::Referenced::HasOne do
         define_classes
 
         expect(
-            HasOneAssociationClassName::OwnedClass.relations['owner_class'].relation_class_name
+          HasOneAssociationClassName::OwnedClass.relations['owner_class'].relation_class_name
         ).to eq('OwnerClass')
       end
     end
@@ -969,7 +968,7 @@ describe Mongoid::Association::Referenced::HasOne do
       end
     end
 
-    context "when the class is not defined" do
+    context 'when the class is not defined' do
       let(:name) do
         :undefined_class
       end
@@ -1200,8 +1199,9 @@ describe Mongoid::Association::Referenced::HasOne do
 
     context 'when a block is passed' do
 
+      let(:block) { proc {} }
       let(:association) do
-        has_one_class.embeds_one name, options do; end
+        has_one_class.embeds_one(name, options) { 1 }
       end
 
       it 'defines an extension module' do
@@ -1210,7 +1210,8 @@ describe Mongoid::Association::Referenced::HasOne do
 
       it 'returns the extension' do
         expect(association.extension).to eq(
-          "#{has_one_class.name}::#{has_one_class.name}#{name.to_s.camelize}RelationExtension".constantize)
+          "#{has_one_class.name}::#{has_one_class.name}#{name.to_s.camelize}RelationExtension".constantize
+        )
       end
     end
 
@@ -1237,7 +1238,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :delete_all
+            dependent: :delete_all
           }
         end
 
@@ -1250,7 +1251,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :destroy
+            dependent: :destroy
           }
         end
 
@@ -1263,7 +1264,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :nullify
+            dependent: :nullify
           }
         end
 
@@ -1276,7 +1277,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :restrict_with_exception
+            dependent: :restrict_with_exception
           }
         end
 
@@ -1289,7 +1290,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :restrict_with_error
+            dependent: :restrict_with_error
           }
         end
 
@@ -1335,7 +1336,7 @@ describe Mongoid::Association::Referenced::HasOne do
     end
 
     it 'successfully creates the owned document' do
-      expect { owned }.not_to raise_error
+      expect { owned }.to_not raise_error
     end
   end
 
@@ -1349,7 +1350,7 @@ describe Mongoid::Association::Referenced::HasOne do
   describe '#path' do
 
     it 'returns an instance of Mongoid::Atomic::Paths::Root' do
-      expect(association.path(double( :_parent => true))).to be_a(Mongoid::Atomic::Paths::Root)
+      expect(association.path(double(_parent: true))).to be_a(Mongoid::Atomic::Paths::Root)
     end
   end
 

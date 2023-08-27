@@ -15,7 +15,7 @@ module Mongoid
       def __evolve_object_id__
         self
       end
-      alias :__mongoize_object_id__ :__evolve_object_id__
+      alias_method :__mongoize_object_id__, :__evolve_object_id__
 
       module ClassMethods
 
@@ -47,5 +47,5 @@ module Mongoid
   end
 end
 
-BSON::ObjectId.__send__(:include, Mongoid::Extensions::ObjectId)
+BSON::ObjectId.include Mongoid::Extensions::ObjectId
 BSON::ObjectId.extend(Mongoid::Extensions::ObjectId::ClassMethods)

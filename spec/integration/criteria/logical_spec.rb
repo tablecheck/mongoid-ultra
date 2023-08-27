@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Criteria logical operations' do
-  let!(:ap) { Band.create!(name: 'Astral Projection', origin: 'SFX', genres: ['Goa', 'Psy']) }
+  let!(:ap) { Band.create!(name: 'Astral Projection', origin: 'SFX', genres: %w[Goa Psy]) }
   let!(:im) { Band.create!(name: 'Infected Mushroom', origin: 'Computers', genres: ['Psy']) }
   let!(:sp) { Band.create!(name: 'Sun Project', genres: ['Goa']) }
 
@@ -27,14 +29,12 @@ describe 'Criteria logical operations' do
     end
 
     it 'combines existing `$and` clause in query and `where` condition' do
-      bands = Band.where(id: 1).and({year: {'$in' => [2020]}}, {year: {'$in' => [2021]}}).where(id: 2)
-      expect(bands.selector).to eq(
-        {
-          "_id"=>1,
-          "year"=>{"$in"=>[2020]},
-          "$and"=>[{"year"=>{"$in"=>[2021]}}, {"_id"=>2}]
-        }
-      )
+      bands = Band.where(id: 1).and({ year: { '$in' => [2020] } }, { year: { '$in' => [2021] } }).where(id: 2)
+      expect(bands.selector).to eq({
+        '_id' => 1,
+        'year' => { '$in' => [2020] },
+        '$and' => [{ 'year' => { '$in' => [2021] } }, { '_id' => 2 }]
+      })
     end
   end
 
@@ -63,7 +63,7 @@ describe 'Criteria logical operations' do
       context 'when field has a serializer' do
         let!(:doc) { Dokument.create! }
 
-        it 'works' do
+        it 'sets the $or selector' do
           scope = Dokument.or(:created_at.lte => DateTime.now).sort(id: 1)
           # input was converted from DateTime to Time
           expect(scope.criteria.selector['$or'].first['created_at']['$lte']).to be_a(Time)
@@ -80,7 +80,7 @@ describe 'Criteria logical operations' do
       end
 
       let(:expected) do
-        {'name' => {'$ne' => 'test'}}
+        { 'name' => { '$ne' => 'test' } }
       end
 
       it 'expands to use $ne' do
@@ -94,7 +94,7 @@ describe 'Criteria logical operations' do
       end
 
       let(:expected) do
-        {'name' => {'$not' => /test/}}
+        { 'name' => { '$not' => /test/ } }
       end
 
       it 'expands to use $not' do

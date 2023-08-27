@@ -28,9 +28,7 @@ module Mongoid
       attrs = clone_document.except(*self.class.id_fields)
       Copyable.clone_with_hash(self.class, attrs)
     end
-    alias :dup :clone
-
-    private
+    alias_method :dup, :clone
 
     # Create clone of a document of the given klass with the given attributes
     # hash. This is used recursively so that embedded associations are cloned
@@ -42,9 +40,9 @@ module Mongoid
     # @return [ Mongoid::Document ] The new document.
     def self.clone_with_hash(klass, attrs)
       dynamic_attrs = {}
-      _attribute_names = klass.attribute_names
+      attribute_names = klass.attribute_names
       attrs.reject! do |attr_name, value|
-        unless _attribute_names.include?(attr_name)
+        unless attribute_names.include?(attr_name)
           dynamic_attrs[attr_name] = value
           true
         end
@@ -53,9 +51,9 @@ module Mongoid
       Factory.build(klass, attrs).tap do |object|
         dynamic_attrs.each do |attr_name, value|
           assoc = object.embedded_relations[attr_name]
-          if assoc&.one? && Hash === value
+          if assoc&.one? && value.is_a?(Hash)
             object.send("#{attr_name}=", clone_with_hash(assoc.klass, value))
-          elsif assoc&.many? && Array === value
+          elsif assoc&.many? && value.is_a?(Array)
             docs = value.map { |h| clone_with_hash(assoc.klass, h) }
             object.send("#{attr_name}=", docs)
           elsif object.respond_to?("#{attr_name}=")
@@ -66,6 +64,8 @@ module Mongoid
         end
       end
     end
+
+    private
 
     # Clone the document attributes
     #
@@ -89,8 +89,8 @@ module Mongoid
     #
     # @param [ Hash ] attrs The attributes.
     def process_localized_attributes(klass, attrs)
-      klass.localized_fields.keys.each do |name|
-        if value = attrs.delete(name)
+      klass.localized_fields.each_key do |name|
+        if (value = attrs.delete(name))
           attrs["#{name}_translations"] = value
         end
       end
@@ -99,11 +99,11 @@ module Mongoid
 
         if association.is_a?(Association::Embedded::EmbedsMany)
           attrs[association.key].each do |attr|
-            embedded_klass = if type = attr[self.class.discriminator_key]
-              association.relation_class.get_discriminator_mapping(type) || association.relation_class
-            else
-              association.relation_class
-            end
+            embedded_klass = if (type = attr[self.class.discriminator_key])
+                               association.relation_class.get_discriminator_mapping(type) || association.relation_class
+                             else
+                               association.relation_class
+                             end
             process_localized_attributes(embedded_klass, attr)
           end
         else

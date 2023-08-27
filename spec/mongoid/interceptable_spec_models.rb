@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 module InterceptableSpec
   class CallbackRegistry
     def initialize
       @calls = []
     end
 
-    def record_call(cls, cb)
-      @calls << [cls, cb]
+    def record_call(klass, callback)
+      @calls << [klass, callback]
     end
 
     attr_reader :calls
@@ -15,22 +17,21 @@ module InterceptableSpec
     extend ActiveSupport::Concern
 
     included do
-      %i(
-        validation save create update
-      ).each do |what|
-        %i(before after).each do |whn|
+      whens = %i[before after]
+      %i[validation save create update].each do |what|
+        whens.each do |whn|
           send("#{whn}_#{what}", "#{whn}_#{what}_stub".to_sym)
           define_method("#{whn}_#{what}_stub") do
             callback_registry&.record_call(self.class, "#{whn}_#{what}".to_sym)
           end
         end
-        unless what == :validation
-          send("around_#{what}", "around_#{what}_stub".to_sym)
-          define_method("around_#{what}_stub") do |&block|
-            callback_registry&.record_call(self.class, "around_#{what}_open".to_sym)
-            block.call
-            callback_registry&.record_call(self.class, "around_#{what}_close".to_sym)
-          end
+        next if what == :validation
+
+        send("around_#{what}", "around_#{what}_stub".to_sym)
+        define_method("around_#{what}_stub") do |&block|
+          callback_registry&.record_call(self.class, "around_#{what}_open".to_sym)
+          block.call
+          callback_registry&.record_call(self.class, "around_#{what}_close".to_sym)
         end
       end
     end
@@ -39,7 +40,7 @@ module InterceptableSpec
   class CbHasOneParent
     include Mongoid::Document
 
-    has_one :child, autosave: true, class_name: "CbHasOneChild", inverse_of: :parent
+    has_one :child, autosave: true, class_name: 'CbHasOneChild', inverse_of: :parent
 
     def initialize(callback_registry)
       @callback_registry = callback_registry
@@ -59,7 +60,7 @@ module InterceptableSpec
   class CbHasOneChild
     include Mongoid::Document
 
-    belongs_to :parent, class_name: "CbHasOneParent", inverse_of: :child
+    belongs_to :parent, class_name: 'CbHasOneParent', inverse_of: :child
 
     def initialize(callback_registry)
       @callback_registry = callback_registry
@@ -74,7 +75,7 @@ module InterceptableSpec
   class CbHasManyParent
     include Mongoid::Document
 
-    has_many :children, autosave: true, class_name: "CbHasManyChild", inverse_of: :parent
+    has_many :children, autosave: true, class_name: 'CbHasManyChild', inverse_of: :parent
 
     def initialize(callback_registry)
       @callback_registry = callback_registry
@@ -94,7 +95,7 @@ module InterceptableSpec
   class CbHasManyChild
     include Mongoid::Document
 
-    belongs_to :parent, class_name: "CbHasManyParent", inverse_of: :children
+    belongs_to :parent, class_name: 'CbHasManyParent', inverse_of: :children
 
     def initialize(callback_registry)
       @callback_registry = callback_registry
@@ -111,7 +112,7 @@ module InterceptableSpec
 
     field :name
 
-    embeds_one :child, cascade_callbacks: true, class_name: "CbEmbedsOneChild", inverse_of: :parent
+    embeds_one :child, cascade_callbacks: true, class_name: 'CbEmbedsOneChild', inverse_of: :parent
 
     def initialize(callback_registry)
       @callback_registry = callback_registry
@@ -133,7 +134,7 @@ module InterceptableSpec
 
     field :age
 
-    embedded_in :parent, class_name: "CbEmbedsOneParent", inverse_of: :child
+    embedded_in :parent, class_name: 'CbEmbedsOneParent', inverse_of: :child
 
     def initialize(callback_registry)
       @callback_registry = callback_registry
@@ -148,7 +149,7 @@ module InterceptableSpec
   class CbEmbedsManyParent
     include Mongoid::Document
 
-    embeds_many :children, cascade_callbacks: true, class_name: "CbEmbedsManyChild", inverse_of: :parent
+    embeds_many :children, cascade_callbacks: true, class_name: 'CbEmbedsManyChild', inverse_of: :parent
 
     def initialize(callback_registry)
       @callback_registry = callback_registry
@@ -168,7 +169,7 @@ module InterceptableSpec
   class CbEmbedsManyChild
     include Mongoid::Document
 
-    embedded_in :parent, class_name: "CbEmbedsManyParent", inverse_of: :children
+    embedded_in :parent, class_name: 'CbEmbedsManyParent', inverse_of: :children
 
     def initialize(callback_registry)
       @callback_registry = callback_registry
@@ -230,14 +231,14 @@ end
 class InterceptableBand
   include Mongoid::Document
 
-  has_many :songs, class_name: "InterceptableSong"
+  has_many :songs, class_name: 'InterceptableSong'
   field :name
 end
 
 class InterceptableSong
   include Mongoid::Document
 
-  belongs_to :band, class_name: "InterceptableBand"
+  belongs_to :band, class_name: 'InterceptableBand'
   field :band_name, default: -> { band.name }
   field :name
 end
@@ -245,14 +246,14 @@ end
 class InterceptablePlane
   include Mongoid::Document
 
-  has_many :wings, class_name: "InterceptableWing"
+  has_many :wings, class_name: 'InterceptableWing'
 end
 
 class InterceptableWing
   include Mongoid::Document
 
-  belongs_to :plane, class_name: "InterceptablePlane"
-  has_one :engine, autobuild: true, class_name: "InterceptableEngine"
+  belongs_to :plane, class_name: 'InterceptablePlane'
+  has_one :engine, autobuild: true, class_name: 'InterceptableEngine'
 
   field :_id, type: String, default: -> { 'hello-wing' }
 
@@ -263,7 +264,7 @@ end
 class InterceptableEngine
   include Mongoid::Document
 
-  belongs_to :wing, class_name: "InterceptableWing"
+  belongs_to :wing, class_name: 'InterceptableWing'
 
   field :_id, type: String, default: -> { "hello-engine-#{wing&.id}" }
 end
@@ -271,15 +272,15 @@ end
 class InterceptableCompany
   include Mongoid::Document
 
-  has_many :users, class_name: "InterceptableUser"
-  has_many :shops, class_name: "InterceptableShop"
+  has_many :users, class_name: 'InterceptableUser'
+  has_many :shops, class_name: 'InterceptableShop'
 end
 
 class InterceptableShop
   include Mongoid::Document
 
-  embeds_one :address, class_name: "InterceptableAddress"
-  belongs_to :company, class_name: "InterceptableCompany"
+  embeds_one :address, class_name: 'InterceptableAddress'
+  belongs_to :company, class_name: 'InterceptableCompany'
 
   after_initialize :build_address1
 
@@ -290,13 +291,13 @@ end
 
 class InterceptableAddress
   include Mongoid::Document
-  embedded_in :shop, class_name: "InterceptableShop"
+  embedded_in :shop, class_name: 'InterceptableShop'
 end
 
 class InterceptableUser
   include Mongoid::Document
 
-  belongs_to :company, class_name: "InterceptableCompany"
+  belongs_to :company, class_name: 'InterceptableCompany'
 
   validate :break_mongoid
 
@@ -304,4 +305,3 @@ class InterceptableUser
     company.shop_ids
   end
 end
-

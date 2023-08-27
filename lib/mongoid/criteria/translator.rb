@@ -27,16 +27,14 @@ module Mongoid
       # @return [ Hash | Numeric ] The direction.
       def to_direction(value)
         case value
-        when Hash then
+        when Hash, Numeric
           value
-        when Numeric then
-          value
-        when String then
-          value =~ /desc/i ? -1 : 1
-        when Symbol then
+        when String
+          /desc/i.match?(value) ? -1 : 1
+        when Symbol
           to_direction(value.to_s)
         else
-          raise ArgumentError, "cannot translate #{value.inspect} (#{value.class}) to a direction specification"
+          raise ArgumentError.new("cannot translate #{value.inspect} (#{value.class}) to a direction specification")
         end
       end
     end

@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 
-require "mongoid/changeable"
-require "mongoid/collection_configurable"
-require "mongoid/encryptable"
-require "mongoid/findable"
-require "mongoid/indexable"
-require "mongoid/inspectable"
-require "mongoid/interceptable"
-require "mongoid/matcher"
-require "mongoid/matchable"
-require "mongoid/persistable"
-require "mongoid/reloadable"
-require "mongoid/selectable"
-require "mongoid/scopable"
-require "mongoid/serializable"
-require "mongoid/shardable"
-require "mongoid/stateful"
-require "mongoid/cacheable"
-require "mongoid/traversable"
-require "mongoid/validatable"
+require 'mongoid/changeable'
+require 'mongoid/collection_configurable'
+require 'mongoid/encryptable'
+require 'mongoid/findable'
+require 'mongoid/indexable'
+require 'mongoid/inspectable'
+require 'mongoid/interceptable'
+require 'mongoid/matcher'
+require 'mongoid/matchable'
+require 'mongoid/persistable'
+require 'mongoid/reloadable'
+require 'mongoid/selectable'
+require 'mongoid/scopable'
+require 'mongoid/serializable'
+require 'mongoid/shardable'
+require 'mongoid/stateful'
+require 'mongoid/cacheable'
+require 'mongoid/traversable'
+require 'mongoid/validatable'
 
 module Mongoid
 
@@ -91,7 +91,7 @@ module Mongoid
       Association::Macros,
       ActiveModel::Model,
       ActiveModel::Validations
-    ]
+    ].freeze
 
     # These are methods names defined in included blocks that may conflict
     # with user-defined association or field names.
@@ -100,18 +100,17 @@ module Mongoid
     # separately.
     #
     # @return [ Array<Symbol> ] A list of reserved method names.
-    RESERVED_METHOD_NAMES = [ :fields,
-                              :aliased_fields,
-                              :localized_fields,
-                              :index_specifications,
-                              :shard_key_fields,
-                              :nested_attributes,
-                              :readonly_attributes,
-                              :storage_options,
-                              :cascades,
-                              :cyclic,
-                              :cache_timestamp_format
-                            ]
+    RESERVED_METHOD_NAMES = %i[fields
+                               aliased_fields
+                               localized_fields
+                               index_specifications
+                               shard_key_fields
+                               nested_attributes
+                               readonly_attributes
+                               storage_options
+                               cascades
+                               cyclic
+                               cache_timestamp_format].freeze
 
     class << self
 

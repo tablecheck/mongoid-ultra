@@ -58,7 +58,7 @@ module Mongoid
       def for_ids(ids)
         ids = mongoize_ids(ids)
         if ids.size > 1
-          send(id_finder, { _id: { "$in" => ids }})
+          send(id_finder, { _id: { '$in' => ids } })
         else
           send(id_finder, { _id: ids.first })
         end
@@ -75,6 +75,7 @@ module Mongoid
       # @return [ Array<Mongoid::Document> ] The found documents.
       def multiple_from_db(ids)
         return entries if embedded?
+
         ids = mongoize_ids(ids)
         ids.empty? ? [] : from_database(ids)
       end
@@ -107,7 +108,14 @@ module Mongoid
         from_database_selector(ids).entries
       end
 
-      private def from_database_selector(ids)
+      # Returns a query criteria to select the document(s) for the given id(s).
+      #
+      # @api private
+      #
+      # @param [ Array<BSON::ObjectId> ] ids The ids to fetch with.
+      #
+      # @return [ Mongoid::Criteria ] The criteria.
+      def from_database_selector(ids)
         if ids.size > 1
           any_in(_id: ids)
         else
@@ -128,7 +136,7 @@ module Mongoid
       def mongoize_ids(ids)
         ids.map do |id|
           id = id[:_id] if id.respond_to?(:keys) && id[:_id]
-          klass.fields["_id"].mongoize(id)
+          klass.fields['_id'].mongoize(id)
         end
       end
 
@@ -139,7 +147,7 @@ module Mongoid
       #
       # @raise [ Errors::InvalidOptions ] The error.
       def raise_invalid
-        raise Errors::InvalidFind.new
+        raise Errors::InvalidFind
       end
     end
   end

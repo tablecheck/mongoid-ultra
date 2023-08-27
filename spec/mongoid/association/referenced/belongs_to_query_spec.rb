@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative './has_many_models'
 
 describe Mongoid::Association::Referenced::BelongsTo do
@@ -24,7 +24,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       expect do
         school.team
       end.to raise_error(Mongoid::Errors::AttributeNotLoaded)
-      expect(student.attributes.keys).to eq(['_id', 'name'])
+      expect(student.attributes.keys).to eq(%w[_id name])
     end
 
     # Delete this test when https://jira.mongodb.org/browse/MONGOID-4704 is
@@ -51,7 +51,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     it 'does not try to load the inverse for an association that explicitly prevents it' do
-      expect { pet.previous_owner.name }.not_to raise_error
+      expect { pet.previous_owner.name }.to_not raise_error
     end
   end
 end

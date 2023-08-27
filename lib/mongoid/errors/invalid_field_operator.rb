@@ -8,9 +8,9 @@ module Mongoid
     class InvalidFieldOperator < InvalidQuery
 
       # @api private
-      VALID_OPERATORS = %w(
+      VALID_OPERATORS = %w[
         all elemMatch eq exists gt gte in lt lte ne nin not regex size
-      ).freeze
+      ].freeze
 
       # Creates the exception.
       #
@@ -19,10 +19,9 @@ module Mongoid
       # @api private
       def initialize(operator)
         @operator = operator
-        super(compose_message("invalid_field_operator",
-          operator: operator,
-          valid_operators: VALID_OPERATORS.map { |op| "'$#{op}'" }.join(', '),
-        ))
+        super(compose_message('invalid_field_operator',
+                              operator: operator,
+                              valid_operators: VALID_OPERATORS.map { |op| "'$#{op}'" }.join(', ')))
       end
 
       # @return [ String ] The operator that was used.

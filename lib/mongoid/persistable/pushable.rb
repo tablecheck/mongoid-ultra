@@ -26,13 +26,13 @@ module Mongoid
               # https://jira.mongodb.org/browse/MONGOID-4874
               existing = attributes[field]
             end
-            values = [ value ].flatten(1)
+            values = [value].flatten(1)
             values.each do |val|
               existing.push(val) unless existing.include?(val)
             end
-            ops[atomic_attribute_name(field)] = { "$each" => values }
+            ops[atomic_attribute_name(field)] = { '$each' => values }
           end
-          { "$addToSet" => ops }
+          { '$addToSet' => ops }
         end
       end
 
@@ -54,11 +54,11 @@ module Mongoid
               attributes[field] ||= []
               attributes[field]
             end
-            values = [ value ].flatten(1)
-            values.each{ |val| existing.push(val) }
-            ops[atomic_attribute_name(field)] = { "$each" => values }
+            values = [value].flatten(1)
+            values.each { |val| existing.push(val) }
+            ops[atomic_attribute_name(field)] = { '$each' => values }
           end
-          { "$push" => ops }
+          { '$push' => ops }
         end
       end
     end

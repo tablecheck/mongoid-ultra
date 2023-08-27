@@ -22,18 +22,16 @@ module Mongoid
       # @return [ true | false ] If the document is new, or if the field is not
       #   readonly.
       def attribute_writable?(name)
-        new_record? || (!readonly_attributes.include?(name) && _loaded?(name))
+        new_record? || (readonly_attributes.exclude?(name) && _loaded?(name))
       end
 
       private
 
       def as_writable_attribute!(name, value = :nil)
         normalized_name = database_field_name(name)
-        if attribute_writable?(normalized_name)
-          yield(normalized_name)
-        else
-          raise Errors::ReadonlyAttribute.new(name, value)
-        end
+        raise Errors::ReadonlyAttribute.new(name, value) unless attribute_writable?(normalized_name)
+
+        yield(normalized_name)
       end
 
       def _loaded?(name)

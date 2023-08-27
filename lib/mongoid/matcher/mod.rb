@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -8,9 +10,11 @@ module Mongoid
     # @api private
     module Mod
 
+      extend self
+
       # Returns whether a value satisfies a $mod expression.
       #
-      # @param [ true | false ] exists Not used.
+      # @param [ true | false ] _exists Not used.
       # @param [ Numeric ] value The value to check.
       # @param [ Array<Numeric> ] condition The $mod condition predicate,
       #   which is a 2-tuple containing the divisor and remainder.
@@ -18,14 +22,16 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      module_function def matches?(exists, value, condition)
-        unless Array === condition
-          raise Errors::InvalidQuery, "Unknown $mod argument #{condition}"
+      def matches?(_exists, value, condition)
+        unless condition.is_a?(Array)
+          raise Errors::InvalidQuery.new("Unknown $mod argument #{condition}")
         end
+
         if condition.length != 2
-          raise Errors::InvalidQuery, "Malformed $mod argument #{condition}, should have 2 elements"
+          raise Errors::InvalidQuery.new("Malformed $mod argument #{condition}, should have 2 elements")
         end
-        condition[1] == value%condition[0]
+
+        condition[1] == value % condition[0]
       end
     end
   end

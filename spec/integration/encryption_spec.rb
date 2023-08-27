@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'support/crypt/models'
 
@@ -10,11 +12,13 @@ describe 'Encryption' do
   let(:config) do
     {
       default: { hosts: SpecConfig.instance.addresses, database: database_id },
+      key_vault: { hosts: SpecConfig.instance.addresses, database: :key_vault },
       encrypted: {
         hosts: SpecConfig.instance.addresses,
         database: database_id,
         options: {
           auto_encryption_options: {
+            key_vault_client: :key_vault,
             kms_providers: kms_providers,
             key_vault_namespace: key_vault_namespace,
             extra_options: extra_options
@@ -29,24 +33,29 @@ describe 'Encryption' do
   end
 
   around do |example|
-    key_vault_client[key_vault_collection].drop
     Mongoid.default_client[Crypt::Patient.collection_name].drop
+    Mongoid.default_client[Crypt::Car.collection_name].drop
     existing_key_id = Crypt::Patient.encrypt_metadata[:key_id]
     Crypt::Patient.set_key_id(data_key_id)
+    Crypt::Car.set_key_id(data_key_id)
     Mongoid::Config.send(:clients=, config)
+    Mongoid::Clients.with_name(:key_vault)[key_vault_collection].drop
     Crypt::Patient.store_in(client: :encrypted)
+    Crypt::Car.store_in(client: :encrypted, database: Crypt::Car.storage_options[:database])
 
     example.run
 
     Crypt::Patient.reset_storage_options!
     Crypt::Patient.set_key_id(existing_key_id)
+    Crypt::Car.set_key_id(existing_key_id)
   end
 
   it 'encrypts and decrypts fields' do
     patient = Crypt::Patient.create!(
       code: '12345',
-      medical_records: ['one', 'two', 'three'],
+      medical_records: %w[one two three],
       blood_type: 'A+',
+      blood_type_key_name: key_alt_name,
       ssn: 123456789,
       insurance: Crypt::Insurance.new(policy_number: 123456789)
     )
@@ -62,8 +71,9 @@ describe 'Encryption' do
   it 'stores data encrypted in the database' do
     patient = Crypt::Patient.create!(
       code: '12345',
-      medical_records: ['one', 'two', 'three'],
+      medical_records: %w[one two three],
       blood_type: 'A+',
+      blood_type_key_name: key_alt_name,
       ssn: 123456789,
       insurance: Crypt::Insurance.new(policy_number: 123456789)
     )
@@ -77,5 +87,13 @@ describe 'Encryption' do
     end
   end
 
-
+  it 'stores data encrypted in the non-default database' do
+    car = Crypt::Car.create!(vin: 'VA1234')
+    unencrypted_client
+      .use(Crypt::Car.storage_options[:database])[Crypt::Car.collection.name]
+      .find(_id: car.id).first.tap do |doc|
+      expect(doc[:vin]).to be_a(BSON::Binary)
+      expect(doc[:vin].type).to eq(:ciphertext)
+    end
+  end
 end

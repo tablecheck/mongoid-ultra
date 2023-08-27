@@ -23,7 +23,7 @@ module Mongoid
         def ascending(*fields)
           sort_with_list(*fields, 1)
         end
-        alias :asc :ascending
+        alias_method :asc, :ascending
         key :asc, :override, 1
         key :ascending, :override, 1
 
@@ -51,7 +51,7 @@ module Mongoid
         def descending(*fields)
           sort_with_list(*fields, -1)
         end
-        alias :desc :descending
+        alias_method :desc, :descending
         key :desc, :override, -1
         key :descending, :override, -1
 
@@ -79,7 +79,7 @@ module Mongoid
           option(value) do |options, query|
             val = value.to_i
             options.store(:limit, val)
-            query.pipeline.push("$limit" => val) if aggregating?
+            query.pipeline.push('$limit' => val) if aggregating?
           end
         end
 
@@ -118,7 +118,7 @@ module Mongoid
           option(*args) do |options|
             options.store(
               :fields,
-              args.inject(options[:fields] || {}){ |sub, field| sub.tap { sub[field] = 1 }},
+              args.inject(options[:fields] || {}) { |sub, field| sub.tap { sub[field] = 1 } },
               false
             )
           end
@@ -159,11 +159,11 @@ module Mongoid
               criterion.__sort_option__.each_pair do |field, direction|
                 add_sort_option(options, field, direction)
               end
-              query.pipeline.push("$sort" => options[:sort]) if aggregating?
+              query.pipeline.push('$sort' => options[:sort]) if aggregating?
             end
           end
         end
-        alias :order :order_by
+        alias_method :order, :order_by
 
         # Instead of merging the order criteria, use this method to completely
         # replace the existing ordering with the provided.
@@ -192,10 +192,10 @@ module Mongoid
           option(value) do |options, query|
             val = value.to_i
             options.store(:skip, val)
-            query.pipeline.push("$skip" => val) if aggregating?
+            query.pipeline.push('$skip' => val) if aggregating?
           end
         end
-        alias :offset :skip
+        alias_method :offset, :skip
 
         # Limit the returned results via slicing embedded arrays.
         #
@@ -209,7 +209,7 @@ module Mongoid
           option(criterion) do |options|
             options.__union__(
               fields: criterion.inject({}) do |option, (field, val)|
-                option.tap { |opt| opt.store(field, { "$slice" => val }) }
+                option.tap { |opt| opt.store(field, { '$slice' => val }) }
               end
             )
           end
@@ -240,7 +240,7 @@ module Mongoid
           option(*args) do |options|
             options.store(
               :fields,
-              args.inject(options[:fields] || {}){ |sub, field| sub.tap { sub[field] = 0 }},
+              args.inject(options[:fields] || {}) { |sub, field| sub.tap { sub[field] = 0 } },
               false
             )
           end
@@ -323,9 +323,7 @@ module Mongoid
         # @return [ Mongoid::Criteria::Queryable ] The cloned queryable.
         def option(*args)
           clone.tap do |query|
-            unless args.compact.empty?
-              yield(query.options, query)
-            end
+            yield(query.options, query) unless args.compact.empty?
           end
         end
 
@@ -345,7 +343,7 @@ module Mongoid
             fields.flatten.compact.each do |field|
               add_sort_option(options, field, direction)
             end
-            query.pipeline.push("$sort" => options[:sort]) if aggregating?
+            query.pipeline.push('$sort' => options[:sort]) if aggregating?
           end
         end
 
@@ -358,7 +356,7 @@ module Mongoid
           #
           # @return [ Array<Symbol> ] The names of the forwardable methods.
           def forwardables
-            public_instance_methods(false) - [ :options, :options= ]
+            public_instance_methods(false) - %i[options options=]
           end
         end
       end

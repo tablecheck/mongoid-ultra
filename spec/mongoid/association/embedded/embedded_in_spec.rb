@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative './embeds_one_models'
 
 describe Mongoid::Association::Embedded::EmbeddedIn do
@@ -28,7 +28,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
   end
 
   let(:options) do
-    { }
+    {}
   end
 
   describe '#VALID_OPTIONS' do
@@ -149,9 +149,8 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
   end
 
   describe '#merge!' do
-
+    skip 'TODO'
   end
-
 
   describe '#touchable?' do
 
@@ -164,11 +163,13 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
 
       context 'when the option is true' do
         let(:options) { { touch: true } }
+
         it_behaves_like ':touch is in the options'
       end
 
       context 'when the option is false' do
         let(:options) { { touch: false } }
+
         it_behaves_like ':touch is in the options'
       end
     end
@@ -253,14 +254,14 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
             end
 
             it 'returns the :inverse_of value' do
-              expect(association.inverses(instance_of_other_class)).to eq([ :inverse_name ])
+              expect(association.inverses(instance_of_other_class)).to eq([:inverse_name])
             end
           end
 
           context 'when inverse_of is not specified' do
 
             it 'returns the list of relations whose :as attribute matches the name of this association' do
-              expect(association.inverses(instance_of_other_class)).to match_array([ :embedded_objects ])
+              expect(association.inverses(instance_of_other_class)).to eq([:embedded_objects])
             end
 
             context 'when the relation class has two associations with the same name' do
@@ -271,7 +272,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
               end
 
               it 'returns only the relations whose :as attribute and class match' do
-                expect(association.inverses(instance_of_other_class)).to match_array([ :embedded_objects ])
+                expect(association.inverses(instance_of_other_class)).to eq([:embedded_objects])
               end
             end
           end
@@ -291,15 +292,14 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
             end
 
             it 'returns the :inverse_of value' do
-              expect(association.inverses(instance_of_other_class)).to eq([ :inverse_name ])
+              expect(association.inverses(instance_of_other_class)).to eq([:inverse_name])
             end
           end
 
           context 'when inverse_of is not specified' do
 
             it 'returns the list of relations whose :as attribute matches the name of this association' do
-              expect(association.inverses(instance_of_other_class)).to match_array([ :embedded_objects,
-                                                                                     :other_embedded_object ])
+              expect(association.inverses(instance_of_other_class)).to contain_exactly(:embedded_objects, :other_embedded_object)
             end
           end
         end
@@ -314,14 +314,14 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
           end
 
           it 'returns the :inverse_of value' do
-            expect(association.inverses).to eq([ :inverse_name ])
+            expect(association.inverses).to eq([:inverse_name])
           end
         end
 
         context 'when inverse_of is not specified' do
 
           it 'returns nil' do
-            expect(association.inverses).to eq(nil)
+            expect(association.inverses).to be_nil
           end
 
           context 'when class_name is given and is a plain string' do
@@ -372,7 +372,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
         end
 
         it 'returns the :inverse_of value' do
-          expect(association.inverses).to eq([ :inverse_name ])
+          expect(association.inverses).to eq([:inverse_name])
         end
       end
 
@@ -383,14 +383,14 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
         end
 
         it 'uses the inverse class to find the inverse name' do
-          expect(association.inverses).to eq([ :embedded_objects ])
+          expect(association.inverses).to eq([:embedded_objects])
         end
       end
 
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-
+          skip 'TODO'
         end
       end
 
@@ -402,9 +402,9 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
         end
 
         it 'raises a Mongoid::Errors::AmbiguousRelationship exception' do
-          expect {
+          expect do
             association.inverses
-          }.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
+          end.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
         end
       end
 
@@ -415,7 +415,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
         end
 
         it 'uses the inverse class to find the inverse name' do
-          expect(association.inverses).to eq([ :embedded_objects ])
+          expect(association.inverses).to eq([:embedded_objects])
         end
       end
     end
@@ -509,7 +509,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
         context 'when inverse_of is not specified' do
 
           it 'returns nil' do
-            expect(association.inverse).to eq(nil)
+            expect(association.inverse).to be_nil
           end
         end
       end
@@ -542,7 +542,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-
+          skip 'TODO'
         end
       end
 
@@ -554,9 +554,9 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
         end
 
         it 'raises a Mongoid::Errors::AmbiguousRelationship exception' do
-          expect {
+          expect do
             association.inverse
-          }.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
+          end.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
         end
       end
 
@@ -574,7 +574,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
   end
 
   describe '#inverse_association' do
-
+    skip 'TODO'
   end
 
   describe '#autosave' do
@@ -814,8 +814,9 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
 
     context 'when a block is passed' do
 
+      let(:block) { proc {} }
       let(:association) do
-        embedded_class.embedded_in name, options do; end
+        embedded_class.embedded_in(name, options) { 1 }
       end
 
       it 'defines an extension module' do
@@ -824,7 +825,8 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
 
       it 'returns the extension' do
         expect(association.extension).to eq(
-          "#{embedded_class.name}::#{embedded_class.name}#{name.capitalize}RelationExtension".constantize)
+          "#{embedded_class.name}::#{embedded_class.name}#{name.capitalize}RelationExtension".constantize
+        )
       end
     end
 
@@ -839,9 +841,9 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
   describe '#criteria' do
 
     it 'does not respond to the method' do
-      expect {
+      expect do
         association.criteria
-      }.to raise_exception(NoMethodError)
+      end.to raise_exception(NoMethodError)
     end
   end
 
@@ -864,13 +866,13 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
     context 'when cascade_callbacks is specified in the options' do
 
       let(:options) do
-        {cascade_callbacks: true}
+        { cascade_callbacks: true }
       end
 
       it 'raises a Mongoid::Errors::InvalidRelationOption exception' do
-        expect {
+        expect do
           association.cascading_callbacks?
-        }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+        end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
       end
     end
 

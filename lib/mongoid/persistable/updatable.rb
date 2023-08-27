@@ -21,7 +21,7 @@ module Mongoid
       #
       # @return [ true | false ] True if save was successful, false if not.
       def update_attribute(name, value)
-        as_writable_attribute!(name, value) do |access|
+        as_writable_attribute!(name, value) do |_access|
           normalized = name.to_s
           process_attribute(normalized, value)
           save(validate: false)
@@ -40,7 +40,7 @@ module Mongoid
         assign_attributes(attributes)
         save
       end
-      alias :update_attributes :update
+      alias_method :update_attributes, :update
 
       # Update the document attributes in the database and raise an error if
       # validation failed.
@@ -55,14 +55,14 @@ module Mongoid
       #
       # @return [ true | false ] True if validation passed.
       def update!(attributes = {})
-        result = update_attributes(attributes)
+        result = update(attributes)
         unless result
           fail_due_to_validation! unless errors.empty?
           fail_due_to_callback!(:update_attributes!)
         end
         result
       end
-      alias :update_attributes! :update!
+      alias_method :update_attributes!, :update!
 
       private
 
@@ -77,7 +77,7 @@ module Mongoid
       def init_atomic_updates
         updates = atomic_updates
         conflicts = updates.delete(:conflicts) || {}
-        [ updates, conflicts ]
+        [updates, conflicts]
       end
 
       # Prepare the update for execution. Validates and runs callbacks, etc.
@@ -97,9 +97,11 @@ module Mongoid
       # @return [ true | false ] The result of the update.
       def prepare_update(options = {})
         raise Errors::ReadonlyDocument.new(self.class) if readonly? && !Mongoid.legacy_readonly
+
         enforce_immutability_of_id_field!
         return false if performing_validations?(options) &&
-          invalid?(options[:context] || :update)
+                        invalid?(options[:context] || :update)
+
         process_flagged_destroys
         update_children = cascadable_children(:update)
         process_touch_option(options, update_children) do
@@ -134,26 +136,22 @@ module Mongoid
             # path conflicts in MongoDB, for example when changing attributes
             # of foo.0.bars while adding another foo. Each conflicting update
             # is applied using its own write.
-            #
-            # TODO: MONGOID-5026: reduce the number of writes performed by
-            # more intelligently combining the writes such that there are
-            # fewer conflicts.
             conflicts.each_pair do |modifier, changes|
 
               # Group the changes according to their root key which is
               # the top-level association name.
               # This handles at least the cases described in MONGOID-4982.
               conflicting_change_groups = changes.group_by do |key, _|
-                key.split(".", 2).first
+                key.split('.', 2).first
               end.values
 
               # Apply changes in batches. Pop one change from each
               # field-conflict group round-robin until all changes
               # have been applied.
-              while batched_changes = conflicting_change_groups.map(&:pop).compact.to_h.presence
+              while (batched_changes = conflicting_change_groups.filter_map(&:pop).to_h.presence)
                 coll.find(selector).update_one(
                   positionally(selector, modifier => batched_changes),
-                  session: _session,
+                  session: _session
                 )
               end
             end
@@ -172,13 +170,13 @@ module Mongoid
       #
       # @option options [ true | false ] :touch Whether or not the updated_at
       #   attribute will be updated with the current time.
-      def process_touch_option(options, children)
+      def process_touch_option(options, children, &block)
         if options.fetch(:touch, true)
           yield
         else
           timeless
           children.each(&:timeless)
-          suppress_touch_callbacks { yield }
+          suppress_touch_callbacks(&block)
         end
       end
 
@@ -198,13 +196,11 @@ module Mongoid
         # (somehow?) create the address with a nil _id first, before then
         # saving it *again* with the correct _id.
 
-        if _id_changed? && !_id_was.nil? && persisted?
-          if Mongoid::Config.immutable_ids
-            raise Errors::ImmutableAttribute.new(:_id, _id)
-          else
-            Mongoid::Warnings.warn_mutable_ids
-          end
-        end
+        return unless _id_changed? && !_id_was.nil? && persisted?
+
+        raise Errors::ImmutableAttribute.new(:_id, _id) if Mongoid::Config.immutable_ids
+
+        Mongoid::Warnings.warn_mutable_ids
       end
 
       # Consolidates all the callback invocations into a single place, to
@@ -212,20 +208,18 @@ module Mongoid
       #
       # @param [ Array<Document> ] update_children The children that the
       #   :update callbacks will be executed on.
-      def run_all_callbacks_for_update(update_children)
+      def run_all_callbacks_for_update(update_children, &block)
         run_callbacks(:commit, with_children: true, skip_if: -> { in_transaction? }) do
           run_callbacks(:save, with_children: false) do
             run_callbacks(:update, with_children: false) do
               run_callbacks(:persist_parent, with_children: false) do
                 _mongoid_run_child_callbacks(:save) do
-                  _mongoid_run_child_callbacks(:update, children: update_children) do
-                    yield
-                  end # _mongoid_run_child_callbacks :update
-                end # _mongoid_run_child_callbacks :save
-              end # :persist_parent
-            end # :update
-          end # :save
-        end # :commit
+                  _mongoid_run_child_callbacks(:update, children: update_children, &block)
+                end
+              end
+            end
+          end
+        end
       end
 
     end

@@ -6,9 +6,7 @@ module Mongoid
 
     shared_context 'with encryption' do
       let(:mongocryptd_port) do
-        if ENV['MONGO_RUBY_DRIVER_MONGOCRYPTD_PORT'] &&
-          !ENV['MONGO_RUBY_DRIVER_MONGOCRYPTD_PORT'].empty?
-        then
+        if ENV['MONGO_RUBY_DRIVER_MONGOCRYPTD_PORT'].present?
           ENV['MONGO_RUBY_DRIVER_MONGOCRYPTD_PORT'].to_i
         else
           27020
@@ -18,7 +16,7 @@ module Mongoid
       let(:extra_options) do
         {
           mongocryptd_spawn_args: ["--port=#{mongocryptd_port}"],
-          mongocryptd_uri: "mongodb://localhost:#{mongocryptd_port}",
+          mongocryptd_uri: "mongodb://localhost:#{mongocryptd_port}"
         }
       end
 
@@ -70,7 +68,7 @@ module Mongoid
         if (data_key = client_encryption.get_key_by_alt_name(key_alt_name))
           Base64.encode64(data_key['_id'].data)
         else
-          key_id = client_encryption.create_data_key('local', key_alt_name: key_alt_name)
+          key_id = client_encryption.create_data_key('local', key_alt_names: [key_alt_name])
           Base64.encode64(key_id.data).strip
         end
       end

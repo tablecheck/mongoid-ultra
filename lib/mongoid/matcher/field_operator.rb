@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -6,6 +8,9 @@ module Mongoid
     #
     # @api private
     module FieldOperator
+
+      extend self
+
       MAP = {
         '$all' => All,
         '$bitsAllClear' => BitsAllClear,
@@ -26,12 +31,12 @@ module Mongoid
         '$not' => Not,
         '$regex' => Regex,
         '$size' => Size,
-        '$type' => Type,
+        '$type' => Type
       }.freeze
 
       # Returns the matcher module for a given operator.
       #
-      # @param [ String ] op The operator name.
+      # @param [ String ] operator The operator name.
       #
       # @return [ Module ] The matcher module.
       #
@@ -39,10 +44,10 @@ module Mongoid
       #   Raised if the given operator is unknown.
       #
       # @api private
-      module_function def get(op)
-        MAP.fetch(op)
+      def get(operator)
+        MAP.fetch(operator)
       rescue KeyError
-        raise Errors::InvalidFieldOperator.new(op)
+        raise Errors::InvalidFieldOperator.new(operator)
       end
 
       # Used for evaluating $lt, $lte, $gt, $gte comparison operators.
@@ -50,9 +55,9 @@ module Mongoid
       # @todo Refactor this as it is only relevant to $lt, $lte, $gt, $gte.
       #
       # @api private
-      module_function def apply_array_field_operator(exists, value, condition)
-        if Array === value
-          value.any? { |v| yield v }
+      def apply_array_field_operator(_exists, value, _condition, &block)
+        if value.is_a?(Array)
+          value.any?(&block)
         else
           yield value
         end
@@ -63,7 +68,7 @@ module Mongoid
       # @todo Refactor this as it is only relevant to $lt, $lte, $gt, $gte.
       #
       # @api private
-      module_function def apply_comparison_operator(operator, left, right)
+      def apply_comparison_operator(operator, left, right)
         left.send(operator, right)
       rescue ArgumentError, NoMethodError, TypeError
         # We silence bogus comparison attempts, e.g. number to string

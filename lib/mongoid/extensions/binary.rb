@@ -29,16 +29,17 @@ module Mongoid
         # @return [ BSON::Binary | nil ] A Binary representing the object or nil.
         def mongoize(object)
           return if object.nil?
+
           case object
           when BSON::Binary then object
           when String, Symbol then BSON::Binary.new(object.to_s)
           end
         end
-        alias :demongoize :mongoize
+        alias_method :demongoize, :mongoize
       end
     end
   end
 end
 
-BSON::Binary.__send__(:include, Mongoid::Extensions::Binary)
+BSON::Binary.include Mongoid::Extensions::Binary
 BSON::Binary.extend(Mongoid::Extensions::Binary::ClassMethods)

@@ -26,7 +26,7 @@ describe 'embeds_many associations' do
 
     let(:unsaved_parent) { Canvas.new(id: parent.id, shapes: [Shape.new]) }
 
-    context "using #clear" do
+    context 'using #clear' do
       it 'deletes the target from the database' do
         unsaved_parent.shapes.clear
 
@@ -48,7 +48,7 @@ describe 'embeds_many associations' do
       end
     end
 
-    context "using #delete_all" do
+    context 'using #delete_all' do
       before do
         unsaved_parent.shapes.delete_all
       end
@@ -56,7 +56,7 @@ describe 'embeds_many associations' do
       include_examples 'does not delete the target from the database'
     end
 
-    context "using #destroy_all" do
+    context 'using #destroy_all' do
       before do
         unsaved_parent.shapes.destroy_all
       end
@@ -74,8 +74,8 @@ describe 'embeds_many associations' do
       shared_examples 'persists correctly' do
         it 'persists correctly' do
           expect(canvas.shapes).to be_empty
-          _canvas = Canvas.find(canvas.id)
-          expect(_canvas.shapes).to be_empty
+          canvas_found = Canvas.find(canvas.id)
+          expect(canvas_found.shapes).to be_empty
         end
       end
 
@@ -91,8 +91,8 @@ describe 'embeds_many associations' do
 
       context 'via attributes=' do
         before do
-          canvas.attributes = {shapes: [Shape.new, Shape.new]}
-          canvas.attributes = {shapes: []}
+          canvas.attributes = { shapes: [Shape.new, Shape.new] }
+          canvas.attributes = { shapes: [] }
           canvas.save!
         end
 
@@ -118,8 +118,8 @@ describe 'embeds_many associations' do
       shared_examples 'persists correctly' do
         it 'persists correctly' do
           expect(canvas.shapes.length).to eq 2
-          _canvas = Canvas.find(canvas.id)
-          expect(_canvas.shapes.length).to eq 2
+          canvas_found = Canvas.find(canvas.id)
+          expect(canvas_found.shapes.length).to eq 2
         end
       end
 
@@ -135,8 +135,8 @@ describe 'embeds_many associations' do
 
       context 'via attributes=' do
         before do
-          canvas.attributes = {shapes: []}
-          canvas.attributes = {shapes: [Shape.new, Shape.new]}
+          canvas.attributes = { shapes: [] }
+          canvas.attributes = { shapes: [Shape.new, Shape.new] }
           canvas.save!
         end
 
@@ -162,8 +162,8 @@ describe 'embeds_many associations' do
       shared_examples 'persists correctly' do
         it 'persists correctly' do
           expect(canvas.shapes).to be_empty
-          _canvas = Canvas.find(canvas.id)
-          expect(_canvas.shapes).to be_empty
+          canvas_found = Canvas.find(canvas.id)
+          expect(canvas_found.shapes).to be_empty
         end
       end
 
@@ -183,7 +183,7 @@ describe 'embeds_many associations' do
       context 'via attributes=' do
         before do
           canvas.shapes.first.x = 1
-          canvas.attributes = {shapes: []}
+          canvas.attributes = { shapes: [] }
           canvas.save!
         end
 

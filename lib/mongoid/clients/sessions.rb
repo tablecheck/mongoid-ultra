@@ -38,22 +38,23 @@ module Mongoid
           if Threaded.get_session(client: persistence_context.client)
             raise Mongoid::Errors::InvalidSessionNesting.new
           end
+
           session = persistence_context.client.start_session(options)
           Threaded.set_session(session, client: persistence_context.client)
           yield(session)
-        rescue Mongo::Error::InvalidSession => ex
-          if Mongo::Error::SessionsNotSupported === ex
+        rescue Mongo::Error::InvalidSession => e
+          if e.is_a?(Mongo::Error::SessionsNotSupported)
             raise Mongoid::Errors::SessionsNotSupported.new
-          else
-            raise ex
           end
-        rescue Mongo::Error::OperationFailure => ex
-          if (ex.code == 40415 && ex.server_message =~ /startTransaction/) ||
-             (ex.code == 20 && ex.server_message =~ /Transaction/)
-            raise Mongoid::Errors::TransactionsNotSupported.new
-          else
-            raise ex
+
+          raise e
+        rescue Mongo::Error::OperationFailure => e
+          if (e.code == 40415 && e.server_message =~ /startTransaction/) ||
+             (e.code == 20 && e.server_message =~ /Transaction/)
+            raise Mongoid::Errors::TransactionsNotSupported
           end
+
+          raise e
         ensure
           Threaded.clear_session(client: persistence_context.client)
         end
@@ -81,22 +82,20 @@ module Mongoid
         # @yield Provided block will be executed inside a transaction.
         def transaction(options = {}, session_options: {})
           with_session(session_options) do |session|
-            begin
-              session.start_transaction(options)
-              yield
-              commit_transaction(session)
-            rescue Mongoid::Errors::Rollback
-              abort_transaction(session)
-            rescue Mongoid::Errors::InvalidSessionNesting
-              # Session should be ended here.
-              raise Mongoid::Errors::InvalidTransactionNesting.new
-            rescue Mongo::Error::InvalidSession, Mongo::Error::InvalidTransactionOperation => e
-              abort_transaction(session)
-              raise Mongoid::Errors::TransactionError(e)
-            rescue StandardError => e
-              abort_transaction(session)
-              raise e
-            end
+            session.start_transaction(options)
+            yield
+            commit_transaction(session)
+          rescue Mongoid::Errors::Rollback
+            abort_transaction(session)
+          rescue Mongoid::Errors::InvalidSessionNesting
+            # Session should be ended here.
+            raise Mongoid::Errors::InvalidTransactionNesting
+          rescue Mongo::Error::InvalidSession, Mongo::Error::InvalidTransactionOperation => e
+            abort_transaction(session)
+            raise Mongoid::Errors::TransactionError(e)
+          rescue StandardError => e
+            abort_transaction(session)
+            raise e
           end
         end
 

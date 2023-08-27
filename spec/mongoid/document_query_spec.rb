@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Document do
 
@@ -19,7 +19,7 @@ describe Mongoid::Document do
       expect do
         person.age
       end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'age' on Person which was not loaded/)
-      expect(person.attributes.keys).to eq(['_id', 'username'])
+      expect(person.attributes.keys).to eq(%w[_id username])
     end
 
     it 'allows writing omitted fields' do
@@ -31,8 +31,8 @@ describe Mongoid::Document do
       person.age = 42
       expect(person.age).to be 42
       person.save!
-      _person = Person.find(person.id)
-      expect(_person.age).to be 42
+      person_found = Person.find(person.id)
+      expect(person_found.age).to be 42
     end
   end
 
@@ -44,7 +44,7 @@ describe Mongoid::Document do
 
     let(:person) { Person.where(username: 'Dev').without(:title).first }
 
-      it 'allows access to attribute of embedded document' do
+    it 'allows access to attribute of embedded document' do
       expect(person.pet.name).to eq 'Duck'
     end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "spec_helper"
-require_relative "./has_and_belongs_to_many_models"
+require 'spec_helper'
+require_relative './has_and_belongs_to_many_models'
 
 describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
@@ -28,16 +28,12 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
   end
 
   let(:options) do
-    { }
+    {}
   end
 
   describe '#relation_complements' do
 
-    let(:expected_complements) do
-      [
-          Mongoid::Association::Referenced::HasAndBelongsToMany,
-      ]
-    end
+    let(:expected_complements) { [described_class] }
 
     it 'returns the relation complements' do
       expect(association.relation_complements).to eq(expected_complements)
@@ -67,7 +63,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
         let(:options) do
           {
-              autosave: true
+            autosave: true
           }
         end
 
@@ -87,12 +83,12 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
         let(:options) do
           {
-              autosave: false
+            autosave: false
           }
         end
 
         it 'does not set up autosave' do
-          expect(Mongoid::Association::Referenced::AutoSave).not_to receive(:define_autosave!)
+          expect(Mongoid::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
           association.setup!
         end
       end
@@ -106,7 +102,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
         end
 
         it 'does not set up autosave' do
-          expect(Mongoid::Association::Referenced::AutoSave).not_to receive(:define_autosave!)
+          expect(Mongoid::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
           association.setup!
         end
       end
@@ -116,7 +112,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
       let(:options) do
         {
-            validate: true
+          validate: true
         }
       end
 
@@ -136,12 +132,12 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
       let(:options) do
         {
-            validate: false
+          validate: false
         }
       end
 
       it 'does not set up validation' do
-        expect(has_many_left_class).not_to receive(:validates_associated)
+        expect(has_many_left_class).to_not receive(:validates_associated)
         association.setup!
       end
     end
@@ -186,12 +182,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
         end
 
         it 'sets up the index with the key' do
-          expect(has_many_left_class.index_specifications.first.fields).to match_array([association.key.to_sym])
+          expect(has_many_left_class.index_specifications.first.fields).to eq([association.key.to_sym])
         end
       end
 
       context 'when index is false' do
-
 
         it 'does not set up an index' do
           expect(has_many_left_class.index_specifications).to eq([])
@@ -207,7 +202,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
           let(:options) do
             {
-                dependent: :delete_all
+              dependent: :delete_all
             }
           end
 
@@ -227,7 +222,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
           let(:options) do
             {
-                dependent: :destroy
+              dependent: :destroy
             }
           end
 
@@ -247,7 +242,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
           let(:options) do
             {
-                dependent: :nullify
+              dependent: :nullify
             }
           end
 
@@ -267,7 +262,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
           let(:options) do
             {
-                dependent: :restrict_with_exception
+              dependent: :restrict_with_exception
             }
           end
 
@@ -287,7 +282,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
           let(:options) do
             {
-                dependent: :restrict_with_error
+              dependent: :restrict_with_error
             }
           end
 
@@ -307,7 +302,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
       context 'when the dependent option is not provided' do
 
         it 'does not set up the dependency' do
-          expect(Mongoid::Association::Depending).not_to receive(:define_dependency!)
+          expect(Mongoid::Association::Depending).to_not receive(:define_dependency!)
           association.setup!
         end
       end
@@ -369,7 +364,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
       let(:options) do
         {
-            primary_key: 'guid'
+          primary_key: 'guid'
         }
       end
 
@@ -394,7 +389,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
         let(:options) do
           {
-              index: true
+            index: true
           }
         end
 
@@ -407,7 +402,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
         let(:options) do
           {
-              index: false
+            index: false
           }
         end
 
@@ -454,7 +449,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
   end
 
   describe '#merge!' do
-
+    skip 'TODO'
   end
 
   describe '#store_as' do
@@ -477,7 +472,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
       let(:options) do
         {
-            order: :rating.desc
+          order: :rating.desc
         }
       end
 
@@ -577,45 +572,45 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
     context 'when :cyclic is specified' do
 
       it 'returns the cyclic inverse name' do
-
+        skip 'TODO'
       end
     end
   end
 
   describe '##inverse' do
 
+    before do
+      HasManyRightObject.has_and_belongs_to_many :has_many_left_objects
+    end
+
+    context 'when inverse_of is specified' do
+
       before do
-        HasManyRightObject.has_and_belongs_to_many :has_many_left_objects
+        options.merge!(inverse_of: :inverse_name)
       end
 
-      context 'when inverse_of is specified' do
-
-        before do
-          options.merge!(inverse_of: :inverse_name)
-        end
-
-        it 'returns the :inverse_of value' do
-          expect(association.inverse).to eq(:inverse_name)
-        end
-      end
-
-      context 'when inverse_of is not specified' do
-
-        it 'uses the inverse class to find the inverse name' do
-          expect(association.inverse).to eq(:has_many_left_objects)
-        end
-      end
-
-      context 'when :cyclic is specified' do
-
-        it 'returns the cyclic inverse name' do
-
-        end
+      it 'returns the :inverse_of value' do
+        expect(association.inverse).to eq(:inverse_name)
       end
     end
 
-  describe '#inverse_association' do
+    context 'when inverse_of is not specified' do
 
+      it 'uses the inverse class to find the inverse name' do
+        expect(association.inverse).to eq(:has_many_left_objects)
+      end
+    end
+
+    context 'when :cyclic is specified' do
+
+      it 'returns the cyclic inverse name' do
+        skip 'TODO'
+      end
+    end
+  end
+
+  describe '#inverse_association' do
+    skip 'TODO'
   end
 
   describe '#autosave' do
@@ -626,7 +621,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
         let(:options) do
           {
-              autosave: true
+            autosave: true
           }
         end
 
@@ -639,7 +634,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
         let(:options) do
           {
-              autosave: false
+            autosave: false
           }
         end
 
@@ -796,7 +791,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
         let(:options) do
           {
-              inverse_of: nil
+            inverse_of: nil
           }
         end
 
@@ -809,7 +804,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
         let(:options) do
           {
-              inverse_of: :inverse_name
+            inverse_of: :inverse_name
           }
         end
 
@@ -822,7 +817,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
         let(:options) do
           {
-              inverse_of: false
+            inverse_of: false
           }
         end
 
@@ -872,8 +867,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
     context 'when a block is passed' do
 
+      let(:block) { proc {} }
       let(:association) do
-        has_many_left_class.has_and_belongs_to_many name, options do; end
+        has_many_left_class.has_and_belongs_to_many(name, options) { 1 }
       end
 
       it 'defines an extension module' do
@@ -882,7 +878,8 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
       it 'returns the extension' do
         expect(association.extension).to eq(
-          "#{has_many_left_class.name}::#{has_many_left_class.name}#{name.to_s.camelize}RelationExtension".constantize)
+          "#{has_many_left_class.name}::#{has_many_left_class.name}#{name.to_s.camelize}RelationExtension".constantize
+        )
       end
     end
 
@@ -916,7 +913,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
         let(:options) do
           {
-              dependent: :delete_all
+            dependent: :delete_all
           }
         end
 
@@ -929,7 +926,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
         let(:options) do
           {
-              dependent: :destroy
+            dependent: :destroy
           }
         end
 
@@ -942,7 +939,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
         let(:options) do
           {
-              dependent: :nullify
+            dependent: :nullify
           }
         end
 
@@ -955,7 +952,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
         let(:options) do
           {
-              dependent: :restrict_with_exception
+            dependent: :restrict_with_exception
           }
         end
 
@@ -968,7 +965,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
         let(:options) do
           {
-              dependent: :restrict_with_error
+            dependent: :restrict_with_error
           }
         end
 
@@ -1021,7 +1018,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
     end
 
     let(:target) do
-      [ HasManyRightObject.new ]
+      [HasManyRightObject.new]
     end
 
     before do
@@ -1062,10 +1059,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
       end
     end
 
-    context "when using a model that uses the class_name option" do
+    context 'when using a model that uses the class_name option' do
       let(:inverse_foreign_key) { HabtmmSchool.relations[:students].inverse_foreign_key }
-      it "gets the correct inverse foreign key" do
-        expect(inverse_foreign_key).to eq("school_ids")
+
+      it 'gets the correct inverse foreign key' do
+        expect(inverse_foreign_key).to eq('school_ids')
       end
     end
   end
@@ -1077,8 +1075,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
     end
   end
 
-  context "when adding an object to the association" do
+  context 'when adding an object to the association' do
     let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
+    let!(:school) { HabtmmSchool.create! }
+    let!(:student) { HabtmmStudent.create! }
 
     let(:update_time) do
       Timecop.freeze(Time.at(Time.now.to_i) + 2)
@@ -1088,16 +1088,13 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
       Timecop.return
     end
 
-    let!(:school) { HabtmmSchool.create! }
-    let!(:student) { HabtmmStudent.create! }
-
     before do
       update_time
       school.update(students: [student])
     end
 
-    it "updates the updated at" do
-      pending "MONGOID-4953"
+    it 'updates the updated at' do
+      pending 'MONGOID-4953'
       expect(school.updated_at).to eq(update_time)
     end
   end

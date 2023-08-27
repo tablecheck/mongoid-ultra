@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative './embeds_one_models'
 
 describe Mongoid::Association::Embedded::EmbedsOne do
@@ -28,14 +28,14 @@ describe Mongoid::Association::Embedded::EmbedsOne do
   end
 
   let(:options) do
-    { }
+    {}
   end
 
   describe '#relation_complements' do
 
     let(:expected_complements) do
       [
-        Mongoid::Association::Embedded::EmbeddedIn,
+        Mongoid::Association::Embedded::EmbeddedIn
       ]
     end
 
@@ -75,7 +75,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
 
       let(:options) do
         {
-            validate: true
+          validate: true
         }
       end
 
@@ -95,12 +95,12 @@ describe Mongoid::Association::Embedded::EmbedsOne do
 
       let(:options) do
         {
-            validate: false
+          validate: false
         }
       end
 
       it 'does not set up validation' do
-        expect(embeds_one_class).not_to receive(:validates_associated)
+        expect(embeds_one_class).to_not receive(:validates_associated)
         association.setup!
       end
     end
@@ -254,7 +254,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
   end
 
   describe '#merge!' do
-
+    skip 'TODO'
   end
 
   describe '#store_as' do
@@ -350,7 +350,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
       end
 
       it 'returns the type followed by = as a String' do
-        expect(association.type_setter).to eq("containable_type=")
+        expect(association.type_setter).to eq('containable_type=')
       end
     end
 
@@ -406,7 +406,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
         context 'when the relation class has only one relation whose class matches the owning class' do
 
           it 'returns the :as attribute of this association' do
-            expect(association.inverses(instance_of_other_class)).to match_array([ :containable ])
+            expect(association.inverses(instance_of_other_class)).to eq([:containable])
           end
         end
 
@@ -417,14 +417,14 @@ describe Mongoid::Association::Embedded::EmbedsOne do
           end
 
           it 'returns the :inverse_of value' do
-            expect(association.inverses(instance_of_other_class)).to eq([ :inverse_name ])
+            expect(association.inverses(instance_of_other_class)).to eq([:inverse_name])
           end
         end
 
         context 'when inverse_of is not specified' do
 
           it 'returns the :as attribute of this association' do
-            expect(association.inverses(instance_of_other_class)).to match_array([ :containable ])
+            expect(association.inverses(instance_of_other_class)).to eq([:containable])
           end
         end
       end
@@ -438,14 +438,14 @@ describe Mongoid::Association::Embedded::EmbedsOne do
           end
 
           it 'returns the :inverse_of value' do
-            expect(association.inverses).to eq([ :inverse_name ])
+            expect(association.inverses).to eq([:inverse_name])
           end
         end
 
         context 'when inverse_of is not specified' do
 
           it 'returns the :as attribute' do
-            expect(association.inverses).to eq([ :containable ])
+            expect(association.inverses).to eq([:containable])
           end
 
           context 'when class_name is given and is a :: prefixed string' do
@@ -488,21 +488,21 @@ describe Mongoid::Association::Embedded::EmbedsOne do
         end
 
         it 'returns the :inverse_of value' do
-          expect(association.inverses).to eq([ :inverse_name ])
+          expect(association.inverses).to eq([:inverse_name])
         end
       end
 
       context 'when inverse_of is not specified' do
 
         it 'uses the inverse class to find the inverse name' do
-          expect(association.inverses).to eq([ :container ])
+          expect(association.inverses).to eq([:container])
         end
       end
 
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-
+          skip 'TODO'
         end
       end
     end
@@ -518,7 +518,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
 
       let(:options) do
         {
-            as: :containable
+          as: :containable
         }
       end
 
@@ -603,14 +603,14 @@ describe Mongoid::Association::Embedded::EmbedsOne do
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-
+          skip 'TODO'
         end
       end
     end
   end
 
   describe '#inverse_association' do
-
+    skip 'TODO'
   end
 
   describe '#autosave' do
@@ -846,8 +846,9 @@ describe Mongoid::Association::Embedded::EmbedsOne do
 
     context 'when a block is passed' do
 
+      let(:block) { proc {} }
       let(:association) do
-        embeds_one_class.embeds_one name, options do; end
+        embeds_one_class.embeds_one(name, options) { 1 }
       end
 
       it 'defines an extension module' do
@@ -856,7 +857,8 @@ describe Mongoid::Association::Embedded::EmbedsOne do
 
       it 'returns the extension' do
         expect(association.extension).to eq(
-          "#{embeds_one_class.name}::#{embeds_one_class.name}#{name.to_s.camelize}RelationExtension".constantize)
+          "#{embeds_one_class.name}::#{embeds_one_class.name}#{name.to_s.camelize}RelationExtension".constantize
+        )
       end
     end
 
@@ -871,9 +873,9 @@ describe Mongoid::Association::Embedded::EmbedsOne do
   describe '#criteria' do
 
     it 'does not respond to the method' do
-      expect {
+      expect do
         association.criteria
-      }.to raise_exception(NoMethodError)
+      end.to raise_exception(NoMethodError)
     end
   end
 
@@ -929,7 +931,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
   describe '#path' do
 
     it 'returns an instance of Mongoid::Atomic::Paths::Root' do
-      expect(association.path(double( :_parent => true))).to be_a(Mongoid::Atomic::Paths::Embedded::One)
+      expect(association.path(double(_parent: true))).to be_a(Mongoid::Atomic::Paths::Embedded::One)
     end
   end
 
@@ -954,30 +956,30 @@ describe Mongoid::Association::Embedded::EmbedsOne do
     end
   end
 
-  context "when multiple embeds_one associations reference the same class" do
+  context 'when multiple embeds_one associations reference the same class' do
     let(:acme) { EomCompany.create(address: { city: 'Gotham' }, delivery_address: { city: 'Parcelville' }) }
 
-    context "when the first assignment is modified" do
+    context 'when the first assignment is modified' do
       before do
         acme.update(address: EomAddress.new(city: 'Bigville'))
         acme.reload
       end
 
-      it "updates the correct association" do
-        expect(acme.address.city).to eq("Bigville")
-        expect(acme.delivery_address.city).to eq("Parcelville")
+      it 'updates the correct association' do
+        expect(acme.address.city).to eq('Bigville')
+        expect(acme.delivery_address.city).to eq('Parcelville')
       end
     end
 
-    context "when the second assignment is modified" do
+    context 'when the second assignment is modified' do
       before do
         acme.update(delivery_address: EomAddress.new(city: 'Bigville'))
         acme.reload
       end
 
-      it "updates the correct association" do
-        expect(acme.address.city).to eq("Gotham")
-        expect(acme.delivery_address.city).to eq("Bigville")
+      it 'updates the correct association' do
+        expect(acme.address.city).to eq('Gotham')
+        expect(acme.delivery_address.city).to eq('Bigville')
       end
     end
   end

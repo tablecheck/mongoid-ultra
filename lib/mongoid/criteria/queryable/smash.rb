@@ -84,7 +84,7 @@ module Mongoid
         #
         # @return [ String ] The normalized key.
         def localized_key(name, serializer)
-          serializer && serializer.localized? ? "#{name}.#{::I18n.locale}" : name
+          serializer&.localized? ? "#{name}.#{::I18n.locale}" : name
         end
 
         # Get the pair of objects needed to store the value in a hash by the
@@ -102,10 +102,8 @@ module Mongoid
         def storage_pair(key)
           field = key.to_s
           name = Fields.database_field_name(field, associations, aliases, aliased_associations)
-          [ name, get_serializer(name) ]
+          [name, get_serializer(name)]
         end
-
-        private
 
         # Retrieves the serializer for the given name. If the name exists in
         # the serializers hash then return that immediately, otherwise
@@ -116,7 +114,7 @@ module Mongoid
         #
         # @return [ Object ] The serializer.
         def get_serializer(name)
-          if s = serializers[name]
+          if (s = serializers[name])
             s
           else
             Fields.traverse_association_tree(name, serializers, associations, aliased_associations)

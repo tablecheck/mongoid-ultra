@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::CollectionConfigurable do
 
@@ -44,7 +44,7 @@ describe Mongoid::CollectionConfigurable do
     Object.send(:remove_const, :CollectionConfigurableInvalidOptions)
   end
 
-  after(:each) do
+  after do
     [
       CollectionConfigurableValidOptions,
       CollectionConfigurableUnknownOptions
@@ -54,25 +54,26 @@ describe Mongoid::CollectionConfigurable do
   end
 
   context 'when collection does not exist' do
+
     context 'with valid options' do
       let(:subject) do
         CollectionConfigurableValidOptions
-      end
-
-      before(:each) do
-        subject.create_collection
       end
 
       let(:coll_options) do
         subject.collection.database.list_collections(filter: { name: subject.collection_name.to_s }).first
       end
 
+      before do
+        subject.create_collection
+      end
+
       it 'creates the collection' do
-        expect(coll_options).not_to be_nil
+        expect(coll_options).to_not be_nil
       end
 
       it 'passes collection options' do
-        expect(coll_options.dig('options', 'capped')).to eq(true)
+        expect(coll_options.dig('options', 'capped')).to be(true)
         expect(coll_options.dig('options', 'size')).to eq(2560)
       end
     end
@@ -109,7 +110,7 @@ describe Mongoid::CollectionConfigurable do
 
     context 'when force is false' do
       let(:logger) do
-        double("logger").tap do |log|
+        double('logger').tap do |log|
           expect(log).to receive(:debug).once.with(/Collection '#{subject.collection_name}' already exist/)
         end
       end
@@ -126,7 +127,7 @@ describe Mongoid::CollectionConfigurable do
 
     context 'when force is true' do
       let(:logger) do
-        double("logger")
+        double('logger')
       end
 
       let(:coll_options) do
@@ -139,18 +140,18 @@ describe Mongoid::CollectionConfigurable do
       end
 
       it 'does not log a message' do
-        expect(logger).to receive(:debug).never.with(/Collection '#{subject.collection_name}' already exist/)
+        expect(logger).to_not receive(:debug)
         subject.create_collection(force: true)
       end
 
       it 'creates the collection' do
         subject.create_collection(force: true)
-        expect(coll_options).not_to be_nil
+        expect(coll_options).to_not be_nil
       end
 
       it 'passes collection options' do
         subject.create_collection(force: true)
-        expect(coll_options.dig('options', 'capped')).to eq(true)
+        expect(coll_options.dig('options', 'capped')).to be(true)
         expect(coll_options.dig('options', 'size')).to eq(2560)
       end
     end

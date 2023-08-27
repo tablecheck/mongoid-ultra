@@ -18,11 +18,12 @@ module Mongoid
       # @return [ Object ] The object cast to the correct type.
       def convert_to_foreign_key(object)
         return convert_polymorphic(object) if polymorphic?
-        field = relation_class.fields["_id"]
+
+        field = relation_class.fields['_id']
         if relation_class.using_object_ids?
           BSON::ObjectId.mongoize(object)
         elsif object.is_a?(::Array)
-          object.map!{ |obj| field.mongoize(obj) }
+          object.map! { |obj| field.mongoize(obj) }
         else
           field.mongoize(object)
         end

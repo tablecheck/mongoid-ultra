@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SmMovie
   include Mongoid::Document
 
@@ -35,7 +37,7 @@ class SmProducer
   include Mongoid::Document
 
   index age: 1, gender: 1
-  shard_key({age: 1, gender: 'hashed'}, unique: true, numInitialChunks: 2)
+  shard_key({ age: 1, gender: 'hashed' }, unique: true, numInitialChunks: 2)
 end
 
 class SmDirector
@@ -62,14 +64,14 @@ end
 
 class SmReviewAuthor
   include Mongoid::Document
-  embedded_in :review, class_name: "SmReview", touch: false
+  embedded_in :review, class_name: 'SmReview', touch: false
   field :name, type: String
 end
 
 class SmReview
   include Mongoid::Document
 
-  embeds_one :author, class_name: "SmReviewAuthor"
+  embeds_one :author, class_name: 'SmReviewAuthor'
 
-  shard_key "author.name" => 1
+  shard_key 'author.name' => 1
 end

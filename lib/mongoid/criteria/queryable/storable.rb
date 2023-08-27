@@ -34,28 +34,27 @@ module Mongoid
         # @return [ Storable ] self.
         def add_field_expression(field, value)
           unless field.is_a?(String)
-            raise ArgumentError, "Field must be a string: #{field}"
+            raise ArgumentError.new("Field must be a string: #{field}")
           end
 
           if field.start_with?('$')
-            raise ArgumentError, "Field cannot be an operator (i.e. begin with $): #{field}"
+            raise ArgumentError.new("Field cannot be an operator (i.e. begin with $): #{field}")
           end
 
           if selector[field]
             # We already have a restriction by the field we are trying
             # to restrict, combine the restrictions.
             if value.is_a?(Hash) && selector[field].is_a?(Hash) &&
-              value.keys.all? { |key|
-                key_s = key.to_s
-                key_s.start_with?('$') && !selector[field].key?(key_s)
-              }
-            then
+               value.keys.all? do |key|
+                 key_s = key.to_s
+                 key_s.start_with?('$') && selector[field].keys.map(&:to_s).exclude?(key_s)
+               end
               # Multiple operators can be combined on the same field by
               # adding them to the existing hash.
               new_value = selector[field].merge(value)
               selector.store(field, new_value)
             elsif selector[field] != value
-              add_operator_expression('$and', [{field => value}])
+              add_operator_expression('$and', [{ field => value }])
             end
           else
             selector.store(field, value)
@@ -82,7 +81,7 @@ module Mongoid
         #
         #     {'$or' => [{'hello' => 'world'}]}
         #
-        # ... and operator is '$or' and op_expr is `[{'test' => 123'}]`,
+        # ... and operator is '$or' and op_expr is +[{'test' => 123'}]+,
         # the resulting selector will be:
         #
         #     {'$or' => [{'hello' => 'world'}, {'test' => 123}]}
@@ -106,15 +105,15 @@ module Mongoid
         # @return [ Storable ] self.
         def add_logical_operator_expression(operator, op_expr)
           unless operator.is_a?(String)
-            raise ArgumentError, "Operator must be a string: #{operator}"
+            raise ArgumentError.new("Operator must be a string: #{operator}")
           end
 
-          unless %w($and $nor $or).include?(operator)
-            raise ArgumentError, "This method only handles logical operators ($and, $nor, $or). Operator given: #{operator}"
+          unless %w[$and $nor $or].include?(operator)
+            raise ArgumentError.new("This method only handles logical operators ($and, $nor, $or). Operator given: #{operator}")
           end
 
           unless op_expr.is_a?(Array)
-            raise Errors::InvalidQuery, "#{operator} argument must be an array: #{Errors::InvalidQuery.truncate_expr(op_expr)}"
+            raise Errors::InvalidQuery.new("#{operator} argument must be an array: #{Errors::InvalidQuery.truncate_expr(op_expr)}")
           end
 
           if selector.length == 1 && selector.keys.first == operator
@@ -123,19 +122,17 @@ module Mongoid
           elsif operator == '$and' || selector.empty?
             # $and can always be added to top level and it will be combined
             # with whatever other conditions exist.
-            if current_value = selector[operator]
+            if (current_value = selector[operator])
               new_value = current_value + op_expr
               selector.store(operator, new_value)
             else
               selector.store(operator, op_expr)
             end
-          else
+          elsif selector[operator]
             # Other operators need to be added separately
-            if selector[operator]
-              add_logical_operator_expression('$and', [operator => op_expr])
-            else
-              selector.store(operator, op_expr)
-            end
+            add_logical_operator_expression('$and', [operator => op_expr])
+          else
+            selector.store(operator, op_expr)
           end
 
           self
@@ -158,7 +155,7 @@ module Mongoid
         #
         #     {'foo' => 'bar', '$or' => [{'hello' => 'world'}]}
         #
-        # ... and operator is '$or' and op_expr is `{'test' => 123'}`,
+        # ... and operator is '$or' and op_expr is +{'test' => 123'}+,
         # the resulting selector will be:
         #
         #     {'foo' => 'bar', '$or' => [{'hello' => 'world'}, {'test' => 123}]}
@@ -186,14 +183,14 @@ module Mongoid
         # @return [ Storable ] self.
         def add_operator_expression(operator, op_expr)
           unless operator.is_a?(String)
-            raise ArgumentError, "Operator must be a string: #{operator}"
+            raise ArgumentError.new("Operator must be a string: #{operator}")
           end
 
           unless operator.start_with?('$')
-            raise ArgumentError, "Operator must begin with $: #{operator}"
+            raise ArgumentError.new("Operator must begin with $: #{operator}")
           end
 
-          if %w($and $nor $or).include?(operator)
+          if %w[$and $nor $or].include?(operator)
             return add_logical_operator_expression(operator, op_expr)
           end
 
@@ -201,7 +198,7 @@ module Mongoid
           # query, add the new condition with $and, otherwise add the
           # new condition to the top level.
           if selector[operator]
-            add_logical_operator_expression('$and', [{operator => op_expr}])
+            add_logical_operator_expression('$and', [{ operator => op_expr }])
           else
             selector.store(operator, op_expr)
           end
@@ -221,7 +218,7 @@ module Mongoid
         # @return [ Storable ] self.
         def add_one_expression(field, value)
           unless field.is_a?(String)
-            raise ArgumentError, "Field must be a string: #{field}"
+            raise ArgumentError.new("Field must be a string: #{field}")
           end
 
           if field.start_with?('$')

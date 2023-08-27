@@ -19,7 +19,9 @@ Replace `gem 'mongoid'` in your application's Gemfile with:
 gem 'mongoid-ultra'
 ```
 
-(Do **not** install `mongoid` and `mongoid-ultra` at the same time.)
+Do **not** install the `mongoid` and `mongoid-ultra` gems at the same time.
+When loading, Mongoid Ultra will raise a `GemConflict` error if
+`mongoid` gem is present in your bundle.
 
 ## Compatibility
 
@@ -28,13 +30,14 @@ gem 'mongoid-ultra'
 - JRuby 9.4+
 - MongoDB server 4.4+
 
-Version support may differ from MongoDB Mongoid. As a general policy, Mongoid Ultra will drop support
-for end-of-life (EOL) versions fairly soon after EOL. We will target to have support for new Ruby and Rails
-versions within 1 month of release.
+Version support may differ from MongoDB Mongoid. We will target to have support for new
+Ruby and Rails versions within 1 month of release. As a general policy, Mongoid Ultra will
+drop support for end-of-life (EOL) versions soon after EOL. If you are using unsupported EOL
+software, please stick with an older version of Mongoid until you upgrade.
 
 ## Purpose & Principles
 
-This is a *community-driven fork of Mongoid*, intend to improve the following over MongoDB's Mongoid:
+This is a *community-driven fork of Mongoid*, intended to improve the following over MongoDB's Mongoid:
 
 - Performance
 - Feature robustness
@@ -59,11 +62,13 @@ For the time being, version numbers will shadow those of `mongodb/mongoid` with 
 
 Where `X.Y.Z` is the latest upstream release version, and `P` is the patch version of this repo.
 `P` will be reset to zero anytime the major version `X` changes, but will not be reset when the minor or tiny `Y`/`Z` version changes.
-We will also use `-alpha`, `-beta`, `-rc`, etc. suffixes to denote pre-releases.
+We will also use `.alpha1`, `.beta1`, `.rc1`, etc. suffixes to denote pre-releases.
 
 **Semver**: For the time being will follow the major version component of semver, i.e. not breaking or
-removing functionality *except* in major (`X`) releases. We may introduce new features in new patch (`P`) releases,
+removing functionality *except* in major `X` releases. We may introduce new features in new patch `P` releases,
 and will use feature flags prefixed with `ultra_` to allow users to opt-in.
+
+You may distinguish Mongoid Ultra from MongoDB Mongoid by the constant `Mongoid::ULTRA == true`.
 
 All new versions will undergo battle-testing in production at TableCheck prior to being released.
 
@@ -85,9 +90,9 @@ Refer to the [Roadmap issue](https://github.com/tablecheck/mongoid-ultra/issues/
 
 #### Best Practices
 
-- ✅ [MONGOID-5572](https://jira.mongodb.org/browse/MONGOID-5572) - RSpec: Use expectation syntax, enforced with RSpec config setting.
 - ✅ [MONGOID-5570](https://jira.mongodb.org/browse/MONGOID-5570) - Code Docs: Ensure 100% documentation coverage, enforced with Rubocop.
 - ✅ [MONGOID-5564](https://jira.mongodb.org/browse/MONGOID-5564) - Code Docs: Use full namespaces in docs.
+- ✅ [MONGOID-5572](https://jira.mongodb.org/browse/MONGOID-5572) - RSpec: Use expectation syntax, enforced with RSpec config setting.
 
 #### Removals
 
@@ -142,10 +147,10 @@ Please raise a [Mongoid Ultra Github issue](https://github.com/tablecheck/mongoi
 Mongoid started as an open-source project created by Durran Jordan in 2009. MongoDB Inc. took over maintainership in 2015.
 Since the transition, the hallmarks of user-disconnect and corporate fumbling have become apparent:
 
-- Introduction of [critical semver-breaking issues](https://serpapi.com/blog/how-a-routine-gem-update-ended-up-charging/).
-- Lack of a publicly visible roadmap or direction (when requested, it was said to be a "corporate secret".)
-- Unwillingness to adopt basic best industry-standard practices, e.g. Rubocop linter and a publicly-visible CI workflow.
-- Refusal to merge patches which would be of obvious benefit to the community.
+- Introduction of [critical semver-breaking issues](https://serpapi.com/blog/how-a-routine-gem-update-ended-up-charging/), with [no](https://jira.mongodb.org/browse/MONGOID-5272) [sign](https://github.com/mongodb/mongoid/pull/5601#issuecomment-1506630267) of [improvement](https://jira.mongodb.org/browse/MONGOID-5016).
+- Lack of a publicly visible roadmap and direction (when requested, it was said to be a "corporate secret".)
+- [Unwillingness](https://github.com/mongodb/mongoid/pull/5546#issuecomment-1448910968) to [adopt](https://github.com/mongodb/mongoid/pull/5553#issuecomment-1500361845) [basic](https://github.com/mongodb/bson-ruby/pull/284) industry-standard best practices, e.g. Rubocop linter and a publicly-visible CI workflow.
+- Refusal to [merge](https://github.com/mongodb/mongoid/pull/5541#discussion_r1101934994) [patches](https://github.com/mongodb/mongoid/pull/5497) which would be of obvious benefit to the community.
 - Lack of bandwidth and resources to review simple PR contributions.
 
 **None of this is intended to disparage the hard-working and talented individuals at MongoDB Inc.**, but rather,

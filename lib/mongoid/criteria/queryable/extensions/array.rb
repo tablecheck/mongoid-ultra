@@ -26,7 +26,9 @@ module Mongoid
           #   [ 1, 2 ].__array__
           #
           # @return [ Array ] self
-          def __array__; self; end
+          def __array__
+            self
+          end
 
           # Makes a deep copy of the array, deep copying every element inside the
           # array.
@@ -36,7 +38,7 @@ module Mongoid
           #
           # @return [ Array ] The deep copy of the array.
           def __deep_copy__
-            map { |value| value.__deep_copy__ }
+            map(&:__deep_copy__)
           end
 
           # Evolve the array into an array of mongo friendly dates. (Times at
@@ -47,7 +49,7 @@ module Mongoid
           #
           # @return [ Array<Time> ] The array as times at midnight UTC.
           def __evolve_date__
-            map { |value| value.__evolve_date__ }
+            map(&:__evolve_date__)
           end
 
           # Get the object as expanded.
@@ -57,9 +59,7 @@ module Mongoid
           #
           # @return [ Array ] The expanded array.
           def __expand_complex__
-            map do |value|
-              value.__expand_complex__
-            end
+            map(&:__expand_complex__)
           end
 
           # Evolve the array to an array of times.
@@ -69,7 +69,7 @@ module Mongoid
           #
           # @return [ Array<Time> ] The array as times.
           def __evolve_time__
-            map { |value| value.__evolve_time__ }
+            map(&:__evolve_time__)
           end
 
           # Combine the two objects using an intersection strategy.
@@ -92,9 +92,8 @@ module Mongoid
           #
           # @return [ Hash ] The array as sort criterion.
           def __sort_option__
-            multi.inject({}) do |options, criteria|
+            multi.each_with_object({}) do |criteria, options|
               options.merge!(criteria.__sort_pair__)
-              options
             end
           end
 
@@ -119,7 +118,7 @@ module Mongoid
           #
           # @return [ Array ] The multi-dimensional array.
           def multi
-            first.is_a?(::Symbol) || first.is_a?(::String) ? [ self ] : self
+            first.is_a?(::Symbol) || first.is_a?(::String) ? [self] : self
           end
 
           module ClassMethods
@@ -147,5 +146,5 @@ module Mongoid
   end
 end
 
-::Array.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Array)
-::Array.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Array::ClassMethods)
+Array.include Mongoid::Criteria::Queryable::Extensions::Array
+Array.extend Mongoid::Criteria::Queryable::Extensions::Array::ClassMethods

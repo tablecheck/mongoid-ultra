@@ -1,4 +1,6 @@
-require "mongoid/association/eager_loadable"
+# frozen_string_literal: true
+
+require 'mongoid/association/eager_loadable'
 
 module Mongoid
   module Contextual
@@ -29,7 +31,7 @@ module Mongoid
         # @return [ Concurrent::ThreadPoolExecutor ] The executor
         #   to be used to execute document loading tasks.
         def self.global_thread_pool_async_query_executor
-          create_pool = Proc.new do |concurrency|
+          create_pool = proc do |concurrency|
             Concurrent::ThreadPoolExecutor.new(
               min_threads: 0,
               max_threads: concurrency,
@@ -81,9 +83,9 @@ module Mongoid
         # @param [ Class ] klass Mongoid model class to instantiate documents.
         #   All records obtained from the database will be converted to an
         #   instance of this class, if possible.
-        # @param [ Mongoid::Criteria ] criteria. Criteria that specifies which
+        # @param [ Mongoid::Criteria ] criteria Criteria that specifies which
         #   documents should be loaded.
-        # @param [ Concurrent::AbstractExecutorService ] executor. Executor that
+        # @param [ Concurrent::AbstractExecutorService ] executor Executor that
         #   is capable of running `Concurrent::Promises::Future` instances.
         def initialize(view, klass, criteria, executor: self.class.executor)
           @view = view

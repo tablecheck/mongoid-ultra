@@ -9,16 +9,16 @@ describe 'i18n fallbacks' do
     with_default_i18n_configs
 
     before do
-      I18n.fallbacks[:de] = [ :en ]
+      I18n.fallbacks[:de] = [:en]
     end
 
     context 'when translation is present in active locale' do
       it 'uses active locale' do
         product = Product.new
         I18n.locale = :de
-        product.description = "Marvelous in German"
+        product.description = 'Marvelous in German'
         I18n.locale = :en
-        product.description = "Marvelous!"
+        product.description = 'Marvelous!'
         I18n.locale = :de
         expect(product.description).to eq('Marvelous in German')
       end
@@ -28,7 +28,7 @@ describe 'i18n fallbacks' do
       it 'falls back on default locale' do
         product = Product.new
         I18n.locale = :en
-        product.description = "Marvelous!"
+        product.description = 'Marvelous!'
         I18n.locale = :de
         expect(product.description).to eq('Marvelous!')
       end
@@ -38,9 +38,9 @@ describe 'i18n fallbacks' do
       it 'returns nil' do
         product = Product.new
         I18n.locale = :en
-        product.description = "Marvelous!"
+        product.description = 'Marvelous!'
         I18n.locale = :ru
-        expect(product.description).to eq nil
+        expect(product.description).to be_nil
       end
     end
   end

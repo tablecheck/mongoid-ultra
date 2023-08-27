@@ -76,9 +76,7 @@ module Mongoid
       def scoped(options = nil)
         crit = clone
         crit.options.merge!(options || {})
-        if klass.default_scopable? && !scoped?
-          crit.apply_default_scope
-        end
+        crit.apply_default_scope if klass.default_scopable? && !scoped?
         crit
       end
 
@@ -102,7 +100,8 @@ module Mongoid
         crit = clone
         unless unscoped?
           crit.scoping_options = false, true
-          crit.selector.clear; crit.options.clear
+          crit.selector.clear
+          crit.options.clear
         end
         crit
       end
@@ -124,7 +123,7 @@ module Mongoid
       #
       # @return [ Array ] Scoped, unscoped.
       def scoping_options
-        [ (defined?(@scoped) ? @scoped : nil), (defined?(@unscoped) ? @unscoped : nil) ]
+        [(defined?(@scoped) ? @scoped : nil), (defined?(@unscoped) ? @unscoped : nil)]
       end
 
       # Set the criteria scoping options, as a pair (scoped, unscoped).
@@ -150,9 +149,7 @@ module Mongoid
       # @return [ Mongoid::Criteria ] The criteria.
       def with_default_scope
         crit = clone
-        if klass.default_scopable? && !unscoped? && !scoped?
-          crit.apply_default_scope
-        end
+        crit.apply_default_scope if klass.default_scopable? && !unscoped? && !scoped?
         crit
       end
 
@@ -161,7 +158,7 @@ module Mongoid
       def reject_matching(other, *methods)
         methods.each do |method|
           send(method).reject! do |key, value|
-            other.send(method).has_key?(key) && other.send(method)[key] == value
+            other.send(method).key?(key) && other.send(method)[key] == value
           end
         end
       end

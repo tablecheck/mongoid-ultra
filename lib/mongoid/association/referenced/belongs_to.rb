@@ -18,19 +18,19 @@ module Mongoid
         # common ones.
         #
         # @return [ Array<Symbol> ] The extra valid options.
-        ASSOCIATION_OPTIONS = [
-            :autobuild,
-            :autosave,
-            :counter_cache,
-            :dependent,
-            :foreign_key,
-            :index,
-            :polymorphic,
-            :primary_key,
-            :touch,
-            :optional,
-            :required,
-            :scope,
+        ASSOCIATION_OPTIONS = %i[
+          autobuild
+          autosave
+          counter_cache
+          dependent
+          foreign_key
+          index
+          polymorphic
+          primary_key
+          touch
+          optional
+          required
+          scope
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -47,13 +47,13 @@ module Mongoid
         # The default foreign key suffix.
         #
         # @return [ String ] '_id'
-        FOREIGN_KEY_SUFFIX = '_id'.freeze
+        FOREIGN_KEY_SUFFIX = '_id'
 
         # The list of association complements.
         #
         # @return [ Array<Mongoid::Association::Relatable> ] The association complements.
         def relation_complements
-          @relation_complements ||= [ HasMany, HasOne ].freeze
+          @relation_complements ||= [HasMany, HasOne].freeze
         end
 
         # Setup the instance methods, fields, etc. on the association owning class.
@@ -68,24 +68,33 @@ module Mongoid
         # Does this association type store the foreign key?
         #
         # @return [ true ] Always true.
-        def stores_foreign_key?; true; end
+        def stores_foreign_key?
+          true
+        end
 
         # Is this association type embedded?
         #
         # @return [ false ] Always false.
-        def embedded?; false; end
+        def embedded?
+          false
+        end
 
         # The default for validation the association object.
         #
         # @return [ false ] Always false.
-        def validation_default; false; end
+        def validation_default
+          false
+        end
 
         # Get the foreign key field for saving the association reference.
         #
         # @return [ String ] The foreign key field for saving the association reference.
         def foreign_key
-          @foreign_key ||= @options[:foreign_key] ? @options[:foreign_key].to_s :
+          @foreign_key ||= if @options[:foreign_key]
+                             @options[:foreign_key].to_s
+                           else
                              default_foreign_key_field
+                           end
         end
 
         # Get the association proxy class for this association type.
@@ -174,33 +183,36 @@ module Mongoid
         end
 
         def polymorph!
-          if polymorphic?
-            @owner_class.polymorphic = true
-            @owner_class.field(inverse_type, type: String)
-          end
+          return unless polymorphic?
+
+          @owner_class.polymorphic = true
+          @owner_class.field(inverse_type, type: String)
         end
 
         def polymorphic_inverses(other = nil)
-          if other
-            matches = other.relations.values.select do |rel|
-              relation_complements.include?(rel.class) &&
-                  rel.as == name &&
-                  rel.relation_class_name == inverse_class_name
-            end
-            matches.collect { |m| m.name }
+          return unless other
+
+          matches = other.relations.values.select do |rel|
+            relation_complements.include?(rel.class) &&
+              rel.as == name &&
+              rel.relation_class_name == inverse_class_name
           end
+
+          matches.collect(&:name)
         end
 
         def determine_inverses(other)
           matches = (other || relation_class).relations.values.select do |rel|
             relation_complements.include?(rel.class) &&
-                rel.relation_class_name == inverse_class_name
+              rel.relation_class_name == inverse_class_name
 
           end
+
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
-          matches.collect { |m| m.name }
+
+          matches.collect(&:name)
         end
 
         # If set to true, then the associated object will be validated when this object is saved
@@ -212,12 +224,12 @@ module Mongoid
 
         def create_foreign_key_field!
           @owner_class.field(
-              foreign_key,
-              type: FOREIGN_KEY_FIELD_TYPE,
-              identity: true,
-              overwrite: true,
-              association: self,
-              default: nil
+            foreign_key,
+            type: FOREIGN_KEY_FIELD_TYPE,
+            identity: true,
+            overwrite: true,
+            association: self,
+            default: nil
           )
         end
       end

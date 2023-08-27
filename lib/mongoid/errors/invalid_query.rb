@@ -7,13 +7,6 @@ module Mongoid
     # invalid query fragment is passed to the query builder (Criteria object).
     class InvalidQuery < MongoidError
 
-      # Create the new invalid query error.
-      #
-      # @api private
-      def initialize(msg)
-        super
-      end
-
       # Stringifies the argument using #inspect and truncates the result to
       # about 100 characters.
       #
@@ -21,16 +14,14 @@ module Mongoid
       #
       # @api private
       def self.truncate_expr(expr)
-        unless expr.is_a?(String)
-          expr = expr.inspect
-        end
+        expr = expr.inspect unless expr.is_a?(String)
 
         if expr.length > 103
-          expr = if expr =~ /\A<#((?:.|\n)*)>\z/
-            "<##{expr.slice(0, 97)}...>"
-          else
-            expr.slice(0, 100) + '...'
-          end
+          expr = if /\A<#((?:.|\n)*)>\z/.match?(expr)
+                   "<##{expr.slice(0, 97)}...>"
+                 else
+                   "#{expr.slice(0, 100)}..."
+                 end
         end
 
         expr

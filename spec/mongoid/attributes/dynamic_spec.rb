@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Attributes::Dynamic do
   shared_examples_for 'dynamic field' do
     let(:raw_attributes) do
-      {attr_name => 'foo bar'}
+      { attr_name => 'foo bar' }
     end
 
     context 'when reading attributes' do
@@ -37,14 +37,14 @@ describe Mongoid::Attributes::Dynamic do
         context 'reading via read_attribute' do
           it 'returns nil' do
             bar = Bar.new
-            expect(bar.read_attribute(:foo)).to be nil
+            expect(bar.read_attribute(:foo)).to be_nil
           end
         end
 
         context 'reading via []' do
           it 'returns nil' do
             bar = Bar.new
-            expect(bar[:foo]).to be nil
+            expect(bar[:foo]).to be_nil
           end
         end
       end
@@ -106,7 +106,7 @@ describe Mongoid::Attributes::Dynamic do
       end
     end
 
-    context 'when writing attributes via #{attribute}=' do
+    context 'when writing attributes via attribute setter' do
       context 'when attribute is not already set' do
         let(:bar) { Bar.new }
 
@@ -125,8 +125,8 @@ describe Mongoid::Attributes::Dynamic do
           bar.send("#{attr_name}=", 'new foo bar')
           bar.save!
 
-          _bar = Bar.find(bar.id)
-          expect(_bar.send(attr_name)).to eq('new foo bar')
+          bar_found = Bar.find(bar.id)
+          expect(bar_found.send(attr_name)).to eq('new foo bar')
         end
       end
     end
@@ -148,5 +148,33 @@ describe Mongoid::Attributes::Dynamic do
     let(:attr_name) { 'hello%world' }
 
     it_behaves_like 'dynamic field'
+  end
+
+  describe '#respond_to_missing?' do
+    let(:attr_name) { 'dynamic_attr' }
+
+    context 'when attribute exists' do
+      let(:bar) { Bar.new(attr_name => 'value') }
+
+      it 'responds to reader method' do
+        expect(bar.respond_to?(attr_name)).to be true
+      end
+
+      it 'responds to writer method' do
+        expect(bar.respond_to?("#{attr_name}=")).to be true
+      end
+    end
+
+    context 'when attribute does not exist' do
+      let(:bar) { Bar.new }
+
+      it 'does not respond to reader method' do
+        expect(bar.respond_to?(attr_name)).to be false
+      end
+
+      it 'does not respond to writer method' do
+        expect(bar.respond_to?("#{attr_name}=")).to be false
+      end
+    end
   end
 end

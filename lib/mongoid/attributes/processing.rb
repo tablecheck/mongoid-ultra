@@ -17,10 +17,11 @@ module Mongoid
       # @param [ Hash ] attrs The attributes to set.
       def process_attributes(attrs = nil)
         attrs ||= {}
-        if !attrs.empty?
+        unless attrs.empty?
           attrs = sanitize_for_mass_assignment(attrs)
           attrs.each_pair do |key, value|
             next if pending_attribute?(key, value)
+
             process_attribute(key, value)
           end
         end
@@ -45,20 +46,48 @@ module Mongoid
         name = key.to_s
 
         aliased = if aliased_associations.key?(name)
-          aliased_associations[name]
-        else
-          name
+                    aliased_associations[name]
+                  else
+                    name
+                  end
+
+        if relations.key?(aliased)
+          set_pending_relation(name, aliased, value)
+          return true
         end
 
-        if relations.has_key?(aliased)
+        if nested_attributes.key?(aliased)
+          set_pending_nested(name, aliased, value)
+          return true
+        end
+
+        false
+      end
+
+      # Set value of the pending relation.
+      #
+      # @param [ Symbol ] name The name of the relation.
+      # @param [ Symbol ] aliased The aliased name of the relation.
+      # @param [ Object ] value The value of the relation.
+      def set_pending_relation(name, aliased, value)
+        if stored_as_associations.include?(name)
+          pending_relations[aliased] = value
+        else
           pending_relations[name] = value
-          return true
         end
-        if nested_attributes.has_key?(aliased)
+      end
+
+      # Set value of the pending nested attribute.
+      #
+      # @param [ Symbol ] name The name of the nested attribute.
+      # @param [ Symbol ] aliased The aliased name of the nested attribute.
+      # @param [ Object ] value The value of the nested attribute.
+      def set_pending_nested(name, aliased, value)
+        if stored_as_associations.include?(name)
+          pending_nested[aliased] = value
+        else
           pending_nested[name] = value
-          return true
         end
-        return false
       end
 
       # Get all the pending associations that need to be set.
@@ -90,11 +119,12 @@ module Mongoid
       # @param [ Symbol ] name The name of the field.
       # @param [ Object ] value The value of the field.
       def process_attribute(name, value)
-        if !respond_to?("#{name}=", true) && store_as = aliased_fields.invert[name.to_s]
+        if !respond_to?("#{name}=", true) && (store_as = aliased_fields.invert[name.to_s])
           name = store_as
         end
         responds = respond_to?("#{name}=", true)
         raise Errors::UnknownAttribute.new(self.class, name) unless responds
+
         send("#{name}=", value)
       end
 

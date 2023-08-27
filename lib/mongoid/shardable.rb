@@ -93,8 +93,8 @@ module Mongoid
     #
     # @api private
     def shard_key_field_value(field, prefer_persisted:)
-      if field.include?(".")
-        relation, remaining = field.split(".", 2)
+      if field.include?('.')
+        relation, remaining = field.split('.', 2)
         send(relation)&.shard_key_field_value(remaining, prefer_persisted: prefer_persisted)
       elsif prefer_persisted && !new_record?
         attribute_was(field)
@@ -120,33 +120,31 @@ module Mongoid
         unless args.first.is_a?(Hash)
           # Shorthand syntax
           if args.last.is_a?(Hash)
-            raise ArgumentError, 'Shorthand shard_key syntax does not permit options'
+            raise ArgumentError.new('Shorthand shard_key syntax does not permit options')
           end
 
-          spec = Hash[args.map do |name|
+          spec = args.to_h do |name|
             [name, 1]
-          end]
+          end
 
           return shard_key(spec)
         end
 
         if args.length > 2
-          raise ArgumentError, 'Full shard_key syntax requires 1 or 2 arguments'
+          raise ArgumentError.new('Full shard_key syntax requires 1 or 2 arguments')
         end
 
         spec, options = args
 
-        spec = Hash[spec.map do |name, value|
-          if value.is_a?(Symbol)
-            value = value.to_s
-          end
+        spec = spec.to_h do |name, value|
+          value = value.to_s if value.is_a?(Symbol)
           [database_field_name(name).to_sym, value]
-        end]
+        end
 
         self.shard_key_fields = spec.keys
         self.shard_config = {
           key: spec.freeze,
-          options: (options || {}).dup.freeze,
+          options: (options || {}).dup.freeze
         }.freeze
       end
     end
