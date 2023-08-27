@@ -38,6 +38,16 @@ module Mongoid
       # @attribute [r] view The Mongo collection view.
       attr_reader :view
 
+      # Run an explain on the criteria.
+      #
+      # @example Explain the criteria.
+      #   Band.where(name: "Depeche Mode").explain
+      #
+      # @param [ Hash ] options customizable options (See Mongo::Collection::View::Explainable)
+      #
+      # @return [ Hash ] The explain result.
+      def_delegator :view, :explain
+
       # Get the number of documents matching the query.
       #
       # @example Get the number of matching documents.
@@ -174,16 +184,6 @@ module Mongoid
         when Hash then Mongo.new(criteria.where(id_or_conditions)).exists?
         else Mongo.new(criteria.where(_id: id_or_conditions)).exists?
         end
-      end
-
-      # Run an explain on the criteria.
-      #
-      # @example Explain the criteria.
-      #   Band.where(name: "Depeche Mode").explain
-      #
-      # @return [ Hash ] The explain result.
-      def explain
-        view.explain
       end
 
       # Execute the find and modify command, used for MongoDB's
@@ -382,7 +382,7 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The document.
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
+      # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
       def take!
         # Do to_a first so that the Mongo#first method is not used and the
@@ -567,7 +567,7 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The first document.
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
+      # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
       def first!
         first || raise_document_not_found_error
@@ -609,7 +609,7 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The last document.
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
+      # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
       def last!
         last || raise_document_not_found_error
@@ -633,7 +633,7 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The second document.
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
+      # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
       def second!
         second || raise_document_not_found_error
@@ -657,7 +657,7 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The third document.
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
+      # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
       def third!
         third || raise_document_not_found_error
@@ -681,7 +681,7 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The fourth document.
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
+      # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
       def fourth!
         fourth || raise_document_not_found_error
@@ -705,7 +705,7 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The fifth document.
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
+      # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
       def fifth!
         fifth || raise_document_not_found_error
@@ -731,7 +731,7 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The second to last document.
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
+      # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
       def second_to_last!
         second_to_last || raise_document_not_found_error
@@ -757,7 +757,7 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The third to last document.
       #
-      # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
+      # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
       def third_to_last!
         third_to_last || raise_document_not_found_error

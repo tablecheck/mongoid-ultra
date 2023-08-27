@@ -1571,7 +1571,16 @@ describe Mongoid::Contextual::Mongo do
     end
 
     it 'returns the criteria explain path' do
-      expect(context.explain).to_not be_empty
+      explain = context.explain
+      expect(explain).to_not be_empty
+      expect(explain.keys).to include('queryPlanner', 'executionStats', 'serverInfo')
+    end
+
+    it 'respects options passed to explain' do
+      explain = context.explain(verbosity: :query_planner)
+      expect(explain).to_not be_empty
+      expect(explain.keys).to include('queryPlanner', 'serverInfo')
+      expect(explain.keys).to_not include('executionStats')
     end
   end
 
@@ -3670,6 +3679,20 @@ describe Mongoid::Contextual::Mongo do
 
           it 'updates the last matching document' do
             expect(new_order.reload.name).to eq('Smiths')
+          end
+        end
+
+        context 'when using aliased field names' do
+          before do
+            context.update_all('$set' => { years: 100 })
+          end
+
+          it 'updates the first matching document' do
+            expect(depeche_mode.reload.years).to eq(100)
+          end
+
+          it 'updates the last matching document' do
+            expect(new_order.reload.years).to eq(100)
           end
         end
 
