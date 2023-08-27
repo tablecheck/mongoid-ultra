@@ -22,9 +22,6 @@ shared_context 'rake task' do
     Rake::Task.define_task(:environment)
 
     allow(Mongoid::Tasks::Database).to receive(:logger).and_return(logger)
-
-    # OptionParser can incorrectly parse RSpec's options such as --pattern
-    allow_any_instance_of(OptionParser).to receive(:parse!).and_return({})
   end
 
   shared_examples_for 'create_indexes' do
@@ -357,6 +354,9 @@ describe 'db:mongoid:encryption:create_data_key' do
       .to receive(:create_data_key)
       .with('local', {})
       .and_call_original
+
+    # OptionParser incorrectly parses RSpec's options such as --pattern
+    allow_any_instance_of(OptionParser).to receive(:parse!).and_return({})
   end
 
   it 'creates the key' do
