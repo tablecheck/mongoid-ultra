@@ -1299,7 +1299,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when association is not loaded' do
-        before do
+        it do
           expect(movie.ratings._loaded?).to be false
         end
 
