@@ -16,7 +16,8 @@ def standard_dependencies
   end
 
   group :test do
-    gem 'rspec', '~> 3.10'
+    gem 'rspec', '~> 3.12'
+    gem 'activejob'
     gem 'timecop'
     gem 'rspec-retry'
     gem 'benchmark-ips'
@@ -36,6 +37,6 @@ def standard_dependencies
   end
 
   if ENV['FLE'] == 'helper'
-    gem 'libmongocrypt-helper', '~> 1.7.0'
+    gem 'libmongocrypt-helper', '~> 1.8.0'
   end
 end

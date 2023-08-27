@@ -1861,51 +1861,56 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
   end
 
-  describe '#delete' do
+  %i[delete delete_one].each do |method|
+    describe "##{method}" do
+      let(:address_one) { Address.new(street: 'first') }
+      let(:address_two) { Address.new(street: 'second') }
 
-    let(:person) do
-      Person.new
-    end
-
-    let(:address_one) do
-      Address.new(street: 'first')
-    end
-
-    let(:address_two) do
-      Address.new(street: 'second')
-    end
-
-    before do
-      person.addresses << [address_one, address_two]
-    end
-
-    context 'when the document exists in the relation' do
-
-      let!(:deleted) do
-        person.addresses.delete(address_one)
+      before do
+        person.addresses << [address_one, address_two]
       end
 
-      it 'deletes the document' do
-        expect(person.addresses).to eq([address_two])
+      shared_examples_for 'deleting from the collection' do
+        context 'when the document exists in the relation' do
+          let!(:deleted) do
+            person.addresses.send(method, address_one)
+          end
+
+          it 'deletes the document' do
+            expect(person.addresses).to eq([address_two])
+            expect(person.reload.addresses).to eq([address_two]) if person.persisted?
+          end
+
+          it 'deletes the document from the unscoped' do
+            expect(person.addresses.send(:_unscoped)).to eq([address_two])
+          end
+
+          it 'reindexes the relation' do
+            expect(address_two._index).to eq(0)
+          end
+
+          it 'returns the document' do
+            expect(deleted).to eq(address_one)
+          end
+        end
+
+        context 'when the document does not exist' do
+          it 'returns nil' do
+            expect(person.addresses.send(method, Address.new)).to be_nil
+          end
+        end
       end
 
-      it 'deletes the document from the unscoped' do
-        expect(person.addresses.send(:_unscoped)).to eq([address_two])
+      context 'when the root document is unpersisted' do
+        let(:person) { Person.new }
+
+        it_behaves_like 'deleting from the collection'
       end
 
-      it 'reindexes the relation' do
-        expect(address_two._index).to eq(0)
-      end
+      context 'when the root document is persisted' do
+        let(:person) { Person.create }
 
-      it 'returns the document' do
-        expect(deleted).to eq(address_one)
-      end
-    end
-
-    context 'when the document does not exist' do
-
-      it 'returns nil' do
-        expect(person.addresses.delete(Address.new)).to be_nil
+        it_behaves_like 'deleting from the collection'
       end
     end
   end
@@ -2788,6 +2793,40 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         it 'returns the distinct values for the fields' do
           expect(person.addresses.distinct(:street)).to eq(%w[Market Madison])
         end
+      end
+    end
+  end
+
+  describe '#respond_to_missing?' do
+    let!(:person) { Person.create! }
+
+    context 'when target responds to method' do
+      it 'returns true' do
+        expect(person.addresses.respond_to?(:length)).to be true
+      end
+    end
+
+    context 'when criteria responds to method' do
+      it 'returns true' do
+        expect(person.addresses.respond_to?(:california)).to be true
+      end
+    end
+
+    context 'when neither target nor criteria respond to the method' do
+      it 'returns false' do
+        expect(person.addresses.respond_to?(:nonexistent_method)).to be false
+      end
+    end
+
+    context 'when chaining criteria' do
+      let(:addresses) { person.addresses.california.where(:street.in => ['Market']) }
+
+      it 'returns true for existing method' do
+        expect(addresses.respond_to?(:any_of)).to be true
+      end
+
+      it 'returns false for nonexistent method' do
+        expect(addresses.respond_to?(:nonexistent_method)).to be false
       end
     end
   end
