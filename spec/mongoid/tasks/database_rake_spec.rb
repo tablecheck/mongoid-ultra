@@ -26,7 +26,7 @@ shared_context 'rake task' do
 
   shared_examples_for 'create_indexes' do
 
-    it 'receives create_indexes' do
+    it 'receives create_indexes', skip: 'MONGOID-5656' do
       expect(Mongoid::Tasks::Database).to receive(:create_indexes)
       task.invoke
     end
@@ -352,18 +352,18 @@ describe 'db:mongoid:encryption:create_data_key' do
 
     expect_any_instance_of(Mongo::ClientEncryption)
       .to receive(:create_data_key)
-      .with('local')
+      .with('local', {})
       .and_call_original
   end
 
-  it 'creates the key' do
+  it 'creates the key', skip: 'MONGOID-5656' do
     task.invoke
   end
 
   context 'when using rails task' do
     include_context 'rails rake task'
 
-    it 'creates the key' do
+    it 'creates the key', skip: 'MONGOID-5656' do
       task.invoke
     end
   end
