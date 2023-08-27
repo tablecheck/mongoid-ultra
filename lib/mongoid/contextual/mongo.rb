@@ -1029,7 +1029,7 @@ module Mongoid
         return value unless field
 
         value = field.mongoize(value)
-        if Mongoid::Persistable::LIST_OPERATIONS.include?(operator) && field.resizable? && !value.is_a?(Array)
+        if Mongoid::Persistable::LIST_OPERATIONS.include?(operator) && field.resizable? && value.is_a?(Array)
           value = value.first
         end
         value
