@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 module Mongoid
   class Criteria
@@ -14,9 +15,7 @@ module Mongoid
           #   /\A[123]/.regexp?
           #
           # @return [ true ] Always true.
-          def regexp?
-            true
-          end
+          def regexp?; true; end
 
           module ClassMethods
 
@@ -36,7 +35,7 @@ module Mongoid
           end
 
           # Adds query type-casting behavior to BSON::Regexp::Raw class.
-          module RawExt
+          module Raw_
 
             # Is the object a regexp?
             #
@@ -44,9 +43,7 @@ module Mongoid
             #   bson_raw_regexp.regexp?
             #
             # @return [ true ] Always true.
-            def regexp?
-              true
-            end
+            def regexp?; true; end
 
             module ClassMethods
 
@@ -71,7 +68,7 @@ module Mongoid
   end
 end
 
-Regexp.include Mongoid::Criteria::Queryable::Extensions::Regexp
-Regexp.extend Mongoid::Criteria::Queryable::Extensions::Regexp::ClassMethods
-BSON::Regexp::Raw.include Mongoid::Criteria::Queryable::Extensions::Regexp::RawExt
-BSON::Regexp::Raw.extend Mongoid::Criteria::Queryable::Extensions::Regexp::RawExt::ClassMethods
+::Regexp.__send__(:include,Mongoid::Criteria::Queryable::Extensions::Regexp)
+::Regexp.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Regexp::ClassMethods)
+BSON::Regexp::Raw.__send__(:include,Mongoid::Criteria::Queryable::Extensions::Regexp::Raw_)
+BSON::Regexp::Raw.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Regexp::Raw_::ClassMethods)

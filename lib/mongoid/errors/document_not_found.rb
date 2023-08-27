@@ -53,9 +53,10 @@ module Mongoid
       #
       # @return [ String ] The missing string.
       def missing(unmatched)
-        if unmatched.is_a?(::Array)
+        case unmatched
+        when ::Array
           unmatched.join(', ')
-        elsif unmatched.is_a?(::Hash)
+        when ::Hash
           unmatched[:_id] || unmatched['_id']
         else
           unmatched

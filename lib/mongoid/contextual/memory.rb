@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
-require 'mongoid/contextual/aggregable/memory'
-require 'mongoid/association/eager_loadable'
+require "mongoid/contextual/aggregable/memory"
+require "mongoid/association/eager_loadable"
 
 module Mongoid
   module Contextual
@@ -33,7 +34,6 @@ module Mongoid
       # @return [ true | false ] If the objects are equal.
       def ==(other)
         return false unless other.respond_to?(:entries)
-
         entries == other.entries
       end
 
@@ -51,13 +51,13 @@ module Mongoid
         end
         unless removed.empty?
           collection.find(selector).update_one(
-            positionally(selector, '$pullAll' => { path => removed }),
+            positionally(selector, "$pullAll" => { path => removed }),
             session: _session
           )
         end
         deleted
       end
-      alias_method :delete_all, :delete
+      alias :delete_all :delete
 
       # Destroy all documents in the database that match the selector.
       #
@@ -73,7 +73,7 @@ module Mongoid
         end
         deleted
       end
-      alias_method :destroy_all, :destroy
+      alias :destroy_all :destroy
 
       # Get the distinct values in the db for the provided field.
       #
@@ -96,9 +96,11 @@ module Mongoid
       #   end
       #
       # @return [ Enumerator ] The enumerator.
-      def each(&block)
-        if block
-          documents_for_iteration.each(&block)
+      def each
+        if block_given?
+          documents_for_iteration.each do |doc|
+            yield(doc)
+          end
           self
         else
           to_enum
@@ -137,7 +139,7 @@ module Mongoid
       #
       # @param [ Integer ] limit The number of documents to return.
       #
-      # @return [ Mongoid::Document ] The first document.
+      # @return [ Document ] The first document.
       def first(limit = nil)
         if limit
           eager_load(documents.first(limit))
@@ -145,8 +147,8 @@ module Mongoid
           eager_load([documents.first]).first
         end
       end
-      alias_method :one, :first
-      alias_method :find_first, :first
+      alias :one :first
+      alias :find_first :first
 
       # Get the first document in the database for the criteria's selector or
       # raise an error if none is found.
@@ -154,7 +156,7 @@ module Mongoid
       # @example Get the first document.
       #   context.first!
       #
-      # @return [ Mongoid::Document ] The first document.
+      # @return [ Document ] The first document.
       #
       # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -167,10 +169,9 @@ module Mongoid
       # @example Create the new context.
       #   Memory.new(criteria)
       #
-      # @param [ Mongoid::Criteria ] criteria The criteria.
+      # @param [ Criteria ] criteria The criteria.
       def initialize(criteria)
-        @criteria = criteria
-        @klass = criteria.klass
+        @criteria, @klass = criteria, criteria.klass
         @documents = criteria.documents.select do |doc|
           @root ||= doc._root
           @collection ||= root.collection
@@ -201,7 +202,7 @@ module Mongoid
       #
       # @param [ Integer ] limit The number of documents to return.
       #
-      # @return [ Mongoid::Document ] The last document.
+      # @return [ Document ] The last document.
       def last(limit = nil)
         if limit
           eager_load(documents.last(limit))
@@ -216,7 +217,7 @@ module Mongoid
       # @example Get the last document.
       #   context.last!
       #
-      # @return [ Mongoid::Document ] The last document.
+      # @return [ Document ] The last document.
       #
       # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -233,7 +234,7 @@ module Mongoid
       def length
         documents.length
       end
-      alias_method :size, :length
+      alias :size :length
 
       # Limits the number of documents that are returned.
       #
@@ -262,22 +263,6 @@ module Mongoid
         end
       end
 
-      # Iterate through plucked field values in memory.
-      #
-      # @example Iterate through the values for null context.
-      #   context.pluck_each(:name) { |name| puts name }
-      #
-      # @param [ [ String | Symbol ]... ] *fields Field(s) to pluck.
-      # @param [ Proc ] &block The block to call once for each plucked
-      #   result.
-      #
-      # @return [ Enumerator | Memory ] An enumerator, or the context
-      #   if a block was given.
-      def pluck_each(*fields, &block)
-        enum = pluck(*fields).each(&block)
-        block ? self : enum
-      end
-
       # Pick the field values in memory.
       #
       # @example Get the values in memory.
@@ -287,9 +272,9 @@ module Mongoid
       #
       # @return [ Object | Array<Object> ] The picked values.
       def pick(*fields)
-        return unless (doc = documents.first)
-
-        pluck_from_doc(doc, *fields)
+        if doc = documents.first
+          pluck_from_doc(doc, *fields)
+        end
       end
 
       # Tally the field values in memory.
@@ -298,23 +283,13 @@ module Mongoid
       #   context.tally(:name)
       #
       # @param [ String | Symbol ] field Field to tally.
-      # @param [ Boolean ] :unwind Whether to tally array
-      #   member values individually. Default false.
       #
       # @return [ Hash ] The hash of counts.
-      def tally(field, unwind: false)
-        documents.each_with_object({}) do |doc, tallies|
-          key = retrieve_value_at_path(doc, field)
-
-          if unwind && key.is_a?(Array)
-            key.each do |array_value|
-              tallies[array_value] ||= 0
-              tallies[array_value] += 1
-            end
-          else
-            tallies[key] ||= 0
-            tallies[key] += 1
-          end
+      def tally(field)
+        return documents.each_with_object({}) do |d, acc|
+          v = retrieve_value_at_path(d, field)
+          acc[v] ||= 0
+          acc[v] += 1
         end
       end
 
@@ -325,7 +300,7 @@ module Mongoid
       #
       # @param [ Integer | nil ] limit The number of documents to take or nil.
       #
-      # @return [ Mongoid::Document ] The document.
+      # @return [ Document ] The document.
       def take(limit = nil)
         if limit
           eager_load(documents.take(limit))
@@ -340,7 +315,7 @@ module Mongoid
       # @example Take a document.
       #   context.take
       #
-      # @return [ Mongoid::Document ] The document.
+      # @return [ Document ] The document.
       #
       # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -383,7 +358,7 @@ module Mongoid
       #
       # @return [ nil | false ] False if no attributes were provided.
       def update(attributes = nil)
-        update_documents(attributes, [first])
+        update_documents(attributes, [ first ])
       end
 
       # Update all the matching documents atomically.
@@ -403,7 +378,7 @@ module Mongoid
       # @example Get the second document.
       #   context.second
       #
-      # @return [ Mongoid::Document ] The second document.
+      # @return [ Document ] The second document.
       def second
         eager_load([documents.second]).first
       end
@@ -413,6 +388,8 @@ module Mongoid
       #
       # @example Get the second document.
       #   context.second!
+      #
+      # @return [ Document ] The second document.
       #
       # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -425,7 +402,7 @@ module Mongoid
       # @example Get the third document.
       #   context.third
       #
-      # @return [ Mongoid::Document ] The third document.
+      # @return [ Document ] The third document.
       def third
         eager_load([documents.third]).first
       end
@@ -435,6 +412,8 @@ module Mongoid
       #
       # @example Get the third document.
       #   context.third!
+      #
+      # @return [ Document ] The third document.
       #
       # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -447,7 +426,7 @@ module Mongoid
       # @example Get the fourth document.
       #   context.fourth
       #
-      # @return [ Mongoid::Document ] The fourth document.
+      # @return [ Document ] The fourth document.
       def fourth
         eager_load([documents.fourth]).first
       end
@@ -457,6 +436,8 @@ module Mongoid
       #
       # @example Get the fourth document.
       #   context.fourth!
+      #
+      # @return [ Document ] The fourth document.
       #
       # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -469,7 +450,7 @@ module Mongoid
       # @example Get the fifth document.
       #   context.fifth
       #
-      # @return [ Mongoid::Document ] The fifth document.
+      # @return [ Document ] The fifth document.
       def fifth
         eager_load([documents.fifth]).first
       end
@@ -480,7 +461,7 @@ module Mongoid
       # @example Get the fifth document.
       #   context.fifth!
       #
-      # @return [ Mongoid::Document ] The fifth document.
+      # @return [ Document ] The fifth document.
       #
       # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -493,7 +474,7 @@ module Mongoid
       # @example Get the second to last document.
       #   context.second_to_last
       #
-      # @return [ Mongoid::Document ] The second to last document.
+      # @return [ Document ] The second to last document.
       def second_to_last
         eager_load([documents.second_to_last]).first
       end
@@ -504,7 +485,7 @@ module Mongoid
       # @example Get the second to last document.
       #   context.second_to_last!
       #
-      # @return [ Mongoid::Document ] The second to last document.
+      # @return [ Document ] The second to last document.
       #
       # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -517,7 +498,7 @@ module Mongoid
       # @example Get the third to last document.
       #   context.third_to_last
       #
-      # @return [ Mongoid::Document ] The third to last document.
+      # @return [ Document ] The third to last document.
       def third_to_last
         eager_load([documents.third_to_last]).first
       end
@@ -528,7 +509,7 @@ module Mongoid
       # @example Get the third to last document.
       #   context.third_to_last!
       #
-      # @return [ Mongoid::Document ] The third to last document.
+      # @return [ Document ] The third to last document.
       #
       # @raise [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -545,10 +526,12 @@ module Mongoid
       # @example Get the documents for iteration.
       #   context.documents_for_iteration
       #
-      # @return [ Array<Mongoid::Document> ] The docs to iterate.
+      # @return [ Array<Document> ] The docs to iterate.
       def documents_for_iteration
         docs = documents[skipping || 0, limiting || documents.length] || []
-        eager_load(docs) if eager_loadable?
+        if eager_loadable?
+          eager_load(docs)
+        end
         docs
       end
 
@@ -560,18 +543,17 @@ module Mongoid
       #   context.update_documents({}, doc)
       #
       # @param [ Hash ] attributes The attributes.
-      # @param [ Array<Mongoid::Document> ] docs The docs to update.
+      # @param [ Array<Document> ] docs The docs to update.
       def update_documents(attributes, docs)
         return false if !attributes || docs.empty?
-
-        updates = { '$set' => {} }
+        updates = { "$set" => {}}
         docs.each do |doc|
           @selector ||= root.atomic_selector
           doc.write_attributes(attributes)
-          updates['$set'].merge!(doc.atomic_updates['$set'] || {})
+          updates["$set"].merge!(doc.atomic_updates["$set"] || {})
           doc.move_changes
         end
-        collection.find(selector).update_one(updates, session: _session) unless updates['$set'].empty?
+        collection.find(selector).update_one(updates, session: _session) unless updates["$set"].empty?
       end
 
       # Get the limiting value.
@@ -594,7 +576,9 @@ module Mongoid
       # @param [ Integer ] value The limit.
       #
       # @return [ Integer ] The limit.
-      attr_writer :limiting
+      def limiting=(value)
+        @limiting = value
+      end
 
       # Get the skipping value.
       #
@@ -616,7 +600,9 @@ module Mongoid
       # @param [ Integer ] value The skip.
       #
       # @return [ Integer ] The skip.
-      attr_writer :skipping
+      def skipping=(value)
+        @skipping = value
+      end
 
       # Apply criteria options.
       #
@@ -627,8 +613,7 @@ module Mongoid
       #
       # @return [ Memory ] self.
       def apply_options
-        raise Errors::InMemoryCollationNotSupported if criteria.options[:collation]
-
+        raise Errors::InMemoryCollationNotSupported.new if criteria.options[:collation]
         skip(criteria.options[:skip]).limit(criteria.options[:limit])
       end
 
@@ -637,9 +622,9 @@ module Mongoid
       # @example Apply the sorting params.
       #   context.apply_sorting
       def apply_sorting
-        return unless (spec = criteria.options[:sort])
-
-        in_place_sort(spec)
+        if spec = criteria.options[:sort]
+          in_place_sort(spec)
+        end
       end
 
       # Compare two values, checking for nil.
@@ -653,13 +638,11 @@ module Mongoid
       # @param [ Object ] b The first object.
       #
       # @return [ Integer ] The comparison value.
-      def compare(a, b) # rubocop:disable Naming/MethodParameterName
-        if a.nil?
-          b.nil? ? 0 : 1
-        elsif b.nil?
-          -1
-        else
-          a <=> b
+      def compare(a, b)
+        case
+        when a.nil? then b.nil? ? 0 : 1
+        when b.nil? then -1
+        else a <=> b
         end
       end
 
@@ -672,8 +655,7 @@ module Mongoid
       def in_place_sort(values)
         documents.sort! do |a, b|
           values.map do |field, direction|
-            a_value = a[field]
-            b_value = b[field]
+            a_value, b_value = a[field], b[field]
             direction * compare(a_value.__sortable__, b_value.__sortable__)
           end.find { |value| !value.zero? } || 0
         end
@@ -686,7 +668,7 @@ module Mongoid
       # @example Prepare for removal.
       #   context.prepare_remove(doc)
       #
-      # @param [ Mongoid::Document ] doc The document.
+      # @param [ Document ] doc The document.
       def prepare_remove(doc)
         @selector ||= root.atomic_selector
         @path ||= doc.atomic_path
@@ -694,6 +676,8 @@ module Mongoid
         doc._parent.remove_child(doc)
         doc.destroyed = true
       end
+
+      private
 
       def _session
         @criteria.send(:_session)
@@ -721,35 +705,36 @@ module Mongoid
       #   doesn't exist.
       def retrieve_value_at_path(document, field_path)
         return if field_path.blank? || !document
-
         segment, remaining = field_path.to_s.split('.', 2)
 
         curr = if document.is_a?(Document)
-                 # Retrieves field for segment to check localization. Only does one
-                 # iteration since there's no dots
-                 res = if remaining
-                         field = document.class.traverse_association_tree(segment)
-                         # If this is a localized field, and there are remaining, get the
-                         # _translations hash so that we can get the specified translation in
-                         # the remaining
-                         document.send("#{segment}_translations") if field&.localized?
-                       end
-                 meth = klass.aliased_associations[segment] || segment
-                 res.nil? ? document.try(meth) : res
-               elsif document.is_a?(Hash)
-                 # TODO: Remove the indifferent access when implementing MONGOID-5410.
-                 if document.key?(segment.to_s)
-                   document[segment.to_s]
-                 else
-                   document[segment.to_sym]
-                 end
-               end
+          # Retrieves field for segment to check localization. Only does one
+          # iteration since there's no dots
+          res = if remaining
+            field = document.class.traverse_association_tree(segment)
+            # If this is a localized field, and there are remaining, get the
+            # _translations hash so that we can get the specified translation in
+            # the remaining
+            if field&.localized?
+              document.send("#{segment}_translations")
+            end
+          end
+          meth = klass.aliased_associations[segment] || segment
+          res.nil? ? document.try(meth) : res
+        elsif document.is_a?(Hash)
+          # TODO: Remove the indifferent access when implementing MONGOID-5410.
+          document.key?(segment.to_s) ?
+            document[segment.to_s] :
+            document[segment.to_sym]
+        else
+          nil
+        end
 
         return curr unless remaining
 
         if curr.is_a?(Array)
           # compact is used for consistency with server behavior.
-          curr.filter_map { |d| retrieve_value_at_path(d, remaining) }
+          curr.map { |d| retrieve_value_at_path(d, remaining) }.compact
         else
           retrieve_value_at_path(curr, remaining)
         end
@@ -757,7 +742,7 @@ module Mongoid
 
       # Pluck the field values from the given document.
       #
-      # @param [ Mongoid::Document ] doc The document to pluck from.
+      # @param [ Document ] doc The document to pluck from.
       # @param [ [ String | Symbol ]... ] *fields Field(s) to pluck.
       #
       # @return [ Object | Array<Object> ] The plucked values.

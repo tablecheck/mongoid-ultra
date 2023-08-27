@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 require 'mongoid/extensions/boolean'
 require 'mongoid/stringified_symbol'
@@ -23,7 +24,6 @@ module Mongoid
         visited = Set.new
         models.each_with_object({}) do |model, map|
           next if visited.include?(model)
-
           visited << model
           next if model.embedded?
           next unless model.encrypted?
@@ -66,18 +66,13 @@ module Mongoid
         ActiveSupport::TimeWithZone => 'date'
       }.freeze
 
-      # The base encryption properties for embedded relations.
-      #
-      # @api private
-      RELATION_PROPERTIES_BASE = { 'bsonType' => 'object' }.freeze
-
       # Generate the encryptMetadata object for the provided model.
       #
       # @param [ Mongoid::Document ] model The model to generate the metadata for.
       #
       # @return [ Hash ] The encryptMetadata object.
       def metadata_for(model)
-        result = {}.tap do |metadata|
+        metadata = {}.tap do |metadata|
           if (key_id = key_id_for(model.encrypt_metadata[:key_id], model.encrypt_metadata[:key_name_field]))
             metadata['keyId'] = key_id
           end
@@ -89,13 +84,12 @@ module Mongoid
                                     end
           end
         end
-
-        if result.empty?
+        if metadata.empty?
           {}
         else
           {
             'bsonType' => 'object',
-            'encryptMetadata' => result
+            'encryptMetadata' => metadata
           }
         end
       end
@@ -162,7 +156,7 @@ module Mongoid
           ).merge(
             properties_for(relation.relation_class, visited)
           ).tap do |properties|
-            props[name] = RELATION_PROPERTIES_BASE.merge(properties) unless properties.empty?
+            props[name] = { 'bsonType' => 'object' }.merge(properties) unless properties.empty?
           end
         end
       end
@@ -188,6 +182,8 @@ module Mongoid
           DETERMINISTIC_ALGORITHM
         when false
           RANDOM_ALGORITHM
+        else
+          nil
         end
       end
 
@@ -203,13 +199,13 @@ module Mongoid
       def key_id_for(key_id_base64, key_name_field)
         return nil if key_id_base64.nil? && key_name_field.nil?
         if !key_id_base64.nil? && !key_name_field.nil?
-          raise ArgumentError.new('Specifying both key_id and key_name_field is not allowed')
+          raise ArgumentError, 'Specifying both key_id and key_name_field is not allowed'
         end
 
         if key_id_base64.nil?
           "/#{key_name_field}"
         else
-          [BSON::Binary.new(Base64.decode64(key_id_base64), :uuid)]
+          [ BSON::Binary.new(Base64.decode64(key_id_base64), :uuid) ]
         end
       end
     end

@@ -19,7 +19,6 @@ require 'mongoid/composable'
 require 'mongoid/touchable'
 
 module Mongoid
-
   # This is the base module for all domain objects that need to be persisted to
   # the database as documents.
   module Document
@@ -46,7 +45,7 @@ module Mongoid
     # @example Freeze the document
     #   document.freeze
     #
-    # @return [ Mongoid::Document ] The document.
+    # @return [ Document ] The document.
     def freeze
       as_attributes.freeze and self
     end
@@ -99,7 +98,7 @@ module Mongoid
     #
     # @param [ Hash ] attrs The attributes to set up the document with.
     #
-    # @return [ Mongoid::Document ] A new document.
+    # @return [ Document ] A new document.
     def initialize(attrs = nil, &block)
       construct_document(attrs, &block)
     end
@@ -136,6 +135,33 @@ module Mongoid
       BSON::Document.new(as_attributes)
     end
 
+    # Calls #as_json on the document with additional, Mongoid-specific options.
+    #
+    # @note Rails 6 changes return value of as_json for non-primitive types
+    #   such as BSON::ObjectId. In Rails <= 5, as_json returned these as
+    #   instances of the class. In Rails 6, these are returned serialized to
+    #   primitive types (e.g. {'$oid'=>'5bcfc40bde340b37feda98e9'}).
+    #   See https://github.com/rails/rails/commit/2e5cb980a448e7f4ab00df6e9ad4c1cc456616aa
+    #   for more information.
+    #
+    # @example Get the document as json.
+    #   document.as_json(compact: true)
+    #
+    # @param [ Hash ] options The options.
+    #
+    # @option options [ true | false ] :compact (Deprecated) Whether to include fields
+    #   with nil values in the json document.
+    #
+    # @return [ Hash ] The document as json.
+    def as_json(options = nil)
+      rv = super
+      if options && options[:compact]
+        Mongoid::Warnings.warn_as_json_compact_deprecated
+        rv = rv.compact
+      end
+      rv
+    end
+
     # Returns an instance of the specified class with the attributes,
     # errors, and embedded documents of the current document.
     #
@@ -146,7 +172,7 @@ module Mongoid
     #
     # @param [ Class ] klass The class to become.
     #
-    # @return [ Mongoid::Document ] An instance of the specified class.
+    # @return [ Document ] An instance of the specified class.
     def becomes(klass)
       mongoid_document_check!(klass)
 
@@ -204,7 +230,7 @@ module Mongoid
     # @option options [ true | false ] :execute_callbacks Flag specifies
     #   whether callbacks should be run.
     #
-    # @return [ Mongoid::Document ] A new document.
+    # @return [ Document ] A new document.
     #
     # @note A Ruby 2.x bug prevents the options hash from being keyword
     #   arguments. Once we drop support for Ruby 2.x, we can reimplement
@@ -382,7 +408,7 @@ module Mongoid
       # @param [ Integer ] selected_fields The selected fields from the
       #   criteria.
       #
-      # @return [ Mongoid::Document ] A new document.
+      # @return [ Document ] A new document.
       def instantiate(attrs = nil, selected_fields = nil, &block)
         instantiate_document(attrs, selected_fields, &block)
       end
@@ -400,7 +426,7 @@ module Mongoid
       # @yield [ Mongoid::Document ] If a block is given, yields the newly
       #   instantiated document to it.
       #
-      # @return [ Mongoid::Document ] A new document.
+      # @return [ Document ] A new document.
       #
       # @note A Ruby 2.x bug prevents the options hash from being keyword
       #   arguments. Once we drop support for Ruby 2.x, we can reimplement
@@ -434,7 +460,7 @@ module Mongoid
       #   the options hash as keyword arguments.
       #   See https://bugs.ruby-lang.org/issues/15753
       #
-      # @return [ Mongoid::Document ] A new document.
+      # @return [ Document ] A new document.
       #
       # @api private
       def construct_document(attrs = nil, options = {})
@@ -449,7 +475,7 @@ module Mongoid
       #
       # @return [ Array<Class> ] All subclasses of the current document.
       def _types
-        @_type ||= (descendants + [self]).uniq.map(&:discriminator_value)
+        @_types ||= (descendants + [self]).uniq.map(&:discriminator_value)
       end
 
       # Clear the @_type cache. This is generally called when changing the discriminator

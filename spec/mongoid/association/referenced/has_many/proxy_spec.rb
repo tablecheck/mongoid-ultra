@@ -1299,13 +1299,13 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when association is not loaded' do
-        it do
-          expect(movie.ratings._loaded?).to be false
+        before do
+          movie.ratings._loaded?.should be false
         end
 
         it 'does not query the database because it knows about the added models' do
           expect_no_queries do
-            expect(movie.ratings.any?).to be true
+            movie.ratings.any?.should be true
           end
         end
       end
@@ -2956,8 +2956,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       let(:reloaded_album_artist) { reloaded_album.artist }
 
       it 'does not execute the callback when the association is accessed' do
-        expect(reloaded_album_artist).to_not receive(:after_add_album)
         expect(reloaded_album_artist.after_add_referenced_called).to be_nil
+        expect(reloaded_album_artist).to_not have_received(:after_add_album)
       end
     end
   end

@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 module Mongoid
-
   # This module handles reloading behavior of documents.
   module Reloadable
-
     # Reloads the +Document+ attributes from the database. If the document has
     # not been saved then an error will get raised if the configuration option
     # was set. This can reload root documents or embedded documents.
@@ -14,7 +12,7 @@ module Mongoid
     #
     # @raise [ Errors::DocumentNotFound ] If the document was deleted.
     #
-    # @return [ Mongoid::Document ] The document, reloaded.
+    # @return [ Document ] The document, reloaded.
     def reload
       reloaded = _reload
       check_for_deleted_document!(reloaded)
@@ -108,8 +106,11 @@ module Mongoid
     # @return [ Hash | nil ] The document's extracted attributes or nil if the
     #   document doesn't exist.
     def extract_embedded_attributes(attributes)
-      segments = atomic_position.split('.').map { |part| Utils.maybe_integer(part) }
-      attributes.dig(*segments)
+      # rubocop:disable Lint/UnmodifiedReduceAccumulator
+      atomic_position.split('.').inject(attributes) do |attrs, part|
+        attrs[Utils.maybe_integer(part)]
+      end
+      # rubocop:enable Lint/UnmodifiedReduceAccumulator
     end
   end
 end

@@ -2,10 +2,8 @@
 
 module Mongoid
   module Attributes
-
     # This module contains the behavior for processing attributes.
     module Processing
-
       # Process the provided attributes casting them to their proper values if a
       # field exists for them on the document. This will be limited to only the
       # attributes provided in the supplied +Hash+ so that no extra nil values get
@@ -44,23 +42,19 @@ module Mongoid
       # @return [ true | false ] True if pending, false if not.
       def pending_attribute?(key, value)
         name = key.to_s
-
         aliased = if aliased_associations.key?(name)
                     aliased_associations[name]
                   else
                     name
                   end
-
         if relations.key?(aliased)
           set_pending_relation(name, aliased, value)
           return true
         end
-
         if nested_attributes.key?(aliased)
           set_pending_nested(name, aliased, value)
           return true
         end
-
         false
       end
 

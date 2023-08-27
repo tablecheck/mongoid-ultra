@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Mongoid
-
   # Defines behavior for dirty tracking.
   module Changeable
     extend ActiveSupport::Concern
@@ -168,6 +167,7 @@ module Mongoid
     def saved_change_to_attribute?(attr, from: Utils::PLACEHOLDER, to: Utils::PLACEHOLDER)
       changes = saved_change_to_attribute(attr)
       return false unless changes.is_a?(Array)
+
       return true if Utils.placeholder?(from) && Utils.placeholder?(to)
       return changes.first == from if Utils.placeholder?(to)
       return changes.last == to if Utils.placeholder?(from)
@@ -240,7 +240,7 @@ module Mongoid
       end
     end
 
-    # A singleton object to represent an optional `to` or `from` value
+    # a singleton object to represent an optional `to` or `from` value
     # that was not explicitly provided to #attribute_changed?
     ATTRIBUTE_UNCHANGED = Anything.new
 
@@ -256,10 +256,12 @@ module Mongoid
     # @return [ true | false ] Whether the attribute has changed.
     def attribute_changed?(attr, from: ATTRIBUTE_UNCHANGED, to: ATTRIBUTE_UNCHANGED)
       attr = database_field_name(attr)
-      changed_attributes.key?(attr) &&
-        changed_attributes[attr] != attributes[attr] &&
-        from == changed_attributes[attr] &&
-        to == attributes[attr]
+      return false unless changed_attributes.key?(attr)
+      return false if changed_attributes[attr] == attributes[attr]
+      return false if from != changed_attributes[attr]
+      return false if to != attributes[attr]
+
+      true
     end
 
     # Get whether or not the field has a different value from the default.
@@ -346,9 +348,8 @@ module Mongoid
       @attributes_before_type_cast = @attributes.dup
     end
 
-    # Class-level methods for Changeable.
+    # Class-level methods for changeable objects.
     module ClassMethods
-
       private
 
       # Generate all the dirty methods needed for the attribute.
