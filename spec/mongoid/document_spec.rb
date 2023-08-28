@@ -34,23 +34,21 @@ describe Mongoid::Document do
     end
 
     let(:new_klass) do
-      klass = Class.new do
+      new_klass = Class.new do
         class << self; attr_accessor :name; end
       end
-
-      klass.tap { |new_klass| new_klass.name = new_klass_name }
+      new_klass.name = new_klass_name
+      new_klass
     end
 
     let(:new_model) do
-      new_klass.tap do
-        new_klass.send(:include, described_class)
-      end
+      new_klass.send(:include, described_class)
+      new_klass
     end
 
     let(:twice_a_new_model) do
-      new_klass.tap do
-        2.times { new_klass.send(:include, described_class) }
-      end
+      2.times { new_klass.send(:include, described_class) }
+      new_klass
     end
 
     context 'when Document has been included in a model' do
