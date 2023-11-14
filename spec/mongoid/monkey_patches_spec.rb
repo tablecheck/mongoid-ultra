@@ -167,8 +167,6 @@ RSpec.describe('Do not add monkey patches') do # rubocop:disable RSpec/DescribeC
       evolve
       re_define_method
     ],
-    Float => %i[__numeric__],
-    Integer => %i[__numeric__],
     String => %i[__expr_part__],
     Symbol => %i[add_key]
   }.each_value(&:sort!)
