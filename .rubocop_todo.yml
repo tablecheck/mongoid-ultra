@@ -718,25 +718,6 @@ Rails/Delegate:
     - 'lib/mongoid/findable.rb'
     - 'lib/mongoid/scopable.rb'
 
-# Offense count: 91
-# Configuration parameters: Include.
-# Include: spec/**/*.rb, test/**/*.rb
-Rails/I18nLocaleAssignment:
-  Exclude:
-    - 'spec/integration/i18n_fallbacks_spec.rb'
-    - 'spec/mongoid/contextual/memory_spec.rb'
-    - 'spec/mongoid/contextual/mongo_spec.rb'
-    - 'spec/mongoid/copyable_spec.rb'
-    - 'spec/mongoid/criteria/queryable/options_spec.rb'
-    - 'spec/mongoid/criteria/queryable/selector_spec.rb'
-    - 'spec/mongoid/criteria_projection_spec.rb'
-    - 'spec/mongoid/criteria_spec.rb'
-    - 'spec/mongoid/fields/localized_spec.rb'
-    - 'spec/mongoid/fields_spec.rb'
-    - 'spec/mongoid/persistable/updatable_spec.rb'
-    - 'spec/mongoid/validatable/uniqueness_spec.rb'
-    - 'spec/support/macros.rb'
-
 # Offense count: 133
 # Configuration parameters: ForbiddenMethods, AllowedMethods.
 # ForbiddenMethods: decrement!, decrement_counter, increment!, increment_counter, insert, insert!, insert_all, insert_all!, toggle!, touch, touch_all, update_all, update_attribute, update_column, update_columns, update_counters, upsert, upsert_all

@@ -1879,12 +1879,14 @@ describe Mongoid::Criteria do
     context 'when plucking a localized field' do
       with_default_i18n_configs
 
+      let(:dictionary) { Dictionary.new }
+
+      around { |example| I18n.with_locale(:de) { example.run } }
+
       before do
-        I18n.locale = :en
-        d = Dictionary.create!(description: 'english-text')
-        I18n.locale = :de
-        d.description = 'deutsch-text'
-        d.save!
+        I18n.with_locale(:en) { dictionary.description = 'english-text' }
+        dictionary.description = 'deutsch-text'
+        dictionary.save!
       end
 
       context 'when plucking the entire field' do
@@ -1935,37 +1937,10 @@ describe Mongoid::Criteria do
         end
       end
 
-      context 'when fallbacks are enabled with a locale list' do
-        with_i18n_fallbacks
-
-        before do
-          I18n.fallbacks[:he] = [:en]
-        end
-
-        let(:plucked) do
-          Dictionary.all.pluck(:description).first
-        end
-
-        it 'correctly uses the fallback' do
-          I18n.locale = :en
-          Dictionary.create!(description: 'english-text')
-          I18n.locale = :he
-          expect(plucked).to eq('english-text')
-        end
-      end
-
       context 'when the localized field is embedded' do
         with_default_i18n_configs
 
-        before do
-          p = Passport.new
-          I18n.locale = :en
-          p.name = 'Neil'
-          I18n.locale = :he
-          p.name = 'Nissim'
-
-          Person.create!(passport: p, employer_id: 12345)
-        end
+        let(:passport) { Passport.new }
 
         let(:plucked) do
           Person.where(employer_id: 12345).pluck('pass.name').first
@@ -1979,6 +1954,15 @@ describe Mongoid::Criteria do
           Person.where(employer_id: 12345).pluck('pass.name_translations.en').first
         end
 
+        around { |example| I18n.with_locale(:he) { example.run } }
+
+        before do
+          I18n.with_locale(:en) { passport.name = 'Neil' }
+          passport.name = 'Nissim'
+
+          Person.create!(passport: passport, employer_id: 12345)
+        end
+
         it 'returns the translation for the current locale' do
           expect(plucked).to eq('Nissim')
         end
@@ -1989,6 +1973,31 @@ describe Mongoid::Criteria do
 
         it 'returns the translation for the requested locale' do
           expect(plucked_translations_field).to eq('Neil')
+        end
+      end
+    end
+
+    context 'when plucking a localized field with fallbacks' do
+      with_default_i18n_configs
+
+      around { |example| I18n.with_locale(:he) { example.run } }
+
+      before do
+        I18n.fallbacks[:he] = [:en]
+        I18n.with_locale(:en) do
+          Dictionary.create!(description: 'english-text')
+        end
+      end
+
+      context 'when fallbacks are enabled with a locale list' do
+        with_i18n_fallbacks
+
+        let(:plucked) do
+          Dictionary.all.pluck(:description).first
+        end
+
+        it 'correctly uses the fallback' do
+          expect(plucked).to eq('english-text')
         end
       end
     end
@@ -2286,16 +2295,14 @@ describe Mongoid::Criteria do
 
     context 'when plucking a localized field' do
 
-      before do
-        I18n.locale = :en
-        d = Dictionary.create!(description: 'english-text')
-        I18n.locale = :de
-        d.description = 'deutsch-text'
-        d.save!
-      end
+      let(:dictionary) { Dictionary.new }
 
-      after do
-        I18n.locale = :en
+      around { |example| I18n.with_locale(:de) { example.run } }
+
+      before do
+        I18n.with_locale(:en) { dictionary.description = 'english-text' }
+        dictionary.description = 'deutsch-text'
+        dictionary.save!
       end
 
       context 'when plucking the entire field' do
@@ -2350,39 +2357,34 @@ describe Mongoid::Criteria do
           expect(plucked.first).to eq('deutsch-text')
         end
       end
+    end
 
+    context 'when plucking a localized field with fallbacks' do
       context 'when fallbacks are enabled with a locale list' do
         with_i18n_fallbacks
-
-        around(:all) do |example|
-          prev_fallbacks = I18n.fallbacks.dup
-          I18n.fallbacks[:he] = [:en]
-          example.run
-          I18n.fallbacks = prev_fallbacks
-        end
 
         let(:plucked) do
           Dictionary.all.pluck_each(:description).first
         end
 
+        around do |example|
+          prev_fallbacks = I18n.fallbacks.dup
+          I18n.fallbacks[:he] = [:en]
+          I18n.with_locale(:he) { example.run }
+          I18n.fallbacks = prev_fallbacks
+        end
+
+        before do
+          I18n.with_locale { Dictionary.create!(description: 'english-text') }
+        end
+
         it 'correctly uses the fallback' do
-          I18n.locale = :en
-          Dictionary.create!(description: 'english-text')
-          I18n.locale = :he
           expect(plucked).to eq 'english-text'
         end
       end
 
       context 'when the localized field is embedded' do
-        before do
-          p = Passport.new
-          I18n.locale = :en
-          p.name = 'Neil'
-          I18n.locale = :he
-          p.name = 'Nissim'
-
-          Person.create!(passport: p, employer_id: 12345)
-        end
+        let(:passport) { Passport.new }
 
         let(:plucked) do
           Person.where(employer_id: 12345).pluck_each('pass.name').first
@@ -2394,6 +2396,15 @@ describe Mongoid::Criteria do
 
         let(:plucked_translations_field) do
           Person.where(employer_id: 12345).pluck_each('pass.name_translations.en').first
+        end
+
+        around { |example| I18n.with_locale(:he) { example.run } }
+
+        before do
+          I18n.with_locale(:en) { passport.name = 'Neil' }
+          passport.name = 'Nissim'
+
+          Person.create!(passport: passport, employer_id: 12345)
         end
 
         it 'returns the translation for the current locale' do

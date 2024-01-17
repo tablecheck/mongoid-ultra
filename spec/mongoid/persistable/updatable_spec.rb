@@ -236,15 +236,20 @@ describe Mongoid::Persistable::Updatable do
     context 'when persisting a localized field' do
       with_default_i18n_configs
 
-      let!(:product) do
-        Product.create!(description: 'The bomb')
-      end
+      let!(:product) { Product.new }
+
       let(:attributes) do
         product.attributes['description']
       end
 
+      around { |example| I18n.with_locale(:de) { example.run } }
+
       before do
-        I18n.locale = :de
+        I18n.with_locale(:en) do
+          product.description = 'The bomb'
+          product.save!
+        end
+
         product.update_attribute(:description, 'Die Bombe')
       end
 

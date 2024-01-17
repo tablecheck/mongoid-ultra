@@ -459,52 +459,55 @@ describe Mongoid::Contextual::Memory do
     context 'when getting a localized field' do
       with_default_i18n_configs
 
-      before do
-        I18n.locale = :en
-        d = Dictionary.create!(description: 'english-text')
-        I18n.locale = :de
-        d.description = 'deutsch-text'
-        d.save!
-      end
-
       let(:criteria) do
         Dictionary.all.tap do |crit|
           crit.documents = [Dictionary.first]
         end
       end
 
-      context 'when getting the field without _translations' do
-        it 'gets the demongoized localized field' do
-          expect(context.distinct(:description)).to eq(['deutsch-text'])
-        end
-      end
+      context 'without fallbacks' do
+        let(:dictionary) { Dictionary.new }
 
-      context 'when getting the field with _translations' do
+        around { |example| I18n.with_locale(:de) { example.run } }
 
-        it 'gets the full hash' do
-          expect(context.distinct(:description_translations)).to eq([{ 'de' => 'deutsch-text', 'en' => 'english-text' }])
-        end
-      end
-
-      context 'when plucking a specific locale' do
-
-        let(:distinct) do
-          context.distinct(:'description.de')
+        before do
+          I18n.with_locale(:en) { dictionary.description = 'english-text' }
+          dictionary.description = 'deutsch-text'
+          dictionary.save!
         end
 
-        it 'returns the specific translation' do
-          expect(distinct).to eq(['deutsch-text'])
-        end
-      end
-
-      context 'when plucking a specific locale from _translations field' do
-
-        let(:distinct) do
-          context.distinct(:'description_translations.de')
+        context 'when getting the field without _translations' do
+          it 'gets the demongoized localized field' do
+            expect(context.distinct(:description)).to eq(['deutsch-text'])
+          end
         end
 
-        it 'returns the specific translations' do
-          expect(distinct).to eq(['deutsch-text'])
+        context 'when getting the field with _translations' do
+          it 'gets the full hash' do
+            expect(context.distinct(:description_translations)).to eq([{ 'de' => 'deutsch-text', 'en' => 'english-text' }])
+          end
+        end
+
+        context 'when plucking a specific locale' do
+
+          let(:distinct) do
+            context.distinct(:'description.de')
+          end
+
+          it 'returns the specific translation' do
+            expect(distinct).to eq(['deutsch-text'])
+          end
+        end
+
+        context 'when plucking a specific locale from _translations field' do
+
+          let(:distinct) do
+            context.distinct(:'description_translations.de')
+          end
+
+          it 'returns the specific translations' do
+            expect(distinct).to eq(['deutsch-text'])
+          end
         end
       end
 
@@ -512,18 +515,18 @@ describe Mongoid::Contextual::Memory do
         with_i18n_fallbacks
         with_default_i18n_configs
 
-        before do
-          I18n.fallbacks[:he] = [:en]
-        end
-
         let(:distinct) do
           context.distinct(:description).first
         end
 
+        around { |example| I18n.with_locale(:he) { example.run } }
+
+        before do
+          I18n.fallbacks[:he] = [:en]
+          I18n.with_locale(:en) { Dictionary.create!(description: 'english-text') }
+        end
+
         it 'correctly uses the fallback' do
-          I18n.locale = :en
-          Dictionary.create!(description: 'english-text')
-          I18n.locale = :he
           expect(distinct).to eq 'english-text'
         end
       end
@@ -533,10 +536,8 @@ describe Mongoid::Contextual::Memory do
 
         let(:person) do
           p = Passport.new
-          I18n.locale = :en
-          p.name = 'Neil'
-          I18n.locale = :he
-          p.name = 'Nissim'
+          I18n.with_locale(:en) { p.name = 'Neil' }
+          I18n.with_locale(:he) { p.name = 'Nissim' }
 
           Person.create!(passport: p, employer_id: 12345)
         end
@@ -558,6 +559,8 @@ describe Mongoid::Contextual::Memory do
         let(:distinct_translations_field) do
           context.distinct('pass.name_translations.en').first
         end
+
+        around { |example| I18n.with_locale(:he) { example.run } }
 
         it 'returns the translation for the current locale' do
           expect(distinct).to eq('Nissim')
@@ -1624,66 +1627,70 @@ describe Mongoid::Contextual::Memory do
     context 'when plucking a localized field' do
       with_default_i18n_configs
 
-      before do
-        I18n.locale = :en
-        d = Dictionary.create!(description: 'english-text')
-        I18n.locale = :de
-        d.description = 'deutsch-text'
-        d.save!
-      end
-
       let(:criteria) do
         Dictionary.all.tap do |crit|
           crit.documents = [Dictionary.first]
         end
       end
 
-      context 'when plucking the entire field' do
+      context 'without fallbacks' do
+        let(:dictionary) { Dictionary.new }
 
-        let(:plucked) do
-          context.pluck(:description)
+        around { |example| I18n.with_locale(:de) { example.run } }
+
+        before do
+          I18n.with_locale(:en) { dictionary.description = 'english-text' }
+          dictionary.description = 'deutsch-text'
+          dictionary.save!
         end
 
-        let(:plucked_translations) do
-          context.pluck(:description_translations)
+        context 'when plucking the entire field' do
+
+          let(:plucked) do
+            context.pluck(:description)
+          end
+
+          let(:plucked_translations) do
+            context.pluck(:description_translations)
+          end
+
+          let(:plucked_translations_both) do
+            context.pluck(:description_translations, :description)
+          end
+
+          it 'returns the demongoized translations' do
+            expect(plucked.first).to eq('deutsch-text')
+          end
+
+          it 'returns the full translations hash to _translations' do
+            expect(plucked_translations.first).to eq({ 'de' => 'deutsch-text', 'en' => 'english-text' })
+          end
+
+          it 'returns both' do
+            expect(plucked_translations_both.first).to eq([{ 'de' => 'deutsch-text', 'en' => 'english-text' }, 'deutsch-text'])
+          end
         end
 
-        let(:plucked_translations_both) do
-          context.pluck(:description_translations, :description)
+        context 'when plucking a specific locale' do
+
+          let(:plucked) do
+            context.pluck(:'description.de')
+          end
+
+          it 'returns the specific translations' do
+            expect(plucked.first).to eq('deutsch-text')
+          end
         end
 
-        it 'returns the demongoized translations' do
-          expect(plucked.first).to eq('deutsch-text')
-        end
+        context 'when plucking a specific locale from _translations field' do
 
-        it 'returns the full translations hash to _translations' do
-          expect(plucked_translations.first).to eq({ 'de' => 'deutsch-text', 'en' => 'english-text' })
-        end
+          let(:plucked) do
+            context.pluck(:'description_translations.de')
+          end
 
-        it 'returns both' do
-          expect(plucked_translations_both.first).to eq([{ 'de' => 'deutsch-text', 'en' => 'english-text' }, 'deutsch-text'])
-        end
-      end
-
-      context 'when plucking a specific locale' do
-
-        let(:plucked) do
-          context.pluck(:'description.de')
-        end
-
-        it 'returns the specific translations' do
-          expect(plucked.first).to eq('deutsch-text')
-        end
-      end
-
-      context 'when plucking a specific locale from _translations field' do
-
-        let(:plucked) do
-          context.pluck(:'description_translations.de')
-        end
-
-        it 'returns the specific translations' do
-          expect(plucked.first).to eq('deutsch-text')
+          it 'returns the specific translations' do
+            expect(plucked.first).to eq('deutsch-text')
+          end
         end
       end
 
@@ -1691,18 +1698,18 @@ describe Mongoid::Contextual::Memory do
         with_i18n_fallbacks
         with_default_i18n_configs
 
-        before do
-          I18n.fallbacks[:he] = [:en]
-        end
-
         let(:plucked) do
           context.pluck(:description).first
         end
 
+        around { |example| I18n.with_locale(:he) { example.run } }
+
+        before do
+          I18n.fallbacks[:he] = [:en]
+          I18n.with_locale(:en) { Dictionary.create!(description: 'english-text') }
+        end
+
         it 'correctly uses the fallback' do
-          I18n.locale = :en
-          Dictionary.create!(description: 'english-text')
-          I18n.locale = :he
           expect(plucked).to eq 'english-text'
         end
       end
@@ -1710,15 +1717,7 @@ describe Mongoid::Contextual::Memory do
       context 'when the localized field is embedded' do
         with_default_i18n_configs
 
-        before do
-          p = Passport.new
-          I18n.locale = :en
-          p.name = 'Neil'
-          I18n.locale = :he
-          p.name = 'Nissim'
-
-          Person.create!(passport: p, employer_id: 12345)
-        end
+        let(:passport) { Passport.new }
 
         let(:plucked) do
           Person.where(employer_id: 12345).pluck('pass.name').first
@@ -1730,6 +1729,14 @@ describe Mongoid::Contextual::Memory do
 
         let(:plucked_translations_field) do
           Person.where(employer_id: 12345).pluck('pass.name_translations.en').first
+        end
+
+        around { |example| I18n.with_locale(:he) { example.run } }
+
+        before do
+          I18n.with_locale(:en) { passport.name = 'Neil' }
+          passport.name = 'Nissim'
+          Person.create!(passport: passport, employer_id: 12345)
         end
 
         it 'returns the translation for the current locale' do
@@ -2093,18 +2100,20 @@ describe Mongoid::Contextual::Memory do
         let(:d3) { Dictionary.new(description: 'en1') }
         let(:d4) { Dictionary.new(description: 'en2') }
 
+        around { |example| I18n.with_locale(:en) { example.run } }
+
         before do
-          I18n.locale = :en
           d1
           d2
           d3
           d4
-          I18n.locale = :de
-          d1.description = 'de1'
-          d2.description = 'de1'
-          d3.description = 'de2'
-          d4.description = 'de3'
-          I18n.locale = :en
+
+          I18n.with_locale(:de) do
+            d1.description = 'de1'
+            d2.description = 'de1'
+            d3.description = 'de2'
+            d4.description = 'de3'
+          end
         end
 
         context 'when getting the demongoized field' do
@@ -2188,20 +2197,22 @@ describe Mongoid::Contextual::Memory do
       let(:address2a) { Address.new(name: 'en1') }
       let(:address2b) { Address.new(name: 'en3') }
 
+      around { |example| I18n.with_locale(:en) { example.run } }
+
       before do
-        I18n.locale = :en
         address1a
         address1b
         address2a
         address2b
-        I18n.locale = :de
-        address1a.name = 'de1'
-        address1b.name = 'de2'
-        address2a.name = 'de1'
-        address2b.name = 'de3'
-        person1
-        person2
-        I18n.locale = :en
+
+        I18n.with_locale(:de) do
+          address1a.name = 'de1'
+          address1b.name = 'de2'
+          address2a.name = 'de1'
+          address2b.name = 'de3'
+          person1
+          person2
+        end
       end
 
       context 'when getting the demongoized field' do
