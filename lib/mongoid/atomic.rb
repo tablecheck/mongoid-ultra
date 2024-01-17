@@ -116,7 +116,7 @@ module Mongoid
     #   person.atomic_updates(children)
     #
     # @return [ Hash ] The updates and their modifiers.
-    def atomic_updates(_use_indexes = false)
+    def atomic_updates(_use_indexes: false)
       process_flagged_destroys
       mods = Modifiers.new
       generate_atomic_updates(mods, self)

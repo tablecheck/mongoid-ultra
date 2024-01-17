@@ -119,7 +119,7 @@ module Mongoid
             options.store(
               :fields,
               args.inject(options[:fields] || {}) { |sub, field| sub.tap { sub[field] = 1 } },
-              false
+              localize: false
             )
           end
         end
@@ -241,7 +241,7 @@ module Mongoid
             options.store(
               :fields,
               args.inject(options[:fields] || {}) { |sub, field| sub.tap { sub[field] = 0 } },
-              false
+              localize: false
             )
           end
         end

@@ -37,7 +37,7 @@ module Mongoid
         #
         # @return [ Array<String, Object> ] The expanded field and value.
         def expand_one_condition(field, value)
-          kv = field.__expr_part__(value.__expand_complex__, negating?)
+          kv = field.__expr_part__(value.__expand_complex__, negating: negating?)
           [kv.keys.first.to_s, kv.values.first]
         end
 

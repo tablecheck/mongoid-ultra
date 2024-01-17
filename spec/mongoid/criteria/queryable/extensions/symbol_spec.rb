@@ -87,7 +87,7 @@ describe Symbol do
       context 'with a regexp' do
 
         let(:specified) do
-          :field.__expr_part__(/test/, true)
+          :field.__expr_part__(/test/, negating: true)
         end
 
         it 'returns the symbol with the value negated' do
@@ -99,7 +99,7 @@ describe Symbol do
       context 'with anything else' do
 
         let(:specified) do
-          :field.__expr_part__('test', true)
+          :field.__expr_part__('test', negating: true)
         end
 
         it 'returns the symbol with the value negated' do

@@ -65,7 +65,7 @@ module Mongoid
           # or its children.
           def recursively_embeds_one(options = {})
             embeds_one(
-              cyclic_child_name(false),
+              cyclic_child_name(many: false),
               options.merge(class_name: name, cyclic: true)
             )
             embedded_in cyclic_parent_name, class_name: name, cyclic: true
@@ -92,7 +92,7 @@ module Mongoid
           #
           # @return [ String ] "child_" plus the class name underscored in
           #   singular or plural form.
-          def cyclic_child_name(many = true)
+          def cyclic_child_name(many: true)
             :"child_#{name.demodulize.underscore.send(many ? :pluralize : :singularize)}"
           end
         end
