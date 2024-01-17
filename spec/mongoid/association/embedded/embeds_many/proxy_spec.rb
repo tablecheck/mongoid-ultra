@@ -2136,7 +2136,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
           before do
             owner.pet = Pet.new(name: 'Fido')
-            owner.pet.vet_visits << VetVisit.new(date: Date.today)
+            owner.pet.vet_visits << VetVisit.new(date: Date.current)
             owner.save!
             owner.pet.vet_visits.destroy_all
           end
@@ -2146,7 +2146,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
           end
 
           it 'allows addition and a resave' do
-            owner.pet.vet_visits << VetVisit.new(date: Date.today)
+            owner.pet.vet_visits << VetVisit.new(date: Date.current)
             owner.save!
             expect(owner.pet.vet_visits.first).to be_persisted
           end

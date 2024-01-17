@@ -287,7 +287,7 @@ assignment to a ``Time`` field:
     field :registered_at, type: Time
   end
 
-  Voter.new(registered_at: Date.today)
+  Voter.new(registered_at: Date.current)
   # => #<Voter _id: 5fdd80392c97a618f07ba344, registered_at: 2020-12-18 05:00:00 UTC>
 
 In the above example, the value was interpreted as the beginning of today in

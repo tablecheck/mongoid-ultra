@@ -270,7 +270,7 @@ describe Mongoid::Extensions::TimeWithZone do
     context 'when given a Date' do
 
       let(:date) do
-        Date.today
+        Date.current
       end
 
       it 'converts to a utc time' do

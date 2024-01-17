@@ -61,7 +61,7 @@ describe Mongoid::Extensions::Time do
         context 'when demongoizing a Date' do
 
           it 'returns an ActiveSupport::TimeWithZone' do
-            expect(Time.demongoize(Date.today).class).to eq(ActiveSupport::TimeWithZone)
+            expect(Time.demongoize(Date.current).class).to eq(ActiveSupport::TimeWithZone)
           end
         end
 
@@ -603,7 +603,7 @@ describe Mongoid::Extensions::Time do
     context 'when given a Date' do
 
       let(:date) do
-        Date.today
+        Date.current
       end
 
       it 'converts to a utc time' do

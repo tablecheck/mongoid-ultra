@@ -58,7 +58,7 @@ describe Mongoid::Persistable::Minable do
         context 'when given > initial' do
           let(:given_name) { 'Z' }
           let(:given_members) { 10 }
-          let(:given_founded) { Date.today }
+          let(:given_founded) { Date.current }
 
           it_behaves_like 'a min-able root document'
         end
@@ -67,7 +67,7 @@ describe Mongoid::Persistable::Minable do
       context 'when the document is an embedded document' do
         let(:initial_city) { 'Manhattan' }
         let(:initial_number) { 100 }
-        let(:initial_end_date) { Date.today }
+        let(:initial_end_date) { Date.current }
 
         let(:person) { Person.create! }
         let(:address) do
