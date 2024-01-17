@@ -27,9 +27,7 @@ module Mongoid
       #   Mongoid::Clients.clear
       #
       # @return [ Array ] The empty clients.
-      def clear
-        clients.clear
-      end
+      delegate :clear, to: :clients
 
       # Get the default client.
       #

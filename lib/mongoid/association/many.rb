@@ -9,7 +9,7 @@ module Mongoid
       extend Forwardable
       include ::Enumerable
 
-      def_delegators :criteria, :avg, :max, :min, :sum
+      def_delegators :criteria, :avg, :max, :min, :sum, :unscoped
       def_delegators :_target, :length, :size, :any?
 
       # Is the association empty?
@@ -164,17 +164,6 @@ module Mongoid
       # @return [ Hash ] The documents, ready to be serialized.
       def serializable_hash(options = {})
         _target.map { |document| document.serializable_hash(options) }
-      end
-
-      # Get a criteria for the embedded documents without the default scoping
-      # applied.
-      #
-      # @example Get the unscoped criteria.
-      #   person.addresses.unscoped
-      #
-      # @return [ Mongoid::Criteria ] The unscoped criteria.
-      def unscoped
-        criteria.unscoped
       end
 
       private

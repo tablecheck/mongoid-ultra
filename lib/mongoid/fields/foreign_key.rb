@@ -111,15 +111,7 @@ module Mongoid
           association.polymorphic? ? true : association.klass.using_object_ids?
       end
 
-      # Returns true if an array, false if not.
-      #
-      # @example Is the field resizable?
-      #   field.resizable?
-      #
-      # @return [ true | false ] If the field is resizable.
-      def resizable?
-        type.resizable?
-      end
+      def_delegators :type, :resizable?
 
       private
 

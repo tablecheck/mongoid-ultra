@@ -334,9 +334,7 @@ module Mongoid
       #   context.length
       #
       # @return [ Integer ] Always zero.
-      def length
-        entries.length
-      end
+      delegate :length, to: :entries
       alias_method :size, :length
       alias_method :find_first, :first
       alias_method :one, :first

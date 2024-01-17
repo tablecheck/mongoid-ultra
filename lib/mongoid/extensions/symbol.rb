@@ -14,7 +14,7 @@ module Mongoid
       # @return [ true | false ] If the symbol is :id or :_id.
       # @deprecated
       def mongoid_id?
-        to_s.mongoid_id?
+        to_s.mongoid_id? # rubocop:disable Rails/Delegate
       end
       Mongoid.deprecate(self, :mongoid_id?)
 

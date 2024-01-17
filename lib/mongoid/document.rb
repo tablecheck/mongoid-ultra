@@ -57,9 +57,7 @@ module Mongoid
     #   document.frozen?
     #
     # @return [ true | false ] True if frozen, else false.
-    def frozen?
-      attributes.frozen?
-    end
+    delegate :frozen?, to: :attributes
 
     # Delegates to identity in order to allow two records of the same identity
     # to work with something like:
@@ -71,9 +69,7 @@ module Mongoid
     #   document.hash
     #
     # @return [ Integer ] The hash of the document's identity.
-    def hash
-      identity.hash
-    end
+    delegate :hash, to: :identity
 
     # A Document's is identified absolutely by its class and database id:
     #

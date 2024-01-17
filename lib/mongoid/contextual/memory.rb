@@ -230,9 +230,7 @@ module Mongoid
       #   context.length
       #
       # @return [ Integer ] The matching length.
-      def length
-        documents.length
-      end
+      delegate :length, to: :documents
       alias_method :size, :length
 
       # Limits the number of documents that are returned.

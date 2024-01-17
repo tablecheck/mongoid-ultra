@@ -222,9 +222,7 @@ module Mongoid
       # The atomic path for this association.
       #
       # @return [  Mongoid::Atomic::Paths::Root ] The atomic path object.
-      def path(document)
-        relation.path(document)
-      end
+      delegate :path, to: :relation
 
       # Gets the setter for the field that sets the type of document on a
       # polymorphic association.
