@@ -281,7 +281,7 @@ describe ActiveSupport::TimeWithZone do
       end
 
       let(:expected) do
-        Time.at(float)
+        Time.zone.at(float)
       end
 
       it 'returns the float as a time' do
@@ -304,7 +304,7 @@ describe ActiveSupport::TimeWithZone do
       end
 
       let(:expected) do
-        Time.at(integer)
+        Time.zone.at(integer)
       end
 
       it 'returns the integer as a time' do

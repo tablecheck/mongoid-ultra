@@ -329,13 +329,13 @@ describe Mongoid::Persistable::Updatable do
 
         it 'raises an error when trying to set the attribute using the db name' do
           expect do
-            person.update_attribute(:at, Time.now)
+            person.update_attribute(:at, Time.zone.now)
           end.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
         end
 
         it 'raises an error when trying to set the attribute using the aliased name' do
           expect do
-            person.update_attribute(:aliased_timestamp, Time.now)
+            person.update_attribute(:aliased_timestamp, Time.zone.now)
           end.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
         end
       end

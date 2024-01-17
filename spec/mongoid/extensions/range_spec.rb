@@ -195,17 +195,17 @@ describe Mongoid::Extensions::Range do
     end
 
     context 'given a Time range' do
-      let(:range) { Time.at(0)..Time.at(1) }
+      let(:range) { Time.zone.at(0)..Time.zone.at(1) }
 
       it 'returns the object hash' do
-        expect(subject).to eq('min' => Time.at(0), 'max' => Time.at(1))
+        expect(subject).to eq('min' => Time.zone.at(0), 'max' => Time.zone.at(1))
         expect(subject['min'].utc?).to be(true)
         expect(subject['max'].utc?).to be(true)
       end
     end
 
     context 'given an ActiveSupport::TimeWithZone range' do
-      let(:range) { Time.at(0)..Time.at(1) }
+      let(:range) { Time.zone.at(0)..Time.zone.at(1) }
 
       it 'returns the object hash' do
         expect(subject).to eq('min' => Time.at(0).in_time_zone, 'max' => Time.at(1).in_time_zone)

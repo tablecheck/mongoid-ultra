@@ -292,11 +292,11 @@ describe DateTime do
         end
 
         let(:expected_min) do
-          Time.at(min)
+          Time.zone.at(min)
         end
 
         let(:expected_max) do
-          Time.at(max)
+          Time.zone.at(max)
         end
 
         it 'returns a selection of times' do
@@ -325,11 +325,11 @@ describe DateTime do
         end
 
         let(:expected_min) do
-          Time.at(min)
+          Time.zone.at(min)
         end
 
         let(:expected_max) do
-          Time.at(max)
+          Time.zone.at(max)
         end
 
         it 'returns a selection of times' do
@@ -378,7 +378,7 @@ describe DateTime do
       end
 
       let(:expected) do
-        Time.at(float)
+        Time.zone.at(float)
       end
 
       it 'returns the float as a time' do
@@ -401,7 +401,7 @@ describe DateTime do
       end
 
       let(:expected) do
-        Time.at(integer)
+        Time.zone.at(integer)
       end
 
       it 'returns the integer as a time' do

@@ -51,7 +51,7 @@ module Mongoid
                      nil
                    end
                  elsif object.is_a?(BSON::Timestamp)
-                   ::Time.at(object.seconds)
+                   ::Time.zone.at(object.seconds)
                  end
 
           return if time.nil?

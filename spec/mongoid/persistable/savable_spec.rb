@@ -471,7 +471,7 @@ describe Mongoid::Persistable::Savable do
       context 'when the changed attribute is aliased' do
 
         before do
-          Person.create!(at: Time.now)
+          Person.create!(at: Time.zone.now)
         end
 
         let(:person) do
@@ -479,7 +479,7 @@ describe Mongoid::Persistable::Savable do
         end
 
         it 'saves the document' do
-          person.aliased_timestamp = Time.now
+          person.aliased_timestamp = Time.zone.now
           expect(person.save!(validate: false)).to be true
         end
       end

@@ -15,7 +15,9 @@ module Mongoid
           #
           # @return [ Time ] The time at UTC midnight.
           def __evolve_date__
-            time = ::Time.parse(self)
+            time = ::Time.zone.parse(self)
+            return nil if time.nil?
+
             ::Time.utc(time.year, time.month, time.day, 0, 0, 0, 0)
           end
 
@@ -26,6 +28,8 @@ module Mongoid
           #
           # @return [ Time ] The string as a time.
           def __evolve_time__
+            return nil if __evolve_date__.nil?
+
             __mongoize_time__.utc
           end
 

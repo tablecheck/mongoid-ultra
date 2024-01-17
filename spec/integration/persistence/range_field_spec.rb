@@ -6,7 +6,7 @@ describe 'Range field persistence' do
   subject { person.send(field) }
 
   let!(:person) { Person.create!(field => value).reload }
-  let(:now_utc) { Time.now }
+  let(:now_utc) { Time.zone.now }
   let(:later_utc) { now_utc + 10.minutes }
   let(:now_in_zone) { now_utc.in_time_zone('Asia/Tokyo') }
   let(:later_in_zone) { later_utc.in_time_zone('Asia/Tokyo') }

@@ -45,7 +45,7 @@ describe Mongoid::Timestamps::Updated::Short do
     context 'when providing the timestamp' do
 
       let(:time) do
-        Time.new(2012, 1, 1)
+        Time.zone.local(2012, 1, 1)
       end
 
       let(:doc) do

@@ -71,7 +71,7 @@ module Mongoid
           begin
             time = if object.is_a?(String)
                      # https://jira.mongodb.org/browse/MONGOID-4460
-                     ::Time.parse(object)
+                     ::Time.zone.parse(object)
                    else
                      object.__mongoize_time__
                    end

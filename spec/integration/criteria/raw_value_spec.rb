@@ -403,67 +403,67 @@ describe 'Queries with Mongoid::RawValue criteria' do
   context 'Mongoid::RawValue<Time>' do
     let!(:band7) do
       id = BSON::ObjectId.new
-      Band.collection.insert_one(_id: id, name: Time.at(1), likes: Time.at(1), rating: Time.at(3.1), sales: Time.at(310), decibels: Time.at(90))
+      Band.collection.insert_one(_id: id, name: Time.zone.at(1), likes: Time.zone.at(1), rating: Time.zone.at(3.1), sales: Time.zone.at(310), decibels: Time.zone.at(90))
       Band.find(id)
     end
 
     context 'Integer field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(likes: Mongoid::RawValue(Time.at(1))).to_a).to eq [band7]
+        expect(Band.where(likes: Mongoid::RawValue(Time.zone.at(1))).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value' do
-        expect(Band.where(likes: Time.at(1)).to_a).to eq [band2, band3]
+        expect(Band.where(likes: Time.zone.at(1)).to_a).to eq [band2, band3]
       end
     end
 
     context 'Float field' do
       it 'matches objects with raw value' do
-        expect(Band.where(rating: Mongoid::RawValue(Time.at(3.1))).to_a).to eq [band7]
+        expect(Band.where(rating: Mongoid::RawValue(Time.zone.at(3.1))).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value' do
-        expect(Band.where(rating: Time.at(3.1)).to_a).to eq [band4, band5]
+        expect(Band.where(rating: Time.zone.at(3.1)).to_a).to eq [band4, band5]
       end
     end
 
     context 'BigDecimal field' do
       it 'matches objects with raw value' do
-        expect(Band.where(sales: Mongoid::RawValue(Time.at(310))).to_a).to eq [band7]
+        expect(Band.where(sales: Mongoid::RawValue(Time.zone.at(310))).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value because Time does not evolve into BigDecimal' do
-        expect(Band.where(sales: Time.at(310)).to_a).to eq [band7]
+        expect(Band.where(sales: Time.zone.at(310)).to_a).to eq [band7]
       end
     end
 
     context 'String field' do
       it 'matches objects with raw value' do
-        expect(Band.where(name: Mongoid::RawValue(Time.at(1))).to_a).to eq [band7]
+        expect(Band.where(name: Mongoid::RawValue(Time.zone.at(1))).to_a).to eq [band7]
       end
 
       it 'does not match objects without raw value' do
-        expect(Band.where(name: Time.at(1)).to_a).to eq []
+        expect(Band.where(name: Time.zone.at(1)).to_a).to eq []
       end
     end
 
     context 'Range field' do
       it 'matches objects with raw value' do
-        expect(Band.where(decibels: Mongoid::RawValue(Time.at(90))).to_a).to eq [band7]
+        expect(Band.where(decibels: Mongoid::RawValue(Time.zone.at(90))).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value because BigDecimal cannot be evolved to Range' do
-        expect(Band.where(decibels: Time.at(90)).to_a).to eq [band7]
+        expect(Band.where(decibels: Time.zone.at(90)).to_a).to eq [band7]
       end
     end
 
     context 'Date field' do
       it 'matches objects with raw value when exact' do
-        expect(Band.where(founded: Mongoid::RawValue(Time.at(1577923200))).to_a).to eq [band3, band4]
+        expect(Band.where(founded: Mongoid::RawValue(Time.zone.at(1577923200))).to_a).to eq [band3, band4]
       end
 
       it 'does not match objects with raw value when non-exact' do
-        expect(Band.where(founded: Mongoid::RawValue(Time.at(1577923199))).to_a).to eq []
+        expect(Band.where(founded: Mongoid::RawValue(Time.zone.at(1577923199))).to_a).to eq []
       end
 
       it 'matches objects without raw value when exact' do
@@ -481,17 +481,17 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Time field' do
       it 'matches objects with raw value' do
-        expect(Band.where(updated: Mongoid::RawValue(Time.at(1578153600))).to_a).to eq [band4, band5]
+        expect(Band.where(updated: Mongoid::RawValue(Time.zone.at(1578153600))).to_a).to eq [band4, band5]
       end
 
       it 'matches objects without raw value' do
-        expect(Band.where(updated: Time.at(1578153600)).to_a).to eq [band4, band5]
+        expect(Band.where(updated: Time.zone.at(1578153600)).to_a).to eq [band4, band5]
       end
     end
   end
 
   context 'Mongoid::RawValue<Date>' do
-    let!(:band7) { Band.create!(updated: Time.at(1577923200)) }
+    let!(:band7) { Band.create!(updated: Time.zone.at(1577923200)) }
 
     context 'Date field' do
       it 'matches objects with raw value' do
