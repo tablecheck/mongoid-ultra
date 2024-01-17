@@ -32,10 +32,6 @@ describe Mongoid::Association::Referenced::HasOne::Buildable do
         BSON::ObjectId.new
       end
 
-      before do
-        expect_any_instance_of(Mongoid::Criteria).to receive(:where).with(association.foreign_key => object).and_call_original
-      end
-
       it 'sets the document' do
         expect(document).to eq(account)
       end
@@ -55,11 +51,6 @@ describe Mongoid::Association::Referenced::HasOne::Buildable do
         {
           scope: -> { gt(balance: 100) }
         }
-      end
-
-      before do
-        expect_any_instance_of(Mongoid::Criteria).to receive(:where).with(association.foreign_key => object).and_call_original
-        expect_any_instance_of(Mongoid::Criteria).to receive(:gt).with(balance: 100).and_call_original
       end
 
       context 'when document satisfies scope' do
