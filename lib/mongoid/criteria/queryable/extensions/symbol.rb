@@ -22,7 +22,6 @@ module Mongoid
           end
 
           module ClassMethods
-
             # Evolves the symbol into a MongoDB friendly value - in this case
             # a symbol.
             #
