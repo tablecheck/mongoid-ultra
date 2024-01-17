@@ -815,14 +815,6 @@ Style/ArgumentsForwarding:
     - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
     - 'lib/mongoid/association/referenced/has_many/proxy.rb'
 
-# Offense count: 5
-Style/MultilineBlockChain:
-  Exclude:
-    - 'lib/mongoid/association/eager.rb'
-    - 'lib/mongoid/contextual/memory.rb'
-    - 'spec/mongoid/changeable_spec.rb'
-    - 'spec/mongoid/document_spec.rb'
-
 # Offense count: 4
 Style/OpenStructUse:
   Exclude:

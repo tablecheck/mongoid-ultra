@@ -2042,11 +2042,8 @@ describe Mongoid::Changeable do
 
       after do
         callback_kinds = %i[before after].freeze
-        Acolyte._save_callbacks.select do |callback|
-          callback_kinds.include?(callback.kind)
-        end.each do |callback|
-          Acolyte._save_callbacks.delete(callback)
-        end
+        callbacks_to_delete = Acolyte._save_callbacks.select { |callback| callback_kinds.include?(callback.kind) }
+        callbacks_to_delete.each { |callback| Acolyte._save_callbacks.delete(callback) }
       end
 
       it 'does not retain the changes until after all callbacks' do
@@ -2074,11 +2071,8 @@ describe Mongoid::Changeable do
 
       after do
         callback_kinds = %i[before after].freeze
-        Acolyte._save_callbacks.select do |callback|
-          callback_kinds.include?(callback.kind)
-        end.each do |callback|
-          Acolyte._save_callbacks.delete(callback)
-        end
+        callbacks_to_delete = Acolyte._save_callbacks.select { |callback| callback_kinds.include?(callback.kind) }
+        callbacks_to_delete.each { |callback| Acolyte._save_callbacks.delete(callback) }
       end
 
       it 'does not retain the changes until after all callbacks' do

@@ -147,7 +147,7 @@ module Mongoid
           # @return [ Mongoid::Document ] The matching document.
           def delete(document)
             execute_callbacks_around(:remove, document) do
-              result = _target.delete(document) do |doc|
+              deleted_doc = _target.delete(document) do |doc|
                 if doc
                   unbind_one(doc)
                   cascade!(doc) unless _assigning?
@@ -155,7 +155,7 @@ module Mongoid
               end
 
               reset_unloaded
-              result
+              deleted_doc
             end
           end
 
@@ -374,6 +374,15 @@ module Mongoid
               _target.push(document)
               characterize_one(document)
               bind_one(document)
+            end
+          end
+
+          def delete_document_from_target(document)
+            _target.delete(document) do |doc|
+              if doc
+                unbind_one(doc)
+                cascade!(doc) unless _assigning?
+              end
             end
           end
 

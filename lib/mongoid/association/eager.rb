@@ -80,9 +80,13 @@ module Mongoid
       #
       # @return [ Hash ] hash with grouped documents.
       def grouped_docs
-        @grouped_docs[@association.name] ||= @docs.group_by do |doc|
+        return @grouped_docs[@association.name] if @grouped_docs.key?(@association.name)
+
+        docs_regroup = @docs.group_by do |doc|
           doc.send(group_by_key) if doc.respond_to?(group_by_key)
-        end.reject { |k, _| k.nil? }
+        end
+
+        @grouped_docs[@association.name] = docs_regroup.reject { |k, _| k.nil? }
       end
 
       # Group the documents and return the keys.
