@@ -8,7 +8,6 @@ module Mongoid
       # document from the database. The selectable module brings all functionality
       # to the selectable that has to do with building MongoDB selectors.
       module Selectable
-        extend Macroable
 
         # Constant for a LineString $geometry.
         LINE_STRING = 'LineString'
@@ -54,7 +53,6 @@ module Mongoid
           end.reset_strategies!
         end
         alias_method :all_in, :all
-        key :all, :union, '$all'
 
         # Add the $and criterion.
         #
@@ -142,7 +140,6 @@ module Mongoid
 
           and_with_operator(criterion, '$elemMatch')
         end
-        key :elem_match, :override, '$elemMatch'
 
         # Add the $exists selection.
         #
@@ -164,9 +161,6 @@ module Mongoid
           typed_override(criterion, '$exists') do |value|
             Mongoid::Boolean.evolve(value)
           end
-        end
-        key :exists, :override, '$exists' do |value|
-          Mongoid::Boolean.evolve(value)
         end
 
         # Add a $geoIntersects or $geoWithin selection. Symbol operators must
@@ -209,20 +203,6 @@ module Mongoid
           __merge__(criterion)
         end
 
-        key :intersects_line, :override, '$geoIntersects', '$geometry' do |value|
-          { 'type' => LINE_STRING, 'coordinates' => value }
-        end
-        key :intersects_point, :override, '$geoIntersects', '$geometry' do |value|
-          { 'type' => POINT, 'coordinates' => value }
-        end
-        key :intersects_polygon, :override, '$geoIntersects', '$geometry' do |value|
-          { 'type' => POLYGON, 'coordinates' => value }
-        end
-        key :within_polygon, :override, '$geoWithin', '$geometry' do |value|
-          { 'type' => POLYGON, 'coordinates' => value }
-        end
-        key :within_box, :override, '$geoWithin', '$box'
-
         # Add the $eq criterion to the selector.
         #
         # @example Add the $eq criterion.
@@ -239,7 +219,6 @@ module Mongoid
 
           and_with_operator(criterion, '$eq')
         end
-        key :eq, :override, '$eq'
 
         # Add the $gt criterion to the selector.
         #
@@ -257,7 +236,6 @@ module Mongoid
 
           and_with_operator(criterion, '$gt')
         end
-        key :gt, :override, '$gt'
 
         # Add the $gte criterion to the selector.
         #
@@ -275,7 +253,6 @@ module Mongoid
 
           and_with_operator(criterion, '$gte')
         end
-        key :gte, :override, '$gte'
 
         # Adds the $in selection to the selectable.
         #
@@ -307,7 +284,6 @@ module Mongoid
           end
         end
         alias_method :any_in, :in
-        key :in, :intersect, '$in'
 
         # Add the $lt criterion to the selector.
         #
@@ -325,7 +301,6 @@ module Mongoid
 
           and_with_operator(criterion, '$lt')
         end
-        key :lt, :override, '$lt'
 
         # Add the $lte criterion to the selector.
         #
@@ -343,7 +318,6 @@ module Mongoid
 
           and_with_operator(criterion, '$lte')
         end
-        key :lte, :override, '$lte'
 
         # Add a $maxDistance selection to the selectable.
         #
@@ -376,7 +350,6 @@ module Mongoid
 
           and_with_operator(criterion, '$mod')
         end
-        key :mod, :override, '$mod'
 
         # Adds $ne selection to the selectable.
         #
@@ -395,7 +368,6 @@ module Mongoid
           and_with_operator(criterion, '$ne')
         end
         alias_method :excludes, :ne
-        key :ne, :override, '$ne'
 
         # Adds a $near criterion to a geo selection.
         #
@@ -413,7 +385,6 @@ module Mongoid
 
           and_with_operator(criterion, '$near')
         end
-        key :near, :override, '$near'
 
         # Adds a $nearSphere criterion to a geo selection.
         #
@@ -431,7 +402,6 @@ module Mongoid
 
           and_with_operator(criterion, '$nearSphere')
         end
-        key :near_sphere, :override, '$nearSphere'
 
         # Adds the $nin selection to the selectable.
         #
@@ -463,7 +433,6 @@ module Mongoid
           end
         end
         alias_method :not_in, :nin
-        key :nin, :intersect, '$nin'
 
         # Adds $nor selection to the selectable.
         #
@@ -526,7 +495,6 @@ module Mongoid
             end
           end
         end
-        key :not, :override, '$not'
 
         # Negate the arguments, constraining the query to only those documents
         # that do NOT match the arguments.
@@ -668,9 +636,6 @@ module Mongoid
             ::Integer.evolve(value)
           end
         end
-        key :with_size, :override, '$size' do |value|
-          ::Integer.evolve(value)
-        end
 
         # Adds a $type selection to the selectable.
         #
@@ -691,9 +656,6 @@ module Mongoid
           typed_override(criterion, '$type') do |value|
             ::Integer.evolve(value)
           end
-        end
-        key :with_type, :override, '$type' do |value|
-          ::Integer.evolve(value)
         end
 
         # Construct a text search selector.

@@ -23,7 +23,7 @@ A more complex query utilizing various Mongoid features could be as follows:
 .. code-block:: ruby
 
   Band.
-    where(:founded.gte => "1980-01-01").
+    gte(founded: "1980-01-01").
     in(name: [ "Tool", "Deftones" ]).
     union.
     in(name: [ "Melvins" ])
@@ -59,14 +59,14 @@ Criteria instance with the new conditions added to the existing conditions:
 
 .. code-block:: ruby
 
-  scope = Band.where(:founded.gte => "1980-01-01")
+  scope = Band.gte(founded: "1980-01-01")
   # => #<Mongoid::Criteria
   #   selector: {"founded"=>{"$gte"=>"1980-01-01"}}
   #   options:  {}
   #   class:    Band
   #   embedded: false>
 
-  scope.where(:founded.lte => "2020-01-01")
+  scope.lte(founded: "2020-01-01")
   # => #<Mongoid::Criteria
   #   selector: {"founded"=>{"$gte"=>"1980-01-01", "$lte"=>"2020-01-01"}}
   #   options:  {}
@@ -155,6 +155,12 @@ An MQL operator may be specified on any field using the hash syntax:
 
 Symbol Operator Syntax
 ----------------------
+
+.. warning::
+
+  Symbol operator syntax is deprecated and will be extracted to a gem
+  in Mongoid 10. It is strongly recommended to switch to either
+  field syntax or MQL syntax as shown above.
 
 MQL operators may be specified as methods on symbols for the respective field
 name, as follows:
