@@ -17,6 +17,8 @@ module Mongoid
 
     module ClassMethods
 
+      IndexSpec = Struct.new(:fields, :key, keyword_init: true)
+
       # Send the actual index creation comments to the MongoDB driver
       #
       # @example Create the indexes for the class.
@@ -109,7 +111,7 @@ module Mongoid
       #
       # @return [ Specification ] The found specification.
       def index_specification(index_hash, index_name = nil)
-        index = OpenStruct.new(fields: index_hash.keys, key: index_hash)
+        index = IndexSpec.new(fields: index_hash.keys, key: index_hash)
         index_specifications.detect do |spec|
           spec == index || (index_name && index_name == spec.name)
         end

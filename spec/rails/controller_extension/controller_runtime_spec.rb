@@ -41,6 +41,10 @@ describe 'Mongoid::Railties::ControllerRuntime' do
 
   describe 'Collector' do
 
+    before do
+      stub_const('EventPayload', Struct.new(:duration, keyword_init: true))
+    end
+
     it 'stores the metric in thread-safe manner' do
       clear_metric!
       expect(collector.runtime).to eq(0)
@@ -50,7 +54,7 @@ describe 'Mongoid::Railties::ControllerRuntime' do
 
     it 'sets metric on both succeeded and failed' do
       instance = collector.new
-      event_payload = OpenStruct.new duration: 42
+      event_payload = EventPayload.new(duration: 42)
 
       clear_metric!
       instance.succeeded event_payload

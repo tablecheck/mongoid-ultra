@@ -19,11 +19,14 @@ module Rails
   end
 end
 
+ConfigPaths = Struct.new(:expanded, keyword_init: true)
+AppConfig = Struct.new(:paths, keyword_init: true)
+
 Rails.env = 'development'
 Rails.root = Pathname.new('.')
 Rails.logger = Logger.new($stdout)
 Rails.application = Rails::Application
 
-Rails.application.config = OpenStruct.new(
-  paths: { 'app/models' => OpenStruct.new(expanded: ['app/models']) }
+Rails.application.config = AppConfig.new(
+  paths: { 'app/models' => ConfigPaths.new(expanded: ['app/models']) }
 )
