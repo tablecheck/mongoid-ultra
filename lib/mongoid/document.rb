@@ -405,7 +405,7 @@ module Mongoid
       # @api private
       def instantiate_document(attrs = nil, selected_fields = nil, options = {}, &block)
         execute_callbacks = options.fetch(:execute_callbacks, Threaded.execute_callbacks?)
-        attributes = attrs&.to_h || {}
+        attributes = attrs.to_h
 
         doc = allocate
         doc.__selected_fields = selected_fields
@@ -414,6 +414,7 @@ module Mongoid
 
         doc._handle_callbacks_after_instantiation(execute_callbacks, &block)
 
+        doc.remember_storage_options!
         doc
       end
 
