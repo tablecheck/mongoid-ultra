@@ -32,9 +32,11 @@ module Mongoid
       #   object.unconvertable_to_bson?
       #
       # @return [ true ] If the object is unconvertable.
+      # @deprecated
       def unconvertable_to_bson?
         true
       end
+      Mongoid.deprecate(self, :unconvertable_to_bson?)
 
       module ClassMethods
 
