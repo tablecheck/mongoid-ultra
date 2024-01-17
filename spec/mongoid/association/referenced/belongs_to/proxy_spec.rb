@@ -5,7 +5,7 @@ require_relative '../belongs_to_models'
 
 describe Mongoid::Association::Referenced::BelongsTo::Proxy do
 
-  before(:all) do
+  before do
     Person.reset_callbacks(:validate)
   end
 
@@ -503,7 +503,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
           person.save!
         end
 
-        after :all do
+        after do
           Account.belongs_to :person, dependent: :nullify
           Person.has_one :account, validate: false
         end
@@ -554,7 +554,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
           person.save!
         end
 
-        after :all do
+        after do
           Drug.belongs_to :person, dependent: :nullify
           Person.has_many :drugs, validate: false
         end
@@ -609,7 +609,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
           person.save!
         end
 
-        after :all do
+        after do
           Account.belongs_to :person, dependent: :nullify
           Person.has_one :account, validate: false
         end
@@ -649,7 +649,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
           person.save!
         end
 
-        after :all do
+        after do
           Drug.belongs_to :person, dependent: :nullify
           Person.has_many :drugs, validate: false
         end
@@ -1094,7 +1094,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
 
   context 'when the relation belongs to a has many and has one' do
 
-    before(:all) do
+    before do
       class A
         include Mongoid::Document
         has_many :bs, inverse_of: :a
@@ -1112,7 +1112,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
       end
     end
 
-    after(:all) do
+    after do
       Object.send(:remove_const, :A)
       Object.send(:remove_const, :B)
       Object.send(:remove_const, :C)

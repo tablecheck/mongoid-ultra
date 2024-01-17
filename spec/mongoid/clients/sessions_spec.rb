@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Mongoid::Clients::Sessions do
 
-  before(:all) do
+  before do
     CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
     CONFIG[:clients][:other][:database] = 'other'
     Mongoid::Clients.clients.each_value(&:close)
@@ -12,7 +12,7 @@ describe Mongoid::Clients::Sessions do
     Mongoid::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
   end
 
-  after(:all) do
+  after do
     Mongoid::Clients.with_name(:other).close
     Mongoid::Clients.clients.delete(:other)
   end

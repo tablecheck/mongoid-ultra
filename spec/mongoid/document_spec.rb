@@ -775,7 +775,7 @@ describe Mongoid::Document do
 
   describe '#becomes' do
 
-    before(:all) do
+    before do
       Person.validates_format_of(:ssn, without: /\$\$\$/)
 
       class Manager < Person
@@ -783,7 +783,7 @@ describe Mongoid::Document do
       end
     end
 
-    after(:all) do
+    after do
       Person.reset_callbacks(:validate)
       Object.send(:remove_const, :Manager)
     end

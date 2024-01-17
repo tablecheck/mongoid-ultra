@@ -173,11 +173,11 @@ describe Mongoid::Validatable do
 
       context 'when the child does not validate the parent' do
 
-        before(:all) do
+        before do
           Person.validates_associated(:services)
         end
 
-        after(:all) do
+        after do
           Person.reset_callbacks(:validate)
         end
 

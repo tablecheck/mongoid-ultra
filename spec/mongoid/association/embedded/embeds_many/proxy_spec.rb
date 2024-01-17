@@ -4695,7 +4695,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
   context 'when substituting polymorphic documents' do
 
-    before(:all) do
+    before do
       module DNS
         class Zone
           include Mongoid::Document
@@ -4716,7 +4716,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
     end
 
-    after(:all) do
+    after do
       Object.send(:remove_const, :DNS)
     end
 

@@ -6,7 +6,7 @@ describe Mongoid::Timestamps::Timeless do
 
   describe '#timeless' do
 
-    before(:all) do
+    before do
       class Chicken
         include Mongoid::Document
         include Mongoid::Timestamps
@@ -24,7 +24,7 @@ describe Mongoid::Timestamps::Timeless do
       end
     end
 
-    after(:all) do
+    after do
       Object.send(:remove_const, :Chicken)
       Object.send(:remove_const, :Egg)
     end

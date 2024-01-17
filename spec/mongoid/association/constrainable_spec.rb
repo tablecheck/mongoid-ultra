@@ -8,7 +8,7 @@ describe Mongoid::Association::Constrainable do
 
     context "when the id's class stores object ids" do
 
-      before(:all) do
+      before do
         Person.field(
           :_id,
           type: BSON::ObjectId,

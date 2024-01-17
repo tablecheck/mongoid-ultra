@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Mongoid::CollectionConfigurable do
 
-  before(:all) do
+  before do
     class CollectionConfigurableValidOptions
       include Mongoid::Document
 
@@ -35,16 +35,13 @@ describe Mongoid::CollectionConfigurable do
     end
   end
 
-  after(:all) do
+  after do
     Mongoid.deregister_model(CollectionConfigurableValidOptions)
     Object.send(:remove_const, :CollectionConfigurableValidOptions)
     Mongoid.deregister_model(CollectionConfigurableUnknownOptions)
     Object.send(:remove_const, :CollectionConfigurableUnknownOptions)
     Mongoid.deregister_model(CollectionConfigurableInvalidOptions)
     Object.send(:remove_const, :CollectionConfigurableInvalidOptions)
-  end
-
-  after do
     [
       CollectionConfigurableValidOptions,
       CollectionConfigurableUnknownOptions

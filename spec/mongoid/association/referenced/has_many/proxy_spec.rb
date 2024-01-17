@@ -25,12 +25,12 @@ end
 describe Mongoid::Association::Referenced::HasMany::Proxy do
   config_override :raise_not_found_error, true
 
-  before :all do
+  before do
     Drug.belongs_to :person, primary_key: :username
     Person.has_many :drugs, validate: false, primary_key: :username
   end
 
-  after :all do
+  after do
     Drug.belongs_to :person, counter_cache: true
     Person.has_many :drugs, validate: false
   end

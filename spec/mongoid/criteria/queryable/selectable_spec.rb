@@ -314,7 +314,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
       context 'when serializers are provided' do
 
-        before(:all) do
+        before do
           class Field
             def evolve(object)
               Integer.evolve(object)
@@ -326,7 +326,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
           end
         end
 
-        after(:all) do
+        after do
           Object.send(:remove_const, :Field)
         end
 

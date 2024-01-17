@@ -17,13 +17,13 @@ describe Mongoid::Fields::Standard do
 
   describe '#pre_processed?' do
 
-    before(:all) do
+    before do
       class FieldTest
         include Mongoid::Document
       end
     end
 
-    after(:all) do
+    after do
       Object.send(:remove_const, :FieldTest)
     end
 

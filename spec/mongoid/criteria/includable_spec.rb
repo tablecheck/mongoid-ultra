@@ -114,7 +114,7 @@ describe Mongoid::Criteria::Includable do
 
     context 'when the models are inherited' do
 
-      before(:all) do
+      before do
         class A
           include Mongoid::Document
         end
@@ -129,7 +129,7 @@ describe Mongoid::Criteria::Includable do
         end
       end
 
-      after(:all) do
+      after do
         Object.send(:remove_const, :A)
         Object.send(:remove_const, :B)
         Object.send(:remove_const, :C)
@@ -171,7 +171,7 @@ describe Mongoid::Criteria::Includable do
 
       context 'when the relation is a has_one' do
 
-        before(:all) do
+        before do
           class A
             include Mongoid::Document
           end
@@ -191,7 +191,7 @@ describe Mongoid::Criteria::Includable do
           end
         end
 
-        after(:all) do
+        after do
           Object.send(:remove_const, :A)
           Object.send(:remove_const, :B)
           Object.send(:remove_const, :C)
@@ -242,7 +242,7 @@ describe Mongoid::Criteria::Includable do
 
       context 'when the relation is a has_many' do
 
-        before(:all) do
+        before do
           class A
             include Mongoid::Document
           end
@@ -262,7 +262,7 @@ describe Mongoid::Criteria::Includable do
           end
         end
 
-        after(:all) do
+        after do
           Object.send(:remove_const, :A)
           Object.send(:remove_const, :B)
           Object.send(:remove_const, :C)
@@ -1081,7 +1081,30 @@ describe Mongoid::Criteria::Includable do
     context 'when including nested referenced associations' do
 
       context 'when using a has_one association' do
-        before(:all) do
+        after do
+          Object.send(:remove_const, :A)
+          Object.send(:remove_const, :B)
+          Object.send(:remove_const, :C)
+          Object.send(:remove_const, :D)
+        end
+
+        let(:a) do
+          A.create!
+        end
+
+        let(:b) do
+          B.create!
+        end
+
+        let(:c) do
+          C.create!
+        end
+
+        let(:d) do
+          D.create!
+        end
+
+        before do
           class A
             include Mongoid::Document
             has_one :b
@@ -1103,32 +1126,7 @@ describe Mongoid::Criteria::Includable do
             include Mongoid::Document
             belongs_to :c
           end
-        end
 
-        after(:all) do
-          Object.send(:remove_const, :A)
-          Object.send(:remove_const, :B)
-          Object.send(:remove_const, :C)
-          Object.send(:remove_const, :D)
-        end
-
-        let!(:a) do
-          A.create!
-        end
-
-        let!(:b) do
-          B.create!
-        end
-
-        let!(:c) do
-          C.create!
-        end
-
-        let!(:d) do
-          D.create!
-        end
-
-        before do
           c.d = d
           b.c = c
           a.b = b
@@ -1242,7 +1240,10 @@ describe Mongoid::Criteria::Includable do
         end
 
         context 'when there are multiple associations' do
-          before(:all) do
+          let(:c2) { C.create! }
+          let(:d2) { D.create! }
+
+          before do
             class A
               has_one :c
             end
@@ -1250,12 +1251,7 @@ describe Mongoid::Criteria::Includable do
             class C
               belongs_to :a
             end
-          end
 
-          let(:c2) { C.create! }
-          let(:d2) { D.create! }
-
-          before do
             a.c = c2
             a.c.d = d2
           end

@@ -6,7 +6,7 @@ describe ActiveModel::Validations::NumericalityValidator do
 
   describe '#validate_each' do
 
-    before(:all) do
+    before do
       class TestModel
         include Mongoid::Document
         field :amount, type: BigDecimal
@@ -14,7 +14,7 @@ describe ActiveModel::Validations::NumericalityValidator do
       end
     end
 
-    after(:all) do
+    after do
       Object.send(:remove_const, :TestModel)
     end
 

@@ -8,12 +8,12 @@ describe Mongoid::Association::Referenced::AutoSave do
 
   describe '.auto_save' do
 
-    before(:all) do
+    before do
       Person.has_many :drugs, validate: false, autosave: true
       Person.has_one :account, validate: false, autosave: true
     end
 
-    after(:all) do
+    after do
       Person.reset_callbacks(:save)
     end
 

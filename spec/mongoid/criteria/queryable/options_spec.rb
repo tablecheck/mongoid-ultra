@@ -180,7 +180,7 @@ describe Mongoid::Criteria::Queryable::Options do
 
         context 'when the serializer is not localized' do
 
-          before(:all) do
+          before do
             class Field
               def localized?
                 false
@@ -188,7 +188,7 @@ describe Mongoid::Criteria::Queryable::Options do
             end
           end
 
-          after(:all) do
+          after do
             Object.send(:remove_const, :Field)
           end
 
@@ -222,15 +222,7 @@ describe Mongoid::Criteria::Queryable::Options do
         context 'when the serializer is localized' do
           with_default_i18n_configs
 
-          before(:all) do
-            class Field
-              def localized?
-                true
-              end
-            end
-          end
-
-          after(:all) do
+          after do
             Object.send(:remove_const, :Field)
           end
 
@@ -239,6 +231,12 @@ describe Mongoid::Criteria::Queryable::Options do
           end
 
           before do
+            class Field
+              def localized?
+                true
+              end
+            end
+
             I18n.locale = :de
           end
 

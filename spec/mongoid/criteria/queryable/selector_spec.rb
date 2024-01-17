@@ -373,7 +373,7 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         context 'when the alias has a serializer' do
 
-          before(:all) do
+          before do
             class Field
               def evolve(object)
                 Integer.evolve(object)
@@ -385,7 +385,7 @@ describe Mongoid::Criteria::Queryable::Selector do
             end
           end
 
-          after(:all) do
+          after do
             Object.send(:remove_const, :Field)
           end
 
@@ -518,7 +518,7 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         context 'when the serializer is not localized' do
 
-          before(:all) do
+          before do
             class Field
               def evolve(object)
                 Integer.evolve(object)
@@ -530,7 +530,7 @@ describe Mongoid::Criteria::Queryable::Selector do
             end
           end
 
-          after(:all) do
+          after do
             Object.send(:remove_const, :Field)
           end
 
@@ -777,7 +777,15 @@ describe Mongoid::Criteria::Queryable::Selector do
         context 'when the serializer is localized' do
           with_default_i18n_configs
 
-          before(:all) do
+          after do
+            Object.send(:remove_const, :Field)
+          end
+
+          let(:selector) do
+            described_class.new({}, { 'key' => Field.new })
+          end
+
+          before do
             class Field
               def evolve(object)
                 Integer.evolve(object)
@@ -787,17 +795,7 @@ describe Mongoid::Criteria::Queryable::Selector do
                 true
               end
             end
-          end
 
-          after(:all) do
-            Object.send(:remove_const, :Field)
-          end
-
-          let(:selector) do
-            described_class.new({}, { 'key' => Field.new })
-          end
-
-          before do
             I18n.locale = :de
           end
 

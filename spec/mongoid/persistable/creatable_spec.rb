@@ -99,7 +99,7 @@ describe Mongoid::Persistable::Creatable do
           user.collection.find(_id: user.id).first
         end
 
-        before(:all) do
+        before do
           User.embeds_many(
             :addresses,
             class_name: 'Address',
@@ -107,9 +107,7 @@ describe Mongoid::Persistable::Creatable do
             validate: false
           )
           Address.embedded_in :user
-        end
 
-        before do
           user.addresses.create!(city: 'nantes')
         end
 
