@@ -119,7 +119,9 @@ module Mongoid
       end
 
       def _dependent_nullify!(association)
+        # require 'pry'; binding.pry
         return unless (relation = send(association.name))
+        # require 'pry'; binding.pry
 
         relation.nullify
       end

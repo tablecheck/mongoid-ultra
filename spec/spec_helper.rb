@@ -172,4 +172,16 @@ RSpec.configure do |config|
   config.around do |example|
     Time.use_zone('UTC') { example.run }
   end
+
+  last_printed_path = nil
+
+  # Print the file path to console before each test file execution
+  config.before do |example_group|
+    current_path = example_group.metadata[:file_path]
+    
+    if current_path != last_printed_path
+      puts "Starting tests in: #{current_path}" # Outputs the file path to console
+      last_printed_path = current_path # Update the last printed path
+    end
+  end
 end
