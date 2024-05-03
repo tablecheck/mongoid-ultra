@@ -121,6 +121,7 @@ module Mongoid
       def _dependent_nullify!(association)
         return unless (relation = send(association.name))
 
+        # TODO: raises here
         relation.nullify
       end
 
