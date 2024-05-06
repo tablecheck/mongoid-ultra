@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative './has_many_models'
-require_relative './has_one_models'
+require_relative './referenced/has_many_models'
+require_relative './referenced/has_one_models'
 
 describe Mongoid::Association::Referenced::AutoSave do
 
