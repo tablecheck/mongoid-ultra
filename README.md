@@ -2,6 +2,7 @@
 
 # Mongoid: Ultra Edition
 
+
 [![Build Status][build-img]][build-url]👨‍🔧
 [![Gem Version][rubygems-img]][rubygems-url]🔜
 [![License][license-img]][license-url]
