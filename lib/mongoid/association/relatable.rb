@@ -147,7 +147,7 @@ module Mongoid
       #
       # @return [ String ] The association objects' class name.
       def relation_class_name
-        @class_name ||= @options[:class_name] || ActiveSupport::Inflector.classify(name)
+        @relation_class_name ||= @options[:class_name] || ActiveSupport::Inflector.classify(name)
       end
       alias_method :class_name, :relation_class_name
 
@@ -166,7 +166,7 @@ module Mongoid
       #
       # @return [ String ] The association objects' class.
       def relation_class
-        @klass ||= begin
+        @relation_class ||= begin
           cls_name = @options[:class_name] || ActiveSupport::Inflector.classify(name)
           resolve_name(inverse_class, cls_name)
         end

@@ -453,7 +453,7 @@ module Mongoid
         @_types ||= (descendants + [self]).uniq.map(&:discriminator_value)
       end
 
-      # Clear the @_type cache. This is generally called when changing the discriminator
+      # Clear the @_types cache. This is generally called when changing the discriminator
       # key/value on a class.
       #
       # @example Get the types.

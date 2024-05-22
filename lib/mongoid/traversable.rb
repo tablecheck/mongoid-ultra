@@ -54,19 +54,21 @@ module Mongoid
       end
     end
 
-    # `_parent` is intentionally not implemented via attr_accessor because
-    # of the need to use a double underscore for the instance variable.
-    # Associations automatically create backing variables prefixed with a
-    # single underscore, which would conflict with this accessor if a model
-    # were to declare a `parent` association.
-
     # Retrieves the parent document of this document.
     #
     # @return [ Mongoid::Document | nil ] the parent document
     #
     # @api private
     def _parent
+      # `_parent` is intentionally not implemented via attr_accessor because
+      # of the need to use a double underscore for the instance variable.
+      # Associations automatically create backing variables prefixed with a
+      # single underscore, which would conflict with this accessor if a model
+      # were to declare a `parent` association.
+      #
+      # rubocop:disable Naming/MemoizedInstanceVariableName
       @__parent || nil
+      # rubocop:disable Naming/MemoizedInstanceVariableName
     end
 
     # Sets the parent document of this document.
@@ -78,7 +80,9 @@ module Mongoid
     #
     # @api private
     def _parent=(document)
+      # rubocop:disable Naming/MemoizedInstanceVariableName
       @__parent = document
+      # rubocop:enable Naming/MemoizedInstanceVariableName
     end
 
     # Module used for prepending to the various discriminator_*= methods
@@ -189,6 +193,8 @@ module Mongoid
 
     # Get all child +Documents+ to this +Document+
     #
+    # @param [ Boolean ] :reset Whether to reset the memoized children.
+    #
     # @return [ Array<Document> ] All child documents in the hierarchy.
     #
     # @api private
@@ -211,6 +217,8 @@ module Mongoid
     # determined. Note that persistence from the embedded documents will
     # always be preferred, since they are optimized calls... This operation
     # can get expensive in domains with large hierarchies.
+    #
+    # @param [ Boolean ] :reset Whether to reset the memoized descendants.
     #
     # @return [ Array<Document> ] All descendant documents in the hierarchy.
     #
@@ -344,8 +352,8 @@ module Mongoid
     # @api private
     def _reset_memoized_descendants!
       _parent&._reset_memoized_descendants!
-      _children reset: true
-      _descendants reset: true
+      _children(reset: true)
+      _descendants(reset: true)
     end
 
     # Return the root document in the object graph. If the current document
