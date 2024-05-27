@@ -238,7 +238,7 @@ module Mongoid
         end
         self.class.send :define_method, name do
           env = ActiveSupport::Callbacks::Filters::Environment.new(self, false, nil)
-          sequence = chain.compile
+          sequence = compile_callbacks(chain)
           sequence.invoke_before(env)
           env.value = !env.halted
           sequence.invoke_after(env)
@@ -247,6 +247,25 @@ module Mongoid
         self.class.send :protected, name
       end
       send(name)
+    end
+
+    # Compile the callback chain.
+    #
+    # This method hides the differences between ActiveSupport implementations
+    # before and after 7.1.
+    #
+    # @param [ ActiveSupport::Callbacks::CallbackChain ] chain The callback chain.
+    # @param [ Symbol | nil ] type The type of callback chain to compile.
+    #
+    # @return [ ActiveSupport::Callbacks::CallbackSequence ] The compiled callback sequence.
+    def compile_callbacks(chain, type = nil)
+      if chain.method(:compile).arity == 0
+        # ActiveSupport < 7.1
+        chain.compile
+      else
+        # ActiveSupport >= 7.1
+        chain.compile(type)
+      end
     end
   end
 end
