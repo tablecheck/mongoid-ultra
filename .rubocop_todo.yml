@@ -933,13 +933,6 @@ Style/MultilineBlockChain:
     - 'spec/mongoid/changeable_spec.rb'
     - 'spec/mongoid/document_spec.rb'
 
-# Offense count: 4
-Style/OpenStructUse:
-  Exclude:
-    - 'lib/mongoid/indexable.rb'
-    - 'spec/rails/controller_extension/controller_runtime_spec.rb'
-    - 'spec/support/rails_mock.rb'
-
 # Offense count: 17
 # Configuration parameters: AllowedMethods.
 # AllowedMethods: respond_to_missing?
