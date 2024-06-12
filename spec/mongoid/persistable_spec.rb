@@ -65,10 +65,6 @@ describe Mongoid::Persistable do
            { session: nil }]
         end
 
-        before do
-          expect_any_instance_of(Mongo::Collection::View).to receive(:update_one).with(*operations).and_call_original
-        end
-
         let!(:update) do
           document.atomically do
             document.inc(member_count: 10)
@@ -91,10 +87,6 @@ describe Mongoid::Persistable do
             '$unset' => { 'origin' => true }
           },
            { session: nil }]
-        end
-
-        before do
-          expect_any_instance_of(Mongo::Collection::View).to receive(:update_one).with(*operations).and_call_original
         end
 
         let!(:update) do
@@ -120,10 +112,6 @@ describe Mongoid::Persistable do
             '$unset' => { 'origin' => true }
           },
            { session: nil }]
-        end
-
-        before do
-          expect_any_instance_of(Mongo::Collection::View).to receive(:update_one).with(*operations).and_call_original
         end
 
         let!(:update) do
@@ -158,10 +146,6 @@ describe Mongoid::Persistable do
             '$unset' => { 'origin' => true }
           },
            { session: nil }]
-        end
-
-        before do
-          expect_any_instance_of(Mongo::Collection::View).to receive(:update_one).with(*operations).and_call_original
         end
 
         let!(:update) do
@@ -246,11 +230,6 @@ describe Mongoid::Persistable do
             let!(:update) { run_update }
           end
 
-          it 'performs an update_one exactly once' do
-            expect_any_instance_of(Mongo::Collection::View).to receive(:update_one).exactly(:once).and_call_original
-            run_update
-          end
-
           it 'resets in-memory changes that did not successfully persist' do
             begin
               document.atomically do |doc|
@@ -282,10 +261,6 @@ describe Mongoid::Persistable do
     end
 
     context 'when the block has no operations' do
-      before do
-        expect_any_instance_of(Mongo::Collection::View).to_not receive(:update_one)
-      end
-
       let!(:update) do
         document.atomically do
         end

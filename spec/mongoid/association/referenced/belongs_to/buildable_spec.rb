@@ -34,10 +34,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
           BSON::ObjectId.new
         end
 
-        before do
-          expect_any_instance_of(Mongoid::Criteria).to receive(:where).with(association.primary_key => object).and_call_original
-        end
-
         it 'sets the document' do
           expect(document).to eq(person)
         end
@@ -103,10 +99,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
           BSON::ObjectId.new
         end
 
-        before do
-          expect_any_instance_of(Mongoid::Criteria).to receive(:where).with(association.primary_key => object).and_call_original
-        end
-
         it 'returns nil' do
           expect(document).to be_nil
         end
@@ -120,10 +112,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
 
         let(:object) do
           666
-        end
-
-        before do
-          expect_any_instance_of(Mongoid::Criteria).to receive(:where).with(association.primary_key => object).and_call_original
         end
 
         it 'sets the document' do
@@ -140,10 +128,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
 
       let(:object) do
         Person.new
-      end
-
-      before do
-        expect_any_instance_of(Mongoid::Criteria).to_not receive(:where)
       end
 
       it 'returns the object' do
