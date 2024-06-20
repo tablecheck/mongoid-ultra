@@ -940,25 +940,6 @@ Style/OpenStructUse:
     - 'spec/rails/controller_extension/controller_runtime_spec.rb'
     - 'spec/support/rails_mock.rb'
 
-# Offense count: 17
-# Configuration parameters: AllowedMethods.
-# AllowedMethods: respond_to_missing?
-Style/OptionalBooleanParameter:
-  Exclude:
-    - 'lib/mongoid/association/embedded/cyclic.rb'
-    - 'lib/mongoid/association/many.rb'
-    - 'lib/mongoid/association/one.rb'
-    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
-    - 'lib/mongoid/atomic.rb'
-    - 'lib/mongoid/attributes/dynamic.rb'
-    - 'lib/mongoid/criteria.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/string.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/symbol.rb'
-    - 'lib/mongoid/criteria/queryable/key.rb'
-    - 'lib/mongoid/criteria/queryable/options.rb'
-    - 'spec/support/models/address.rb'
-    - 'spec/support/models/name.rb'
-
 # Offense count: 38
 # This cop supports safe autocorrection (--autocorrect).
 Style/RedundantCurrentDirectoryInPath:
