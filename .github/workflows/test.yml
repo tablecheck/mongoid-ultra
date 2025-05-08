@@ -19,6 +19,15 @@ jobs:
       matrix:
         include:
         - mongodb: '8.0'
+          ruby: ruby-3.0
+          topology: replica_set
+          os: ubuntu-latest
+          task: test
+          driver: current
+          rails: '6.1'
+          gemfile: gemfiles/rails-6.1.gemfile
+          experimental: false
+        - mongodb: '8.0'
           ruby: ruby-3.4
           topology: replica_set
           os: ubuntu-latest
