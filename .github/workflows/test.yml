@@ -7,7 +7,7 @@ name: Run Mongoid Tests
 - pull_request
 jobs:
   build:
-    name: "${{matrix.ruby}} driver-${{matrix.driver}} mongodb-${{matrix.mongodb}}
+    name: "${{matrix.ruby}} rails-${{matrix.rails}} driver-${{matrix.driver}} mongodb-${{matrix.mongodb}}
       ${{matrix.topology}}"
     env:
       CI: true
