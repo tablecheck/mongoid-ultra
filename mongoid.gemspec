@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
   # activemodel 7.0.0 cannot be used due to Class#descendants issue
   # See: https://github.com/rails/rails/pull/43951
   s.add_dependency("activemodel", ['>=5.1', '!= 7.0.0'])
-  s.add_dependency("mongo", ['>=2.10.5', '<3.0.0'])
+  s.add_dependency("mongo", ['>=2.10.5'])
 
   # The ruby2_keywords gem is recommended for handling argument delegation issues,
   # especially if support for 2.6 or prior is required.
@@ -52,8 +52,6 @@ Gem::Specification.new do |s|
   #
   # Therefore, usage of this gem looks like a reasonable solution at the moment.
   s.add_dependency("ruby2_keywords", "~> 0.0.5")
-
-  s.add_development_dependency("bson", ['>=4.9.4', '<5.0.0'])
 
   s.files        = Dir.glob("lib/**/*") + %w(CHANGELOG.md LICENSE README.md Rakefile)
   s.test_files   = Dir.glob("spec/**/*")
