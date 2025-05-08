@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 require "mongoid/contextual/aggregable"
 
@@ -11,7 +12,7 @@ module Mongoid
         # Get all the aggregate values for the provided field in null context.
         # Provided for interface consistency with Aggregable::Mongo.
         #
-        # @param [ String, Symbol ] _field The field name.
+        # @param [ String | Symbol ] _field The field name.
         #
         # @return [ Hash ] A Hash with count, sum of 0 and max, min, avg of nil.
         def aggregates(_field)
