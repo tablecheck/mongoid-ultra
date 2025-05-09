@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 require 'spec_helper'
 
@@ -81,8 +82,9 @@ describe "#discriminator_key" do
     end
 
     context "before class creation" do
+      config_override :discriminator_key, "test"
+
       before do
-        Mongoid.discriminator_key = "test"
 
         class PreGlobalIntDiscriminatorParent
           include Mongoid::Document
@@ -93,7 +95,6 @@ describe "#discriminator_key" do
       end
 
       after do
-        Mongoid.discriminator_key = "_type"
         Object.send(:remove_const, :PreGlobalIntDiscriminatorParent)
         Object.send(:remove_const, :PreGlobalIntDiscriminatorChild)
       end
@@ -336,9 +337,9 @@ describe "#discriminator_key" do
     end
 
     context "Example 3" do
-      before do
-        Mongoid.discriminator_key = "shape_type"
+      config_override :discriminator_key, "shape_type"
 
+      before do
         class Example3Shape
           include Mongoid::Document
           field :x, type: Integer
@@ -358,7 +359,6 @@ describe "#discriminator_key" do
       end
 
       after do
-        Mongoid.discriminator_key = "_type"
         Object.send(:remove_const, :Example3Shape)
         Object.send(:remove_const, :Example3Circle)
         Object.send(:remove_const, :Example3Rectangle)

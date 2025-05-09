@@ -88,7 +88,7 @@ module Mongoid
 
     def query_cache_enabled
       around do |example|
-        Mongoid::QueryCache.cache do
+        Mongo::QueryCache.cache do
           example.run
         end
       end

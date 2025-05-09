@@ -2135,7 +2135,7 @@ To enable the Query Cache manually for a code segment, use:
 
 .. code-block:: ruby
 
-  Mongoid::QueryCache.cache do
+  Mongo::QueryCache.cache do
     # ...
   end
 
@@ -2144,11 +2144,11 @@ recommend to use the block form described above:
 
 .. code-block:: ruby
 
-  Mongoid::QueryCache.enabled = true
+  Mongo::QueryCache.enabled = true
 
   # ...
 
-  Mongoid::QueryCache.enabled = false
+  Mongo::QueryCache.enabled = false
 
 Alternatively, you can reference the driver's query cache module directly:
 
@@ -2173,7 +2173,7 @@ would be sent to the server:
 
 .. code-block:: ruby
 
-  Mongoid::QueryCache.cache do
+  Mongo::QueryCache.cache do
     Band.first
     Band.collection.find.sort(_id: 1).first
   end
@@ -2183,7 +2183,7 @@ is performed by the driver and write by Mongoid, or vice versa:
 
 .. code-block:: ruby
 
-  Mongoid::QueryCache.cache do
+  Mongo::QueryCache.cache do
     Band.first
     Band.collection.insert_one({})
     # Queries again
