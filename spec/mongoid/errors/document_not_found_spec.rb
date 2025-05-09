@@ -64,7 +64,7 @@ describe Mongoid::Errors::DocumentNotFound do
 
       it "contains the problem in the message" do
         expect(error.message).to include(
-          "Document not found for class Person with attributes {:name=>\"syd\"}."
+          "Document not found for class Person with attributes {name: \"syd\"}."
         )
       end
 

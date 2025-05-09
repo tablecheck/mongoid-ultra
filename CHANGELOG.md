@@ -471,7 +471,7 @@ child elements.
 
     For Rails:
 
-      config.middleware.use(Mongoid::QueryCache::Middleware)
+      config.middleware.use(Mongo::QueryCache::Middleware)
 
 * \#3319 Counters can now be reset from a document instance:
 
