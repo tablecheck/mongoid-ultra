@@ -174,10 +174,11 @@ module Mongoid
           # @return [ Many ] The association.
           def substitute(replacement)
             purge(replacement)
-            unless replacement.blank?
-              push(replacement.compact.uniq)
-            else
+            if replacement.blank?
               reset_unloaded
+              clear_foreign_key_changes
+            else
+              push(replacement.compact.uniq)
             end
             self
           end
@@ -194,6 +195,17 @@ module Mongoid
           end
 
           private
+
+          # Clears the foreign key from the changed_attributes hash.
+          #
+          # This is, in general, used to clear the foreign key from the
+          # changed_attributes hash for consistency with the other referenced
+          # associations.
+          #
+          # @api private
+          def clear_foreign_key_changes
+            _base.changed_attributes.delete(foreign_key)
+          end
 
           # Appends the document to the target array, updating the index on the
           # document at the same time.

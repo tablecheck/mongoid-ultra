@@ -23,6 +23,7 @@ require "mongoid/clients"
 require "mongoid/document"
 require "mongoid/tasks/database"
 require "mongoid/warnings"
+require "mongoid/utils"
 
 # If we are using Rails then we will include the Mongoid railtie. This has all
 # the nifty initializers that Mongoid needs.

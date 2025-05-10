@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 require "spec_helper"
 
@@ -103,7 +104,7 @@ describe Mongoid::Reloadable do
       end
 
       it "resets attributes_before_type_cast" do
-        expect(person.attributes_before_type_cast).to be_empty
+        expect(person.attributes_before_type_cast).to eq(person.attributes)
       end
     end
 
@@ -114,7 +115,7 @@ describe Mongoid::Reloadable do
         it "raises an error" do
           expect {
             Person.new.reload
-          }.to raise_error(Mongoid::Errors::DocumentNotFound)
+          }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
         end
       end
 
@@ -288,7 +289,7 @@ describe Mongoid::Reloadable do
       end
     end
 
-    context "when embedded documents are unasssigned and reassigned" do
+    context "when embedded documents are unassigned and reassigned" do
 
       context "when broken_updates feature flag is not set" do
         config_override :broken_updates, false
@@ -626,6 +627,39 @@ describe Mongoid::Reloadable do
         church.acolytes._loaded?.should be false
 
         church.acolytes.first.name.should == 'Borg'
+      end
+    end
+
+    context 'when document has previous changes' do
+      context 'when document was updated' do
+        let(:person) do
+          Person.create!(title: 'Sir')
+        end
+
+        before do
+          person.title = 'Madam'
+          person.save!
+          person.reload
+        end
+
+        it "resets previous changes" do
+          expect(person.title_previously_was).to be_nil
+          expect(person).not_to be_previously_persisted
+        end
+      end
+
+      context 'when document was created' do
+        let(:person) do
+          Person.create!(title: 'Sir')
+        end
+
+        before do
+          person.reload
+        end
+
+        it "resets previous changes" do
+          expect(person).not_to be_previously_new_record
+        end
       end
     end
   end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 require "spec_helper"
 
@@ -476,6 +477,188 @@ describe Mongoid::Changeable do
         end
       end
     end
+
+    context "when including key word args" do
+
+      let(:person) { Person.new }
+
+      context "when only including from" do
+
+        context "when the object has not changed" do
+
+          it "returns false" do
+            expect(person.send(:attribute_changed?, :score, from: nil)).to be false
+          end
+
+          it "returns false using (attribute)_changed?" do
+            expect(person.score_changed?(from: nil)).to be false
+          end
+        end
+
+        context "when the object has changed from the wrong item" do
+
+          before do
+            person.score = 2
+          end
+
+          it "returns false" do
+            expect(person.send(:attribute_changed?, :score, from: 1)).to be false
+          end
+
+          it "returns false using (attribute)_changed?" do
+            expect(person.score_changed?(from: 1)).to be false
+          end
+        end
+
+        context "when the object has changed from the correct item" do
+
+          before do
+            person.score = 2
+          end
+
+          it "returns true" do
+            expect(person.send(:attribute_changed?, :score, from: nil)).to be true
+          end
+
+          it "returns true using (attribute)_changed?" do
+            expect(person.score_changed?(from: nil)).to be true
+          end
+        end
+      end
+
+      context "when only including to" do
+
+        context "when the object has not changed" do
+
+          it "returns false" do
+            expect(person.send(:attribute_changed?, :score, to: nil)).to be false
+          end
+
+          it "returns false using (attribute)_changed?" do
+            expect(person.score_changed?(to: nil)).to be false
+          end
+        end
+
+        context "when the object has changed to the wrong item" do
+
+          before do
+            person.score = 2
+          end
+
+          it "returns false" do
+            expect(person.send(:attribute_changed?, :score, to: 1)).to be false
+          end
+
+          it "returns false using (attribute)_changed?" do
+            expect(person.score_changed?(to: 1)).to be false
+          end
+        end
+
+        context "when the object has changed to the correct item" do
+
+          before do
+            person.score = 2
+          end
+
+          it "returns true" do
+            expect(person.send(:attribute_changed?, :score, to: 2)).to be true
+          end
+
+          it "returns true using (attribute)_changed?" do
+            expect(person.score_changed?(to: 2)).to be true
+          end
+        end
+      end
+
+      context "when including from and to" do
+
+        context "when the object has not changed" do
+
+          it "returns false" do
+            expect(person.send(:attribute_changed?, :score, from: nil, to: nil)).to be false
+          end
+
+          it "returns false using (attribute)_changed?" do
+            expect(person.score_changed?(from: nil, to: nil)).to be false
+          end
+        end
+
+        context "when only the from is correct" do
+
+          before do
+            person.score = 2
+          end
+
+          it "returns false" do
+            expect(person.send(:attribute_changed?, :score, from: nil, to: 3)).to be false
+          end
+
+          it "returns false using (attribute)_changed?" do
+            expect(person.score_changed?(from: nil, to: 3)).to be false
+          end
+        end
+
+        context "when only the to is correct" do
+
+          before do
+            person.score = 2
+          end
+
+          it "returns false" do
+            expect(person.send(:attribute_changed?, :score, from: 1, to: 2)).to be false
+          end
+
+          it "returns false using (attribute)_changed?" do
+            expect(person.score_changed?(from: 1, to: 2)).to be false
+          end
+        end
+
+        context "when the from and to are correct" do
+
+          before do
+            person.score = 2
+          end
+
+          it "returns true" do
+            expect(person.send(:attribute_changed?, :score, from: nil, to: 2)).to be true
+          end
+
+          it "returns true using (attribute)_changed?" do
+            expect(person.score_changed?(from: nil, to: 2)).to be true
+          end
+        end
+
+        context "when value is mongoized" do
+
+          before do
+            person.score = "2"
+          end
+
+          it "returns true with mongoized value" do
+            expect(person.send(:attribute_changed?, :score, from: nil, to: 2)).to be true
+          end
+
+          it "returns true with mongoized value using (attribute)_changed?" do
+            expect(person.score_changed?(from: nil, to: 2)).to be true
+          end
+        end
+
+        context "when value is mongoized" do
+
+          before do
+            person.score = "2"
+          end
+
+          it "returns false with unmongoized value" do
+            expect(person.send(:attribute_changed?, :score, from: nil, to: "2")).to be false
+          end
+
+          it "returns false with unmongoized value using (attribute)_changed?" do
+            expect(person.score_changed?(from: nil, to: "2")).to be false
+          end
+        end
+      end
+    end
   end
 
   describe "#attribute_changed_from_default?" do
@@ -553,6 +736,56 @@ describe Mongoid::Changeable do
         expect(person.send(:attribute_was, "title")).to eq("Grand Poobah")
       end
     end
+  end
+
+  describe '#attribute_previously_was' do
+    let(:previous_title) do
+      "Grand Poobah"
+    end
+
+    let(:age) do
+      10
+    end
+
+    let(:person) do
+      Person.create!(title: previous_title, age: age)
+    end
+
+    let(:updated_title) do
+      "Captain Obvious"
+    end
+
+    before do
+      person.title = updated_title
+      person.save!
+    end
+
+    context 'when attribute changed' do
+      it "returns the old value" do
+        expect(person.send(:attribute_previously_was, "title")).to eq(previous_title)
+      end
+
+      it "allows access via (attribute)_was" do
+        expect(person.title_previously_was).to eq(previous_title)
+      end
+    end
+
+    context 'when attribute did not change' do
+      it "returns the same value" do
+        expect(person.send(:attribute_previously_was, "age")).to eq(age)
+      end
+
+      it "allows access via (attribute)_was" do
+        expect(person.age_previously_was).to eq(age)
+      end
+    end
+
+    it 'clears after reload' do
+      person.reload
+      expect(person.title_previously_was).to be_nil
+      expect(person.age_previously_was).to be_nil
+    end
+
   end
 
   describe "#attribute_will_change!" do
@@ -962,12 +1195,69 @@ describe Mongoid::Changeable do
         person.user_accounts << user_account
       end
 
-      it 'returns a hash of changes' do
-        pending 'https://jira.mongodb.org/browse/MONGOID-4843'
+      it 'should not add to the changes or changed_attributes hash' do
+        person.changes.should == {}
+        person.changed_attributes.should == {}
+      end
+    end
 
-        person.changes.should == {
-          user_account_ids: [[], [user_account.id]]
-        }
+    context 'when habtm association _ids changes' do
+
+      let(:person) do
+        Person.create!(title: "Grand Poobah")
+      end
+
+      let(:user_account) do
+        UserAccount.create!
+      end
+
+      before do
+        person.user_account_ids << user_account._id
+      end
+
+      it 'should add to the changes or changed_attributes hash' do
+        person.changes.should == { "user_account_ids" => [ nil, [ user_account._id ] ] }
+        person.changed_attributes.should == { "user_account_ids" => nil }
+      end
+    end
+
+    context 'when assigning empty list to habtm association' do
+
+      let(:person) do
+        Person.create!(title: "Grand Poobah", user_accounts: [user_account])
+      end
+
+      let(:user_account) do
+        UserAccount.create!
+      end
+
+      before do
+        person.user_accounts = []
+      end
+
+      it 'should not add to the changes or changed_attributes hash' do
+        person.changes.should == {}
+        person.changed_attributes.should == {}
+      end
+    end
+
+    context 'when assigning empty list to habtm association _ids' do
+
+      let(:person) do
+        Person.create!(title: "Grand Poobah", user_accounts: [user_account])
+      end
+
+      let(:user_account) do
+        UserAccount.create!
+      end
+
+      before do
+        person.user_account_ids = []
+      end
+
+      it 'should not add to the changes or changed_attributes hash' do
+        person.changes.should == { "user_account_ids" => [ [ user_account._id ], [] ] }
+        person.changed_attributes.should ==  { "user_account_ids" => [ user_account._id ] }
       end
     end
 
@@ -1060,20 +1350,10 @@ describe Mongoid::Changeable do
 
       context "when the document is embedded" do
 
-        let(:person) do
-          Person.instantiate(title: "Grand Poobah")
-        end
+        let(:person) { Person.create(title: "Grand Poobah") }
+        let(:address) { person.addresses.create(street: "Oxford St") }
 
-        let(:address) do
-          Address.instantiate(street: "Oxford St")
-        end
-
-        before do
-          person.addresses << address
-          person.instance_variable_set(:@new_record, false)
-          address.instance_variable_set(:@new_record, false)
-          address.street = "Bond St"
-        end
+        before { address.street = "Bond St" }
 
         it "returns a hash of field names and new values" do
           expect(address.setters).to eq(
@@ -1082,17 +1362,9 @@ describe Mongoid::Changeable do
         end
 
         context "when the document is embedded multiple levels" do
-
-          let(:location) do
-            Location.new(name: "Home")
-          end
-
-          before do
-            location.instance_variable_set(:@new_record, false)
-            address.locations << location
-            location.name = "Work"
-          end
-
+          let(:location) { address.locations.create(name: "Home") }
+          before { location.name = "Work" }
+          
           it "returns the proper hash with locations" do
             expect(location.setters).to eq(
               { "addresses.0.locations.0.name" => "Work" }
@@ -1372,6 +1644,117 @@ describe Mongoid::Changeable do
     end
   end
 
+  describe '#attribute_before_last_save' do
+    let(:person) do
+      Person.create!(title: "Grand Poobah")
+    end
+
+    before do
+      person.title = "Captain Obvious"
+    end
+
+    context "when the document has been saved" do
+      before do
+        person.save!
+      end
+
+      it "returns the changes" do
+        expect(person.attribute_before_last_save(:title)).to eq("Grand Poobah")
+        expect(person.title_before_last_save).to eq("Grand Poobah")
+      end
+    end
+
+    context "when the document has not been saved" do
+      it "returns no changes" do
+        expect(person.attribute_before_last_save(:title)).to be_nil
+        expect(person.title_before_last_save).to be_nil
+      end
+    end
+  end
+
+  describe '#saved_change_to_attribute' do
+    let(:person) do
+      Person.create!(title: "Grand Poobah")
+    end
+
+    before do
+      person.title = "Captain Obvious"
+    end
+
+    context "when the document has been saved" do
+      before do
+        person.save!
+      end
+
+      it "returns the changes" do
+        expect(person.saved_change_to_attribute(:title)).to eq(["Grand Poobah", "Captain Obvious"])
+        expect(person.saved_change_to_title).to eq(["Grand Poobah", "Captain Obvious"])
+      end
+    end
+
+    context "when the document has not been saved" do
+      it "returns changes for the previous save" do
+        expect(person.saved_change_to_attribute(:title)).to eq([nil, "Grand Poobah"])
+        expect(person.saved_change_to_title).to eq([nil, "Grand Poobah"])
+      end
+    end
+  end
+
+  describe '#saved_change_to_attribute?' do
+    context "when the document has been saved" do
+      let(:person) do
+        Person.create!(title: "Grand Poobah")
+      end
+
+      before do
+        person.title = "Captain Obvious"
+      end
+
+      before do
+        person.save!
+      end
+
+      it "detects the changes" do
+        expect(person.saved_change_to_attribute?(:title)).to be_truthy
+        expect(person.saved_change_to_attribute?(:title, from: "Grand Poobah")).to be_truthy
+        expect(person.saved_change_to_attribute?(:title, to: "Captain Obvious")).to be_truthy
+        expect(person.saved_change_to_attribute?(:title, from: "Grand Poobah", to: "Captain Obvious")).to be_truthy
+        expect(person.saved_change_to_title?(from: "Grand Poobah", to: "Captain Obvious")).to be_truthy
+        expect(person.saved_change_to_attribute?(:age)).to be_falsey
+        expect(person.saved_change_to_age?).to be_falsey
+      end
+    end
+
+    context "when the document has not been saved" do
+      let(:person) do
+        Person.new(title: "Grand Poobah")
+      end
+
+      it "returns changes for the previous save" do
+        expect(person.saved_change_to_attribute?(:title)).to be_falsey
+        expect(person.saved_change_to_title?).to be_falsey
+      end
+    end
+  end
+
+  describe '#will_save_change_to_attribute?' do
+    let(:person) do
+      Person.create!(title: "Grand Poobah")
+    end
+
+    before do
+      person.title = "Captain Obvious"
+    end
+
+    it 'correctly detects changes' do
+      expect(person.will_save_change_to_attribute?(:title)).to eq(true)
+      expect(person.will_save_change_to_title?).to eq(true)
+      expect(person.will_save_change_to_attribute?(:score)).to eq(false)
+      expect(person.will_save_change_to_score?).to eq(false)
+    end
+
+  end
+
   context "when fields have been defined pre-dirty inclusion" do
 
     let(:document) do
@@ -1649,21 +2032,26 @@ describe Mongoid::Changeable do
 
       before do
         Acolyte.set_callback(:save, :after, if: :callback_test?) do |doc|
-          doc[:changed_in_callback] = doc.changes.dup
+          doc[:changed_in_after_callback] = doc.changes.dup
+        end
+
+        Acolyte.set_callback(:save, :before, if: :callback_test?) do |doc|
+          doc[:changed_in_before_callback] = doc.changes.dup
         end
       end
 
       after do
         Acolyte._save_callbacks.select do |callback|
-          callback.kind == :after
+          [:before, :after].include?(callback.kind)
         end.each do |callback|
           Acolyte._save_callbacks.delete(callback)
         end
       end
 
-      it "retains the changes until after all callbacks" do
+      it "does not retain the changes until after all callbacks" do
         acolyte.update_attribute(:status, "testing")
-        expect(acolyte.changed_in_callback).to eq({ "status" => [ nil, "testing" ] })
+        expect(acolyte.changed_in_before_callback).to eq({"status"=>[nil, "testing"]})
+        expect(acolyte.changed_in_after_callback).to eq({  })
       end
     end
 
@@ -1675,21 +2063,26 @@ describe Mongoid::Changeable do
 
       before do
         Acolyte.set_callback(:save, :after, if: :callback_test?) do |doc|
-          doc[:changed_in_callback] = doc.changes.dup
+          doc[:changed_after_in_callback] = doc.changes.dup
+        end
+
+        Acolyte.set_callback(:save, :before, if: :callback_test?) do |doc|
+          doc[:changed_before_in_callback] = doc.changes.dup
         end
       end
 
       after do
         Acolyte._save_callbacks.select do |callback|
-          callback.kind == :after
+          [:before, :after].include?(callback.kind)
         end.each do |callback|
           Acolyte._save_callbacks.delete(callback)
         end
       end
 
-      it "retains the changes until after all callbacks" do
+      it "does not retain the changes until after all callbacks" do
         acolyte.save!
-        expect(acolyte.changed_in_callback["name"]).to eq([ nil, "callback-test" ])
+        expect(acolyte.changed_before_in_callback["name"]).to eq([ nil, "callback-test" ])
+        expect(acolyte.changed_after_in_callback["name"]).to be_nil
       end
     end
   end

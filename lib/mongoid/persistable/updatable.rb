@@ -94,15 +94,16 @@ module Mongoid
       # @return [ true, false ] The result of the update.
       def prepare_update(options = {})
         return false if performing_validations?(options) &&
-          invalid?(options[:context] || :update)
+                        invalid?(options[:context] || :update)
         process_flagged_destroys
-        result = run_callbacks(:save) do
+        run_callbacks(:save) do
           run_callbacks(:update) do
-            yield(self)
+            result = yield(self)
+            self.previously_new_record = false
+            post_process_persist(result, options)
             true
           end
         end
-        post_process_persist(result, options) and result
       end
 
       # Update the document in the database.
