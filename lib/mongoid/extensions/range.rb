@@ -20,7 +20,7 @@ module Mongoid
       # @example Mongoize the object.
       #   range.mongoize
       #
-      # @return [ Hash ] The object mongoized.
+      # @return [ Hash | nil ] The object mongoized or nil.
       def mongoize
         ::Range.mongoize(self)
       end
@@ -44,9 +44,23 @@ module Mongoid
         #
         # @param [ Hash ] object The object to demongoize.
         #
-        # @return [ Range ] The range.
+        # @return [ Range | nil ] The range, or nil if object cannot be represented as range.
+        #
+        # @note Ruby 2.6 and lower do not support endless ranges that Ruby 2.7+ support.
         def demongoize(object)
-          object.nil? ? nil : ::Range.new(object["min"], object["max"], object["exclude_end"])
+          return if object.nil?
+          if object.is_a?(Hash)
+            hash = object.slice('min', 'max', 'exclude_end', :min, :max, :exclude_end)
+            unless hash.blank?
+              begin
+                ::Range.new(hash["min"] || hash[:min],
+                            hash["max"] || hash[:max],
+                            hash["exclude_end"] || hash[:exclude_end])
+              rescue ArgumentError # can be removed when Ruby version >= 2.7
+                nil
+              end
+            end
+          end
         end
 
         # Turn the object from the ruby type we deal with to a Mongo friendly
@@ -55,16 +69,33 @@ module Mongoid
         # @example Mongoize the object.
         #   Range.mongoize(1..3)
         #
-        # @param [ Range ] object The object to mongoize.
+        # @param [ Object ] object The object to mongoize.
         #
-        # @return [ Hash ] The object mongoized.
+        # @return [ Hash | nil ] The object mongoized or nil.
         def mongoize(object)
-          return nil if object.nil?
-          return object if object.is_a?(::Hash)
-          return object if object.is_a?(String)
-          hash = { "min" => object.first, "max" => object.last }
+          return if object.nil?
+          case object
+          when Hash then __mongoize_hash__(object)
+          when Range then __mongoize_range__(object)
+          end
+        end
+
+        private
+
+        def __mongoize_hash__(object)
+          hash = object.stringify_keys
+          hash.slice!('min', 'max', 'exclude_end')
+          hash.compact!
+          hash.transform_values!(&:mongoize)
+          hash.blank? ? nil : hash
+        end
+
+        def __mongoize_range__(object)
+          hash = {}
+          hash['min'] = object.begin.mongoize if object.begin
+          hash['max'] = object.end.mongoize if object.end
           if object.respond_to?(:exclude_end?) && object.exclude_end?
-            hash.merge!("exclude_end" => true)
+            hash['exclude_end'] = true
           end
           hash
         end

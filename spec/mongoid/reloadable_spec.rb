@@ -103,7 +103,7 @@ describe Mongoid::Reloadable do
       end
 
       it "resets attributes_before_type_cast" do
-        expect(person.attributes_before_type_cast).to be_empty
+        expect(person.attributes_before_type_cast).to eq(person.attributes)
       end
     end
 
@@ -114,7 +114,7 @@ describe Mongoid::Reloadable do
         it "raises an error" do
           expect {
             Person.new.reload
-          }.to raise_error(Mongoid::Errors::DocumentNotFound)
+          }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
         end
       end
 
@@ -390,6 +390,30 @@ describe Mongoid::Reloadable do
       end
     end
 
+    context 'when embeds_many is modified' do
+      let(:contractor1) { Contractor.new(name: 'b') }
+      let(:contractor2) { Contractor.new(name: 'c') }
+
+      let(:building) do
+        Building.create!(contractors: [ contractor1 ])
+      end
+
+      let(:more_contractors) { building.contractors + [ contractor2 ] }
+
+      let(:modified_building) do
+        building.tap do
+          building.assign_attributes contractors: more_contractors
+        end
+      end
+
+      let(:reloaded_building) { modified_building.reload }
+
+      it 'resets delayed_atomic_sets' do
+        expect(modified_building.delayed_atomic_sets).not_to be_empty
+        expect(reloaded_building.delayed_atomic_sets).to be_empty
+      end
+    end
+
     context "when embedded document is nil" do
 
       let(:palette) do
@@ -626,6 +650,39 @@ describe Mongoid::Reloadable do
         church.acolytes._loaded?.should be false
 
         church.acolytes.first.name.should == 'Borg'
+      end
+    end
+
+    context 'when document has previous changes' do
+      context 'when document was updated' do
+        let(:person) do
+          Person.create!(title: 'Sir')
+        end
+
+        before do
+          person.title = 'Madam'
+          person.save!
+          person.reload
+        end
+
+        it "resets previous changes" do
+          expect(person.title_previously_was).to be_nil
+          expect(person).not_to be_previously_persisted
+        end
+      end
+
+      context 'when document was created' do
+        let(:person) do
+          Person.create!(title: 'Sir')
+        end
+
+        before do
+          person.reload
+        end
+
+        it "resets previous changes" do
+          expect(person).not_to be_previously_new_record
+        end
       end
     end
   end

@@ -5,6 +5,7 @@ require "mongoid/validatable/localizable"
 require "mongoid/validatable/associated"
 require "mongoid/validatable/format"
 require "mongoid/validatable/length"
+require "mongoid/validatable/numericality"
 require "mongoid/validatable/queryable"
 require "mongoid/validatable/presence"
 require "mongoid/validatable/uniqueness"
@@ -37,6 +38,14 @@ module Mongoid
       Threaded.exit_validate(self)
     end
 
+    # Perform a validation within the associated block.
+    def validating
+      begin_validate
+      yield
+    ensure
+      exit_validate
+    end
+
     # Given the provided options, are we performing validations?
     #
     # @example Are we performing validations?
@@ -44,7 +53,7 @@ module Mongoid
     #
     # @param [ Hash ] options The options to check.
     #
-    # @return [ true, false ] If we are validating.
+    # @return [ true | false ] If we are validating.
     def performing_validations?(options = {})
       options[:validate].nil? ? true : options[:validate]
     end
@@ -83,7 +92,7 @@ module Mongoid
     #
     # @param [ Symbol ] context The optional validation context.
     #
-    # @return [ true, false ] True if valid, false if not.
+    # @return [ true | false ] True if valid, false if not.
     def valid?(context = nil)
       super context ? context : (new_record? ? :create : :update)
     end
@@ -93,7 +102,7 @@ module Mongoid
     # @example Is the document validated?
     #   document.validated?
     #
-    # @return [ true, false ] Has the document already been validated?
+    # @return [ true | false ] Has the document already been validated?
     def validated?
       Threaded.validated?(self)
     end
@@ -103,7 +112,7 @@ module Mongoid
     # @example Are we validating with a query?
     #   document.validating_with_query?
     #
-    # @return [ true, false ] If we are validating with a query.
+    # @return [ true | false ] If we are validating with a query.
     def validating_with_query?
       self.class.validating_with_query?
     end
@@ -129,7 +138,7 @@ module Mongoid
       # @example Validate with a specific validator.
       #   validates_with MyValidator, on: :create
       #
-      # @param [ Class<Array>, Hash ] args The validator classes and options.
+      # @param [ Class<Array> | Hash ] args The validator classes and options.
       #
       # @note See ActiveModel::Validations::With for full options. This is
       #   overridden to add autosave functionality when presence validation is
@@ -151,7 +160,7 @@ module Mongoid
       # @example Are we validating with a query?
       #   Model.validating_with_query?
       #
-      # @return [ true, false ] If we are validating with a query.
+      # @return [ true | false ] If we are validating with a query.
       def validating_with_query?
         Threaded.executing?("#{name}-validate-with-query")
       end

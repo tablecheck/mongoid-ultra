@@ -265,79 +265,95 @@ describe Mongoid::Config do
     end
   end
 
+  context 'when setting the map_big_decimal_to_decimal128 option in the config' do
+    let(:option) { :map_big_decimal_to_decimal128 }
+    let(:default) { true }
+
+    it_behaves_like "a config option"
+  end
+
+  context 'when setting the allow_bson5_decimal128 option in the config' do
+    min_bson_version '5.0'
+
+    let(:option) { :allow_bson5_decimal128 }
+    let(:default) { false }
+
+    it_behaves_like "a config option"
+  end
+
   context 'when setting the broken_updates option in the config' do
     let(:option) { :broken_updates }
-    let(:default) { true }
+    let(:default) { false }
 
     it_behaves_like "a config option"
   end
 
   context 'when setting the legacy_triple_equals option in the config' do
     let(:option) { :legacy_triple_equals }
-    let(:default) { true }
+    let(:default) { false }
 
     it_behaves_like "a config option"
   end
 
   context 'when setting the broken_scoping option in the config' do
     let(:option) { :broken_scoping }
-    let(:default) { true }
+    let(:default) { false }
 
     it_behaves_like "a config option"
   end
 
   context 'when setting the broken_aggregables option in the config' do
     let(:option) { :broken_aggregables }
-    let(:default) { true }
+    let(:default) { false }
 
     it_behaves_like "a config option"
   end
 
   context 'when setting the broken_alias_handling option in the config' do
     let(:option) { :broken_alias_handling }
-    let(:default) { true }
+    let(:default) { false }
 
     it_behaves_like "a config option"
   end
 
   context 'when setting the broken_and option in the config' do
     let(:option) { :broken_and }
-    let(:default) { true }
+    let(:default) { false }
 
     it_behaves_like "a config option"
   end
 
   context 'when setting the compare_time_by_ms option in the config' do
     let(:option) { :compare_time_by_ms }
-    let(:default) { false }
+    let(:default) { true }
 
     it_behaves_like "a config option"
   end
 
   context 'when setting the object_id_as_json_oid option in the config' do
     let(:option) { :object_id_as_json_oid }
-    let(:default) { true }
+    let(:default) { false }
 
     it_behaves_like "a config option"
   end
 
   context 'when setting the legacy_pluck_distinct option in the config' do
     let(:option) { :legacy_pluck_distinct }
-    let(:default) { true }
+    let(:default) { false }
 
     it_behaves_like "a config option"
   end
 
   context 'when setting the overwrite_chained_operators option in the config' do
     let(:option) { :overwrite_chained_operators }
-    let(:default) { true }
+    let(:default) { false }
 
     it_behaves_like "a config option"
   end
 
   context 'when setting the legacy_attributes option in the config' do
     let(:option) { :legacy_attributes }
-    let(:default) { true }
+    let(:default) { false }
 
     it_behaves_like "a config option"
   end
@@ -459,6 +475,40 @@ describe Mongoid::Config do
 
       it "sets the join_contexts default option" do
         expect(described_class.join_contexts).to be false
+      end
+    end
+
+    context "when provided an environment with driver options" do
+
+      before do
+        described_class.load!(file, :test)
+      end
+
+      after do
+        described_class.reset
+      end
+
+      it "sets the Mongo.broken_view_options option" do
+        expect(Mongo.broken_view_options).to eq(false)
+      end
+
+      it "does not override the unset Mongo.validate_update_replace option" do
+        expect(Mongo.validate_update_replace).to eq(false)
+      end
+    end
+
+    context "when provided an environment with a nil driver option" do
+
+      before do
+        described_class.load!(file, :test_nil)
+      end
+
+      after do
+        described_class.reset
+      end
+
+      it "sets the Mongo.broken_view_options option to nil" do
+        expect(Mongo.broken_view_options).to be_nil
       end
     end
 

@@ -555,6 +555,56 @@ describe Mongoid::Changeable do
     end
   end
 
+  describe '#attribute_previously_was' do
+    let(:previous_title) do
+      "Grand Poobah"
+    end
+
+    let(:age) do
+      10
+    end
+
+    let(:person) do
+      Person.create!(title: previous_title, age: age)
+    end
+
+    let(:updated_title) do
+      "Captain Obvious"
+    end
+
+    before do
+      person.title = updated_title
+      person.save!
+    end
+
+    context 'when attribute changed' do
+      it "returns the old value" do
+        expect(person.send(:attribute_previously_was, "title")).to eq(previous_title)
+      end
+
+      it "allows access via (attribute)_was" do
+        expect(person.title_previously_was).to eq(previous_title)
+      end
+    end
+
+    context 'when attribute did not change' do
+      it "returns the same value" do
+        expect(person.send(:attribute_previously_was, "age")).to eq(age)
+      end
+
+      it "allows access via (attribute)_was" do
+        expect(person.age_previously_was).to eq(age)
+      end
+    end
+
+    it 'clears after reload' do
+      person.reload
+      expect(person.title_previously_was).to be_nil
+      expect(person.age_previously_was).to be_nil
+    end
+
+  end
+
   describe "#attribute_will_change!" do
 
     let(:aliases) do
@@ -962,12 +1012,69 @@ describe Mongoid::Changeable do
         person.user_accounts << user_account
       end
 
-      it 'returns a hash of changes' do
-        pending 'https://jira.mongodb.org/browse/MONGOID-4843'
+      it 'should not add to the changes or changed_attributes hash' do
+        person.changes.should == {}
+        person.changed_attributes.should == {}
+      end
+    end
 
-        person.changes.should == {
-          user_account_ids: [[], [user_account.id]]
-        }
+    context 'when habtm association _ids changes' do
+
+      let(:person) do
+        Person.create!(title: "Grand Poobah")
+      end
+
+      let(:user_account) do
+        UserAccount.create!
+      end
+
+      before do
+        person.user_account_ids << user_account._id
+      end
+
+      it 'should add to the changes or changed_attributes hash' do
+        person.changes.should == { "user_account_ids" => [ nil, [ user_account._id ] ] }
+        person.changed_attributes.should == { "user_account_ids" => nil }
+      end
+    end
+
+    context 'when assigning empty list to habtm association' do
+
+      let(:person) do
+        Person.create!(title: "Grand Poobah", user_accounts: [user_account])
+      end
+
+      let(:user_account) do
+        UserAccount.create!
+      end
+
+      before do
+        person.user_accounts = []
+      end
+
+      it 'should not add to the changes or changed_attributes hash' do
+        person.changes.should == {}
+        person.changed_attributes.should == {}
+      end
+    end
+
+    context 'when assigning empty list to habtm association _ids' do
+
+      let(:person) do
+        Person.create!(title: "Grand Poobah", user_accounts: [user_account])
+      end
+
+      let(:user_account) do
+        UserAccount.create!
+      end
+
+      before do
+        person.user_account_ids = []
+      end
+
+      it 'should not add to the changes or changed_attributes hash' do
+        person.changes.should == { "user_account_ids" => [ [ user_account._id ], [] ] }
+        person.changed_attributes.should ==  { "user_account_ids" => [ user_account._id ] }
       end
     end
 
@@ -1649,21 +1756,26 @@ describe Mongoid::Changeable do
 
       before do
         Acolyte.set_callback(:save, :after, if: :callback_test?) do |doc|
-          doc[:changed_in_callback] = doc.changes.dup
+          doc[:changed_in_after_callback] = doc.changes.dup
+        end
+
+        Acolyte.set_callback(:save, :before, if: :callback_test?) do |doc|
+          doc[:changed_in_before_callback] = doc.changes.dup
         end
       end
 
       after do
         Acolyte._save_callbacks.select do |callback|
-          callback.kind == :after
+          [:before, :after].include?(callback.kind)
         end.each do |callback|
           Acolyte._save_callbacks.delete(callback)
         end
       end
 
-      it "retains the changes until after all callbacks" do
+      it "does not retain the changes until after all callbacks" do
         acolyte.update_attribute(:status, "testing")
-        expect(acolyte.changed_in_callback).to eq({ "status" => [ nil, "testing" ] })
+        expect(acolyte.changed_in_before_callback).to eq({"status"=>[nil, "testing"]})
+        expect(acolyte.changed_in_after_callback).to eq({  })
       end
     end
 
@@ -1675,21 +1787,26 @@ describe Mongoid::Changeable do
 
       before do
         Acolyte.set_callback(:save, :after, if: :callback_test?) do |doc|
-          doc[:changed_in_callback] = doc.changes.dup
+          doc[:changed_after_in_callback] = doc.changes.dup
+        end
+
+        Acolyte.set_callback(:save, :before, if: :callback_test?) do |doc|
+          doc[:changed_before_in_callback] = doc.changes.dup
         end
       end
 
       after do
         Acolyte._save_callbacks.select do |callback|
-          callback.kind == :after
+          [:before, :after].include?(callback.kind)
         end.each do |callback|
           Acolyte._save_callbacks.delete(callback)
         end
       end
 
-      it "retains the changes until after all callbacks" do
+      it "does not retain the changes until after all callbacks" do
         acolyte.save!
-        expect(acolyte.changed_in_callback["name"]).to eq([ nil, "callback-test" ])
+        expect(acolyte.changed_before_in_callback["name"]).to eq([ nil, "callback-test" ])
+        expect(acolyte.changed_after_in_callback["name"]).to be_nil
       end
     end
   end

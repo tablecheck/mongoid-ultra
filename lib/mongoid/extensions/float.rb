@@ -34,12 +34,15 @@ module Mongoid
         #
         # @param [ Object ] object The object to mongoize.
         #
-        # @return [ String ] The object mongoized.
+        # @return [ Float | nil ] The object mongoized or nil.
         def mongoize(object)
-          unless object.blank?
-            __numeric__(object).to_f rescue 0.0
+          return if object.blank?
+          if object.is_a?(String)
+            if object.numeric?
+              object.to_f
+            end
           else
-            nil
+            object.try(:to_f)
           end
         end
         alias :demongoize :mongoize

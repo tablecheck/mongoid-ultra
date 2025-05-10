@@ -16,7 +16,7 @@ module Mongoid
         #
         # @param [ Association ] association The association metadata.
         #
-        # @return [ true, false ] If we can sync.
+        # @return [ true | false ] If we can sync.
         def _syncable?(association)
           !_synced?(association.foreign_key) && send(association.foreign_key_check)
         end
@@ -38,7 +38,7 @@ module Mongoid
         #
         # @param [ String ] foreign_key The foreign key.
         #
-        # @return [ true, false ] If we can sync.
+        # @return [ true | false ] If we can sync.
         def _synced?(foreign_key)
           !!_synced[foreign_key]
         end
@@ -67,8 +67,8 @@ module Mongoid
         #
         # @return [ Object ] The updated values.
         def update_inverse_keys(association)
-          if changes.has_key?(association.foreign_key)
-            old, new = changes[association.foreign_key]
+          if previous_changes.has_key?(association.foreign_key)
+            old, new = previous_changes[association.foreign_key]
             adds, subs = new - (old || []), (old || []) - new
 
             # If we are autosaving we don't want a duplicate to get added - the

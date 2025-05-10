@@ -75,52 +75,95 @@ module Mongoid
     # Return stored times as UTC.
     option :use_utc, default: false
 
+    # Store BigDecimals as Decimal128s instead of strings in the db.
+    option :map_big_decimal_to_decimal128, default: true
+
     # Update embedded documents correctly when setting it, unsetting it
     # and resetting it. See MONGOID-5206 and MONGOID-5240 for more details.
-    option :broken_updates, default: true
+    option :broken_updates, default: false
 
     # Maintain legacy behavior of === on Mongoid documents, which returns
     # true in a number of cases where Ruby's === implementation would
     # return false.
-    option :legacy_triple_equals, default: true
+    option :legacy_triple_equals, default: false
 
     # When exiting a nested `with_scope' block, set the current scope to
     # nil instead of the parent scope for backwards compatibility.
-    option :broken_scoping, default: true
+    option :broken_scoping, default: false
 
     # Maintain broken behavior of sum over empty result sets for backwards
     # compatibility.
-    option :broken_aggregables, default: true
+    option :broken_aggregables, default: false
 
     # Ignore aliased fields in embedded documents when performing pluck and
     # distinct operations, for backwards compatibility.
-    option :broken_alias_handling, default: true
+    option :broken_alias_handling, default: false
 
     # Maintain broken `and' behavior when using the same operator on the same
     # field multiple times for backwards compatibility.
-    option :broken_and, default: true
+    option :broken_and, default: false
 
     # Use millisecond precision when comparing Time objects with the _matches?
     # function.
-    option :compare_time_by_ms, default: false
+    option :compare_time_by_ms, default: true
 
     # Use bson-ruby's implementation of as_json for BSON::ObjectId instead of
     # the one monkey-patched into Mongoid.
-    option :object_id_as_json_oid, default: true
+    option :object_id_as_json_oid, default: false
 
     # Maintain legacy behavior of pluck and distinct, which does not
     # demongoize the values on returning them.
-    option :legacy_pluck_distinct, default: true
+    option :legacy_pluck_distinct, default: false
 
     # Combine chained operators, which use the same field and operator,
     # using and's instead of overwriting them.
-    option :overwrite_chained_operators, default: true
+    option :overwrite_chained_operators, default: false
 
     # When this flag is true, the attributes method on a document will return
     # a BSON::Document when that document is retrieved from the database, and
     # a Hash otherwise. When this flag is false, the attributes method will
     # always return a Hash.
-    option :legacy_attributes, default: true
+    option :legacy_attributes, default: false
+
+    # Allow BSON::Decimal128 to be parsed and returned directly in
+    # field values. When BSON 5 is present and the this option is set to false
+    # (the default), BSON::Decimal128 values in the database will be returned
+    # as BigDecimal.
+    #
+    # @note this option only has effect when BSON 5+ is present. Otherwise,
+    #   the setting is ignored.
+    option :allow_bson5_decimal128, default: false, on_change: -> (allow) do
+      if BSON::VERSION >= '5.0.0'
+        if allow
+          BSON::Registry.register(BSON::Decimal128::BSON_TYPE, BSON::Decimal128)
+        else
+          BSON::Registry.register(BSON::Decimal128::BSON_TYPE, BigDecimal)
+        end
+      end
+    end
+
+    # When this flag is true, callbacks for every embedded document will be
+    # called only once, even if the embedded document is embedded in multiple
+    # documents in the root document's dependencies graph.
+    # This will be the default in 9.0. Setting this flag to false restores the
+    # pre-9.0 behavior, where callbacks are called for every occurrence of an
+    # embedded document. The pre-9.0 behavior leads to a problem that for multi
+    # level nested documents callbacks are called multiple times.
+    # See https://jira.mongodb.org/browse/MONGOID-5542
+    option :prevent_multiple_calls_of_embedded_callbacks, default: false
+
+    # When this flag is true, callbacks for embedded documents will not be
+    # called. This is the default in 8.x, but will be changed to false in 9.0.
+    #
+    # Setting this flag to true (as it is in 8.x) may lead to stack
+    # overflow errors if there are more than cicrca 1000 embedded
+    # documents in the root document's dependencies graph.
+    #
+    # It is strongly recommended to set this flag to false in 8.x, if you
+    # are not using around callbacks for embedded documents.
+    #
+    # See https://jira.mongodb.org/browse/MONGOID-5658 for more details.
+    option :around_callbacks_for_embeds, default: true
 
     # Has Mongoid been configured? This is checking that at least a valid
     # client config exists.
@@ -128,7 +171,7 @@ module Mongoid
     # @example Is Mongoid configured?
     #   config.configured?
     #
-    # @return [ true, false ] If Mongoid is configured.
+    # @return [ true | false ] If Mongoid is configured.
     def configured?
       clients.key?(:default)
     end
@@ -169,7 +212,7 @@ module Mongoid
     #   Mongoid.load!("/path/to/mongoid.yml")
     #
     # @param [ String ] path The path to the file.
-    # @param [ String, Symbol ] environment The environment to load.
+    # @param [ String | Symbol ] environment The environment to load.
     def load!(path, environment = nil)
       settings = Environment.load_yaml(path, environment)
       if settings.present?
@@ -213,6 +256,7 @@ module Mongoid
       configuration = settings.with_indifferent_access
       self.options = configuration[:options]
       self.clients = configuration[:clients]
+      Mongo.options = configuration[:driver_options] || {}
       set_log_levels
     end
 
@@ -221,9 +265,9 @@ module Mongoid
     # @example Override the database globally.
     #   config.override_database(:optional)
     #
-    # @param [ String, Symbol ] name The name of the database.
+    # @param [ String | Symbol ] name The name of the database.
     #
-    # @return [ String, Symbol ] The global override.
+    # @return [ String | Symbol ] The global override.
     def override_database(name)
       Threaded.database_override = name
     end
@@ -233,9 +277,9 @@ module Mongoid
     # @example Override the client globally.
     #   config.override_client(:optional)
     #
-    # @param [ String, Symbol ] name The name of the client.
+    # @param [ String | Symbol ] name The name of the client.
     #
-    # @return [ String, Symbol ] The global override.
+    # @return [ String | Symbol ] The global override.
     def override_client(name)
       Threaded.client_override = name ? name.to_s : nil
     end
@@ -306,7 +350,7 @@ module Mongoid
     # @example Is the application using passenger?
     #   config.running_with_passenger?
     #
-    # @return [ true, false ] If the app is deployed on Passenger.
+    # @return [ true | false ] If the app is deployed on Passenger.
     def running_with_passenger?
       @running_with_passenger ||= defined?(PhusionPassenger)
     end

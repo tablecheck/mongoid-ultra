@@ -8,6 +8,7 @@ require "mongoid/criteria/modifiable"
 require "mongoid/criteria/queryable"
 require "mongoid/criteria/scopable"
 require "mongoid/criteria/options"
+require "mongoid/criteria/translator"
 
 module Mongoid
 
@@ -52,7 +53,7 @@ module Mongoid
     #
     # @param [ Object ] other The other +Enumerable+ or +Criteria+ to compare to.
     #
-    # @return [ true, false ] If the objects are equal.
+    # @return [ true | false ] If the objects are equal.
     def ==(other)
       return super if other.respond_to?(:selector)
       entries == other
@@ -73,6 +74,9 @@ module Mongoid
     # treated by Mongoid - the decision between delegating to +Findable+ vs
     # +Enumerable+ is made solely based on whether +find+ is passed a block.
     #
+    # @note Each argument can be an individual id, an array of ids or
+    #   a nested array. Each array will be flattened.
+    #
     # @example Finds a document by its _id, invokes Findable#find.
     #   critera.find("1234")
     #
@@ -84,6 +88,9 @@ module Mongoid
     #
     # @example Tries to find a document whose _id is the stringification of the provided Proc, typically failing.
     #   enumerator = criteria.find(-> { "Default Band" })
+    #
+    # @param [ Object | Array<Object> ] *args The ids.
+    # @param [ Proc ] block Optional block to pass.
     #
     # @return [ Document | Array<Document> | nil ] A document or matching documents.
     #
@@ -112,33 +119,6 @@ module Mongoid
       entries.as_json(options)
     end
 
-    # Tells the criteria that the cursor that gets returned needs to be
-    # cached. This is so multiple iterations don't hit the database multiple
-    # times, however this is not advisable when working with large data sets
-    # as the entire results will get stored in memory.
-    #
-    # @example Flag the criteria as cached.
-    #   criteria.cache
-    #
-    # @return [ Criteria ] The cloned criteria.
-    def cache
-      Mongoid::Warnings.warn_criteria_cache_deprecated
-      crit = clone
-      crit.options.merge!(cache: true)
-      crit
-    end
-
-    # Will return true if the cache option has been set.
-    #
-    # @example Is the criteria cached?
-    #   criteria.cached?
-    #
-    # @return [ true, false ] If the criteria is flagged as cached.
-    def cached?
-      Mongoid::Warnings.warn_criteria_cache_deprecated
-      options[:cache] == true
-    end
-
     # Get the documents from the embedded criteria.
     #
     # @example Get the documents.
@@ -165,7 +145,7 @@ module Mongoid
     # @example Is the criteria for embedded documents?
     #   criteria.embedded?
     #
-    # @return [ true, false ] If the criteria is embedded.
+    # @return [ true | false ] If the criteria is embedded.
     def embedded?
       !!@embedded
     end
@@ -232,7 +212,7 @@ module Mongoid
       @klass = klass
       @embedded = nil
       @none = nil
-      klass ? super(klass.aliased_fields, klass.fields) : super({}, {})
+      klass ? super(klass.aliased_fields, klass.fields, klass.relations, klass.aliased_associations) : super({}, {}, {}, {})
     end
 
     # Merges another object with this +Criteria+ and returns a new criteria.
@@ -295,7 +275,7 @@ module Mongoid
     # @example Is the criteria a none criteria?
     #   criteria.empty_and_chainable?
     #
-    # @return [ true, false ] If the criteria is a none.
+    # @return [ true | false ] If the criteria is a none.
     def empty_and_chainable?
       !!@none
     end
@@ -353,9 +333,9 @@ module Mongoid
     #   crtiteria.respond_to?(:each)
     #
     # @param [ Symbol ] name The name of the class method on the +Document+.
-    # @param [ true, false ] include_private Whether to include privates.
+    # @param [ true | false ] include_private Whether to include privates.
     #
-    # @return [ true, false ] If the criteria responds to the method.
+    # @return [ true | false ] If the criteria responds to the method.
     def respond_to?(name, include_private = false)
       super || klass.respond_to?(name) || CHECK.respond_to?(name, include_private)
     end
@@ -406,7 +386,7 @@ module Mongoid
     # @example Add a javascript selection.
     #   criteria.where("this.name == 'syd'")
     #
-    # @param [ String, Hash ] expression The javascript or standard selection.
+    # @param [ String | Hash ] expression The javascript or standard selection.
     #
     # @raise [ UnsupportedJavascript ] If provided a string and the criteria
     #   is embedded.
@@ -431,7 +411,6 @@ module Mongoid
       end
       super
     end
-
 
     # Get a version of this criteria without the options.
     #
@@ -538,7 +517,7 @@ module Mongoid
     # @example Add the type selection.
     #   criteria.merge_type_selection
     #
-    # @return [ true, false ] If type selection was added.
+    # @return [ true | false ] If type selection was added.
     def merge_type_selection
       selector.merge!(type_selection) if type_selectable?
     end
@@ -550,7 +529,7 @@ module Mongoid
     # @example If the criteria type selectable?
     #   criteria.type_selectable?
     #
-    # @return [ true, false ] If type selection should be added.
+    # @return [ true | false ] If type selection should be added.
     def type_selectable?
       klass.hereditary? &&
         !selector.keys.include?(self.discriminator_key) &&

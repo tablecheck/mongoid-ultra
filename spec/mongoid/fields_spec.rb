@@ -393,6 +393,22 @@ describe Mongoid::Fields do
       it "converts :time to Time" do
         expect(klass.field(:test, type: :time).type).to be(Time)
       end
+
+      context 'when using an unknown symbol' do
+        it 'raises InvalidFieldType' do
+          lambda do
+            klass.field(:test, type:  :bogus)
+          end.should raise_error(Mongoid::Errors::InvalidFieldType, /defines a field 'test' with an unknown type value :bogus/)
+        end
+      end
+
+      context 'when using an unknown string' do
+        it 'raises InvalidFieldType' do
+          lambda do
+            klass.field(:test, type:  'bogus')
+          end.should raise_error(Mongoid::Errors::InvalidFieldType, /defines a field 'test' with an unknown type value "bogus"/)
+        end
+      end
     end
 
     context "when the options are valid" do
@@ -427,25 +443,25 @@ describe Mongoid::Fields do
     context "when the Symbol type is used" do
 
       before do
-        Mongoid::Fields::Validators::Macro.class_eval do
-          @field_type_is_symbol_warned = false
+        Mongoid::Warnings.class_eval do
+          @symbol_type_deprecated = false
         end
       end
 
       after do
-        Band.fields.delete("should_warn")
+        Label.fields.delete("should_warn")
       end
 
       it "warns that the BSON symbol type is deprecated" do
         expect(Mongoid.logger).to receive(:warn)
 
-        Band.field :should_warn, type: Symbol
+        Label.field :should_warn, type: Symbol
       end
 
       it "warns on first use of Symbol type only" do
         expect(Mongoid.logger).to receive(:warn).once
 
-        Band.field :should_warn, type: Symbol
+        Label.field :should_warn, type: Symbol
       end
 
       context 'when using Symbol field type in multiple classes' do
@@ -456,7 +472,7 @@ describe Mongoid::Fields do
         it "warns on first use of Symbol type only" do
           expect(Mongoid.logger).to receive(:warn).once
 
-          Band.field :should_warn, type: Symbol
+          Label.field :should_warn, type: Symbol
           Truck.field :should_warn, type: Symbol
         end
       end
@@ -466,7 +482,7 @@ describe Mongoid::Fields do
 
       it "raises an error" do
         expect {
-          Band.field :unacceptable, bad: true
+          Label.field :unacceptable, bad: true
         }.to raise_error(Mongoid::Errors::InvalidFieldOption)
       end
     end
@@ -551,6 +567,49 @@ describe Mongoid::Fields do
         end
       end
     end
+
+    context 'when the field is declared as BSON::Decimal128' do
+      let(:document) { Mop.create!(decimal128_field: BSON::Decimal128.new(Math::PI.to_s)).reload }
+
+      shared_context 'BSON::Decimal128 is BigDecimal' do
+        it 'should return a BigDecimal' do
+          expect(document.decimal128_field).to be_a BigDecimal
+        end
+      end
+
+      shared_context 'BSON::Decimal128 is BSON::Decimal128' do
+        it 'should return a BSON::Decimal128' do
+          expect(document.decimal128_field).to be_a BSON::Decimal128
+        end
+      end
+
+      it 'is declared as BSON::Decimal128' do
+        expect(Mop.fields['decimal128_field'].type).to be == BSON::Decimal128
+      end
+
+      context 'when BSON version <= 4' do
+        max_bson_version '4.99.99'
+        it_behaves_like 'BSON::Decimal128 is BSON::Decimal128'
+      end
+
+      context 'when BSON version >= 5' do
+        min_bson_version '5.0.0'
+
+        context 'when allow_bson5_decimal128 is false' do
+          config_override :allow_bson5_decimal128, false
+          it_behaves_like 'BSON::Decimal128 is BigDecimal'
+        end
+
+        context 'when allow_bson5_decimal128 is true' do
+          config_override :allow_bson5_decimal128, true
+          it_behaves_like 'BSON::Decimal128 is BSON::Decimal128'
+        end
+
+        context 'when allow_bson5_decimal128 is default' do
+          it_behaves_like 'BSON::Decimal128 is BigDecimal'
+        end
+      end
+    end
   end
 
   describe "#getter_before_type_cast" do
@@ -568,8 +627,144 @@ describe Mongoid::Fields do
     context "when the attribute has been assigned" do
 
       it "returns the attribute before type cast" do
-        person.age = "old"
-        expect(person.age_before_type_cast).to eq("old")
+        person.age = "42"
+        expect(person.age_before_type_cast).to eq("42")
+      end
+    end
+
+    context "when reloading" do
+
+      let(:product) do
+        Product.create!(price: '1')
+      end
+
+      before do
+        product.reload
+      end
+
+      it "resets the attributes_before_type_cast to the attributes hash" do
+        expect(product.attributes_before_type_cast).to eq(product.attributes)
+      end
+
+      it "the *_before_type_cast method returns the demongoized value" do
+        expect(product.price_before_type_cast).to eq(1)
+      end
+    end
+
+    context "when reloading and writing a demongoizable value" do
+
+      let(:product) do
+        Product.create!.tap do |product|
+          Product.collection.update_one({ _id: product.id }, { :$set => { price: '1' }})
+        end
+      end
+
+      before do
+        product.reload
+      end
+
+      it "resets the attributes_before_type_cast to the attributes hash" do
+        expect(product.attributes_before_type_cast).to eq(product.attributes)
+      end
+
+      it "the *_before_type_cast method returns the mongoized value" do
+        expect(product.price_before_type_cast).to eq('1')
+      end
+    end
+
+    context "when reading from the db" do
+
+      let(:product) do
+        Product.create!(price: '1')
+      end
+
+      let(:from_db) do
+        Product.find(product.id)
+      end
+
+      it "resets the attributes_before_type_cast to the attributes hash" do
+        expect(from_db.attributes_before_type_cast).to eq(from_db.attributes)
+      end
+
+      it "the *_before_type_cast method returns the demongoized value" do
+        expect(from_db.price_before_type_cast).to eq(1)
+      end
+    end
+
+    context "when reading from the db after writing a demongoizable value" do
+
+      let(:product) do
+        Product.create!.tap do |product|
+          Product.collection.update_one({ _id: product.id }, { :$set => { price: '1' }})
+        end
+      end
+
+      let(:from_db) do
+        Product.find(product.id)
+      end
+
+      it "resets the attributes_before_type_cast to the attributes hash" do
+        expect(from_db.attributes_before_type_cast).to eq(from_db.attributes)
+      end
+
+      it "the *_before_type_cast method returns the mongoized value" do
+        expect(from_db.price_before_type_cast).to eq('1')
+      end
+    end
+
+    context "when making a new model" do
+
+      context "when using new with no options" do
+        let(:product) { Product.new }
+
+        it "sets the attributes_before_type_cast to the attributes hash" do
+          expect(product.attributes_before_type_cast).to eq(product.attributes)
+        end
+      end
+
+      context "when using new with options" do
+        let(:product) { Product.new(price: '1') }
+
+        let(:abtc) do
+          product.attributes.merge('price' => '1')
+        end
+
+        it "has the attributes before type cast" do
+          expect(product.attributes_before_type_cast).to eq(abtc)
+        end
+      end
+
+      context "when persisting the model" do
+        let(:product) { Product.new(price: '1') }
+
+        let(:abtc) do
+          product.attributes.merge('price' => '1')
+        end
+
+        before do
+          expect(product.attributes_before_type_cast).to eq(abtc)
+          product.save!
+        end
+
+        it "resets the attributes_before_type_cast to the attributes" do
+          expect(product.attributes_before_type_cast).to eq(product.attributes)
+        end
+      end
+
+      context "when using create! without options" do
+        let(:product) { Product.create! }
+
+        it "resets the attributes_before_type_cast to the attributes" do
+          expect(product.attributes_before_type_cast).to eq(product.attributes)
+        end
+      end
+
+      context "when using create! with options" do
+        let(:product) { Product.create!(price: '1') }
+
+        it "resets the attributes_before_type_cast to the attributes" do
+          expect(product.attributes_before_type_cast).to eq(product.attributes)
+        end
       end
     end
   end
@@ -725,6 +920,22 @@ describe Mongoid::Fields do
         end
       end
     end
+
+    context "when the field needs to be mongoized" do
+
+      before do
+        product.price = "1"
+        product.save!
+      end
+
+      it "mongoizes the value" do
+        expect(product.price).to eq(1)
+      end
+
+      it "stores the value in the mongoized form" do
+        expect(product.attributes_before_type_cast["price"]).to eq(1)
+      end
+    end
   end
 
   describe "#defaults" do
@@ -861,7 +1072,7 @@ describe Mongoid::Fields do
           it "raises an error" do
             expect {
               Person.field(meth)
-            }.to raise_error(Mongoid::Errors::InvalidField)
+            }.to raise_error(Mongoid::Errors::InvalidField, /Defining a field named '#{meth}' is not allowed/)
           end
         end
       end
@@ -988,7 +1199,7 @@ describe Mongoid::Fields do
       end
 
       it "uses the alias to write the attribute" do
-        (person.alias = expect(true)).to be true
+        expect(person.alias = true).to be true
       end
 
       it "uses the alias to read the attribute" do
@@ -1000,7 +1211,7 @@ describe Mongoid::Fields do
       end
 
       it "uses the name to write the attribute" do
-        (person.aliased = expect(true)).to be true
+        expect(person.aliased = true).to be true
       end
 
       it "uses the name to read the attribute" do
@@ -1229,71 +1440,147 @@ describe Mongoid::Fields do
 
   context "when a field is defined as a big decimal" do
 
-    let(:band) do
-      Band.new(name: "Tool")
+    context 'when Mongoid.map_big_decimal_to_decimal128 is false' do
+      config_override :map_big_decimal_to_decimal128, false
+
+      let(:band) do
+        Band.new(name: "Tool")
+      end
+
+      let(:decimal) do
+        BigDecimal("1000000.00")
+      end
+
+      context "when setting to a big decimal" do
+
+        before do
+          band.sales = decimal
+        end
+
+        it "properly persists as a string" do
+          expect(band.attributes["sales"]).to eq(decimal.to_s)
+        end
+
+        it "returns the proper big decimal" do
+          expect(band.sales).to eq(decimal)
+        end
+      end
+
+      context "when setting to a string" do
+
+        before do
+          band.sales = decimal.to_s
+        end
+
+        it "properly persists as a string" do
+          expect(band.attributes["sales"]).to eq(decimal.to_s)
+        end
+
+        it "returns the proper big decimal" do
+          expect(band.sales).to eq(decimal)
+        end
+      end
+
+      context "when setting to an integer" do
+
+        before do
+          band.sales = decimal.to_i
+        end
+
+        it "properly persists as a string" do
+          expect(band.attributes["sales"]).to eq("1000000")
+        end
+
+        it "returns the proper big decimal" do
+          expect(band.sales).to eq(decimal)
+        end
+      end
+
+      context "when setting to a float" do
+
+        before do
+          band.sales = decimal.to_f
+        end
+
+        it "properly persists as a string" do
+          expect(band.attributes["sales"]).to eq(decimal.to_s)
+        end
+
+        it "returns the proper big decimal" do
+          expect(band.sales).to eq(decimal)
+        end
+      end
     end
 
-    let(:decimal) do
-      BigDecimal("1000000.00")
-    end
+    context 'when Mongoid.map_big_decimal_to_decimal128 is true' do
+      config_override :map_big_decimal_to_decimal128, true
 
-    context "when setting to a big decimal" do
-
-      before do
-        band.sales = decimal
+      let(:band) do
+        Band.new(name: "Tool")
       end
 
-      it "properly persists as a string" do
-        expect(band.attributes["sales"]).to eq(decimal.to_s)
+      let(:decimal) do
+        BigDecimal("1000000.00")
       end
 
-      it "returns the proper big decimal" do
-        expect(band.sales).to eq(decimal)
-      end
-    end
+      context "when setting to a big decimal" do
 
-    context "when setting to a string" do
+        before do
+          band.sales = decimal
+        end
 
-      before do
-        band.sales = decimal.to_s
-      end
+        it "properly persists as a BSON::Decimal128" do
+          expect(band.attributes["sales"]).to eq(BSON::Decimal128.new(decimal))
+        end
 
-      it "properly persists as a string" do
-        expect(band.attributes["sales"]).to eq(decimal.to_s)
-      end
-
-      it "returns the proper big decimal" do
-        expect(band.sales).to eq(decimal)
-      end
-    end
-
-    context "when setting to an integer" do
-
-      before do
-        band.sales = decimal.to_i
+        it "returns the proper big decimal" do
+          expect(band.sales).to eq(decimal)
+        end
       end
 
-      it "properly persists as a string" do
-        expect(band.attributes["sales"]).to eq("1000000")
+      context "when setting to a string" do
+
+        before do
+          band.sales = decimal.to_s
+        end
+
+        it "persists as a BSON::Decimal128" do
+          expect(band.attributes["sales"]).to eq(BSON::Decimal128.new(decimal.to_s))
+        end
+
+        it "returns the proper big decimal" do
+          expect(band.sales).to eq(decimal)
+        end
       end
 
-      it "returns the proper big decimal" do
-        expect(band.sales).to eq(decimal)
+      context "when setting to an integer" do
+
+        before do
+          band.sales = decimal.to_i
+        end
+
+        it "persists as a BSON::Decimal128" do
+          expect(band.attributes["sales"]).to eq(BSON::Decimal128.new(decimal.to_i.to_s))
+        end
+
+        it "returns the proper big decimal" do
+          expect(band.sales).to eq(decimal)
+        end
       end
-    end
 
-    context "when setting to a float" do
+      context "when setting to a float" do
 
-      before do
-        band.sales = decimal.to_f
-      end
+        before do
+          band.sales = decimal.to_f
+        end
 
-      it "properly persists as a string" do
-        expect(band.attributes["sales"]).to eq(decimal.to_s)
-      end
+        it "properly persists as a BSON::Decimal128" do
+          expect(band.attributes["sales"]).to eq(BSON::Decimal128.new(decimal.to_f.to_s))
+        end
 
-      it "returns the proper big decimal" do
-        expect(band.sales).to eq(decimal)
+        it "returns the proper big decimal" do
+          expect(band.sales).to eq(decimal)
+        end
       end
     end
   end
@@ -1618,6 +1905,33 @@ describe Mongoid::Fields do
       context 'given a Symbol' do
         subject { Person.database_field_name(key.to_sym) }
         it_behaves_like 'pre-fix database_field_name'
+      end
+    end
+
+    context 'when getting the database field name of a belongs_to associations' do
+      # These tests only apply when the flag is not set
+      config_override :broken_alias_handling, false
+
+      context "when the broken_alias_handling is not set" do
+        context "when the association is the last item" do
+          let(:name) do
+            Game.database_field_name("person")
+          end
+
+          it "gets the alias" do
+            expect(name).to eq("person_id")
+          end
+        end
+
+        context "when the association is not the last item" do
+          let(:name) do
+            Game.database_field_name("person.name")
+          end
+
+          it "gets the alias" do
+            expect(name).to eq("person.name")
+          end
+        end
       end
     end
   end

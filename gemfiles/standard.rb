@@ -4,13 +4,6 @@ def standard_dependencies
   group :development do
     gem 'yard'
 
-    platform :mri do
-      # Debugger for VSCode.
-      if !ENV['CI'] && !ENV['DOCKER'] && RUBY_VERSION < '3.0'
-        gem 'debase'
-        gem 'ruby-debug-ide'
-      end
-    end
   end
 
   group :development, :test do
@@ -32,6 +25,7 @@ def standard_dependencies
     gem 'fuubar'
     gem 'rfc'
     gem 'childprocess'
+    gem 'puma' # for app tests
 
     platform :mri do
       gem 'timeout-interrupt'

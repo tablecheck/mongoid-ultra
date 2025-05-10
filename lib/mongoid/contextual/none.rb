@@ -40,7 +40,7 @@ module Mongoid
       #
       # @param [ Array ] other The other array.
       #
-      # @return [ true, false ] If the objects are equal.
+      # @return [ true | false ] If the objects are equal.
       def ==(other)
         other.is_a?(None)
       end
@@ -50,7 +50,7 @@ module Mongoid
       # @example Get the distinct values in null context.
       #   context.distinct(:name)
       #
-      # @param [ String, Symbol ] _field The name of the field.
+      # @param [ String | Symbol ] _field The name of the field.
       #
       # @return [ Array ] An empty Array.
       def distinct(_field)
@@ -88,11 +88,35 @@ module Mongoid
       # @example Get the values for null context.
       #   context.pluck(:name)
       #
-      # @param [ String, Symbol, Array ] args Field or fields to pluck.
+      # @param [ String | Symbol ] *_fields Field(s) to pluck.
       #
       # @return [ Array ] An empty Array.
-      def pluck(*args)
+      def pluck(*_fields)
         []
+      end
+
+      # Pick the field values in null context.
+      #
+      # @example Get the value for null context.
+      #   context.pick(:name)
+      #
+      # @param [ String | Symbol ] *_fields Field or fields to pick.
+      #
+      # @return [ nil ] Always reeturn nil.
+      def pick(*_fields)
+        nil
+      end
+
+      # Tally the field values in null context.
+      #
+      # @example Get the values for null context.
+      #   context.tally(:name)
+      #
+      # @param [ String | Symbol ] _field Field to tally.
+      #
+      # @return [ Hash ] An empty Hash.
+      def tally(_field)
+        {}
       end
 
       # Create the new null context.
@@ -110,14 +134,11 @@ module Mongoid
       # @example Get the first document in null context.
       #   context.first
       #
-      # @param [ Integer | Hash ] limit_or_opts The number of documents to
-      #   return, or a hash of options.
+      # @param [ Integer ] limit The number of documents to return.
       #
       # @return [ nil ] Always nil.
-      def first(limit_or_opts = nil)
-        if !limit_or_opts.nil? && !limit_or_opts.is_a?(Hash)
-          []
-        end
+      def first(limit = nil)
+        [] unless limit.nil?
       end
 
       # Always returns nil.
@@ -125,14 +146,11 @@ module Mongoid
       # @example Get the last document in null context.
       #   context.last
       #
-      # @param [ Integer | Hash ] limit_or_opts The number of documents to
-      #   return, or a hash of options.
+      # @param [ Integer ] limit The number of documents to return.
       #
       # @return [ nil ] Always nil.
-      def last(limit_or_opts = nil)
-        if !limit_or_opts.nil? && !limit_or_opts.is_a?(Hash)
-          []
-        end
+      def last(limit = nil)
+        [] unless limit.nil?
       end
 
       # Returns nil or empty array.

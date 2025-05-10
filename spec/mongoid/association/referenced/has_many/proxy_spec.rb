@@ -2,6 +2,26 @@
 
 require "spec_helper"
 
+module RefHasManySpec
+  module OverrideInitialize
+    class Parent
+      include Mongoid::Document
+      has_many :children, inverse_of: :parent
+    end
+
+    class Child
+      include Mongoid::Document
+      belongs_to :parent
+      field :name, type: String
+
+      def initialize(*args)
+        super
+        self.name ||= "default"
+      end
+    end
+  end
+end
+
 describe Mongoid::Association::Referenced::HasMany::Proxy do
 
   before :all do
@@ -877,6 +897,14 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   [ :build, :new ].each do |method|
 
     describe "##{method}" do
+      context 'when model has #initialize' do
+        let(:parent) { RefHasManySpec::OverrideInitialize::Parent.create }
+        let(:child)  { parent.children.send(method) }
+
+        it 'should call #initialize' do
+          expect(child.name).to be == "default"
+        end
+      end
 
       context "when the association is not polymorphic" do
 
@@ -2077,152 +2105,112 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
   end
 
-  describe "#delete" do
+  %i[ delete delete_one ].each do |method|
+    describe "##{method}" do
+      let!(:person) { Person.create!(username: 'arthurnn') }
 
-    let!(:person) do
-      Person.create!(username: 'arthurnn')
-    end
+      context 'when the document is found' do
+        context 'when no dependent option is set' do
+          context 'when we are assigning attributes' do
+            let!(:drug) { person.drugs.create! }
+            let(:deleted) { person.drugs.send(method, drug) }
 
-    context "when the document is found" do
+            before do
+              Mongoid::Threaded.begin_execution(:assign)
+            end
 
-      context "when no dependent option is set" do
+            after do
+              Mongoid::Threaded.exit_execution(:assign)
+            end
 
-        context "when we are assigning attributes" do
-
-          let!(:drug) do
-            person.drugs.create!
+            it 'does not cascade' do
+              expect(deleted.changes.keys).to eq([ 'person_id' ])
+            end
           end
 
-          before do
-            Mongoid::Threaded.begin_execution(:assign)
+          context 'when the document is loaded' do
+            let!(:drug) { person.drugs.create! }
+            let!(:deleted) { person.drugs.send(method, drug) }
+
+            it 'returns the document' do
+              expect(deleted).to eq(drug)
+            end
+
+            it 'deletes the foreign key' do
+              expect(drug.person_id).to be_nil
+            end
+
+            it 'removes the document from the association' do
+              expect(person.drugs).not_to include(drug)
+            end
           end
 
-          after do
-            Mongoid::Threaded.exit_execution(:assign)
-          end
+          context 'when the document is not loaded' do
+            let!(:drug) { Drug.create!(person_id: person.username) }
+            let!(:deleted) { person.drugs.send(method, drug) }
 
-          let(:deleted) do
-            person.drugs.delete(drug)
-          end
+            it 'returns the document' do
+              expect(deleted).to eq(drug)
+            end
 
-          it "does not cascade" do
-            expect(deleted.changes.keys).to eq([ "person_id" ])
-          end
-        end
+            it 'deletes the foreign key' do
+              expect(drug.person_id).to be_nil
+            end
 
-        context "when the document is loaded" do
-
-          let!(:drug) do
-            person.drugs.create!
-          end
-
-          let!(:deleted) do
-            person.drugs.delete(drug)
-          end
-
-          it "returns the document" do
-            expect(deleted).to eq(drug)
-          end
-
-          it "deletes the foreign key" do
-            expect(drug.person_id).to be_nil
-          end
-
-          it "removes the document from the association" do
-            expect(person.drugs).to_not include(drug)
-          end
-        end
-
-        context "when the document is not loaded" do
-
-          let!(:drug) do
-            Drug.create!(person_id: person.username)
-          end
-
-          let!(:deleted) do
-            person.drugs.delete(drug)
-          end
-
-          it "returns the document" do
-            expect(deleted).to eq(drug)
-          end
-
-          it "deletes the foreign key" do
-            expect(drug.person_id).to be_nil
-          end
-
-          it "removes the document from the association" do
-            expect(person.drugs).to_not include(drug)
-          end
-        end
-      end
-
-      context "when dependent is delete" do
-
-        context "when the document is loaded" do
-
-          let!(:post) do
-            person.posts.create!(title: "test")
-          end
-
-          let!(:deleted) do
-            person.posts.delete(post)
-          end
-
-          it "returns the document" do
-            expect(deleted).to eq(post)
-          end
-
-          it "deletes the document" do
-            expect(post).to be_destroyed
-          end
-
-          it "removes the document from the association" do
-            expect(person.posts).to_not include(post)
+            it 'removes the document from the association' do
+              expect(person.drugs).not_to include(drug)
+            end
           end
         end
 
-        context "when the document is not loaded" do
+        context 'when dependent is delete' do
+          context 'when the document is loaded' do
+            let!(:post) { person.posts.create!(title: 'test') }
+            let!(:deleted) { person.posts.send(method, post) }
 
-          let!(:post) do
-            Post.create!(title: "foo", person_id: person.id)
+            it 'returns the document' do
+              expect(deleted).to eq(post)
+            end
+
+            it 'deletes the document' do
+              expect(post).to be_destroyed
+            end
+
+            it 'removes the document from the association' do
+              expect(person.posts).not_to include(post)
+            end
           end
 
-          let!(:deleted) do
-            person.posts.delete(post)
-          end
+          context 'when the document is not loaded' do
+            let!(:post) { Post.create!(title: 'foo', person_id: person.id) }
+            let!(:deleted) { person.posts.send(method, post) }
 
-          it "returns the document" do
-            expect(deleted).to eq(post)
-          end
+            it 'returns the document' do
+              expect(deleted).to eq(post)
+            end
 
-          it "deletes the document" do
-            expect(post).to be_destroyed
-          end
+            it 'deletes the document' do
+              expect(post).to be_destroyed
+            end
 
-          it "removes the document from the association" do
-            expect(person.posts).to_not include(post)
+            it 'removes the document from the association' do
+              expect(person.posts).not_to include(post)
+            end
           end
         end
       end
-    end
 
-    context "when the document is not found" do
+      context 'when the document is not found' do
+        let!(:post) { Post.create!(title: 'foo') }
+        let!(:deleted) { person.posts.send(method, post) }
 
-      let!(:post) do
-        Post.create!(title: "foo")
-      end
+        it 'returns nil' do
+          expect(deleted).to be_nil
+        end
 
-      let!(:deleted) do
-        person.posts.delete(post)
-      end
-
-      it "returns nil" do
-        expect(deleted).to be_nil
-      end
-
-      it "does not delete the document" do
-        expect(post).to be_persisted
+        it 'does not delete the document' do
+          expect(post).to be_persisted
+        end
       end
     end
   end
@@ -2239,10 +2227,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
             Person.create!(username: 'durran')
           end
 
-          before do
-            person.posts.create!(title: "Testing")
-            person.posts.create!(title: "Test")
-          end
+          let!(:post1) { person.posts.create!(title: "Testing") }
+          let!(:post2) { person.posts.create!(title: "Test") }
 
           it "removes the correct posts" do
             person.posts.send(method, { title: "Testing" })
@@ -2257,6 +2243,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
           it "returns the number of documents deleted" do
             expect(person.posts.send(method, { title: "Testing" })).to eq(1)
+          end
+
+          it "sets the association locally" do
+            person.posts.send(method, { title: "Testing" })
+            expect(person.posts).to eq([post2])
           end
         end
 
@@ -2284,6 +2275,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
           it "returns the number of documents deleted" do
             expect(person.posts.send(method)).to eq(2)
           end
+
+          it "sets the association locally" do
+            person.posts.send(method)
+            expect(person.posts).to eq([])
+          end
         end
       end
 
@@ -2295,10 +2291,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
             Movie.create!(title: "Bladerunner")
           end
 
-          before do
-            movie.ratings.create!(value: 1)
-            movie.ratings.create!(value: 2)
-          end
+          let!(:rating1) { movie.ratings.create!(value: 1) }
+          let!(:rating2) { movie.ratings.create!(value: 2) }
 
           it "removes the correct ratings" do
             movie.ratings.send(method, { value: 1 })
@@ -2312,6 +2306,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
           it "returns the number of documents deleted" do
             expect(movie.ratings.send(method, { value: 1 })).to eq(1)
+          end
+
+          it "sets the association locally" do
+            movie.ratings.send(method, { value: 1 })
+            expect(movie.ratings).to eq([rating2])
           end
         end
 
@@ -2338,6 +2337,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
           it "returns the number of documents deleted" do
             expect(movie.ratings.send(method)).to eq(2)
+          end
+
+          it "sets the association locally" do
+            movie.ratings.send(method)
+            expect(movie.ratings).to eq([])
           end
         end
       end
@@ -2524,7 +2528,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
           it "raises an error" do
             expect {
               person.posts.find(post.id)
-            }.to raise_error(Mongoid::Errors::DocumentNotFound)
+            }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
           end
         end
 
@@ -2539,7 +2543,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
             it "raises an error" do
               expect {
                 person.posts.find(BSON::ObjectId.new)
-              }.to raise_error(Mongoid::Errors::DocumentNotFound)
+              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
             end
           end
 
@@ -2588,7 +2592,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
             it "raises an error" do
               expect {
                 person.posts.find([ BSON::ObjectId.new ])
-              }.to raise_error(Mongoid::Errors::DocumentNotFound)
+              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
             end
           end
 
@@ -2652,7 +2656,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
             it "raises an error" do
               expect {
                 movie.ratings.find(BSON::ObjectId.new)
-              }.to raise_error(Mongoid::Errors::DocumentNotFound)
+              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Rating with id\(s\)/)
             end
           end
 
@@ -2709,7 +2713,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
             it "raises an error" do
               expect {
                 movie.ratings.find([ BSON::ObjectId.new ])
-              }.to raise_error(Mongoid::Errors::DocumentNotFound)
+              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Rating with id\(s\)/)
             end
           end
 
@@ -4087,6 +4091,39 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
     it 'constructs the correct criteria' do
       expect(band.same_name).to eq([agent])
+    end
+  end
+
+  context "when removing a document with counter_cache on" do
+    let(:post) { Post.create! }
+    let(:person1) { Person.create! }
+    let(:person2) { Person.create! }
+
+    before do
+      post.update_attribute(:person, person1)
+      expect(person1.posts_count).to eq 1
+
+      person2
+      post.update_attribute(:person, person2)
+      person1.reload
+      expect(person1.posts_count).to eq 0
+      expect(person2.posts_count).to eq 1
+
+      post.update_attribute(:person, nil)
+      person1.reload
+      person2.reload
+    end
+
+    it "the count field is updated" do
+      expect(person2.posts_count).to eq 0
+    end
+  end
+
+  context "when there is a foreign key in the aliased associations" do
+    it "has the correct aliases" do
+      expect(Band.aliased_associations["artist_ids"]).to eq("artists")
+      expect(Artist.aliased_associations.key?("band_id")).to be false
+      expect(Artist.aliased_fields["band"]).to eq("band_id")
     end
   end
 

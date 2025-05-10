@@ -19,7 +19,6 @@ module Mongoid
       #   end
       #
       # @param [ Array ] args The arguments to pass to the validator.
-      #
       def validates_associated(*args)
         validates_with(AssociatedValidator, _merge_attributes(args))
       end
@@ -37,7 +36,6 @@ module Mongoid
       #   end
       #
       # @param [ Array ] args The arguments to pass to the validator.
-      #
       def validates_uniqueness_of(*args)
         validates_with(UniquenessValidator, _merge_attributes(args))
       end
@@ -85,6 +83,21 @@ module Mongoid
       # @param [ Array ] args The names of the fields to validate.
       def validates_presence_of(*args)
         validates_with(PresenceValidator, _merge_attributes(args))
+      end
+
+      # Validates whether or not a field contains a numeric value.
+      #
+      # @example
+      #   class Person
+      #     include Mongoid::Document
+      #     field :cost
+      #
+      #     validates_numericality_of :cost
+      #   end
+      #
+      # @param [ Object... ] *args The names of the field(s) to validate.
+      def validates_numericality_of(*args)
+        validates_with(NumericalityValidator, _merge_attributes(args))
       end
     end
   end

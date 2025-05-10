@@ -188,8 +188,6 @@ describe 'callbacks integration tests' do
           end
 
           it 'persists the attribute value' do
-            pending 'MONGOID-4476'
-
             Galaxy.find(instance.id).stars.first.planets.first.age.should == 2_000
           end
         end
@@ -211,18 +209,289 @@ describe 'callbacks integration tests' do
         end
       end
     end
+
+    context 'when updating top-level embeds_one document via #update_attributes!' do
+      let!(:instance) do
+        Country.create!
+      end
+
+      context 'embedded document' do
+        shared_examples 'persists the attribute value' do
+          it 'writes the attribute value into the model' do
+            instance.president.age.should == 79
+          end
+
+          it 'persists the attribute value' do
+            Country.find(instance.id).president.age.should == 79
+          end
+        end
+
+        context 'set as a document instance' do
+          before do
+            instance.update_attributes!(president: President.new)
+          end
+
+          include_examples 'persists the attribute value'
+        end
+
+        context 'set as attributes on parent' do
+          before do
+            instance.update_attributes!(president: { name: "Abraham Lincoln" })
+          end
+
+          include_examples 'persists the attribute value'
+        end
+      end
+
+      context 'nested embedded document' do
+        shared_examples 'persists the attribute value' do
+          it 'writes the attribute value into the model' do
+            instance.president.first_spouse.age.should == 70
+          end
+
+          it 'persists the attribute value' do
+            Country.find(instance.id).president.first_spouse.age.should == 70
+          end
+        end
+
+        context 'set as a document instance' do
+          before do
+            instance.update_attributes!(president: President.new(first_spouse: FirstSpouse.new))
+          end
+
+          include_examples 'persists the attribute value'
+        end
+
+        context 'set as attributes on parent' do
+          before do
+            instance.update_attributes!(president: { first_spouse: { name: "Mary Todd Lincoln" } })
+          end
+
+          include_examples 'persists the attribute value'
+        end
+      end
+    end
   end
 
   context 'attribute_was value in after_save callback' do
     let!(:obj) { Emission.create!(frequency: 1) }
 
     it 'is set to the new value' do
-      pending 'MONGOID-5104'
-
       obj.frequency = 2
       obj.save!
 
       obj.previous.should == 2
+    end
+  end
+
+  context 'atomic_selector in after_save callback' do
+    let(:name) do
+      'Alice'
+    end
+
+    let(:new_name) do
+      'Bob'
+    end
+
+    class CBIntSpecProfile
+      include Mongoid::Document
+      field :name, type: String
+      shard_key :name
+
+      attr_reader :atomic_selector_in_after_save
+
+      after_save do |document|
+        @atomic_selector_in_after_save = document.atomic_selector
+      end
+    end
+
+    it 'has updated attributes' do
+      profile = CBIntSpecProfile.create!(name: name)
+      profile.name = new_name
+      profile.save!
+      expect(
+        profile.atomic_selector_in_after_save['name']
+      ).to eq(new_name)
+    end
+  end
+
+  context "When touching an embedded document" do
+    let(:planet) { Planet.new }
+    let(:star) { Star.new }
+    let(:galaxy) { Galaxy.create! }
+
+    before do
+      star.planets << planet
+      galaxy.stars << star
+    end
+
+    it "the parent document touch callback gets called before the child" do
+      planet.touch
+      expect(galaxy.was_touched).to be true
+      expect(star.was_touched_after_parent).to be true
+      expect(planet.was_touched_after_parent).to be true
+    end
+  end
+
+  context "when reloading has_and_belongs_to_many after_save and after_remove callbacks" do
+
+    let(:architect) { Architect.create }
+
+    let(:b1) { Building.create }
+
+    let(:b2) { Building.create }
+
+    let(:b3) { Building.create }
+
+    it "counts added/removed buildings correctly" do
+      architect.buildings << b1
+      expect(architect.after_add_num_buildings).to eq(1)
+
+      architect.reload
+      architect.buildings << b2
+      expect(architect.after_add_num_buildings).to eq(2)
+
+      architect.reload
+      architect.buildings << b3
+      expect(architect.after_add_num_buildings).to eq(3)
+
+      architect.reload
+      architect.buildings.delete(b3)
+      expect(architect.after_remove_num_buildings).to eq(2)
+    end
+  end
+
+  context '_previously was methods in after_save callback' do
+    let(:title) do
+      "Title"
+    end
+
+    let(:updated_title) do
+      "Updated title"
+    end
+
+    let(:age) do
+      10
+    end
+
+    it do
+      class PreviouslyWasPerson
+        include Mongoid::Document
+
+        field :title, type: String
+        field :age, type: Integer
+
+        attr_reader :after_save_vals
+
+        set_callback :save, :after do |doc|
+          @after_save_vals ||= []
+          @after_save_vals << [doc.title_previously_was, doc.age_previously_was]
+        end
+      end
+
+      person = PreviouslyWasPerson.create!(title: title, age: age)
+      person.title = updated_title
+      person.save!
+      expect(person.after_save_vals).to eq([
+        # Field values are nil before create
+        [nil, nil],
+        [title, age]
+        ])
+    end
+  end
+
+  context 'previously_new_record? in after_save' do
+    it do
+      class PreviouslyNewRecordPerson
+        include Mongoid::Document
+
+        field :title, type: String
+        field :age, type: Integer
+
+        attr_reader :previously_new_record_value
+
+        set_callback :save, :after do |doc|
+          @previously_new_record_value = doc.previously_new_record?
+        end
+      end
+
+      person = PreviouslyNewRecordPerson.create!(title: "title", age: 55)
+      expect(person.previously_new_record_value).to be_truthy
+      person.title = "New title"
+      person.save!
+      expect(person.previously_new_record_value).to be_falsey
+    end
+  end
+
+  context 'previously_persisted? in after_destroy' do
+    it do
+      class PreviouslyPersistedPerson
+        include Mongoid::Document
+
+        field :title, type: String
+        field :age, type: Integer
+
+        attr_reader :previously_persisted_value
+
+        set_callback :destroy, :after do |doc|
+          @previously_persisted_value = doc.previously_persisted?
+        end
+      end
+
+      unsaved_person = PreviouslyPersistedPerson.new(title: "title", age: 55)
+      unsaved_person.destroy
+      expect(unsaved_person.previously_persisted_value).to be_falsey
+
+      saved_person = PreviouslyPersistedPerson.create(title: "title", age: 55)
+      saved_person.destroy
+      expect(saved_person.previously_persisted_value).to be_truthy
+    end
+  end
+
+  context 'cascade callbacks' do
+    ruby_version_gte '3.0'
+    config_override :around_callbacks_for_embeds, false
+
+    let(:book) do
+      Book.new
+    end
+
+    before do
+      1500.times do
+        book.pages.build
+      end
+    end
+
+    # https://jira.mongodb.org/browse/MONGOID-5658
+    it 'does not raise SystemStackError' do
+      expect { book.save! }.not_to raise_error(SystemStackError)
+    end
+  end
+
+  context 'nested embedded documents' do
+    config_override :prevent_multiple_calls_of_embedded_callbacks, true
+
+    let(:logger) { Array.new }
+
+    let(:root) do
+      Root.new(
+        embedded_once: [
+          EmbeddedOnce.new(
+            embedded_twice: [EmbeddedTwice.new]
+          )
+        ]
+      )
+    end
+
+    before(:each) do
+      root.logger = logger
+      root.embedded_once.first.logger = logger
+      root.embedded_once.first.embedded_twice.first.logger = logger
+    end
+
+    it 'runs callbacks in the correct order' do
+      root.save!
+      expect(logger).to eq(%i[embedded_twice embedded_once root])
     end
   end
 end

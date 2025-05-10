@@ -59,19 +59,21 @@ describe Mongoid::Contextual::None do
     end
   end
 
+  describe "#pick" do
+    it "returns an empty array" do
+      expect(context.pick(:id)).to eq(nil)
+    end
+  end
+
+  describe "#tally" do
+    it "returns an empty hash" do
+      expect(context.tally(:id)).to eq({})
+    end
+  end
+
   describe "#first" do
     it "returns nil" do
       expect(context.first).to be_nil
-    end
-
-    it "doen't raise when passing options" do
-      expect do
-        context.first(id_sort: :none)
-      end.to_not raise_error
-    end
-
-    it "returns nil when passing a hash" do
-      expect(context.first(id_sort: :none)).to be_nil
     end
 
     it "returns [] when passing a limit" do
@@ -82,16 +84,6 @@ describe Mongoid::Contextual::None do
   describe "#last" do
     it "returns nil" do
       expect(context.last).to be_nil
-    end
-
-    it "doen't raise when passing options" do
-      expect do
-        context.last(id_sort: :none)
-      end.to_not raise_error
-    end
-
-    it "returns nil when passing a hash" do
-      expect(context.last(id_sort: :none)).to be_nil
     end
 
     it "returns [] when passing a limit" do

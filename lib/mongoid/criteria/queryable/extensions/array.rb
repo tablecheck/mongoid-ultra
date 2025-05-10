@@ -105,21 +105,7 @@ module Mongoid
           #
           # @return [ Hash ] The field/direction pair.
           def __sort_pair__
-            { first => last.to_direction }
-          end
-
-          # Update all the values in the hash with the provided block.
-          #
-          # @example Update the values in place.
-          #   [ 1, 2, 3 ].update_values(&:to_s)
-          #
-          # @param [ Proc ] block The block to execute on each value.
-          #
-          # @return [ Array ] the array.
-          #
-          # @deprecated
-          def update_values(&block)
-            replace(map(&block))
+            { first => Mongoid::Criteria::Translator.to_direction(last) }
           end
 
           private
@@ -147,7 +133,8 @@ module Mongoid
             #
             # @return [ Object ] The evolved object.
             def evolve(object)
-              if object.is_a?(::Array)
+              case object
+              when ::Array, ::Set
                 object.map { |obj| obj.class.evolve(obj) }
               else
                 object

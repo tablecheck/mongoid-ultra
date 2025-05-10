@@ -54,7 +54,7 @@ module Mongoid
         # @example Store a value in the options.
         #   options.store(:key, "testing")
         #
-        # @param [ String, Symbol ] key The name of the attribute.
+        # @param [ String | Symbol ] key The name of the attribute.
         # @param [ Object ] value The value to add.
         #
         # @return [ Object ] The stored object.
@@ -84,7 +84,7 @@ module Mongoid
         #
         # @return [ Options ] The copied options.
         def __deep_copy__
-          self.class.new(aliases, serializers) do |copy|
+          self.class.new(aliases, serializers, associations, aliased_associations) do |copy|
             each_pair do |key, value|
               copy.merge!(key => value.__deep_copy__)
             end

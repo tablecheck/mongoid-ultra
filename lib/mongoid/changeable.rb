@@ -21,7 +21,7 @@ module Mongoid
     # @example Has the document changed?
     #   model.changed?
     #
-    # @return [ true, false ] If the document is changed.
+    # @return [ true | false ] If the document is changed.
     def changed?
       changes.values.any? { |val| val } || children_changed?
     end
@@ -30,7 +30,7 @@ module Mongoid
     #
     # @note This intentionally only considers children and not descendants.
     #
-    # @return [ true, false ] If any children have changed.
+    # @return [ true | false ] If any children have changed.
     def children_changed?
       _children.any?(&:changed?)
     end
@@ -62,16 +62,15 @@ module Mongoid
 
     # Call this method after save, so the changes can be properly switched.
     #
-    # This will unset the memoized children array, set new record to
+    # This will unset the memoized children array, set new record flag to
     # false, set the document as validated, and move the dirty changes.
     #
     # @example Move the changes to previous.
     #   person.move_changes
     def move_changes
       @previous_changes = changes
-      Atomic::UPDATES.each do |update|
-        send(update).clear
-      end
+      @previous_attributes = attributes.dup
+      reset_atomic_updates!
       changed_attributes.clear
     end
 
@@ -81,6 +80,7 @@ module Mongoid
     #   document.post_persist
     def post_persist
       reset_persisted_descendants
+      reset_attributes_before_type_cast
       move_changes
     end
 
@@ -100,7 +100,7 @@ module Mongoid
     # @example Remove a flagged change.
     #   model.remove_change(:field)
     #
-    # @param [ Symbol, String ] name The name of the field.
+    # @param [ Symbol | String ] name The name of the field.
     def remove_change(name)
       changed_attributes.delete(name.to_s)
     end
@@ -133,6 +133,13 @@ module Mongoid
 
     private
 
+    # Get attributes of the document before the document was saved.
+    #
+    # @return [ Hash ] Previous attributes
+    def previous_attributes
+      @previous_attributes ||= {}
+    end
+
     # Get the old and new value for the provided attribute.
     #
     # @example Get the attribute change.
@@ -153,7 +160,7 @@ module Mongoid
     #
     # @param [ String ] attr The name of the attribute.
     #
-    # @return [ true, false ] Whether the attribute has changed.
+    # @return [ true | false ] Whether the attribute has changed.
     def attribute_changed?(attr)
       attr = database_field_name(attr)
       return false unless changed_attributes.key?(attr)
@@ -167,7 +174,7 @@ module Mongoid
     #
     # @param [ String ] attr The name of the attribute.
     #
-    # @return [ true, false ] If the attribute differs.
+    # @return [ true | false ] If the attribute differs.
     def attribute_changed_from_default?(attr)
       field = fields[attr]
       return false unless field
@@ -183,6 +190,25 @@ module Mongoid
     def attribute_was(attr)
       attr = database_field_name(attr)
       attribute_changed?(attr) ? changed_attributes[attr] : attributes[attr]
+    end
+
+    # Get the previous attribute value that was changed
+    # before the document was saved.
+    #
+    # It the document has not been saved yet, or was just loaded from database,
+    # this method returns nil for all attributes.
+    #
+    # @param [ String ] attr The attribute name.
+    #
+    # @return [ Object | nil ] Attribute value before the document was saved,
+    #   or nil if the document has not been saved yet.
+    def attribute_previously_was(attr)
+      attr = database_field_name(attr)
+      if previous_changes.key?(attr)
+        previous_changes[attr].first
+      else
+        previous_attributes[attr]
+      end
     end
 
     # Flag an attribute as going to change.
@@ -219,6 +245,10 @@ module Mongoid
       else
         __send__("#{attr}=", nil)
       end
+    end
+
+    def reset_attributes_before_type_cast
+      @attributes_before_type_cast = @attributes.dup
     end
 
     module ClassMethods
@@ -291,7 +321,7 @@ module Mongoid
         end
       end
 
-      # Creates the dirty change previous value accessor.
+      # Creates the dirty change previous value accessors.
       #
       # @example Create the accessor.
       #   Model.create_dirty_previous_value_accessor("name", "alias")
@@ -302,6 +332,9 @@ module Mongoid
         generated_methods.module_eval do
           re_define_method("#{meth}_was") do
             attribute_was(name)
+          end
+          re_define_method("#{meth}_previously_was") do
+            attribute_previously_was(name)
           end
         end
       end

@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require_relative '../association/referenced/has_many_models'
+require_relative '../association/referenced/has_and_belongs_to_many_models'
+require_relative './nested_spec_models'
 
 describe Mongoid::Attributes::Nested do
 
@@ -1353,7 +1356,7 @@ describe Mongoid::Attributes::Nested do
                 expect {
                   person.addresses_attributes =
                     { "foo" => { "id" => "test", "street" => "Test" } }
-                }.to raise_error(Mongoid::Errors::DocumentNotFound)
+                }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Address with id\(s\)/)
               end
             end
           end
@@ -3012,7 +3015,7 @@ describe Mongoid::Attributes::Nested do
                       { "0" =>
                         { "id" => BSON::ObjectId.new.to_s, "title" => "Rogue" }
                       }
-                  }.to raise_error(Mongoid::Errors::DocumentNotFound)
+                  }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
                 end
               end
             end
@@ -3046,7 +3049,7 @@ describe Mongoid::Attributes::Nested do
                 expect {
                   person.posts_attributes =
                     { "foo" => { "id" => "test", "title" => "Test" } }
-                }.to raise_error(Mongoid::Errors::DocumentNotFound)
+                }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
               end
             end
           end
@@ -3763,7 +3766,7 @@ describe Mongoid::Attributes::Nested do
                 expect {
                   person.preferences_attributes =
                     { "foo" => { "id" => "test", "name" => "Test" } }
-                }.to raise_error(Mongoid::Errors::DocumentNotFound)
+                }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
               end
             end
           end
@@ -4395,13 +4398,6 @@ describe Mongoid::Attributes::Nested do
 
     context "when nesting multiple levels and parent is timestamped" do
 
-      around do |example|
-        original_relations = Location.relations
-        Location.embedded_in :address, touch: true
-        example.run
-        Location.relations = original_relations
-      end
-
       after do
         Address.reset_callbacks(:save)
       end
@@ -4925,6 +4921,79 @@ describe Mongoid::Attributes::Nested do
             expect(league.reload.divisions.first.name).to eq("Name")
           end
         end
+      end
+    end
+  end
+
+  context "when destroying has_many child using nested attributes" do
+    let(:school) do
+      School.create
+    end
+
+    let!(:student) do
+      school.students.create
+    end
+
+    before do
+      school.attributes = {
+        '_id': school.id,
+        'students_attributes': [{
+          '_id': student.id,
+          '_destroy': 1
+          }]
+        }
+    end
+
+    it "is able to access the parent in the after_destroy callback" do
+      expect(school.after_destroy_triggered).to eq(true)
+    end
+  end
+
+  context "when destroying has_many child using nested attributes" do
+    let(:school) do
+      HabtmmSchool.create!(students: [student])
+    end
+
+    let(:student) do
+      HabtmmStudent.create!
+    end
+
+    before do
+      student.schools << school
+      school.attributes = {
+        '_id': school.id,
+        'students_attributes': [{
+          '_id': student.id,
+          '_destroy': 1
+          }]
+        }
+    end
+
+    it "is able to access the parent in the after_destroy callback" do
+      expect(school.reload.after_destroy_triggered).to eq(true)
+    end
+  end
+
+  context "when using a multi-leveled nested attribute on a referenced association" do
+    let(:author) { NestedAuthor.create }
+    let(:one_level_params) { { post_attributes: { title: 'test' } } }
+    let(:two_levels_params) { { post_attributes: { comments_attributes: [ { body: 'test' } ] } } }
+
+    it "creates a 1st-depth child model" do
+      author.update_attributes(one_level_params)
+      expect(author.post.persisted?).to be true
+    end
+
+    it "creates a 1st-depth child model, and a 2nd-depth child model" do
+      author.update_attributes(two_levels_params)
+      expect(author.post.comments.count).to eq 1
+    end
+
+    context "the 1st-depth child model already exists" do
+      it "creates a 2nd-depth child model" do
+        author.create_post(title: 'test')
+        author.update_attributes(two_levels_params)
+        expect(author.post.comments.count).to eq 1
       end
     end
   end

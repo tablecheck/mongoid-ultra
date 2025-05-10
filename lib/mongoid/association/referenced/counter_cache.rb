@@ -13,7 +13,7 @@ module Mongoid
         # @example Reset the given counter cache
         #   post.reset_counters(:comments)
         #
-        # @param [ Symbol, Array ] counters One or more counter caches to reset
+        # @param [ Symbol | Array ] counters One or more counter caches to reset
         def reset_counters(*counters)
           self.class.with(persistence_context) do |_class|
             _class.reset_counters(self, *counters)
@@ -30,7 +30,7 @@ module Mongoid
           #   Post.reset_counters('50e0edd97c71c17ea9000001', :comments)
           #
           # @param [ String ] id The id of the object that will be reset.
-          # @param [ Symbol, Array ] counters One or more counter caches to reset
+          # @param [ Symbol | Array ] counters One or more counter caches to reset
           def reset_counters(id, *counters)
             document = id.is_a?(Document) ? id : find(id)
             counters.each do |name|
@@ -97,18 +97,18 @@ module Mongoid
 
           association.inverse_class.tap do |klass|
             klass.after_update do
-              if record = __send__(name)
-                foreign_key = association.foreign_key
+              foreign_key = association.foreign_key
 
-                if attribute_changed?(foreign_key)
-                  original, current = attribute_change(foreign_key)
+              if send("#{foreign_key}_previously_changed?")
+                original, current = send("#{foreign_key}_previous_change")
 
-                  unless original.nil?
-                    record.class.with(persistence_context) do |_class|
-                      _class.decrement_counter(cache_column, original)
-                    end
+                unless original.nil?
+                  association.klass.with(persistence_context) do |_class|
+                    _class.decrement_counter(cache_column, original)
                   end
+                end
 
+                if record = __send__(name)
                   unless current.nil?
                     record[cache_column] = (record[cache_column] || 0) + 1
                     record.class.with(record.persistence_context) do |_class|

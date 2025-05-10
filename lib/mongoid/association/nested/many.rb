@@ -65,7 +65,7 @@ module Mongoid
         #
         # @param [ Hash ] attributes The attributes to pull the flag from.
         #
-        # @return [ true, false ] If the association can potentially be deleted.
+        # @return [ true | false ] If the association can potentially be deleted.
         def destroyable?(attributes)
           destroy = attributes.delete(:_destroy)
           Nested::DESTROY_FLAGS.include?(destroy) && allow_destroy?
@@ -79,7 +79,7 @@ module Mongoid
         #
         # @param [ Hash ] attributes The attributes being set.
         #
-        # @return [ true, false ] If the attributes exceed the limit.
+        # @return [ true | false ] If the attributes exceed the limit.
         def over_limit?(attributes)
           limit = options[:limit]
           limit ? attributes.size > limit : false
@@ -134,8 +134,9 @@ module Mongoid
         # @param [ Proxy ] relation The association proxy.
         # @param [ Document ] doc The document to delete.
         def destroy_document(relation, doc)
+          res = doc.destroy unless doc.embedded? || doc.destroyed?
           relation.delete(doc)
-          doc.destroy unless doc.embedded? || doc.destroyed?
+          res
         end
 
         # Update the document.
@@ -164,7 +165,7 @@ module Mongoid
         #   builder.update_nested_relation(parent, id, attrs)
         #
         # @param [ Document ] parent The parent document.
-        # @param [ String, BSON::ObjectId ] id of the related document.
+        # @param [ String | BSON::ObjectId ] id of the related document.
         # @param [ Hash ] attrs The single document attributes to process.
         def update_nested_relation(parent, id, attrs)
           first = existing.first

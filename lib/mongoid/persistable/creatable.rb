@@ -102,13 +102,22 @@ module Mongoid
       def prepare_insert(options = {})
         return self if performing_validations?(options) &&
           invalid?(options[:context] || :create)
-        result = run_callbacks(:save) do
-          run_callbacks(:create) do
-            yield(self)
-            post_process_insert
+        run_callbacks(:save, with_children: false) do
+          run_callbacks(:create, with_children: false) do
+            run_callbacks(:persist_parent, with_children: false) do
+              _mongoid_run_child_callbacks(:save) do
+                _mongoid_run_child_callbacks(:create) do
+                  result = yield(self)
+                  if !result.is_a?(Document) || result.errors.empty?
+                    post_process_insert
+                    post_process_persist(result, options)
+                  end
+                end
+              end
+            end
           end
         end
-        post_process_persist(result, options) and self
+        self
       end
 
       module ClassMethods
@@ -123,10 +132,10 @@ module Mongoid
         # @example Create multiple new documents.
         #   Person.create({ title: "Mr" }, { title: "Mrs" })
         #
-        # @param [ Hash, Array ] attributes The attributes to create with, or an
+        # @param [ Hash | Array ] attributes The attributes to create with, or an
         #   Array of multiple attributes for multiple documents.
         #
-        # @return [ Document, Array<Document> ] The newly created document(s).
+        # @return [ Document | Array<Document> ] The newly created document(s).
         def create(attributes = nil, &block)
           _creating do
             if attributes.is_a?(::Array)
@@ -150,10 +159,10 @@ module Mongoid
         # @example Create multiple new documents.
         #   Person.create!({ title: "Mr" }, { title: "Mrs" })
         #
-        # @param [ Hash, Array ] attributes The attributes to create with, or an
+        # @param [ Hash | Array ] attributes The attributes to create with, or an
         #   Array of multiple attributes for multiple documents.
         #
-        # @return [ Document, Array<Document> ] The newly created document(s).
+        # @return [ Document | Array<Document> ] The newly created document(s).
         def create!(attributes = nil, &block)
           _creating do
             if attributes.is_a?(::Array)

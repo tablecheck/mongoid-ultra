@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
 module Mongoid
 
@@ -37,8 +36,8 @@ module Mongoid
     # hash. This is used recursively so that embedded associations are cloned
     # safely.
     #
-    # @param [ Class ] klass The class of the document to create.
-    # @param [ Hash ] attrs The hash of the attributes.
+    # @param klass [ Class ] The class of the document to create.
+    # @param attrs [ Hash ] The hash of the attributes.
     #
     # @return [ Document ] The new document.
     def self.clone_with_hash(klass, attrs)
@@ -53,7 +52,13 @@ module Mongoid
 
       Factory.build(klass, attrs).tap do |object|
         dynamic_attrs.each do |attr_name, value|
-          if object.respond_to?("#{attr_name}=")
+          assoc = object.embedded_relations[attr_name]
+          if assoc&.one? && Hash === value
+            object.send("#{attr_name}=", clone_with_hash(assoc.klass, value))
+          elsif assoc&.many? && Array === value
+            docs = value.map { |h| clone_with_hash(assoc.klass, h) }
+            object.send("#{attr_name}=", docs)
+          elsif object.respond_to?("#{attr_name}=")
             object.send("#{attr_name}=", value)
           else
             object.attributes[attr_name] = value

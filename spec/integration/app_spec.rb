@@ -16,6 +16,10 @@ describe 'Mongoid application tests' do
       skip 'Set APP_TESTS=1 in environment to run application tests'
     end
 
+    if SpecConfig.instance.rails_version < '7.1'
+      skip 'App tests require Rails > 7.0 (see https://stackoverflow.com/questions/79360526)'
+    end
+
     require 'fileutils'
     require 'mrss/child_process_helper'
     require 'open-uri'
@@ -87,6 +91,12 @@ describe 'Mongoid application tests' do
   end
 
   context 'new application - rails' do
+    before(:all) do
+      if SpecConfig.instance.rails_version < '7.1'
+        skip '`rails new` with rails < 7.1 fails because modern concurrent-ruby removed logger dependency'
+      end
+    end
+
     it 'creates' do
       install_rails
 
@@ -163,6 +173,14 @@ describe 'Mongoid application tests' do
               before do
                 Dir.chdir(APP_PATH) do
                   remove_bundler_req
+
+                  if BSON::Environment.jruby?
+                    # Remove existing Gemfile.lock - see
+                    # https://github.com/rubygems/rubygems/issues/3231
+                    require 'fileutils'
+                    FileUtils.rm_f('Gemfile.lock')
+                  end
+
                   check_call(%w(bundle install), env: env)
                   write_mongoid_yml
                 end
@@ -285,18 +303,6 @@ describe 'Mongoid application tests' do
       end
       File.open('config/application.rb', 'w') do |f|
         f << lines.join
-      end
-    end
-
-    if rails_version == '5.1'
-      secrets = {
-        'development' => {
-          'secret_key_base' => 'abracadabra',
-          'my_secret_token' => 'very_secret',
-        },
-      }
-      File.open('config/secrets.yml', 'w') do |f|
-        f << YAML.dump(secrets)
       end
     end
   end

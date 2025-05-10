@@ -102,6 +102,29 @@ describe Mongoid::Fields::Localized do
           end
         end
 
+        context "when key is a symbol" do
+
+          let(:value) do
+            field.demongoize({ :de => "This is a test" })
+          end
+
+          it "returns the string from the set locale" do
+            expect(value).to eq("This is a test")
+          end
+        end
+
+
+        context "passing a bogus value" do
+
+          let(:value) do
+            field.demongoize("bogus")
+          end
+
+          it "returns nil" do
+            expect(value).to be_nil
+          end
+        end
+
         context "when the value does not exist" do
 
           context "when not using fallbacks" do
@@ -117,10 +140,7 @@ describe Mongoid::Fields::Localized do
 
           context "when using fallbacks" do
 
-            before(:all) do
-              require "i18n/backend/fallbacks"
-              I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
-            end
+            with_i18n_fallbacks
 
             context "when fallbacks are defined" do
 
@@ -132,6 +152,17 @@ describe Mongoid::Fields::Localized do
 
                 let(:value) do
                   field.demongoize({ "en" => "testing" })
+                end
+
+                it "returns the fallback translation" do
+                  expect(value).to eq("testing")
+                end
+              end
+
+              context "when the fallback translation exists and is a symbol" do
+
+                let(:value) do
+                  field.demongoize({ :es => "testing" })
                 end
 
                 it "returns the fallback translation" do
@@ -275,10 +306,7 @@ describe Mongoid::Fields::Localized do
 
           context "when using fallbacks" do
 
-            before(:all) do
-              require "i18n/backend/fallbacks"
-              I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
-            end
+            with_i18n_fallbacks
 
             context "when fallbacks are defined" do
 
@@ -476,10 +504,7 @@ describe Mongoid::Fields::Localized do
 
         context "when fallbacks are defined" do
 
-          before(:all) do
-            require "i18n/backend/fallbacks"
-            I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
-          end
+          with_i18n_fallbacks
 
           context "when the lookup does not need to use fallbacks" do
 

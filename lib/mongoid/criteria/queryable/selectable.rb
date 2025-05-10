@@ -227,19 +227,6 @@ module Mongoid
           __merge__(criterion)
         end
 
-        # Alias for +geo_spatial+.
-        #
-        # @deprecated
-        def geo_spacial(criterion)
-          # Duplicate method body so that we can raise this exception with
-          # geo_spacial as the indicated operator rather than geo_spatial.
-          if criterion.nil?
-            raise Errors::CriteriaArgumentRequired, :geo_spacial
-          end
-
-          __merge__(criterion)
-        end
-
         key :intersects_line, :override, "$geoIntersects", "$geometry" do |value|
           { "type" => LINE_STRING, "coordinates" => value }
         end
@@ -542,7 +529,7 @@ module Mongoid
         # @example Is the selectable negating?
         #   selectable.negating?
         #
-        # @return [ true, false ] If the selectable is negating.
+        # @return [ true | false ] If the selectable is negating.
         def negating?
           !!negating
         end
@@ -679,16 +666,7 @@ module Mongoid
                 end]
               end
             end
-            # Should be able to do:
-            #where('$or' => exprs)
-            # But since that is broken do instead:
-            clone.tap do |query|
-              if query.selector['$or']
-                query.selector.store('$or', query.selector['$or'] + exprs)
-              else
-                query.selector.store('$or', exprs)
-              end
-            end
+            self.and('$or' => exprs)
           end
         end
 
@@ -758,7 +736,7 @@ module Mongoid
         #   conditions in a query. Mongoid will build such a query but the
         #   server will return an error when trying to execute it.
         #
-        # @param [ String, Symbol ] terms A string of terms that MongoDB parses
+        # @param [ String | Symbol ] terms A string of terms that MongoDB parses
         #   and uses to query the text index.
         # @param [ Hash ] opts Text search options. See MongoDB documentation
         #   for options.
@@ -796,7 +774,7 @@ module Mongoid
         # @example Add a javascript selection.
         #   selectable.where("this.name == 'syd'")
         #
-        # @param [ String, Hash ] criterion The javascript or standard selection.
+        # @param [ String | Hash ] criterion The javascript or standard selection.
         #
         # @return [ Selectable ] The cloned selectable.
         def where(*criteria)
@@ -874,7 +852,7 @@ module Mongoid
         # @param [ Hash ] criterion The criterion.
         def typed_override(criterion, operator)
           if criterion
-            criterion.update_values do |value|
+            criterion.transform_values! do |value|
               yield(value)
             end
           end

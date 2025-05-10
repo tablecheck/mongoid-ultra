@@ -26,6 +26,10 @@ module Mongoid
       hash[key] = "[mongoid]:#{key}-stack"
     end
 
+    # The key storing the default value for whether or not callbacks are
+    # executed on documents.
+    EXECUTE_CALLBACKS = '[mongoid]:execute-callbacks'
+
     extend self
 
     # Begin entry into a named thread local stack.
@@ -45,7 +49,7 @@ module Mongoid
     # @example Get the global database override.
     #   Threaded.database_override
     #
-    # @return [ String, Symbol ] The override.
+    # @return [ String | Symbol ] The override.
     def database_override
       Thread.current[DATABASE_OVERRIDE_KEY]
     end
@@ -55,9 +59,9 @@ module Mongoid
     # @example Set the global database override.
     #   Threaded.database_override = :testing
     #
-    # @param [ String, Symbol ] name The global override name.
+    # @param [ String | Symbol ] name The global override name.
     #
-    # @return [ String, Symbol ] The override.
+    # @return [ String | Symbol ] The override.
     def database_override=(name)
       Thread.current[DATABASE_OVERRIDE_KEY] = name
     end
@@ -167,7 +171,7 @@ module Mongoid
     # @example Get the global client override.
     #   Threaded.client_override
     #
-    # @return [ String, Symbol ] The override.
+    # @return [ String | Symbol ] The override.
     def client_override
       Thread.current[CLIENT_OVERRIDE_KEY]
     end
@@ -177,9 +181,9 @@ module Mongoid
     # @example Set the global client override.
     #   Threaded.client_override = :testing
     #
-    # @param [ String, Symbol ] name The global override name.
+    # @param [ String | Symbol ] name The global override name.
     #
-    # @return [ String, Symbol ] The override.
+    # @return [ String | Symbol ] The override.
     def client_override=(name)
       Thread.current[CLIENT_OVERRIDE_KEY] = name
     end
@@ -255,7 +259,7 @@ module Mongoid
     #
     # @param [ Document ] document The document to check.
     #
-    # @return [ true, false ] If the document is autosaved.
+    # @return [ true | false ] If the document is autosaved.
     def autosaved?(document)
       autosaves_for(document.class).include?(document._id)
     end
@@ -267,7 +271,7 @@ module Mongoid
     #
     # @param [ Document ] document The document to check.
     #
-    # @return [ true, false ] If the document is validated.
+    # @return [ true | false ] If the document is validated.
     def validated?(document)
       validations_for(document.class).include?(document._id)
     end
@@ -322,7 +326,7 @@ module Mongoid
     #
     # @param [ Mongo::Session ] session The session to save.
     def set_session(session)
-      Thread.current[:session] = session
+      Thread.current["[mongoid]:session"] = session
     end
 
     # Get the cached session for this thread.
@@ -330,9 +334,9 @@ module Mongoid
     # @example Get the session for this thread.
     #   Threaded.get_session
     #
-    # @return [ Mongo::Session, nil ] The session cached on this thread or nil.
+    # @return [ Mongo::Session | nil ] The session cached on this thread or nil.
     def get_session
-      Thread.current[:session]
+      Thread.current["[mongoid]:session"]
     end
 
     # Clear the cached session for this thread.
@@ -344,7 +348,33 @@ module Mongoid
     def clear_session
       session = get_session
       session.end_session if session
-      Thread.current[:session] = nil
+      Thread.current["[mongoid]:session"] = nil
+    end
+
+    # Queries whether document callbacks should be executed by default for the
+    # current thread.
+    #
+    # Unless otherwise indicated (by #execute_callbacks=), this will return
+    # true.
+    #
+    # @return [ true | false ] Whether or not document callbacks should be
+    #   executed by default.
+    def execute_callbacks?
+      if Thread.current.key?(EXECUTE_CALLBACKS)
+        Thread.current[EXECUTE_CALLBACKS]
+      else
+        true
+      end
+    end
+
+    # Indicates whether document callbacks should be invoked by default for
+    # the current thread. Individual documents may further override the
+    # callback behavior, but this will be used for the default behavior.
+    #
+    # @param flag [ true | false ] Whether or not document callbacks should be
+    #   executed by default.
+    def execute_callbacks=(flag)
+      Thread.current[EXECUTE_CALLBACKS] = flag
     end
   end
 end

@@ -13,18 +13,22 @@ set -o errexit  # Exit the script with error if any of the commands fail
 . `dirname "$0"`/../spec/shared/shlib/server.sh
 . `dirname "$0"`/functions.sh
 
+# set_env.sh sets the TOOLCHAIN_VERSION variable to a default value based on
+# the version spec/shared that's available. Here, we let the evergreen task
+# override it, if necessary, to get a newer or older toolchain build.
+if [ -n "$TOOLCHAIN_OVERRIDE" ]; then
+  TOOLCHAIN_VERSION=$TOOLCHAIN_OVERRIDE
+fi
+
 arch=`host_distro`
 
 set_fcv
 set_env_vars
 set_env_python
-set_env_node
 set_env_ruby
 
 if test -n "$APP_TESTS"; then
-  # Node from toolchain
-  export PATH=/opt/node/bin:$PATH
-  node -v
+  set_env_node
 fi
 
 prepare_server $arch
@@ -67,6 +71,12 @@ elif test "$DRIVER" = "oldstable"; then
 elif test "$DRIVER" = "min"; then
   bundle install --gemfile=gemfiles/driver_min.gemfile
   BUNDLE_GEMFILE=gemfiles/driver_min.gemfile
+elif test "$DRIVER" = "bson-min"; then
+  bundle install --gemfile=gemfiles/bson_min.gemfile
+  BUNDLE_GEMFILE=gemfiles/bson_min.gemfile
+elif test "$DRIVER" = "bson-master"; then
+  bundle install --gemfile=gemfiles/bson_master.gemfile
+  BUNDLE_GEMFILE=gemfiles/bson_master.gemfile
 elif test "$DRIVER" = "stable-jruby"; then
   bundle install --gemfile=gemfiles/driver_stable_jruby.gemfile
   BUNDLE_GEMFILE=gemfiles/driver_stable_jruby.gemfile
@@ -99,12 +109,9 @@ if test -n "$TEST_CMD"; then
 elif test -n "$TEST_I18N_FALLBACKS"; then
   bundle exec rspec spec/integration/i18n_fallbacks_spec.rb spec/mongoid/criteria_spec.rb spec/mongoid/contextual/mongo_spec.rb
 elif test -n "$APP_TESTS"; then
-  # Need recent node for rails
-  export N_PREFIX=$HOME/.n
-  curl -o $HOME/n --retry 3 https://raw.githubusercontent.com/tj/n/master/bin/n
-  bash $HOME/n stable
-  export PATH=$HOME/.n/bin:$PATH
-  npm -g install yarn
+  if test -z "$DOCKER_PRELOAD"; then
+    ./spec/shared/bin/install-node
+  fi
   
   bundle exec rspec spec/integration/app_spec.rb
 else

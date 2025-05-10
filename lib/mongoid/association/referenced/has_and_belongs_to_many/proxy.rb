@@ -21,17 +21,41 @@ module Mongoid
           # @example Concat with other documents.
           #   person.posts.concat([ post_one, post_two ])
           #
-          # @param [ Document, Array<Document> ] args Any number of documents.
+          # @param [ Document | Array<Document> ] args Any number of documents.
           #
           # @return [ Array<Document> ] The loaded docs.
           def <<(*args)
             docs = args.flatten
             return concat(docs) if docs.size > 1
             if doc = docs.first
-              append(doc)
-              _base.add_to_set(foreign_key => doc.public_send(_association.primary_key))
-              if child_persistable?(doc)
-                doc.save
+              append(doc) do
+                # We ignore the changes to the value for the foreign key in the
+                # changed_attributes hash in this block of code for two reasons:
+                #
+                # 1) The add_to_set method deletes the value for the foreign
+                #    key in the changed_attributes hash, but if we enter this
+                #    method with a value for the foreign key in the
+                #    changed_attributes hash, then we want it to exist outside
+                #    this method as well. It's used later on in the Syncable
+                #    module to set the inverse foreign keys.
+                # 2) The reset_unloaded method accesses the value for the foreign
+                #    key on _base, which causes it to get added to the
+                #    changed_attributes hash. This happens because when reading
+                #    a "resizable" attribute, it is automatically added to the
+                #    changed_attributes hash. This is true only for the foreign
+                #    key value for HABTM associations as the other associations
+                #    use strings for their foreign key values. For consistency
+                #    with the other associations, we ignore this addition to
+                #    the changed_attributes hash.
+                #    See MONGOID-4843 for a longer discussion about this.
+                reset_foreign_key_changes do
+                  _base.add_to_set(foreign_key => doc.public_send(_association.primary_key))
+
+                  if child_persistable?(doc)
+                    doc.save
+                  end
+                  reset_unloaded
+                end
               end
             end
             unsynced(_base, foreign_key) and self
@@ -81,12 +105,13 @@ module Mongoid
           #
           # @return [ Document ] The new document.
           def build(attributes = {}, type = nil)
-            doc = Factory.build(type || klass, attributes)
-            _base.public_send(foreign_key).push(doc.public_send(_association.primary_key))
+            doc = Factory.execute_build(type || klass, attributes, execute_callbacks: false)
             append(doc)
             doc.apply_post_processed_defaults
+            _base.public_send(foreign_key).push(doc.public_send(_association.primary_key))
             unsynced(doc, inverse_foreign_key)
             yield(doc) if block_given?
+            doc.run_pending_callbacks
             doc
           end
 
@@ -111,6 +136,10 @@ module Mongoid
             end
             doc
           end
+
+          # Mongoid::Extensions::Array defines Array#delete_one, so we need
+          # to make sure that method behaves reasonably on proxies, too.
+          alias delete_one delete
 
           # Removes all associations between the base document and the target
           # documents by deleting the foreign keys and the references, orphaning
@@ -178,6 +207,7 @@ module Mongoid
               push(replacement.compact.uniq)
             else
               reset_unloaded
+              clear_foreign_key_changes
             end
             self
           end
@@ -195,6 +225,32 @@ module Mongoid
 
           private
 
+          # Clears the foreign key from the changed_attributes hash.
+          #
+          # This is, in general, used to clear the foreign key from the
+          # changed_attributes hash for consistency with the other referenced
+          # associations.
+          #
+          # @api private
+          def clear_foreign_key_changes
+            _base.changed_attributes.delete(foreign_key)
+          end
+
+          # Reset the value in the changed_attributes hash for the foreign key
+          # to its value before executing the given block.
+          #
+          # @api private
+          def reset_foreign_key_changes
+            if _base.changed_attributes.key?(foreign_key)
+              fk = _base.changed_attributes[foreign_key].dup
+              yield if block_given?
+              _base.changed_attributes[foreign_key] = fk
+            else
+              yield if block_given?
+              clear_foreign_key_changes
+            end
+          end
+
           # Appends the document to the target array, updating the index on the
           # document at the same time.
           #
@@ -203,11 +259,12 @@ module Mongoid
           #
           # @param [ Document ] document The document to append to the target.
           def append(document)
-            execute_callback :before_add, document
-            _target.push(document)
-            characterize_one(document)
-            bind_one(document)
-            execute_callback :after_add, document
+            execute_callbacks_around(:add, document) do
+              _target.push(document)
+              characterize_one(document)
+              bind_one(document)
+              yield if block_given?
+            end
           end
 
           # Instantiate the binding associated with this association.
@@ -229,7 +286,7 @@ module Mongoid
           #
           # @param [ Document ] doc The document.
           #
-          # @return [ true, false ] If the document can be persisted.
+          # @return [ true | false ] If the document can be persisted.
           def child_persistable?(doc)
             (persistable? || _creating?) &&
                 !(doc.persisted? && _association.forced_nil_inverse?)

@@ -802,7 +802,7 @@ describe Mongoid::Clients do
         it "does not persist to the default database" do
           expect {
             Band.find(band.id)
-          }.to raise_error(Mongoid::Errors::DocumentNotFound)
+          }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
         end
 
         let(:from_db) do
@@ -840,7 +840,7 @@ describe Mongoid::Clients do
         it "does not persist to the default database" do
           expect {
             Band.find(band.id)
-          }.to raise_error(Mongoid::Errors::DocumentNotFound)
+          }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
         end
 
         let(:from_db) do
@@ -1042,6 +1042,31 @@ describe Mongoid::Clients do
         end
       end
     end
+
+    context 'when using on different objects' do
+      require_mri
+
+      let(:first_band) do
+        Band.create!(name: "The Beatles")
+      end
+
+      let(:second_band) do
+        Band.create!(name: 'Led Zeppelin')
+      end
+
+      it 'does not create extra symbols symbols' do
+        first_band.with(write: { w: 0, j: false }) do |band|
+          band.set(active: false)
+        end
+        initial_symbols_count = Symbol.all_symbols.size
+        second_band.with(write: { w: 0, j: false }) do |band|
+          band.set(active: false)
+        end
+        expect(Symbol.all_symbols.size).to eq(initial_symbols_count)
+      end
+
+    end
+
   end
 
   context "when overriding the default database" do

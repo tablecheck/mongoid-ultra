@@ -801,9 +801,11 @@ describe Mongoid::Scopable do
             "$or" => [
               { "ccc" => nil },
               { "ccc" => { "$gt" => 1.0 }},
+            ],
+            '$and' => ['$or' => [
               { "aaa" => { "$gt" => 0.0 }},
               { "bbb" => { "$gt" => 0.0 }}
-            ]
+            ]],
           })
         end
       end
@@ -1185,6 +1187,24 @@ describe Mongoid::Scopable do
 
             Mongoid::Threaded.current_scope(Band).should be_nil
           end
+        end
+      end
+    end
+
+    context 'when nesting unscoped under with_scope' do
+      let(:c1) { Band.where(active: true) }
+
+      it 'restores previous scope' do
+        pending 'MONGOID-5214'
+
+        Band.with_scope(c1) do |crit|
+          Band.unscoped do |crit2|
+            Mongoid::Threaded.current_scope(Band).should be nil
+          end
+
+          Mongoid::Threaded.current_scope(Band).selector.should == {
+            'active' => true,
+          }
         end
       end
     end

@@ -25,7 +25,7 @@ module Mongoid
       #
       # @param [ Array ] other The other array.
       #
-      # @return [ true, false ] If the objects are equal.
+      # @return [ true | false ] If the objects are equal.
       def ==(other)
         return false unless other.respond_to?(:entries)
         entries == other.entries
@@ -74,7 +74,7 @@ module Mongoid
       # @example Get the distinct values.
       #   context.distinct(:name)
       #
-      # @param [ String, Symbol ] field The name of the field.
+      # @param [ String | Symbol ] field The name of the field.
       #
       # @return [ Array<Object> ] The distinct values for the field.
       def distinct(field)
@@ -110,9 +110,9 @@ module Mongoid
       # @example Do any documents exist for the context.
       #   context.exists?
       #
-      # @return [ true, false ] If the count is more than zero.
+      # @return [ true | false ] If the count is more than zero.
       def exists?
-        count > 0
+        any?
       end
 
       # Get the first document in the database for the criteria's selector.
@@ -120,15 +120,14 @@ module Mongoid
       # @example Get the first document.
       #   context.first
       #
-      # @param [ Integer | Hash ] limit_or_opts The number of documents to
-      #   return, or a hash of options.
+      # @param [ Integer ] limit The number of documents to return.
       #
       # @return [ Document ] The first document.
-      def first(limit_or_opts = nil)
-        if limit_or_opts.nil? || limit_or_opts.is_a?(Hash)
-          eager_load([documents.first]).first
+      def first(limit = nil)
+        if limit
+          eager_load(documents.first(limit))
         else
-          eager_load(documents.first(limit_or_opts))
+          eager_load([documents.first]).first
         end
       end
       alias :one :first
@@ -170,18 +169,14 @@ module Mongoid
       # @example Get the last document.
       #   context.last
       #
-      # @param [ Integer | Hash ] limit_or_opts The number of documents to
-      #   return, or a hash of options.
-      #
-      # @option limit_or_opts [ :none ] :id_sort This option is deprecated.
-      #   Don't apply a sort on _id if no other sort is defined on the criteria.
+      # @param [ Integer ] limit The number of documents to return.
       #
       # @return [ Document ] The last document.
-      def last(limit_or_opts = nil)
-        if limit_or_opts.nil? || limit_or_opts.is_a?(Hash)
-          eager_load([documents.last]).first
+      def last(limit = nil)
+        if limit
+          eager_load(documents.last(limit))
         else
-          eager_load(documents.last(limit_or_opts))
+          eager_load([documents.last]).first
         end
       end
 
@@ -236,25 +231,41 @@ module Mongoid
       #
       # @param [ Integer ] value The number of documents to return.
       #
-      # @return [ Mongo ] The context.
+      # @return [ Memory ] The context.
       def limit(value)
         self.limiting = value
         self
       end
 
+      # Pluck the field values in memory.
+      #
+      # @example Get the values in memory.
+      #   context.pluck(:name)
+      #
+      # @param [ String | Symbol ] *fields Field(s) to pluck.
+      #
+      # @return [ Array<Object> | Array<Array<Object>> ] The plucked values.
       def pluck(*fields)
         if Mongoid.legacy_pluck_distinct
           documents.pluck(*fields)
         else
-          documents.map do |d|
-            if fields.length == 1
-              retrieve_value_at_path(d, fields.first)
-            else
-              fields.map do |field|
-                retrieve_value_at_path(d, field)
-              end
-            end
+          documents.map do |doc|
+            pluck_from_doc(doc, *fields)
           end
+        end
+      end
+
+      # Pick the field values in memory.
+      #
+      # @example Get the values in memory.
+      #   context.pick(:name)
+      #
+      # @param [ String | Symbol ] *fields Field(s) to pick.
+      #
+      # @return [ Object, Array<Object> ] The picked values.
+      def pick(*fields)
+        if doc = documents.first
+          pluck_from_doc(doc, *fields)
         end
       end
 
@@ -281,7 +292,7 @@ module Mongoid
       #
       # @param [ Integer ] value The number of documents to skip.
       #
-      # @return [ Mongo ] The context.
+      # @return [ Memory ] The context.
       def skip(value)
         self.skipping = value
         self
@@ -295,7 +306,7 @@ module Mongoid
       # @param [ Hash ] values The sorting values as field/direction(1/-1)
       #   pairs.
       #
-      # @return [ Mongo ] The context.
+      # @return [ Memory ] The context.
       def sort(values)
         in_place_sort(values) and self
       end
@@ -307,7 +318,7 @@ module Mongoid
       #
       # @param [ Hash ] attributes The new attributes for the document.
       #
-      # @return [ nil, false ] False if no attributes were provided.
+      # @return [ nil | false ] False if no attributes were provided.
       def update(attributes = nil)
         update_documents(attributes, [ first ])
       end
@@ -319,7 +330,7 @@ module Mongoid
       #
       # @param [ Hash ] attributes The new attributes for each document.
       #
-      # @return [ nil, false ] False if no attributes were provided.
+      # @return [ nil | false ] False if no attributes were provided.
       def update_all(attributes = nil)
         update_documents(attributes, entries)
       end
@@ -544,6 +555,22 @@ module Mongoid
           curr.map { |d| retrieve_value_at_path(d, remaining) }.compact
         else
           retrieve_value_at_path(curr, remaining)
+        end
+      end
+
+      # Pluck the field values from the given document.
+      #
+      # @param [ Document ] doc The document to pluck from.
+      # @param [ String | Symbol ] *fields Field(s) to pluck.
+      #
+      # @return [ Object, Array<Object> ] The plucked values.
+      def pluck_from_doc(doc, *fields)
+        if fields.length == 1
+          retrieve_value_at_path(doc, fields.first)
+        else
+          fields.map do |field|
+            retrieve_value_at_path(doc, field)
+          end
         end
       end
     end

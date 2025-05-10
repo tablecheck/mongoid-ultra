@@ -42,12 +42,15 @@ module Mongoid
         # @example Mongoize the object.
         #   BigDecimal.mongoize("123.11")
         #
-        # @return [ String ] The object mongoized.
+        # @return [ Integer | nil ] The object mongoized or nil.
         def mongoize(object)
-          unless object.blank?
-            __numeric__(object).to_i rescue 0
+          return if object.blank?
+          if object.is_a?(String)
+            if object.numeric?
+              object.to_i
+            end
           else
-            nil
+            object.try(:to_i)
           end
         end
         alias :demongoize :mongoize

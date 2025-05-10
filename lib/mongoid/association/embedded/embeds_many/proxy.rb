@@ -19,7 +19,7 @@ module Mongoid
           # @example Push a document.
           #   person.addresses.push(address)
           #
-          # @param [ Document, Array<Document> ] args Any number of documents.
+          # @param [ Document | Array<Document> ] args Any number of documents.
           def <<(*args)
             docs = args.flatten
             return concat(docs) if docs.size > 1
@@ -67,10 +67,11 @@ module Mongoid
           #
           # @return [ Document ] The new document.
           def build(attributes = {}, type = nil)
-            doc = Factory.build(type || _association.klass, attributes)
+            doc = Factory.execute_build(type || _association.klass, attributes, execute_callbacks: false)
             append(doc)
             doc.apply_post_processed_defaults
             yield(doc) if block_given?
+            doc.run_pending_callbacks
             doc.run_callbacks(:build) { doc }
             _base._reset_memoized_descendants!
             doc
@@ -94,6 +95,7 @@ module Mongoid
           # @return [ self ] The empty association.
           def clear
             batch_clear(_target.dup)
+            update_attributes_hash
             self
           end
 
@@ -115,7 +117,7 @@ module Mongoid
           # @example Use #persisted? inside block to count persisted documents.
           #   person.addresses.count { |a| a.persisted? && a.country == "FR" }
           #
-          # @param [ Object, Array<Object> ] args Args to delegate to the target.
+          # @param [ Object | Array<Object> ] args Args to delegate to the target.
           #
           # @return [ Integer ] The total number of persisted embedded docs, as
           #   flagged by the #persisted? method.
@@ -133,22 +135,40 @@ module Mongoid
           #
           # @param [ Document ] document The document to be deleted.
           #
-          # @return [ Document, nil ] The deleted document or nil if nothing deleted.
+          # @return [ Document | nil ] The deleted document or nil if nothing deleted.
           def delete(document)
-            execute_callback :before_remove, document
-            doc = _target.delete_one(document)
-            if doc && !_binding?
-              _unscoped.delete_one(doc)
-              if _assigning?
-                _base.add_atomic_pull(doc)
-              else
-                doc.delete(suppress: true)
-                unbind_one(doc)
+            execute_callbacks_around(:remove, document) do
+              doc = _target.delete_one(document)
+              if doc && !_binding?
+                _unscoped.delete_one(doc)
+                if _assigning?
+                  _base.add_atomic_pull(doc)
+                else
+                  doc.delete(suppress: true)
+                  unbind_one(doc)
+                end
+                update_attributes_hash
               end
+              reindex
+              doc
             end
+          end
+
+          # Mongoid::Extensions::Array defines Array#delete_one, so we need
+          # to make sure that method behaves reasonably on proxies, too.
+          alias delete_one delete
+
+          # Removes a single document from the collection *in memory only*.
+          # It will *not* persist the change.
+          #
+          # @param [ Document ] document The document to delete.
+          #
+          # @api private
+          def _remove(document)
+            _target.delete_one(document)
+            _unscoped.delete_one(document)
+            update_attributes_hash
             reindex
-            execute_callback :after_remove, document
-            doc
           end
 
           # Delete all the documents in the association without running callbacks.
@@ -173,7 +193,7 @@ module Mongoid
           #     doc.state == "GA"
           #   end
           #
-          # @return [ Many, Enumerator ] The association or an enumerator if no
+          # @return [ Many | Enumerator ] The association or an enumerator if no
           #   block was provided.
           def delete_if
             if block_given?
@@ -207,9 +227,9 @@ module Mongoid
           # @example Are there persisted documents?
           #   person.posts.exists?
           #
-          # @return [ true, false ] True is persisted documents exist, false if not.
+          # @return [ true | false ] True is persisted documents exist, false if not.
           def exists?
-            count > 0
+            _target.any? { |doc| doc.persisted? }
           end
 
           # Finds a document in this association through several different
@@ -256,6 +276,7 @@ module Mongoid
                 integrate(doc)
                 doc._index = index
               end
+              update_attributes_hash
               @_unscoped = _target.dup
               @_target = scope(_target)
             end
@@ -283,7 +304,7 @@ module Mongoid
           # @param [ Integer ] count The number of documents to pop, or 1 if not
           #   provided.
           #
-          # @return [ Document, Array<Document> ] The popped document(s).
+          # @return [ Document | Array<Document> ] The popped document(s).
           def pop(count = nil)
             if count
               if docs = _target[_target.size - count, _target.size]
@@ -291,6 +312,8 @@ module Mongoid
               end
             else
               delete(_target[-1])
+            end.tap do
+              update_attributes_hash
             end
           end
 
@@ -306,7 +329,7 @@ module Mongoid
           # @param [ Integer ] count The number of documents to shift, or 1 if not
           #   provided.
           #
-          # @return [ Document, Array<Document> ] The shifted document(s).
+          # @return [ Document | Array<Document> ] The shifted document(s).
           def shift(count = nil)
             if count
               if _target.size > 0 && docs = _target[0, count]
@@ -314,6 +337,8 @@ module Mongoid
               end
             else
               delete(_target[0])
+            end.tap do
+              update_attributes_hash
             end
           end
 
@@ -328,6 +353,7 @@ module Mongoid
           # @return [ Many ] The proxied association.
           def substitute(docs)
             batch_replace(docs)
+            update_attributes_hash
             self
           end
 
@@ -365,6 +391,7 @@ module Mongoid
             end
             _unscoped.push(document)
             integrate(document)
+            update_attributes_hash
             document._index = _unscoped.size - 1
             execute_callback :after_add, document
           end
@@ -387,20 +414,6 @@ module Mongoid
             _association.criteria(_base, _target)
           end
 
-          # Deletes one document from the target and unscoped.
-          #
-          # @api private
-          #
-          # @example Delete one document.
-          #   relation.delete_one(doc)
-          #
-          # @param [ Document ] document The document to delete.
-          def delete_one(document)
-            _target.delete_one(document)
-            _unscoped.delete_one(document)
-            reindex
-          end
-
           # Integrate the document into the association. will set its metadata and
           # attempt to bind the inverse.
           #
@@ -418,7 +431,7 @@ module Mongoid
           #
           # If the method exists on the array, use the default proxy behavior.
           #
-          # @param [ Symbol, String ] name The name of the method.
+          # @param [ Symbol | String ] name The name of the method.
           # @param [ Array ] args The method args
           # @param [ Proc ] block Optional block to pass.
           #
@@ -435,7 +448,7 @@ module Mongoid
           # @example Can we persist the association?
           #   relation.persistable?
           #
-          # @return [ true, false ] If the association is persistable.
+          # @return [ true | false ] If the association is persistable.
           def persistable?
             _base.persisted? && !_binding?
           end
@@ -479,13 +492,14 @@ module Mongoid
           #   relation.remove_all({ :num => 1 }, true)
           #
           # @param [ Hash ] conditions Conditions to filter by.
-          # @param [ true, false ] method :delete or :destroy.
+          # @param [ true | false ] method :delete or :destroy.
           #
           # @return [ Integer ] The number of documents removed.
           def remove_all(conditions = {}, method = :delete)
             criteria = where(conditions || {})
             removed = criteria.size
             batch_remove(criteria, method)
+            update_attributes_hash
             removed
           end
 
@@ -511,12 +525,22 @@ module Mongoid
             @_unscoped = docs
           end
 
+          # Returns a list of attributes hashes for each document.
+          #
+          # @return [ Array<Hash> ] The list of attributes hashes
           def as_attributes
-            attributes = []
-            _unscoped.each do |doc|
-              attributes.push(doc.as_document)
+            _unscoped.map { |doc| doc.send(:as_attributes) }
+          end
+
+          # Update the _base's attributes hash with the _target's attributes
+          #
+          # @api private
+          def update_attributes_hash
+            if !_target.empty?
+              _base.attributes.merge!(_association.store_as => _target.map(&:attributes))
+            else
+              _base.attributes.delete(_association.store_as)
             end
-            attributes
           end
 
           class << self

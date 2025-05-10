@@ -56,7 +56,7 @@ module Mongoid
     # @example Check if frozen
     #   document.frozen?
     #
-    # @return [ true, false ] True if frozen, else false.
+    # @return [ true | false ] True if frozen, else false.
     def frozen?
       attributes.frozen?
     end
@@ -100,21 +100,8 @@ module Mongoid
     # @param [ Hash ] attrs The attributes to set up the document with.
     #
     # @return [ Document ] A new document.
-    def initialize(attrs = nil)
-      @__parent = nil
-      _building do
-        @new_record = true
-        @attributes ||= {}
-        apply_pre_processed_defaults
-        apply_default_scoping
-        process_attributes(attrs) do
-          yield(self) if block_given?
-        end
-        apply_post_processed_defaults
-        # @todo: #2586: Need to have access to parent document in these
-        #   callbacks.
-        run_callbacks(:initialize) unless _initialize_callbacks.empty?
-      end
+    def initialize(attrs = nil, &block)
+      construct_document(attrs, &block)
     end
 
     # Return the model name of the document.
@@ -137,18 +124,6 @@ module Mongoid
       (persisted? || destroyed?) ? [ _id.to_s ] : nil
     end
 
-    # Return an array with this +Document+ only in it.
-    #
-    # @example Return the document in an array.
-    #   document.to_a
-    #
-    # @return [ Array<Document> ] An array with the document as its only item.
-    #
-    # @deprecated
-    def to_a
-      [ self ]
-    end
-
     # Return a hash of the entire document hierarchy from this document and
     # below. Used when the attributes are needed for everything and not just
     # the current document.
@@ -158,7 +133,14 @@ module Mongoid
     #
     # @return [ Hash ] A hash of all attributes in the hierarchy.
     def as_document
-      BSON::Document.new(as_attributes)
+      attrs = as_attributes
+
+      # legacy attributes have a tendency to leak internal state via
+      # `as_document`; we have to deep_dup the attributes here to prevent
+      # that.
+      attrs = attrs.deep_dup if Mongoid.legacy_attributes
+
+      BSON::Document.new(attrs)
     end
 
     # Calls #as_json on the document with additional, Mongoid-specific options.
@@ -175,14 +157,14 @@ module Mongoid
     #
     # @param [ Hash ] options The options.
     #
-    # @option options [ true, false ] :compact (Deprecated) Whether to include fields
+    # @option options [ true | false ] :compact (Deprecated) Whether to include fields
     #   with nil values in the json document.
     #
     # @return [ Hash ] The document as json.
     def as_json(options = nil)
       rv = super
       if options && options[:compact]
-        Mongoid.logger.warn('#as_json :compact option is deprecated. Please call #compact on the returned Hash object instead.')
+        Mongoid::Warnings.warn_as_json_compact_deprecated
         rv = rv.compact
       end
       rv
@@ -230,6 +212,47 @@ module Mongoid
 
     private
 
+    # Does the construction of a document.
+    #
+    # @param [ Hash ] attrs The attributes to set up the document with.
+    # @param [ Hash ] options The options to use.
+    #
+    # @option options [ true | false ] :execute_callbacks Flag specifies
+    #   whether callbacks should be run.
+    #
+    # @return [ Document ] A new document.
+    #
+    # @note A Ruby 2.x bug prevents the options hash from being keyword
+    #   arguments. Once we drop support for Ruby 2.x, we can reimplement
+    #   the options hash as keyword arguments.
+    #   See https://bugs.ruby-lang.org/issues/15753
+    #
+    # @api private
+    def construct_document(attrs = nil, options = {})
+      execute_callbacks = options.fetch(:execute_callbacks, Threaded.execute_callbacks?)
+
+      @__parent = nil
+      _building do
+        @new_record = true
+        @attributes ||= {}
+        apply_pre_processed_defaults
+        apply_default_scoping
+        process_attributes(attrs) do
+          yield(self) if block_given?
+        end
+        @attributes_before_type_cast = @attributes.merge(attributes_before_type_cast)
+
+        if execute_callbacks
+          apply_post_processed_defaults
+          run_callbacks(:initialize) unless _initialize_callbacks.empty?
+        else
+          pending_callbacks << :apply_post_processed_defaults
+          pending_callbacks << :initialize
+        end
+      end
+      self
+    end
+
     # Returns the logger
     #
     # @return [ Logger ] The configured logger or a default Logger instance.
@@ -247,6 +270,14 @@ module Mongoid
       @model_cache_key ||= self.class.model_name.cache_key
     end
 
+    # Returns a hash of the attributes.
+    #
+    # Note this method modifies the attributes hash that already exists on the
+    # class and returns it. This means that the hash returned by this method
+    # refers to the same hash as calling #attributes on the instance. See
+    # MONGOID-4476 for an explanation on how this is used.
+    #
+    # @return [ Hash ] The attributes hash.
     def as_attributes
       return attributes if frozen?
       embedded_relations.each_pair do |name, meta|
@@ -266,6 +297,20 @@ module Mongoid
 
     module ClassMethods
 
+      # Indicate whether callbacks should be invoked by default or not,
+      # within the block. Callbacks may always be explicitly invoked by passing
+      # `execute_callbacks: true` where available.
+      #
+      # @params execute_callbacks [ true | false ] Whether callbacks should be
+      #   suppressed or not.
+      def with_callbacks(execute_callbacks)
+        saved, Threaded.execute_callbacks =
+          Threaded.execute_callbacks?, execute_callbacks
+        yield
+      ensure
+        Threaded.execute_callbacks = saved
+      end
+
       # Instantiate a new object, only when loaded from the database or when
       # the attributes have already been typecast.
       #
@@ -275,11 +320,33 @@ module Mongoid
       # @param [ Hash ] attrs The hash of attributes to instantiate with.
       # @param [ Integer ] selected_fields The selected fields from the
       #   criteria.
+      # @param [ true | false ] execute_callbacks Flag specifies whether callbacks
+      #   should be run.
+      #
+      # @return [ Document ] A new document.
+      def instantiate(attrs = nil, selected_fields = nil, &block)
+        instantiate_document(attrs, selected_fields, &block)
+      end
+
+      # Instantiate the document.
+      #
+      # @param [ Hash ] attrs The hash of attributes to instantiate with.
+      # @param [ Integer ] selected_fields The selected fields from the
+      #   criteria.
+      # @param [ Hash ] options The options to use.
+      #
+      # @option options [ true | false ] :execute_callbacks Flag specifies
+      #   whether callbacks should be run.
       #
       # @return [ Document ] A new document.
       #
+      # @note A Ruby 2.x bug prevents the options hash from being keyword
+      #   arguments. Once we drop support for Ruby 2.x, we can reimplement
+      #   the options hash as keyword arguments.
+      #
       # @api private
-      def instantiate(attrs = nil, selected_fields = nil)
+      def instantiate_document(attrs = nil, selected_fields = nil, options = {})
+        execute_callbacks = options.fetch(:execute_callbacks, Threaded.execute_callbacks?)
         attributes = if Mongoid.legacy_attributes
           attrs
         else
@@ -289,11 +356,43 @@ module Mongoid
         doc = allocate
         doc.__selected_fields = selected_fields
         doc.instance_variable_set(:@attributes, attributes)
-        doc.apply_defaults
-        yield(doc) if block_given?
-        doc.run_callbacks(:find) unless doc._find_callbacks.empty?
-        doc.run_callbacks(:initialize) unless doc._initialize_callbacks.empty?
+        # TODO: remove the to_h when the legacy_attributes flag is removed.
+        # The to_h ensures that we don't accidentally make attributes_before_type_cast
+        # a BSON::Document.
+        doc.instance_variable_set(:@attributes_before_type_cast, attributes&.to_h.dup)
+
+        if execute_callbacks
+          doc.apply_defaults
+          yield(doc) if block_given?
+          doc.run_callbacks(:find) unless doc._find_callbacks.empty?
+          doc.run_callbacks(:initialize) unless doc._initialize_callbacks.empty?
+        else
+          yield(doc) if block_given?
+          doc.pending_callbacks += [:apply_defaults, :find, :initialize]
+        end
+
         doc
+      end
+
+      # Allocates and constructs a document.
+      #
+      # @param [ Hash ] attrs The attributes to set up the document with.
+      # @param [ Hash ] options The options to use.
+      #
+      # @option options [ true | false ] :execute_callbacks Flag specifies
+      #   whether callbacks should be run.
+      #
+      # @note A Ruby 2.x bug prevents the options hash from being keyword
+      #   arguments. Once we drop support for Ruby 2.x, we can reimplement
+      #   the options hash as keyword arguments.
+      #   See https://bugs.ruby-lang.org/issues/15753
+      #
+      # @return [ Document ] A new document.
+      #
+      # @api private
+      def construct_document(attrs = nil, options = {})
+        execute_callbacks = options.fetch(:execute_callbacks, Threaded.execute_callbacks?)
+        with_callbacks(execute_callbacks) { new(attrs) }
       end
 
       # Returns all types to query for when using this class as the base.

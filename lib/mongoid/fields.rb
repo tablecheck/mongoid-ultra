@@ -42,6 +42,16 @@ module Mongoid
     # @api private
     IDS = [ :_id, '_id', ].freeze
 
+    # BSON classes that are not supported as field types
+    #
+    # @api private
+    INVALID_BSON_CLASSES = [ BSON::Decimal128, BSON::Int32, BSON::Int64 ].freeze
+
+    # The suffix for generated translated fields.
+    # 
+    # @api private
+    TRANSLATIONS_SFX = '_translations'
+
     module ClassMethods
       # Returns the list of id fields for this model class, as both strings
       # and symbols.
@@ -94,8 +104,8 @@ module Mongoid
           ar.each_with_index do |fn, i|
             key = fn
             unless klass.fields.key?(fn) || klass.relations.key?(fn)
-              if tr = fn.match(/(.*)_translations\z/)&.captures&.first
-                key = tr
+              if fn.end_with?(TRANSLATIONS_SFX)
+                key = fn.delete_suffix(TRANSLATIONS_SFX)
               else
                 key = fn
               end
@@ -142,7 +152,7 @@ module Mongoid
     # @example Apply all the non-proc defaults.
     #   model.apply_pre_processed_defaults
     #
-    # @return [ Array<String ] The names of the non-proc defaults.
+    # @return [ Array<String> ] The names of the non-proc defaults.
     def apply_pre_processed_defaults
       pre_processed_defaults.each do |name|
         apply_default(name)
@@ -154,8 +164,9 @@ module Mongoid
     # @example Apply all the proc defaults.
     #   model.apply_post_processed_defaults
     #
-    # @return [ Array<String ] The names of the proc defaults.
+    # @return [ Array<String> ] The names of the proc defaults.
     def apply_post_processed_defaults
+      pending_callbacks.delete(:apply_post_processed_defaults)
       post_processed_defaults.each do |name|
         apply_default(name)
       end
@@ -184,6 +195,7 @@ module Mongoid
     # @example Apply all the defaults.
     #   model.apply_defaults
     def apply_defaults
+      pending_callbacks.delete(:apply_defaults)
       apply_pre_processed_defaults
       apply_post_processed_defaults
     end
@@ -207,7 +219,7 @@ module Mongoid
     # @example Get the database field name.
     #   model.database_field_name(:authorization)
     #
-    # @param [ String, Symbol ] name The name to get.
+    # @param [ String | Symbol ] name The name to get.
     #
     # @return [ String ] The name of the field as it's stored in the db.
     def database_field_name(name)
@@ -222,7 +234,7 @@ module Mongoid
     # @param [ Field ] field The field.
     # @param [ Object ] value The current value.
     #
-    # @return [ true, false ] If we set the field lazily.
+    # @return [ true | false ] If we set the field lazily.
     def lazy_settable?(field, value)
       !frozen? && value.nil? && field.lazy?
     end
@@ -234,9 +246,35 @@ module Mongoid
     # @example Is the document using object ids?
     #   model.using_object_ids?
     #
-    # @return [ true, false ] Using object ids.
+    # @return [ true | false ] Using object ids.
     def using_object_ids?
       self.class.using_object_ids?
+    end
+
+    # Does this field start with a dollar sign ($) or contain a dot/period (.)?
+    #
+    # @api private
+    #
+    # @param [ String ] name The field name.
+    #
+    # @return [ true | false ] If this field is dotted or dollared.
+    def dot_dollar_field?(name)
+      n = aliased_fields[name] || name
+      fields.key?(n) && (n.include?('.') || n.start_with?('$'))
+    end
+
+    # Validate whether or not the field starts with a dollar sign ($) or
+    # contains a dot/period (.).
+    #
+    # @api private
+    #
+    # @raise [ InvalidDotDollarAssignment ] If contains dots or starts with a dollar.
+    #
+    # @param [ String ] name The field name.
+    def validate_writable_field_name!(name)
+      if dot_dollar_field?(name)
+        raise Errors::InvalidDotDollarAssignment.new(self.class, name)
+      end
     end
 
     class << self
@@ -363,7 +401,7 @@ module Mongoid
       # If the belongs_to association is the last part of the name, we will
       # pass back the _id field.
       #
-      # @param [ String, Symbol ] name The name to get.
+      # @param [ String | Symbol ] name The name to get.
       # @param [ Hash ] relations The associations.
       # @param [ Hash ] alaiased_fields The aliased fields.
       # @param [ Hash ] alaiased_associations The aliased associations.
@@ -422,7 +460,7 @@ module Mongoid
       # Get the name of the provided field as it is stored in the database.
       # Used in determining if the field is aliased or not.
       #
-      # @param [ String, Symbol ] name The name to get.
+      # @param [ String | Symbol ] name The name to get.
       #
       # @return [ String ] The name of the field as it's stored in the db.
       def database_field_name(name)
@@ -474,7 +512,7 @@ module Mongoid
       # @example Does this class use object ids?
       #   person.using_object_ids?
       #
-      # @return [ true, false ] If the class uses BSON::ObjectIds for the id.
+      # @return [ true | false ] If the class uses BSON::ObjectIds for the id.
       def using_object_ids?
         fields["_id"].object_id_field?
       end
@@ -603,9 +641,7 @@ module Mongoid
             if lazy_settable?(field, raw)
               write_attribute(name, field.eval_default(self))
             else
-              value = field.demongoize(raw)
-              attribute_will_change!(name) if value.resizable?
-              value
+              process_raw_attribute(name.to_s, raw, field)
             end
           end
         end
@@ -677,11 +713,11 @@ module Mongoid
       # @param [ String ] meth The name of the method.
       def create_translations_getter(name, meth)
         generated_methods.module_eval do
-          re_define_method("#{meth}_translations") do
+          re_define_method("#{meth}#{TRANSLATIONS_SFX}") do
             attributes[name] ||= {}
             attributes[name].with_indifferent_access
           end
-          alias_method :"#{meth}_t", :"#{meth}_translations"
+          alias_method :"#{meth}_t", :"#{meth}#{TRANSLATIONS_SFX}"
         end
       end
 
@@ -695,16 +731,14 @@ module Mongoid
       # @param [ Field ] field The field.
       def create_translations_setter(name, meth, field)
         generated_methods.module_eval do
-          re_define_method("#{meth}_translations=") do |value|
+          re_define_method("#{meth}#{TRANSLATIONS_SFX}=") do |value|
             attribute_will_change!(name)
-            if value
-              value.update_values do |_value|
-                field.type.mongoize(_value)
-              end
+            value&.transform_values! do |_value|
+              field.type.mongoize(_value)
             end
             attributes[name] = value
           end
-          alias_method :"#{meth}_t=", :"#{meth}_translations="
+          alias_method :"#{meth}_t=", :"#{meth}#{TRANSLATIONS_SFX}="
         end
       end
 
@@ -735,19 +769,59 @@ module Mongoid
 
       def field_for(name, options)
         opts = options.merge(klass: self)
-        type_mapping = TYPE_MAPPINGS[options[:type]]
-        opts[:type] = type_mapping || unmapped_type(options)
+        opts[:type] = retrieve_and_validate_type(name, options[:type])
         return Fields::Localized.new(name, opts) if options[:localize]
         return Fields::ForeignKey.new(name, opts) if options[:identity]
         Fields::Standard.new(name, opts)
       end
 
-      def unmapped_type(options)
-        if "Boolean" == options[:type].to_s
+      # Get the class for the given type.
+      #
+      # @param [ Symbol ] name The name of the field.
+      # @param [ Symbol | Class ] type The type of the field.
+      #
+      # @return [ Class ] The type of the field.
+      #
+      # @raises [ Mongoid::Errors::InvalidFieldType ] if given an invalid field
+      #   type.
+      #
+      # @api private
+      def retrieve_and_validate_type(name, type)
+        result = TYPE_MAPPINGS[type] || unmapped_type(type)
+        raise Errors::InvalidFieldType.new(self, name, type) if !result.is_a?(Class)
+
+        if unsupported_type?(result)
+          warn_message = "Using #{result} as the field type is not supported. "
+          if result == BSON::Decimal128
+            warn_message += 'In BSON <= 4, the BSON::Decimal128 type will work as expected for both storing and querying, but will return a BigDecimal on query in BSON 5+. To use literal BSON::Decimal128 fields with BSON 5, set Mongoid.allow_bson5_decimal128 to true.'
+          else
+            warn_message += 'Saving values of this type to the database will work as expected, however, querying them will return a value of the native Ruby Integer type.'
+          end
+          Mongoid.logger.warn(warn_message)
+        end
+
+        result
+      end
+
+      def unmapped_type(type)
+        if "Boolean" == type.to_s
           Mongoid::Boolean
         else
-          options[:type] || Object
+          type || Object
         end
+      end
+
+      # Queries whether or not the given type is permitted as a declared field
+      # type.
+      #
+      # @param [ Class ] type The type to query
+      #
+      # @return [ true | false ] whether or not the type is supported
+      #
+      # @api private
+      def unsupported_type?(type)
+        return !Mongoid::Config.allow_bson5_decimal128? if type == BSON::Decimal128
+        INVALID_BSON_CLASSES.include?(type)
       end
     end
   end

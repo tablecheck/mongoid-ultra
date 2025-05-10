@@ -38,6 +38,7 @@ module Mongoid
       :max,
       :min,
       :none,
+      :pick,
       :pluck,
       :read,
       :sum,
@@ -75,7 +76,7 @@ module Mongoid
     # @example Are there no saved documents for this model?
     #   Person.empty?
     #
-    # @return [ true, false ] If the collection is empty.
+    # @return [ true | false ] If the collection is empty.
     def empty?
       count == 0
     end
@@ -86,7 +87,7 @@ module Mongoid
     # @example Do any documents exist for the conditions?
     #   Person.exists?
     #
-    # @return [ true, false ] If any documents exist for the conditions.
+    # @return [ true | false ] If any documents exist for the conditions.
     def exists?
       with_default_scope.exists?
     end
@@ -121,18 +122,32 @@ module Mongoid
     # strings will be transparently converted to +BSON::ObjectId+ instances
     # during query construction.
     #
+    # If this method is given a block, it delegates to +Enumerable#find+ and
+    # returns the first document of those found by the current Crieria object
+    # for which the block returns a truthy value. If both a block and ids are
+    # given, the block is ignored and the documents for the given ids are
+    # returned. If a block and a Proc are given, the method delegates to
+    # +Enumerable#find+ and uses the proc as the default.
+    #
     # The +find+ method takes into account the default scope defined on the
     # model class, if any.
     #
-    # @param [ Object | Array<Object> ] args The _id values to find or an
-    #   array thereof.
+    # @note Each argument can be an individual id, an array of ids or
+    #   a nested array. Each array will be flattened.
+    #
+    # @param [ Object | Array<Object> ] *args The _id value(s) to find.
     #
     # @return [ Document | Array<Document> | nil ] A document or matching documents.
     #
     # @raise Errors::DocumentNotFound If not all documents are found and
     #   the +raise_not_found_error+ Mongoid configuration option is truthy.
-    def find(*args)
-      with_default_scope.find(*args)
+    def find(*args, &block)
+      empty_or_proc = args.empty? || (args.length == 1 && args.first.is_a?(Proc))
+      if block_given? && empty_or_proc
+        with_default_scope.find(*args, &block)
+      else
+        with_default_scope.find(*args)
+      end
     end
 
     # Find the first +Document+ given the conditions.
@@ -148,7 +163,7 @@ module Mongoid
     # @raise [ Errors::DocumentNotFound ] If no document found
     # and Mongoid.raise_not_found_error is true.
     #
-    # @return [ Document, nil ] A matching document.
+    # @return [ Document | nil ] A matching document.
     def find_by(attrs = {})
       result = where(attrs).find_first
       if result.nil? && Mongoid.raise_not_found_error
@@ -169,7 +184,6 @@ module Mongoid
     # @raise [ Errors::DocumentNotFound ] If no document found.
     #
     # @return [ Document ] A matching document.
-    #
     def find_by!(attrs = {})
       result = where(attrs).find_first
       raise(Errors::DocumentNotFound.new(self, attrs)) unless result
@@ -182,15 +196,11 @@ module Mongoid
     # @example Find the first document.
     #   Person.first
     #
-    # @param [ Integer | Hash ] limit_or_opts The number of documents to
-    #   return, or a hash of options.
-    #
-    # @option limit_or_opts [ :none ] :id_sort This option is deprecated.
-    #   Don't apply a sort on _id if no other sort is defined on the criteria.
+    # @param [ Integer ] limit The number of documents to return.
     #
     # @return [ Document ] The first matching document.
-    def first(limit_or_opts = nil)
-      with_default_scope.first(limit_or_opts)
+    def first(limit = nil)
+      with_default_scope.first(limit)
     end
     alias :one :first
 
@@ -199,15 +209,11 @@ module Mongoid
     # @example Find the last document.
     #   Person.last
     #
-    # @param [ Integer | Hash ] limit_or_opts The number of documents to
-    #   return, or a hash of options.
-    #
-    # @option limit_or_opts [ :none ] :id_sort This option is deprecated.
-    #   Don't apply a sort on _id if no other sort is defined on the criteria.
+    # @param [ Integer ] limit The number of documents to return.
     #
     # @return [ Document ] The last matching document.
-    def last(limit_or_opts = nil)
-      with_default_scope.last(limit_or_opts)
+    def last(limit = nil)
+      with_default_scope.last(limit)
     end
   end
 end

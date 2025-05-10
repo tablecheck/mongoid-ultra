@@ -121,7 +121,7 @@ module Mongoid
       # @return [ MapReduce ] The map/reduce object.
       def out(location)
         normalized = location.dup
-        normalized.update_values do |value|
+        normalized.transform_values! do |value|
           value.is_a?(::Symbol) ? value.to_s : value
         end
         @map_reduce = @map_reduce.out(normalized)
@@ -147,7 +147,7 @@ module Mongoid
       def raw
         validate_out!
         cmd = command
-        opts = { read: cmd.delete(:read) } if cmd[:read]
+        opts = { read: criteria.options.fetch(:read) } if criteria.options[:read]
         @map_reduce.database.command(cmd, (opts || {}).merge(session: _session)).first
       end
       alias :results :raw

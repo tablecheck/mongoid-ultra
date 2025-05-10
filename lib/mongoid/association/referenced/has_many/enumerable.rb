@@ -28,7 +28,7 @@ module Mongoid
           #
           # @param [ Enumerable ] other The other enumerable.
           #
-          # @return [ true, false ] If the objects are equal.
+          # @return [ true | false ] If the objects are equal.
           def ==(other)
             return false unless other.respond_to?(:entries)
             entries == other.entries
@@ -42,7 +42,7 @@ module Mongoid
           #
           # @param [ Object ] other The object to check.
           #
-          # @return [ true, false ] If the objects are equal in a case.
+          # @return [ true | false ] If the objects are equal in a case.
           def ===(other)
             return false unless other.respond_to?(:entries)
             if Mongoid.legacy_triple_equals
@@ -192,7 +192,7 @@ module Mongoid
           # @example Is the enumerable empty?
           #   enumerable.empty?
           #
-          # @return [ true, false ] If the enumerable is empty.
+          # @return [ true | false ] If the enumerable is empty.
           def empty?
             if _loaded?
               in_memory.empty?
@@ -224,7 +224,7 @@ module Mongoid
           # @param [ Object ] condition The condition that documents
           #   must satisfy. See Enumerable documentation for details.
           #
-          # @return [ true, false ] If the association has any documents.
+          # @return [ true | false ] If the association has any documents.
           def any?(*args)
             return super if args.any? || block_given?
 
@@ -240,19 +240,15 @@ module Mongoid
           # @note Automatically adding a sort on _id when no other sort is
           #   defined on the criteria has the potential to cause bad performance issues.
           #   If you experience unexpected poor performance when using #first or #last,
-          #   use the option { id_sort: :none }.
-          #   Be aware that #first/#last won't guarantee order in this case.
+          #   use #take instead.
+          #   Be aware that #take won't guarantee order.
           #
-          # @param [ Integer | Hash ] limit_or_opts The number of documents to
-          #   return, or a hash of options.
-          #
-          # @option limit_or_opts [ :none ] :id_sort This option is deprecated.
-          #   Don't apply a sort on _id if no other sort is defined on the criteria.
+          # @param [ Integer ] limit The number of documents to return.
           #
           # @return [ Document ] The first document found.
-          def first(limit_or_opts = nil)
+          def first(limit = nil)
             _loaded.try(:values).try(:first) ||
-                _added[(ul = _unloaded.try(:first, limit_or_opts)).try(:_id)] ||
+                _added[(ul = _unloaded.try(:first, limit)).try(:_id)] ||
                 ul ||
                 _added.values.try(:first)
           end
@@ -265,7 +261,7 @@ module Mongoid
           # @example Initialize the enumerable with an array.
           #   Enumerable.new([ post ])
           #
-          # @param [ Criteria, Array<Document> ] target The wrapped object.
+          # @param [ Criteria | Array<Document> ] target The wrapped object.
           def initialize(target, base = nil, association = nil)
             @_base = base
             @_association = association
@@ -287,7 +283,7 @@ module Mongoid
           #
           # @param [ Document ] doc The document to check.
           #
-          # @return [ true, false ] If the document is in the target.
+          # @return [ true | false ] If the document is in the target.
           def include?(doc)
             return super unless _unloaded
             _unloaded.where(_id: doc._id).exists? || _added.has_key?(doc._id)
@@ -329,20 +325,16 @@ module Mongoid
           # @note Automatically adding a sort on _id when no other sort is
           #   defined on the criteria has the potential to cause bad performance issues.
           #   If you experience unexpected poor performance when using #first or #last,
-          #   use the option { id_sort: :none }.
-          #   Be aware that #first/#last won't guarantee order in this case.
+          #   use #take instead.
+          #   Be aware that #take won't guarantee order.
           #
-          # @param [ Integer | Hash ] limit_or_opts The number of documents to
-          #   return, or a hash of options.
-          #
-          # @option limit_or_opts [ :none ] :id_sort This option is deprecated.
-          #   Don't apply a sort on _id if no other sort is defined on the criteria.
+          # @param [ Integer ] limit The number of documents to return.
           #
           # @return [ Document ] The last document found.
-          def last(limit_or_opts = nil)
+          def last(limit = nil)
             _added.values.try(:last) ||
                 _loaded.try(:values).try(:last) ||
-                _added[(ul = _unloaded.try(:last, limit_or_opts)).try(:_id)] ||
+                _added[(ul = _unloaded.try(:last, limit)).try(:_id)] ||
                 ul
           end
 
@@ -360,7 +352,7 @@ module Mongoid
           # @example Is the enumerable _loaded?
           #   enumerable._loaded?
           #
-          # @return [ true, false ] If the enumerable has been _loaded.
+          # @return [ true | false ] If the enumerable has been _loaded.
           def _loaded?
             !!@executed
           end
@@ -413,11 +405,11 @@ module Mongoid
           # @example Does the enumerable respond to the method?
           #   enumerable.respond_to?(:sum)
           #
-          # @param [ String, Symbol ] name The name of the method.
-          # @param [ true, false ] include_private Whether to include private
+          # @param [ String | Symbol ] name The name of the method.
+          # @param [ true | false ] include_private Whether to include private
           #   methods.
           #
-          # @return [ true, false ] Whether the enumerable responds.
+          # @return [ true | false ] Whether the enumerable responds.
           def respond_to?(name, include_private = false)
             [].respond_to?(name, include_private) || super
           end
@@ -430,11 +422,28 @@ module Mongoid
           #
           # @return [ Integer ] The size of the enumerable.
           def size
-            count = (_unloaded ? _unloaded.count : _loaded.count)
-            if count.zero?
-              count + _added.count
+            # If _unloaded is present, then it will match the set of documents
+            # that belong to this association, which have already been persisted
+            # to the database. This set of documents must be considered when
+            # computing the size of the association, along with anything that has
+            # since been added.
+            if _unloaded
+              if _added.any?
+                # Note that _added may include records that _unloaded already
+                # matches. This is the case if the association is assigned an array
+                # of items and some of them were already elements of the association.
+                #
+                # we need to thus make sure _unloaded.count excludes any elements
+                # that already exist in _added.
+
+                count = _unloaded.not(:_id.in => _added.values.map(&:id)).count
+                count + _added.values.count
+              else
+                _unloaded.count
+              end
+
             else
-              count + _added.values.count { |d| d.new_record? }
+              _loaded.count + _added.count
             end
           end
 

@@ -1862,51 +1862,56 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
   end
 
-  describe "#delete" do
+  %i[ delete delete_one ].each do |method|
+    describe "\##{method}" do
+      let(:address_one) { Address.new(street: "first") }
+      let(:address_two) { Address.new(street: "second") }
 
-    let(:person) do
-      Person.new
-    end
-
-    let(:address_one) do
-      Address.new(street: "first")
-    end
-
-    let(:address_two) do
-      Address.new(street: "second")
-    end
-
-    before do
-      person.addresses << [ address_one, address_two ]
-    end
-
-    context "when the document exists in the relation" do
-
-      let!(:deleted) do
-        person.addresses.delete(address_one)
+      before do
+        person.addresses << [ address_one, address_two ]
       end
 
-      it "deletes the document" do
-        expect(person.addresses).to eq([ address_two ])
+      shared_examples_for 'deleting from the collection' do
+        context 'when the document exists in the relation' do
+          let!(:deleted) do
+            person.addresses.send(method, address_one)
+          end
+
+          it 'deletes the document' do
+            expect(person.addresses).to eq([ address_two ])
+            expect(person.reload.addresses).to eq([ address_two ]) if person.persisted?
+          end
+
+          it 'deletes the document from the unscoped' do
+            expect(person.addresses.send(:_unscoped)).to eq([ address_two ])
+          end
+
+          it 'reindexes the relation' do
+            expect(address_two._index).to eq(0)
+          end
+
+          it 'returns the document' do
+            expect(deleted).to eq(address_one)
+          end
+        end
+
+        context 'when the document does not exist' do
+          it 'returns nil' do
+            expect(person.addresses.send(method, Address.new)).to be_nil
+          end
+        end
       end
 
-      it "deletes the document from the unscoped" do
-        expect(person.addresses.send(:_unscoped)).to eq([ address_two ])
+      context 'when the root document is unpersisted' do
+        let(:person) { Person.new }
+
+        it_behaves_like 'deleting from the collection'
       end
 
-      it "reindexes the relation" do
-        expect(address_two._index).to eq(0)
-      end
+      context 'when the root document is persisted' do
+        let(:person) { Person.create }
 
-      it "returns the document" do
-        expect(deleted).to eq(address_one)
-      end
-    end
-
-    context "when the document does not exist" do
-
-      it "returns nil" do
-        expect(person.addresses.delete(Address.new)).to be_nil
+        it_behaves_like 'deleting from the collection'
       end
     end
   end
@@ -2210,6 +2215,79 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
           end
         end
       end
+
+      context "when modifying the document beforehand" do
+        let(:parent) { EmmParent.new }
+
+        before do
+
+          parent.blocks << EmmBlock.new(name: 'test', children: [size: 1, order: 1])
+          parent.save!
+
+          parent.blocks[0].children[0].assign_attributes(size: 2)
+
+          parent.blocks.destroy_all(:name => 'test')
+        end
+
+        it "deletes the correct document in the database" do
+          expect(parent.reload.blocks.length).to eq(0)
+        end
+      end
+
+      context "when nil _id" do
+        let(:parent) { EmmParent.new }
+
+        before do
+          parent.blocks << EmmBlock.new(_id: nil, name: 'test', children: [size: 1, order: 1])
+          parent.blocks << EmmBlock.new(_id: nil, name: 'test2', children: [size: 1, order: 1])
+          parent.save!
+
+          parent.blocks.destroy_all(:name => 'test')
+        end
+
+        it "deletes only the matching documents in the database" do
+          expect(parent.reload.blocks.length).to eq(1)
+        end
+      end
+
+      # Since without an _id field we must us a $pullAll with the attributes of
+      # the embedded document, if you modify it beforehand, the query will not
+      # be able to find the correct document to pull.
+      context "when modifying the document with nil _id" do
+        let(:parent) { EmmParent.new }
+
+        before do
+          parent.blocks << EmmBlock.new(_id: nil, name: 'test', children: [size: 1, order: 1])
+          parent.blocks << EmmBlock.new(_id: nil, name: 'test2', children: [size: 1, order: 1])
+          parent.save!
+
+          parent.blocks[0].children[0].assign_attributes(size: 2)
+
+          parent.blocks.destroy_all(:name => 'test')
+        end
+
+        it "does not delete the correct documents" do
+          expect(parent.reload.blocks.length).to eq(2)
+        end
+      end
+
+      context "when documents with and without _id" do
+        let(:parent) { EmmParent.new }
+
+        before do
+          parent.blocks << EmmBlock.new(_id: nil, name: 'test', children: [size: 1, order: 1])
+          parent.blocks << EmmBlock.new(name: 'test', children: [size: 1, order: 1])
+          parent.save!
+
+          parent.blocks[1].children[0].assign_attributes(size: 2)
+
+          parent.blocks.destroy_all(:name => 'test')
+        end
+
+        it "does not delete the correct documents" do
+          expect(parent.reload.blocks.length).to eq(0)
+        end
+      end
     end
   end
 
@@ -2287,7 +2365,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
           it "raises an error" do
             expect {
               person.addresses.find(BSON::ObjectId.new)
-            }.to raise_error(Mongoid::Errors::DocumentNotFound)
+            }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Address with id\(s\)/)
           end
         end
 
@@ -2336,7 +2414,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
           it "raises an error" do
             expect {
               person.addresses.find([ BSON::ObjectId.new ])
-            }.to raise_error(Mongoid::Errors::DocumentNotFound)
+            }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Address with id\(s\)/)
           end
         end
 
@@ -3461,7 +3539,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     describe "replacing the entire embedded list" do
 
-      context "when an embeds many relationship contains a nil as the first item" do
+      context "when an embeds many relationship contains nil as the first item" do
 
         let(:person) do
           Person.create!
@@ -3482,7 +3560,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
       end
 
-      context "when an embeds many relationship contains a nil in the middle of the list" do
+      context "when an embeds many relationship contains nil in the middle of the list" do
 
         let(:person) do
           Person.create!
@@ -3503,7 +3581,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
       end
 
-      context "when an embeds many relationship contains a nil at the end of the list" do
+      context "when an embeds many relationship contains nil at the end of the list" do
 
         let(:person) do
           Person.create!
@@ -3527,7 +3605,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     describe "appending to the embedded list" do
 
-      context "when appending a nil to the first position in an embedded list" do
+      context "when appending nil to the first position in an embedded list" do
 
         let(:person) do
           Person.create! phone_numbers: []
@@ -3546,7 +3624,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
       end
 
-      context "when appending a nil into the middle of an embedded list" do
+      context "when appending nil into the middle of an embedded list" do
 
         let(:person) do
           Person.create! phone_numbers: []
@@ -3565,7 +3643,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
       end
 
-      context "when appending a nil to the end of an embedded list" do
+      context "when appending nil to the end of an embedded list" do
 
         let(:person) do
           Person.create! phone_numbers: []
@@ -3957,6 +4035,28 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       it "does not add additional documents" do
         expect(addresses.count).to eq(1)
       end
+    end
+  end
+
+  context "when destroying a document with multiple nil _ids" do
+    let(:congress) { EmmCongress.create! }
+
+    before do
+      congress.legislators << EmmLegislator.new(_id: nil, a: 1)
+      congress.legislators << EmmLegislator.new(_id: nil, a: 2)
+
+      congress.legislators[0].destroy
+    end
+
+    it "deletes the correct document locally" do
+      pending "MONGOID-5394"
+      expect(congress.legislators.length).to eq(1)
+      expect(congress.legislators.first.a).to eq(1)
+    end
+
+    it "only deletes the one document" do
+      pending "MONGOID-5394"
+      expect(congress.reload.legislators.length).to eq(1)
     end
   end
 
@@ -4651,6 +4751,55 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
   end
 
+  context "when trying to persist the empty list" do
+
+    context "in an embeds_many relation" do
+
+      let(:band) { Band.create! }
+
+      before do
+        band.labels = []
+        band.save!
+      end
+
+      let(:reloaded_band) { Band.collection.find(_id: band._id).first }
+
+      it "persists the empty list" do
+        expect(reloaded_band).to have_key(:labels)
+        expect(reloaded_band[:labels]).to eq []
+      end
+    end
+
+    context "in a nested embeds_many relation" do
+
+      let(:survey) { Survey.create!(questions: [Question.new]) }
+
+      before do
+        survey.questions.first.answers = []
+        survey.save!
+      end
+
+      let(:reloaded_survey) { Survey.collection.find(_id: survey._id).first }
+
+      it "persists the empty list" do
+        expect(reloaded_survey).to have_key(:questions)
+        expect(reloaded_survey[:questions][0]).to have_key(:answers)
+        expect(reloaded_survey[:questions][0][:answers]).to eq []
+      end
+    end
+
+    context "when not setting the embeds_many field" do
+
+      let(:band) { Band.create! }
+
+      let(:reloaded_band) { Band.collection.find(_id: band._id).first }
+
+      it "does not persist the empty list" do
+        expect(reloaded_band).to_not have_key(:labels)
+      end
+    end
+  end
+
   context "when using assign_attributes with an already populated array" do
     let(:post) { EmmPost.create! }
 
@@ -4668,6 +4817,52 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     it "has the correct embedded documents" do
       expect(post.company_tags.length).to eq(1)
       expect(post.company_tags.first.title).to eq("c")
+    end
+  end
+
+  context "when the parent fails validation" do
+    let(:school) { EmmSchool.new }
+    let(:student) { school.students.new }
+
+    before do
+      student.save
+    end
+
+    it "does not mark the parent as persisted" do
+      expect(school.persisted?).to be false
+    end
+
+    it "does not mark the child as persisted" do
+      expect(student.persisted?).to be false
+    end
+
+    it "does not persist the parent" do
+      expect(School.count).to eq(0)
+    end
+  end
+
+  context "when doing assign_attributes then assignment" do
+
+    let(:post) do
+      EmmPost.create!(
+        company_tags: [ EmmCompanyTag.new(title: "1"), EmmCompanyTag.new(title: "1") ],
+        user_tags: [ EmmUserTag.new(title: "1"), EmmUserTag.new(title: "1") ]
+      )
+    end
+
+    let(:from_db) { EmmPost.find(post.id) }
+
+    before do
+      post.assign_attributes(
+        company_tags: [ EmmCompanyTag.new(title: '3'), EmmCompanyTag.new(title: '4') ]
+      )
+      post.user_tags = [ EmmUserTag.new(title: '3'), EmmUserTag.new(title: '4') ]
+      post.save!
+    end
+
+    it "persists the associations correctly" do
+      expect(from_db.user_tags.size).to eq(2)
+      expect(from_db.company_tags.size).to eq(2)
     end
   end
 end

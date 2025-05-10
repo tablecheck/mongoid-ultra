@@ -165,12 +165,39 @@ describe Mongoid::Document do
 
   describe "#attributes" do
 
-    let(:person) do
-      Person.new(title: "Sir")
+    let!(:person) do
+      Person.create!(title: "Sir")
     end
 
     it "returns the attributes with indifferent access" do
       expect(person[:title]).to eq("Sir")
+    end
+
+    context "when instantiating a new document" do
+      it "returns a Hash" do
+        expect(person.attributes.class).to eq(Hash)
+      end
+    end
+
+    context "when retrieving a document from the database" do
+
+      let(:from_db) { Person.first }
+
+      context "when legacy_attributes is false" do
+        config_override :legacy_attributes, false
+
+        it "returns a Hash" do
+          expect(from_db.attributes.class).to eq(Hash)
+        end
+      end
+
+      context "when legacy_attributes is true" do
+        config_override :legacy_attributes, true
+
+        it "returns a BSON::Document" do
+          expect(from_db.attributes.class).to eq(BSON::Document)
+        end
+      end
     end
   end
 
@@ -293,27 +320,6 @@ describe Mongoid::Document do
           expect(person.game.name).to eq("Ms. Pacman")
         end
       end
-
-      context "when instantiating model" do
-
-        let(:person) do
-          Person.instantiate("_id" => BSON::ObjectId.new, "title" => "Sir")
-        end
-
-        before do
-          Person.set_callback :initialize, :after do |doc|
-            doc.title = "Madam"
-          end
-        end
-
-        after do
-          Person.reset_callbacks(:initialize)
-        end
-
-        it "runs the callbacks" do
-          expect(person.title).to eq("Madam")
-        end
-      end
     end
 
     context "when defaults are defined" do
@@ -409,21 +415,6 @@ describe Mongoid::Document do
     end
   end
 
-  describe "#to_a" do
-
-    let(:person) do
-      Person.new
-    end
-
-    let(:people) do
-      person.to_a
-    end
-
-    it "returns the document in an array" do
-      expect(people).to eq([ person ])
-    end
-  end
-
   describe "#as_json" do
 
     let!(:person) do
@@ -501,12 +492,12 @@ describe Mongoid::Document do
         end
 
         it 'logs a deprecation warning when :compact is given' do
-          expect_any_instance_of(Logger).to receive(:warn).with(message)
+          expect(Mongoid::Warnings).to receive(:warn_as_json_compact_deprecated)
           church.as_json(compact: true)
         end
 
         it 'does not log a deprecation warning when :compact is not given' do
-          expect_any_instance_of(Logger).to_not receive(:warn).with(message)
+          expect(Mongoid::Warnings).to_not receive(:warn_as_json_compact_deprecated)
           church.as_json
         end
       end
@@ -600,6 +591,33 @@ describe Mongoid::Document do
       expect(person.as_document["addresses"].first).to have_key(:locations)
     end
 
+    context 'when modifying the returned object' do
+      let(:record) do
+        RootCategory.create(categories: [{ name: 'tests' }]).reload
+      end
+
+      shared_examples_for 'an object with protected internal state' do
+        it 'does not expose internal state' do
+          before_change = record.as_document.dup
+          record.categories.first.name = 'things'
+          after_change = record.as_document
+          expect(before_change['categories'].first['name']).not_to eq('things')
+        end
+      end
+
+      context 'when legacy_attributes is true' do
+        config_override :legacy_attributes, true
+
+        it_behaves_like 'an object with protected internal state'
+      end
+
+      context 'when legacy_attributes is false' do
+        config_override :legacy_attributes, false
+
+        it_behaves_like 'an object with protected internal state'
+      end
+    end
+
     context "with relation define store_as option in embeded_many" do
 
       let!(:phone) do
@@ -627,7 +645,7 @@ describe Mongoid::Document do
       end
 
       it "does not include the document in the hash" do
-        expect(person.as_document["addresses"]).to be_empty
+        expect(person.as_document).to_not have_key("addresses")
       end
     end
 

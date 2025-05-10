@@ -8,9 +8,6 @@ module Mongoid
       module Macro
         extend self
 
-        # The warning message to give when a field is of type Symbol.
-        FIELD_TYPE_IS_SYMBOL = 'The BSON symbol type is deprecated; use String instead'.freeze
-
         OPTIONS = [
           :as,
           :default,
@@ -69,7 +66,7 @@ module Mongoid
         def validate_field_name(klass, name)
           [name, "#{name}?".to_sym, "#{name}=".to_sym].each do |n|
             if Mongoid.destructive_fields.include?(n)
-              raise Errors::InvalidField.new(klass, n)
+              raise Errors::InvalidField.new(klass, name, n)
             end
           end
         end
@@ -91,7 +88,7 @@ module Mongoid
         def validate_name_uniqueness(klass, name, options)
           if !options[:overwrite] && klass.fields.keys.include?(name.to_s)
             if Mongoid.duplicate_fields_exception
-              raise Errors::InvalidField.new(klass, name)
+              raise Errors::InvalidField.new(klass, name, name)
             else
               Mongoid.logger.warn("Overwriting existing field #{name} in class #{klass.name}.") if Mongoid.logger
             end
@@ -117,10 +114,7 @@ module Mongoid
             end
 
             if option == :type && options[option] == Symbol
-              @field_type_is_symbol_warned ||= begin
-                Mongoid.logger.warn(FIELD_TYPE_IS_SYMBOL)
-                true
-              end
+              Mongoid::Warnings.warn_symbol_type_deprecated
             end
           end
         end

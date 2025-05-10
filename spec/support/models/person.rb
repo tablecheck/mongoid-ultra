@@ -40,6 +40,7 @@ class Person
   field :arrays, type: Array
   field :range, type: Range
   field :species, type: Symbol
+  field :posts_count, type: Integer, default: 0
 
   index age: 1
   index addresses: 1
@@ -69,6 +70,7 @@ class Person
   embeds_many :messages, validate: false
 
   embeds_one :passport, autobuild: true, store_as: :pass, validate: false
+  embeds_one :purse, store_as: "Purse"
   embeds_one :pet, class_name: "Animal", validate: false
   embeds_one :name, as: :namable, validate: false do
     def extension

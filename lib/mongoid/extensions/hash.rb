@@ -11,7 +11,7 @@ module Mongoid
       #
       # @return [ Hash ] The converted hash.
       def __evolve_object_id__
-        update_values(&:__evolve_object_id__)
+        transform_values!(&:__evolve_object_id__)
       end
 
       # Mongoizes each value in the hash to an object id if it is convertable.
@@ -24,7 +24,7 @@ module Mongoid
         if id = self['$oid']
           BSON::ObjectId.from_string(id)
         else
-          update_values(&:__mongoize_object_id__)
+          transform_values!(&:__mongoize_object_id__)
         end
       end
 
@@ -38,8 +38,12 @@ module Mongoid
         consolidated = {}
         each_pair do |key, value|
           if key =~ /\$/
-            value.each_pair do |_key, _value|
-              value[_key] = (key == "$rename") ? _value.to_s : mongoize_for(key, klass, _key, _value)
+            value.keys.each do |key2|
+              value2 = value[key2]
+              real_key = klass.database_field_name(key2)
+
+              value.delete(key2) if real_key != key2
+              value[real_key] = value_for(key, klass, real_key, value2)
             end
             consolidated[key] ||= {}
             consolidated[key].update(value)
@@ -148,7 +152,7 @@ module Mongoid
       # @example Mongoize the object.
       #   object.mongoize
       #
-      # @return [ Hash ] The object.
+      # @return [ Hash | nil ] The object mongoized or nil.
       def mongoize
         ::Hash.mongoize(self)
       end
@@ -181,6 +185,24 @@ module Mongoid
 
       private
 
+      # Get the value for the provided operator, klass, key and value.
+      #
+      # This is necessary for special cases like $rename, $addToSet and $push.
+      #
+      # @param [ String ] operator The operator.
+      # @param [ Class ] klass The model class.
+      # @param [ String | Symbol ] key The field key.
+      # @param [ Object ] value The original value.
+      #
+      # @return [ Object ] Value prepared for the provided operator.
+      def value_for(operator, klass, key, value)
+        case operator
+        when "$rename" then value.to_s
+        when "$addToSet", "$push" then value.mongoize
+        else mongoize_for(operator, klass, operator, value)
+        end
+      end
+
       # Mongoize for the klass, key and value.
       #
       # @api private
@@ -190,7 +212,7 @@ module Mongoid
       #
       # @param [ String ] operator The operator.
       # @param [ Class ] klass The model class.
-      # @param [ String, Symbol ] key The field key.
+      # @param [ String | Symbol ] key The field key.
       # @param [ Object ] value The value to mongoize.
       #
       # @return [ Object ] The mongoized value.
@@ -217,10 +239,15 @@ module Mongoid
         #
         # @param [ Object ] object The object to mongoize.
         #
-        # @return [ Hash ] The object mongoized.
+        # @return [ Hash | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.nil?
-          evolve(object.dup).update_values { |value| value.mongoize }
+          if object.is_a?(Hash)
+            # Need to use transform_values! which maintains the BSON::Document
+            # instead of transform_values which always returns a hash. To do this,
+            # we first need to dup the hash.
+            object.dup.transform_values!(&:mongoize)
+          end
         end
 
         # Can the size of this object change?
@@ -239,3 +266,5 @@ end
 
 ::Hash.__send__(:include, Mongoid::Extensions::Hash)
 ::Hash.extend(Mongoid::Extensions::Hash::ClassMethods)
+
+::Mongoid.deprecate(Hash, :blank_criteria)

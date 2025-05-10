@@ -34,10 +34,16 @@ module Mongoid
         #
         # @api private
         class_attribute :aliased_associations
+
+        # @return [ Set<String> ] The set of associations that are configured 
+        #   with :store_as parameter.
+        class_attribute :stored_as_associations
+
         self.embedded = false
         self.embedded_relations = BSON::Document.new
         self.relations = BSON::Document.new
         self.aliased_associations = {}
+        self.stored_as_associations = Set.new
       end
 
       # This is convenience for libraries still on the old API.
@@ -216,8 +222,9 @@ module Mongoid
           Association::MACRO_MAPPING[macro_name].new(self, name, options, &block).tap do |assoc|
             assoc.setup!
             self.relations = self.relations.merge(name => assoc)
-            if assoc.respond_to?(:store_as) && assoc.store_as != name
+            if assoc.embedded? && assoc.respond_to?(:store_as) && assoc.store_as != name
               self.aliased_associations[assoc.store_as] = name
+              self.stored_as_associations << assoc.store_as
             end
           end
         end

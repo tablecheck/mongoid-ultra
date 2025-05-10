@@ -178,13 +178,15 @@ module Mongoid
     #
     # @return [ Object ] The associated path.
     def atomic_paths
-      @atomic_paths ||= begin
-        if _association
-          _association.path(self)
-        else
-          Atomic::Paths::Root.new(self)
-        end
-      end
+      return @atomic_paths if @atomic_paths
+
+      paths = if _association
+                _association.path(self)
+              else
+                Atomic::Paths::Root.new(self)
+              end
+
+      paths.tap { @atomic_paths = paths unless new_record? }
     end
 
     # Get all the attributes that need to be pulled.
@@ -310,6 +312,13 @@ module Mongoid
     end
 
     private
+
+    # Clears all pending atomic updates.
+    def reset_atomic_updates!
+      Atomic::UPDATES.each do |update|
+        send(update).clear
+      end
+    end
 
     # Generates the atomic updates in the correct order.
     #

@@ -20,9 +20,9 @@ module Mongoid
       # @example Mongoize the object.
       #   object.mongoize
       #
-      # @return [ Object ] The object.
+      # @return [ String | BSON::Decimal128 | nil ] The object or nil.
       def mongoize
-        to_s
+        ::BigDecimal.mongoize(self)
       end
 
       # Is the BigDecimal a number?
@@ -39,26 +39,49 @@ module Mongoid
 
         # Convert the object from its mongo friendly ruby type to this type.
         #
-        # @example Demongoize the object.
-        #   Object.demongoize(object)
-        #
         # @param [ Object ] object The object to demongoize.
         #
-        # @return [ BigDecimal, nil ] A BigDecimal derived from the object or nil.
+        # @return [ BigDecimal | nil ] A BigDecimal derived from the object or nil.
         def demongoize(object)
-          object && object.numeric? ? BigDecimal(object.to_s) : nil
+          return if object.blank?
+          if object.is_a?(BSON::Decimal128)
+            object.to_big_decimal
+          elsif object.numeric?
+            BigDecimal(object.to_s)
+          elsif object.numeric?
+            object.to_d
+          end
         end
 
-        # Mongoize an object of any type to how it's stored in the db as a String.
+        # Mongoize an object of any type to how it's stored in the db.
         #
         # @example Mongoize the object.
         #   BigDecimal.mongoize(123)
         #
         # @param [ Object ] object The object to Mongoize
         #
-        # @return [ String, nil ] A String representing the object or nil.
+        # @return [ String | BSON::Decimal128 | nil ] A String or Decimal128
+        #   representing the object or nil. String if Mongoid.map_big_decimal_to_decimal128
+        #   is false, BSON::Decimal128 otherwise.
         def mongoize(object)
-          object && object.numeric? ? object.to_s : nil
+          return if object.blank?
+          if Mongoid.map_big_decimal_to_decimal128
+            if object.is_a?(BSON::Decimal128)
+              object
+            elsif object.is_a?(BigDecimal)
+              BSON::Decimal128.new(object)
+            elsif object.numeric?
+              BSON::Decimal128.new(object.to_s)
+            elsif !object.is_a?(String)
+              object.try(:to_d)
+            end
+          else
+            if object.is_a?(BSON::Decimal128) || object.numeric?
+              object.to_s
+            elsif !object.is_a?(String)
+              object.try(:to_d)
+            end
+          end
         end
       end
     end

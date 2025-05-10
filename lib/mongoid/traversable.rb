@@ -225,7 +225,7 @@ module Mongoid
     # @example Check if the document is a subclass
     #   Square.new.hereditary?
     #
-    # @return [ true, false ] True if hereditary, false if not.
+    # @return [ true | false ] True if hereditary, false if not.
     def hereditary?
       self.class.hereditary?
     end
@@ -255,10 +255,11 @@ module Mongoid
     def remove_child(child)
       name = child.association_name
       if child.embedded_one?
+        self.attributes.delete(child._association.store_as)
         remove_ivar(name)
       else
         relation = send(name)
-        relation.send(:delete_one, child)
+        relation._remove(child)
       end
     end
 
@@ -304,7 +305,7 @@ module Mongoid
     # @example Is the document the root?
     #   document._root?
     #
-    # @return [ true, false ] If the document is the root.
+    # @return [ true | false ] If the document is the root.
     def _root?
       _parent ? false : true
     end
@@ -316,9 +317,21 @@ module Mongoid
       # @example Check if the document is a subclass.
       #   Square.hereditary?
       #
-      # @return [ true, false ] True if hereditary, false if not.
+      # @return [ true | false ] True if hereditary, false if not.
       def hereditary?
         !!(Mongoid::Document > superclass)
+      end
+
+      # Returns the root class of the STI tree that the current
+      # class participates in. If the class is not an STI subclass, this
+      # returns the class itself.
+      #
+      # @return [ Mongoid::Document ] the root of the STI tree
+      def root_class
+        root = self
+        root = root.superclass while root.hereditary?
+
+        root
       end
 
       # When inheriting, we want to copy the fields from the parent class and
