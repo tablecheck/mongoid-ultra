@@ -36,7 +36,7 @@ describe Mongoid::Contextual::Aggregable::None do
       config_override :broken_aggregables, true
 
       it "returns nil" do
-        expect(context.sum).to eq(ActiveSupport::VERSION < '7.1.0' ? 0 : nil)
+        expect(context.sum).to eq(ActiveSupport.version.to_s < '7.1.0' ? 0 : nil)
       end
 
       it "returns the input when arg given" do
