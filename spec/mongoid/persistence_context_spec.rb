@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 require "spec_helper"
 
@@ -205,12 +206,26 @@ describe Mongoid::PersistenceContext do
 
         context 'when the options are valid extra options' do
 
-          let(:options) do
-            { collection: 'other' }
+          context 'collection' do
+
+            let(:options) do
+              { collection: 'other' }
+            end
+
+            it 'sets the options on the persistence context object' do
+              expect(persistence_context.collection_name).to eq(options[:collection].to_sym)
+            end
           end
 
-          it 'sets the options on the persistence context object' do
-            expect(persistence_context.collection_name).to eq(options[:collection].to_sym)
+          context 'collection_options' do
+            let(:options) do
+              { collection_options: { capped: true } }
+            end
+
+            it 'does not propagate to client options' do
+              pending 'Not supported in Mongoid 7'
+              expect(persistence_context.send(:client_options).key?(:collection_options)).to eq(false)
+            end
           end
         end
 
@@ -411,17 +426,10 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when there is a database override' do
+          persistence_context_override :database, :other
 
           before do
             object.store_in database: :musique
-          end
-
-          before do
-            Mongoid::Threaded.database_override = :other
-          end
-
-          after do
-            Mongoid::Threaded.database_override = nil
           end
 
           it 'uses the override' do
@@ -458,14 +466,7 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when there is a database override' do
-
-          before do
-            Mongoid::Threaded.database_override = :other
-          end
-
-          after do
-            Mongoid::Threaded.database_override = nil
-          end
+          persistence_context_override :database, :other
 
           it 'uses the persistence context options' do
             expect(persistence_context.database_name).to eq(:musique)
@@ -517,14 +518,7 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when there is a database override' do
-
-          before do
-            Mongoid::Threaded.database_override = :other
-          end
-
-          after do
-            Mongoid::Threaded.database_override = nil
-          end
+          persistence_context_override :database, :other
 
           it 'uses the persistence context options' do
             expect(persistence_context.database_name).to eq(:musique)
@@ -535,19 +529,27 @@ describe Mongoid::PersistenceContext do
       context 'when there are no options passed to the Persistence Context' do
 
         context 'when there is a database override' do
-
-          before do
-            Mongoid::Threaded.database_override = :other
-          end
-
-          after do
-            Mongoid::Threaded.database_override = nil
-          end
+          persistence_context_override :database, :other
 
           it 'uses the database override options' do
             expect(persistence_context.database_name).to eq(Mongoid::Threaded.database_override)
           end
         end
+      end
+    end
+
+    context 'when the database is specified as a proc' do
+      let(:options) { { database: ->{ 'other' } } }
+
+      after { persistence_context.client.close }
+
+      it 'evaluates the proc' do
+        expect(persistence_context.database_name).to eq(:other)
+      end
+
+      it 'does not pass the proc to the client' do
+        pending 'Not supported in Mongoid 7'
+        expect(persistence_context.client.database.name).to eq('other')
       end
     end
   end
@@ -584,16 +586,17 @@ describe Mongoid::PersistenceContext do
         expect(persistence_context.client).to eq(Mongoid::Clients.with_name(:alternative))
       end
 
+      context 'when the client option is a proc' do
+        let(:options) { { client: -> { :alternative } } }
+
+        it 'evaluates the proc' do
+          pending 'Not supported in Mongoid 7'
+          expect(persistence_context.client).to eq(Mongoid::Clients.with_name(:alternative))
+        end
+      end
+
       context 'when there is a client override' do
-
-        before do
-          Mongoid::Threaded.client_override = :other
-        end
-
-        after do
-          persistence_context.client.close
-          Mongoid::Threaded.client_override = nil
-        end
+        persistence_context_override :client, :other
 
         it 'uses the client option' do
           expect(persistence_context.client).to eq(Mongoid::Clients.with_name(:alternative))
@@ -630,6 +633,23 @@ describe Mongoid::PersistenceContext do
       end
     end
 
+    context 'when the client is set as a proc in the storage options' do
+      let(:options) { {} }
+
+      before do
+        Band.store_in client: ->{ :alternative }
+      end
+
+      after do
+        persistence_context.client.close
+        Band.store_in client: nil
+      end
+
+      it 'uses the client option' do
+        expect(persistence_context.client).to eq(Mongoid::Clients.with_name(:alternative))
+      end
+    end
+
     context 'when there is no client option set' do
 
       let(:options) do
@@ -637,14 +657,7 @@ describe Mongoid::PersistenceContext do
       end
 
       context 'when there is a client override' do
-
-        before do
-          Mongoid::Threaded.client_override = :alternative
-        end
-
-        after do
-          Mongoid::Threaded.client_override = nil
-        end
+        persistence_context_override :client, :alternative
 
         it 'uses the client override' do
           expect(persistence_context.client).to eq(Mongoid::Clients.with_name(:alternative))
@@ -680,14 +693,7 @@ describe Mongoid::PersistenceContext do
         end
 
         context 'when there is a client override' do
-
-          before do
-            Mongoid::Threaded.client_override = :alternative
-          end
-
-          after do
-            Mongoid::Threaded.client_override = nil
-          end
+          persistence_context_override :client, :alternative
 
           it 'uses the client override' do
             expect(persistence_context.client).to eq(Mongoid::Clients.with_name(:alternative))
@@ -715,6 +721,32 @@ describe Mongoid::PersistenceContext do
 
       it 'uses the database from the options' do
         expect(persistence_context.client.database.name).to eq(options[:database])
+      end
+    end
+  end
+
+  context "when using an alternate database to update a document" do
+    let(:user) do
+      User.new(name: '1')
+    end
+
+    before do
+      user.with(database: database_id_alt) do |u|
+        u.save!
+      end
+
+      pending 'Not supported in Mongoid 7'
+      expect do
+        user.with(database: database_id_alt) do |u|
+          u.update(name:'2')
+        end
+      end.to_not raise_error
+    end
+
+    it "persists the update" do
+      pending 'Not supported in Mongoid 7'
+      User.with("database" => database_id_alt) do |klass|
+        expect(klass.find(user._id).name).to eq("2")
       end
     end
   end

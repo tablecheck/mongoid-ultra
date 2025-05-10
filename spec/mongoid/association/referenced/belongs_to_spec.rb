@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 require "spec_helper"
 require_relative './has_one_models'
@@ -238,7 +239,6 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the polymorphic option is not provided' do
-
         it 'does not set the polymorphic attribute on the owner class' do
           expect(belonging_class.polymorphic).to be(false)
         end
@@ -546,17 +546,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the global config option is true' do
-
-        around(:example) do |example|
-          original_config = Mongoid.belongs_to_required_by_default
-          Mongoid.belongs_to_required_by_default = true
-          example.run
-          Mongoid.belongs_to_required_by_default = original_config
-        end
-
-        let!(:original_required_config) do
-          Mongoid.belongs_to_required_by_default
-        end
+        config_override :belongs_to_required_by_default, true
 
         context 'when the required option is true' do
 
@@ -684,13 +674,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       end
 
       context 'when the global config option is false' do
-
-        around(:example) do |example|
-          original_config = Mongoid.belongs_to_required_by_default
-          Mongoid.belongs_to_required_by_default = false
-          example.run
-          Mongoid.belongs_to_required_by_default = original_config
-        end
+        config_override :belongs_to_required_by_default, false
 
         context 'when the required option is true' do
 
@@ -2019,8 +2003,8 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
   describe '#foreign_key_check' do
 
-    it 'returns the foreign_key followed by "_changed?"' do
-      expect(association.foreign_key_check).to eq('owner_object_id_changed?')
+    it 'returns the foreign_key followed by "_previously_changed?"' do
+      expect(association.foreign_key_check).to eq('owner_object_id_previously_changed?')
     end
   end
 

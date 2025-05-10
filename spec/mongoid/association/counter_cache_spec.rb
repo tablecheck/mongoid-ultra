@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 require "spec_helper"
 
@@ -133,7 +134,7 @@ describe Mongoid::Association::Referenced::CounterCache do
       it "expect to raise an error" do
         expect {
           Person.reset_counters "1", :drugs
-        }.to raise_error(Mongoid::Errors::DocumentNotFound)
+        }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
       end
     end
 

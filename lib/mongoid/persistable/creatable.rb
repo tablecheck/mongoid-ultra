@@ -102,13 +102,14 @@ module Mongoid
       def prepare_insert(options = {})
         return self if performing_validations?(options) &&
           invalid?(options[:context] || :create)
-        result = run_callbacks(:save) do
+        run_callbacks(:save) do
           run_callbacks(:create) do
-            yield(self)
+            result = yield(self)
             post_process_insert
+            post_process_persist(result, options)
           end
         end
-        post_process_persist(result, options) and self
+        self
       end
 
       module ClassMethods

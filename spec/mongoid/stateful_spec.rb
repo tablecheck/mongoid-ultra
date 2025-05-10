@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 require "spec_helper"
 
@@ -40,6 +41,25 @@ describe Mongoid::Stateful do
     end
   end
 
+  describe '#previously_new_record?' do
+    it "returns correct values" do
+      person = Person.new
+      expect(person).not_to be_a_previously_new_record
+      person.save!
+      expect(person).to be_a_previously_new_record
+      person.title = "Title"
+      person.save!
+      expect(person).not_to be_a_previously_new_record
+    end
+
+    it "resets after reload" do
+      person = Person.create!
+      expect(person).to be_a_previously_new_record
+      person.reload
+      expect(person).not_to be_a_previously_new_record
+    end
+  end
+
   describe "#persisted?" do
 
     let(:person) do
@@ -59,6 +79,15 @@ describe Mongoid::Stateful do
       it "returns false" do
         expect(person).to_not be_persisted
       end
+    end
+  end
+
+  describe "#previously_persisted?" do
+    it "returns true after being destroyed" do
+      person = Person.create!
+      expect(person).not_to be_previously_persisted
+      person.destroy
+      expect(person).to be_previously_persisted
     end
   end
 
@@ -108,7 +137,7 @@ describe Mongoid::Stateful do
       Band.new
     end
 
-    context "when the document is readonly" do
+    context "when the selected fields are set" do
 
       before do
         document.__selected_fields = { test: 1 }
@@ -123,6 +152,48 @@ describe Mongoid::Stateful do
 
       it "returns false" do
         expect(document).to_not be_readonly
+      end
+    end
+
+    context "when the readonly! method is called" do
+
+      let(:op) do
+        document.readonly!
+      end
+
+      it "returns false" do
+        op
+        expect(document).to_not be_readonly
+      end
+    end
+
+    context "when overriding readonly?" do
+
+      let(:doc) { ReadonlyModel.create! }
+
+      before do
+        class ReadonlyModel
+          include Mongoid::Document
+
+          attr_accessor :locked
+
+          def readonly?
+            !!locked
+          end
+        end
+      end
+
+      after do
+        Object.send(:remove_const, :ReadonlyModel)
+      end
+
+      it "raises when readonly? is true" do
+        expect(doc.readonly?).to be false
+        doc.locked = true
+        expect(doc.readonly?).to be true
+        expect do
+          doc.destroy
+        end.to raise_error(Mongoid::Errors::ReadonlyDocument)
       end
     end
   end
